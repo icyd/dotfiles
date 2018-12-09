@@ -1,0 +1,34 @@
+## Account settings
+
+# Default options
+set from = "a.vazquez@supmoldie.com"
+set sendmail = "$HOME/.local/bin/supmail"
+color status red default
+
+# Default inbox
+set spoolfile = "+supmoldie/INBOX"
+
+# Mailboxes to show in the sidebar
+mailboxes   +supmoldie/INBOX \
+            +supmoldie/archive \
+            +supmoldie/drafts \
+            +supmoldie/sent \
+            +supmoldie/trash \
+            +supmoldie/junk \
+
+# Other special folders
+set mbox = "+supmoldie/archive"
+set postponed = "+supmoldie/drafts"
+set record = "+supmoldie/sent"
+
+# Signature
+set signature = "~/.config/neomutt/accounts/markdown.sig"
+
+# GPG
+unset crypt_autosign
+
+# Macros
+macro index o "<shell-escape>mbsync supmoldie;/home/beto/.local/bin/mailntag<enter>" "run mbsync to sync inbox"
+macro index D "<save-message>+supmoldie/trash<enter>" "move message to trash"
+macro index S "<save-message>+supmoldie/junk<enter>" "mark message as spam"
+macro index ,mrr '<enter-command>my_hdr Return-Receipt-To: a.vazquez@supmoldie.com<Enter><enter-command>echo "Set Return-Receipt-To: a.vazquez@supmoldie.com"<enter>' "Set RRT header"

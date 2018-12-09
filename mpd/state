@@ -1,0 +1,29 @@
+sw_volume: 100
+audio_device_state:1:My Pulse Output
+audio_device_state:1:my_fifo
+state: stop
+current: 0
+random: 0
+repeat: 0
+single: 0
+consume: 0
+crossfade: 0
+mixrampdb: 0.000000
+mixrampdelay: -1.000000
+playlist_begin
+0:Andres Calamaro/Andres Calamaro - 5 Minutos Mas [minibar] (NuevaQ.Net) (1).mp3
+1:Andres Calamaro/Andres Calamaro - 5 Minutos Mas [minibar] (NuevaQ.Net).mp3
+2:Andres Calamaro/Andres Calamaro - Crimenes Perfecto (NuevaQ.Net).mp3
+3:Andres Calamaro/Andres Calamaro - Dulce Condena (NuevaQ.Net).mp3
+4:Andres Calamaro/Andres Calamaro - El Salmon (NuevaQ.Net).mp3
+5:Andres Calamaro/Andres Calamaro - Flaca (NuevaQ.Net).mp3
+6:Andres Calamaro/Andres Calamaro - La Copa Rota (NuevaQ.Net).mp3
+7:Andres Calamaro/Andres Calamaro - La Parte De Adelante (NuevaQ.Net) (1).mp3
+8:Andres Calamaro/Andres Calamaro - La Parte De Adelante (NuevaQ.Net).mp3
+9:Andres Calamaro/Andres Calamaro - Los chicos (NuevaQ.Net).mp3
+10:Andres Calamaro/Andres Calamaro - Mi gin tonic (NuevaQ.Net).mp3
+11:Andres Calamaro/Andres Calamaro - Mil Horas (NuevaQ.Net).mp3
+12:Andres Calamaro/Andres Calamaro - Soy tuyo (NuevaQ.Net).mp3
+13:Andres Calamaro/Andres Calamaro - TE Quiero Igual (NuevaQ.Net).mp3
+14:Andres Calamaro/Andres Calamaro - Por no olvidar (NuevaQ.Net).mp3
+playlist_end

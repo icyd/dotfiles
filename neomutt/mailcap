@@ -1,0 +1,23 @@
+# MS Word documents
+application/msword; ~/.config/neomutt/view_attachment.sh %s "-" '/Applications/TextEdit.app'
+
+# Images
+image/jpg; ~/.config/neomutt/view_attachment.sh %s jpg
+image/jpeg; ~/.config/neomutt/view_attachment.sh %s jpg
+image/pjpeg; ~/.config/neomutt/view_attachment.sh %s jpg
+image/png; ~/.config/neomutt/view_attachment.sh %s png
+image/gif; ~/.config/neomutt/view_attachment.sh %s gif
+
+# PDFs
+application/pdf; ~/.config/neomutt/view_attachment.sh %s pdf
+
+# HTML
+#text/html; qutebrowser %s && sleep 5; test=test -n "$DISPLAY"; nametemplate=%s.HTML; needsterminal
+text/html; ~/.config/neomutt/view_attachment.sh %s html
+text/html; w3m -I %{charset} -T text/html; copiousoutput;
+
+# Unidentified files
+application/octet-stream; ~/.config/neomutt/view_attachment.sh %s "-"
+
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; /usr/bin/libreoffice --calc %s; copiousoutput
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; /usr/bin/libreoffice --writer %s; copiousoutput

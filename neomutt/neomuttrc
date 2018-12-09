@@ -1,0 +1,271 @@
+## Compose options
+# defines real name used when sending messages
+set realname = "Alberto J. Vázquez"
+# include in envelope the sender's address
+set use_envelope_from
+# dash before sig
+set sig_dashes
+# show headers when composing
+set edit_headers
+# don't prompt when replying messages
+set fast_reply
+# ask for CC:
+set askcc
+# format of quoting header
+set attribution = "On %d, %n wrote:"
+# reply to Reply to: field
+unset reply_to
+# set charset
+set send_charset="utf-8"
+
+## Sorting options
+set date_format = "%d/%m/%Y"
+#set index_format = "[%Z]  %D  %-20.20F  %s"
+set index_format = "[%Z]  %<[y?%<[m?%<[d?%[%H:%M ]&%[%a %d]>&%[%b %d]>&%[%d/%m/%y ]>  %-20.20F  %s"
+# sort order
+set sort = threads
+# sort between message of the same thread
+set sort_aux = reverse-last-date-received
+# don't collapse on unread message
+set uncollapse_jump
+# sort thread based on regexp
+set sort_re
+## General options
+# mboxes' type
+set mbox_type = Maildir
+# location of mailboxes
+set folder = "~/.mailboxes"
+set alias_file       = ~/.config/neomutt/alias         # where to store aliases
+set header_cache     = ~/.config/neomutt/cache/headers # where to store headers
+set message_cachedir = ~/.config/neomutt/cache/bodies  # where to store bodies
+set mailcap_path     = ~/.config/neomutt/mailcap       # entries for filetypes
+set tmpdir = /tmp/mutt
+# wait forever for sendmail process to finish
+set sendmail_wait = 0
+set read_inc=1000
+
+# Notmuch config
+set nm_default_uri = "notmuch:///home/beto/.mailboxes"
+set nm_query_type = "messages"
+set virtual_spoolfile = yes
+source ~/.config/neomutt/accounts/vmailboxes
+
+# default account setting
+source ~/.config/neomutt/accounts/gmail
+source ~/.config/neomutt/accounts/supmoldie
+source ~/.config/neomutt/accounts/zoho
+
+# folder hooks
+folder-hook zoho/* source ~/.config/neomutt/accounts/zoho
+folder-hook supmoldie/* source ~/.config/neomutt/accounts/supmoldie
+folder-hook gmail/* source ~/.config/neomutt/accounts/gmail
+
+# disable new mail check
+set mail_check = 0
+# controls move of read message to mailbox
+unset move
+# don't prompt for mail deletion
+set delete
+# don't prompt to append messages to existing mailbox
+unset confirmappend
+# don't prompt when quiting
+set quit = ask-yes
+# dont mark unreaded mail as old when exit
+unset mark_old
+# don't prompt for key when running external command
+set wait_key = no
+# functions in index will be applied to all tagged messages
+set auto_tag = yes
+# don't save copy of message
+unset record
+# default editor
+#set editor = "nvim -c 'setlocal spell spelllang=es,en'"
+set editor = "nvim"
+# generate mail with format=flowed
+set text_flowed = yes
+
+# external address query command
+# Goobook query
+set query_command="goobook query '%s'"
+# Notmuch query
+# set query_command = "notmuch address %s"
+macro index,pager a "<pipe-message>goobook add<return>" "add sender to google contact"
+bind editor <Tab> complete-query
+bind editor ^T complete
+# set query_format = "%5c %t %a %n %?e?(%e)?"
+set query_format = "%4c %t %-70.70a %-70.70n %?e?(%e)?"
+
+## Pager options
+# number of lines shown when in the pager
+set pager_index_lines = 8
+# controls number of line given when displaying pages in internal pager
+set pager_context = 5
+# pager won't move to next message at end-of-message and invoke `next-page`
+set pager_stop
+# menu will be scrolled one line when attempt to move across screen boundary
+set menu_scroll
+# long lines are wrapped at word boundary
+set smart_wrap
+# pager will pad blank lines at bottom of screen with `~`
+set tilde
+# don't display marker at begin of wraped line
+unset markers
+# regex to determine quoted sections of text
+set quote_regexp = "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+# define order body to display
+alternative_order text/plain text/html text/enriched
+# view html automatically
+auto_view text/html
+
+## Attachment options
+# save attachment with the body
+set fcc_attach
+# forwarded messages will  be attached as separate message/rfc822 mime
+unset mime_forward
+# Default subject of forwarded message
+set forward_format = "Fwd: %s"
+# include copy of message replied
+set include
+# forwarded message will be included in the body of the message
+set forward_quote
+# decode message from mime to plain/text when forwarding
+set forward_decode
+# reply as whomever it was supposed to reply
+set reverse_name
+
+## PGP options
+set pgp_use_gpg_agent
+set crypt_replyencrypt
+
+## Header options
+# ignore all headers
+ignore *
+# show following headers
+unignore Date From To Cc Subject Return-Receipt-To
+# allow hdrs
+# cinas o casquillo desmostables     | Pulgadas: Serie 311-XXXX              || en acero                             | Métricas: Serie 411-XXXX              |+--------------------------------------+---------------------------------------+
+set hdrs = yes
+# clear default hdr order
+unhdr_order *
+# order header by
+hdr_order Date From To Cc Subject
+
+## Sidebar settings
+# show sidebar
+set sidebar_visible
+# sidebar width
+set sidebar_width = 24
+
+## Status bar
+# string for status bar unmodified/chanded/read-only/opened
+set status_chars = " *%A"
+# format of status line displayed
+set status_format = "───[ Folder: %f ]───[%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]───%>─%?p?( %p postponed )?───"
+
+# Setting colorscheme
+source ~/.config/neomutt/colorscheme/colors-gruvbox-shuber.muttrc
+source ~/.config/neomutt/colorscheme/colors-gruvbox-shuber-extended.muttrc
+
+# Example NeoMutt config file for the attach-headers-color feature.
+
+# Color if the attachment is autoviewed
+color   attach_headers     brightgreen     default    "Autoview"
+# Color only the brackets around the headers
+color   attach_headers     brightyellow    default    "^\\[--"
+color   attach_headers     brightyellow    default    "--]$"
+# Color the mime type and the size
+color   attach_headers     green           default    "Type: [a-z]+/[a-z0-9\-]+"
+color   attach_headers     green           default    "Size: [0-9\.]+[KM]"
+# Color GPGME signature checks
+color   attach_headers     brightgreen     default    "Good signature from.*"
+color   attach_headers     brightred       default    "Bad signature from.*"
+color   attach_headers     brightred       default    "BAD signature from.*"
+color   attach_headers     brightred       default    "Note: This key has expired!"
+color   attach_headers     brightmagenta   default    "Problem signature from.*"
+color   attach_headers     brightmagenta   default    "WARNING: This key is not certified with a trusted signature!"
+color   attach_headers     brightmagenta   default    "There is no indication that the signature belongs to the owner."
+color   attach_headers     brightmagenta   default    "can't handle these multiple signatures"
+color   attach_headers     brightmagenta   default    "signature verification suppressed"
+color   attach_headers     brightmagenta   default    "invalid node with packet of type"
+
+
+set hidden_tags = "inbox,unread,draft,flagged,passed,replied,signed,encrypted,attachment"
+#Re-tag on open folder
+folder-hook notmuch:// 'exec "/home/beto/.local/bin/mailntag > /dev/null"'
+macro index \cO "<change-vfolder>?" "Change to vfolder overview"
+macro index \\\\ <vfolder-from-query>
+macro index \cA "<modify-labels>+archive -unread -inbox<Enter><sync-mailbox>" "Tag as archive"
+macro index \cI "<modify-labels>+inbox -archive<Enter><sync-mailbox>" "Untag from archive"
+macro index S "<modify-labels-then-hide>-inbox -unread +spam<Enter>" "Tag as spam"
+macro index + "<modify-labels>+starred<Enter><sync-mailbox>" "Tag as starred"
+macro index - "<modify-labels>-starred<Enter><sync-mailbox>" "Untag as starred"
+
+## Key binding
+bind index,pager i noop
+bind editor <space> noop
+bind index u    undelete-message
+bind index,pager R group-reply
+#bind index <tab> sync-mailbox
+#bind index <space> collapse-thread
+bind attach <return> view-mailcap
+
+# Urlscan
+macro index,pager \cv "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+macro attach,compose \cv "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+
+# # Extract_url.pl config
+# macro index,pager ,b "<enter-command> set my_pdsave=\$pipe_decode<enter>\
+#     <enter-command> unset pipe_decode<enter>\
+#     <pipe-message>extract_url<enter>\
+#     <enter-command> set pipe_decode=\$my_pdsave<enter>" "get URLs"
+
+# macro index,pager ,B "<enter-command> set my_pdsave=\$pipe_decode<enter>\
+#     <enter-command> set pipe_decode<enter>\
+#     <pipe-message>extract_url<enter>\
+#     <enter-command> set pipe_decode=\$my_pdsave<enter>" "decrypt message, then get URLs"
+
+#macro index,pager \cv "<enter-command> unset pipe_decode<enter><pipe-message>extract_url<enter>" "get URLs"
+# message-hook .  'macro index,pager \cV ,b "URL viewer"'
+# message-hook ~G 'macro index,pager \cV ,B "URL viewer"'
+
+macro compose \em "F pandoc -s -f markdown -t html \ny^T^Utext/html; charset=utf-8\n"
+
+macro index ,mph '<enter-command>my_hdr Priority: High<Enter><enter-command>echo "Set priority High<enter>' "Set priority High"
+macro index ,mpm '<enter-command>my_hdr Priority: Medium<Enter><enter-command>echo "Set priority Medium"<enter>' "Set priority Medium"
+macro index ,mpn '<enter-command>my_hdr Priority: Normal<Enter><enter-command>echo "Set priority Normal<enter>"' "Set priority HIGH"
+macro index ,mpl '<enter-command>my_hdr Priority: Low<Enter><enter-command>echo "Set priority Low<enter>"' "Set priority Low"
+macro index ,mpd '<enter-command>unmy_hdr Priority<Enter><enter-command>echo "Unset priority header<enter>"' "Unset priority header"
+macro index ,mrd '<enter-command>unmy_hdr Return-Receipt-To<Enter><enter-command>echo "Unset RRT header"<enter>' "Unset RRT header"
+macro index,pager ,mz '<enter-command>source "~/.config/neomutt/accounts/zoho"<enter><enter-command>echo "Switched to ZOHO account"<enter>' "Switch to zoho account"
+macro index,pager ,mg '<enter-command>source "~/.config/neomutt/accounts/gmail"<enter><enter-command>echo "Switched to GMAIL account"<enter>' "Switch to zoho account"
+macro index,pager ,ms '<enter-command>source "~/.config/neomutt/accounts/supmoldie"<enter><enter-command>echo "Switched to SUPMOLDIE account"<enter>' "Switch to zoho account"
+
+bind compose p postpone-message
+bind index p recall-message
+bind index,pager \Ck sidebar-prev
+bind index,pager \Cj sidebar-next
+bind index,pager \CL sidebar-open
+bind index,pager \Cu sidebar-page-up
+bind index,pager \Cd sidebar-page-down
+bind index,pager \Cp sidebar-prev-new
+bind index,pager \Cn sidebar-next-new
+bind index,pager B sidebar-toggle-visible
+bind index,pager X sidebar-toggle-virtual
+bind compose x pgp-menu
+
+# Ctrl-R to mark all as read
+macro index \Cr "T~U<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" "mark all messages as read"
+# Sync email
+macro index O "<shell-escape>mbsync -a;/home/beto/.local/bin/mailntag<enter>"           "run mbsync to sync all mail"
+# Saner copy/move dialogs
+macro index C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
+macro index M "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
+# Notmuch searching
+    # 'a' shows all messages again (supersedes default <alias> binding)
+macro index A "<limit>all\n" "show all messages (undo limit)"
+
+# Vim's keybinding
+source ~/.config/neomutt/vim-keys.rc
+# Gpg configuration
+source ~/.config/neomutt/gpg.rc
+

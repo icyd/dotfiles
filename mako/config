@@ -1,0 +1,8 @@
+font=pango:Droid Sans 11
+background-color=#fb4934da
+text-color=#282828ff
+default-timeout=2000
+margin=0
+border-color=#282828DA
+anchor=bottom-right
+
