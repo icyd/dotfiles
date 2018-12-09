@@ -53,6 +53,9 @@ neovim-remote, which avoid recursive opening of nvim inside its terminals.
 To install simply run:
 
 ```
+    cd ~/.config
+    git clone https://github.com/icyd/dotfiles
+    cd dotfiles
     chmod +x install.sh
     ./install.sh
 ```
