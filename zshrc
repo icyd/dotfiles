@@ -71,7 +71,7 @@ export PATH="$PATH:$HOME/.rvm/bin"
 if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
     if [ -x "$(command -v nvr)" ]; then
 	if [ ! -e "~/.local/bin/nvr" ]; then
-		unalias nvim
+		alias nvim='nvim'
 	else
 		alias nvim="nvr --remote-silent"
 	fi

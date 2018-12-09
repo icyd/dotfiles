@@ -19,7 +19,7 @@ confirm() {
     # call with a prompt string or use a default
     read -r -p "${1:-Are you sure? [y/N]} " response
     case "$response" in
-        [yY][eE][sS]|[yY]) 
+        [yY][eE][sS]|[yY])
             true
             ;;
         *)
@@ -30,7 +30,7 @@ confirm() {
 
 echo -e "${yellow}Creating symlink for configuration files:"
 # Create symlink for configuration files
-find "${CWD}" -maxdepth 1 -type f -not -name "*.sh" -print |
+find "${CWD}" -maxdepth 1 -type f -not \( -name "*.sh" -o -name "README.md" -o -name ".gitignore" \) -print |
     while read file; do
         name="${FILE_DD}/.$(basename $file)"
 
