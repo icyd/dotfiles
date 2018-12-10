@@ -18,12 +18,13 @@
     set softtabstop=4
     set autoindent
 
-    "Indentation for file types
-    autocmd! BufRead,BufNewFile *.html,*.htm,*.css setlocal shiftwidth=2 softtabstop=2
-    autocmd! BufRead,BufNewFile *.js setlocal shiftwidth=2 softtabstop=2
-    autocmd! FileType markdown,pandoc setlocal textwidth=79 spell
-    autocmd! BufNewFile,BufRead *.py
+    "Indentation for file types (deprecated by editorconfig file)
+    " autocmd! BufRead,BufNewFile *.html,*.htm,*.css setlocal shiftwidth=2 softtabstop=2
+    " autocmd! BufRead,BufNewFile *.js setlocal shiftwidth=2 softtabstop=2
+    " autocmd! FileType markdown,pandoc setlocal textwidth=79 spell
+    " autocmd! BufNewFile,BufRead *.py
         \ setlocal textwidth=79
+
     augroup mail
         autocmd!
         autocmd FileType mail setlocal spell spelllang=en,es
@@ -79,18 +80,13 @@
         autocmd BufWritePre /tmp/* setlocal noundofile
     augroup END
 
-    "Disable node and python2 support
+    "Disable ruby, node.js and python2 support
     let g:loaded_python_provider = 1
     let g:loaded_node_provider = 1
     let g:loaded_ruby_provider = 1
 
-    "Ruby path
-    "let g:ruby_host_prog = '/home/beto/.gem/ruby/2.5.0/bin/neovim-ruby-host'
-
     "Python provider (to use pyenv-virtualenv)
     let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
-    " let g:node_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/npm'
-
 
     "Vertical split function
     function! VerticalSplitBuffer(buffer)
@@ -130,7 +126,7 @@
 "###############################################################################
 "General keybindings
 "###############################################################################
-    "Map leader to ','
+    "Map leader to 'space'
     let mapleader="\<space>"
 
     "Edit vimrc/zshrc and load vimrc bindings
@@ -210,8 +206,9 @@
     let g:netrw_banner=0
     let g:netrw_liststyle=3
 
-    "Create parent directory of current file
+    "Change directory to current file's folder
     nmap <silent> <leader>cd :lcd %:h<CR>:echo "Changed directory to: "expand('%:p:h')<CR>
+    "Create parent directory of current file
     nmap <silent> <leader>md :!mkdir -p %:p:h<CR>
 
     " Open files located in the same dir in with the current file is edited

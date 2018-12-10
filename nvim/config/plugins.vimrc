@@ -159,15 +159,15 @@
     let g:LanguageClient_loggingLevel = 'INFO'
     let g:LanguageClient_serverStderr = '/tmp/LanguageServer.log'
     let g:LanguageClient_serverCommands = {
-        \ 'python': ['~/.pyenv/versions/neovim/bin/pyls'],
+        \ 'python': ['~/.pyenv/versions/py3neovim/bin/pyls'],
         \ 'c': ['ccls', '--log-file=/tmp/cc.log'],
         \ 'cpp': ['ccls', '--log-file=/tmp/cc.log'],
-        \ 'javascript': ['~/.pyenv/versions/neovim/bin/javascript-typescript-stdio'],
-        \ 'typescript': ['~/.pyenv/versions/neovim/bin/typescript-language-server', '--stdio'],
-        \ 'css': ['~/.pyenv/versions/neovim/bin/css-languageserver', '--stdio'],
-        \ 'html': ['~/.pyenv/versions/neovim/bin/html-languageserver', '--stdio'],
-        \ 'json': ['~/.pyenv/versions/neovim/bin/json-languageserver', '--stdio'],
-        \ 'sh': ['~/.pyenv/versions/neovim/bin/bash-language-server', 'start'],
+        \ 'javascript': ['~/.pyenv/versions/py3neovim/bin/javascript-typescript-stdio'],
+        \ 'typescript': ['~/.pyenv/versions/py3neovim/bin/typescript-language-server', '--stdio'],
+        \ 'css': ['~/.pyenv/versions/py3neovim/bin/css-languageserver', '--stdio'],
+        \ 'html': ['~/.pyenv/versions/py3neovim/bin/html-languageserver', '--stdio'],
+        \ 'json': ['~/.pyenv/versions/py3neovim/bin/json-languageserver', '--stdio'],
+        \ 'sh': ['~/.pyenv/versions/py3neovim/bin/bash-language-server', 'start'],
     \ }
 
     "LSP keymap definition
@@ -186,7 +186,7 @@
 
     augroup LSP
       autocmd!
-      autocmd FileType cpp,c,python,javascript,css,html,json call SetLSPShortcuts()
+      autocmd FileType cpp,c,python,typescript,javascript,css,html,json call SetLSPShortcuts()
     augroup END
 
     "Avoid open hover on autocompletion
