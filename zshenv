@@ -46,4 +46,6 @@ export GTAGSCONF=/usr/share/gtags/gtags.conf
 GDK_BACKEND=wayland
 CLUTTER_BACKEND=wayland
 QT_QPA_PLATFORM=wayland-egl
+SDL_VIDEODRIVER=wayland
+# QT_QPA_PLATFORM=qt5ct
 QT_WAYLAND_DISABLE_WINDOWDECORATION=1

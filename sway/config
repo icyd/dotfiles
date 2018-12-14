@@ -88,9 +88,9 @@ output LVDS-1 {
 # Example configuration:
 #
 exec swayidle \
-    # timeout 300 'swaylock -c 000000' \
-    timeout 300 '/usr/local/bin/lock-screen' \
-    timeout 600 'swaymsg "output * dpms off"' \
+    # timeout 3 'swaylock -c 000000' \
+    timeout 3 '/usr/local/bin/lock-screen' \
+    timeout 6 'swaymsg "output * dpms off"' \
        resume 'swaymsg "output * dpms on"' \
     before-sleep '/usr/local/bin/lock-screen'
 #
@@ -243,6 +243,7 @@ input 1:1:AT_Translated_Set_2_keyboard {
 
     # move focus to the parent container
     bindsym $mod+a focus parent
+    bindsym $mod+Shift+a focus child
 #
 # Scratchpad:
 #
@@ -290,8 +291,12 @@ bindsym $mod+r mode "resize"
     gaps inner 6
     gaps outer 1
     #smart_gaps on
-    default_border none
-
+    default_border pixel
+#                               Title_border    Background  Text    Indicator   Child_border
+client.focused              $transparent    $darkwhite   $darkblack  $darkwhite    $darkwhite
+    client.unfocused            $transparent    $darkblack   $darkwhite  $red   $darkblack
+    client.focused_inactive     $transparent    $darkblack   $darkwhite  $red   $transparent
+    client.urgent               $darkred        $darkred    $darkwhite  $darkred    $darkred
 #
 # Windows assign
 #
@@ -305,15 +310,31 @@ bindsym $mod+r mode "resize"
     assign [class="(?i)urxvt" title="neomutt"] $ws10
 
 #
+# RpCalc in scratchpad
+#
+    for_window [class="rpcalc.py"] floating enable
+    # for_window [class="rpcalc.py"] move scratchpad
+    # for_window [class="rpcalc.py"] scratchpad show
+
+    # for_window [class="rpcalc.py"] resize set 200 px 200 px
+
+
+#
 # Binding
 #
-    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5% && pkill -RTMIN+1 i3blocks
-    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% && pkill -RTMIN+1 i3blocks
-    bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && pkill -RTMIN+1 i3blocks
+    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') +5%  && pkill -RTMIN+1 i3blocks
+     bindsym XF86AudioLowerVolume exec pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') -5%  && pkill -RTMIN+1 i3blocks
+     bindsym XF86AudioMute exec pactl set-sink-mute $(pacmd list-sinks |awk '/* index:/{print $3}') toggle  && pkill -RTMIN+1 i3blocks
+     bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+     bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+    # bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5% && pkill -RTMIN+1 i3blocks
+    # bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% && pkill -RTMIN+1 i3blocks
+    # bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && pkill -RTMIN+1 i3blocks
     bindsym Print exec grim -o LVDS-1 /tmp/screenshot.png
     bindsym $mod+m exec $term -e "neomutt"
     # bindsym $mod+Shift+m exec $term -e "neomutt -R"
     bindsym $mod+Shift+r exec $term -e "ncmpcpp"
+    bindsym $mod+F12 exec 'rpcalc'
     bindsym $mod+Shift+f exec $term -e "ranger"
     bindsym $mod+Shift+w exec "qutebrowser"
     bindsym $mod+x exec urxvtc -title "Nvim Server" -e nvim
@@ -331,10 +352,11 @@ exec /home/beto/.local/bin/devmon_notify
 #
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-    font pango:Droid Sans 11
+    font pango:Droid Sans, FontAwesome 11
     # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
     status_command i3blocks
-    mode dock
+    pango_markup enabled
+    mode hide
     #modifier none
     position top
     colors {

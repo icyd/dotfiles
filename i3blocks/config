@@ -26,7 +26,7 @@
 # Each block command defaults to the script name to avoid boilerplate.
 command=/usr/lib/i3blocks/$BLOCK_NAME
 separator_block_width=15
-#markup=pango
+markup=pango
 
 # Volume indicator
 #
@@ -42,7 +42,7 @@ separator=false
 
 [volume]
 #label=VOL
-label=
+label=&#xf028;
 command=/usr/lib/i3blocks/volume; [[ -z "${BLOCK_BUTTON}" ]] || swaymsg exec pavucontrol-qt
 instance=Master
 #instance=PCM
@@ -64,16 +64,6 @@ separator=false
 #separator=false
 #interval=30
 
-# Disk usage
-#
-# The directory defaults to $HOME if the instance is not specified.
-# The script may be called with a optional argument to set the alert
-# (defaults to 10 for 10%).
-[disk]
-label=
-#instance=/mnt/data
-interval=30
-separator=false
 
 # Network interface monitoring
 #
@@ -102,28 +92,45 @@ separator=false
 #
 # The script may be called with -w and -c switches to specify thresholds,
 # see the script for details.
-#[cpu_usage]
-#label=CPU
-#interval=10
-#min_width=CPU: 100.00%
-#separator=false
-
-[mail]
-label=
-#command=find ~/Mail -type f -regextype egrep -regex '.*/(gmail|zoho|supmoldie)/INBOX/new/.*' | wc -l; [[ -z "${BLOCK_BUTTON}" ]] || swaymsg exec "$TERMINAL -e neomutt"
-command=notmuch search tag:unread | wc -l; [[ -z "${BLOCK_BUTTON}" ]] || swaymsg exec "$TERMINAL -e neomutt"
-separator=false
-interval=300
-
-[load_average]
+[cpu_usage]
 label=
 interval=10
+min_width=CPU: 100.00%
 separator=false
 
 # Temperature indicator
+[temperature]
 label=
 interval=5
 command=/usr/lib/i3blocks/temperature
+separator=false
+
+[memory]
+label=
+separator=false
+interval=30
+#
+#[mail]
+#label=
+##command=find ~/Mail -type f -regextype egrep -regex '.*/(gmail|zoho|supmoldie)/INBOX/new/.*' | wc -l; [[ -z "${BLOCK_BUTTON}" ]] || swaymsg exec "$TERMINAL -e neomutt"
+#command=notmuch search tag:unread | wc -l; [[ -z "${BLOCK_BUTTON}" ]] || swaymsg exec "$TERMINAL -e neomutt"
+#separator=false
+#interval=300
+
+# [load_average]
+# label=
+# interval=10
+# separator=false
+
+# Disk usage
+#
+# The directory defaults to $HOME if the instance is not specified.
+# The script may be called with a optional argument to set the alert
+# (defaults to 10 for 10%).
+[disk]
+label=
+#instance=/mnt/data
+interval=30
 separator=false
 
 # Battery indicator
@@ -139,7 +146,7 @@ separator=false
 # Date Time
 #
 [time]
-label=
+# label=
 command=date '+%a %x %R'
 interval=5
 separator=false

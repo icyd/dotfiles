@@ -20,20 +20,17 @@
         \ 'do': ':UpdateRemotePlugins' }    "Completion plugin
         Plug 'itchyny/lightline.vim'        "Lightweight status bar plugin
         Plug 'sheerun/vim-polyglot'         "Syntaxes plugin
-        " Plug 'zchee/deoplete-jedi'          "Python completion
-        " Plug 'Shougo/deoplete-clangx'       "C/C++ source for deoplete
         Plug 'SirVer/ultisnips'             "Snippet engine
         Plug 'honza/vim-snippets'           "Snippet plugin
         Plug 'Shougo/denite.nvim'           "Dark powered plugin to unite all vim interfaces
         Plug 'ozelentok/denite-gtags'       "Denite's source: gtags
         Plug 'neoclide/denite-git'          "Denite's source: git
         Plug 'Shougo/neomru.vim'            "Enable file_mru for denite
-        " Plug 'neomake/neomake'              "Run asynchronously programs
         Plug 'sjl/gundo.vim'                "Gundo tree
         Plug 'kana/vim-textobj-user'        "Declaration of custom textobj
         Plug 'jremmen/vim-ripgrep'          "Ripgrep plugin
         Plug 'editorconfig/editorconfig-vim' "EditorConfig plugin
-        " Plug 'airblade/vim-rooter'          "Plugin to change directory to root
+
 
     "Editing
         Plug 'jacquesbh/vim-showmarks'      "Plugin to show marks
@@ -63,6 +60,10 @@
 
     "Pweave plugin
         " Plug 'coyotebush/vim-pweave'
+
+    "REPL plugin
+    Plug 'Vigemus/iron.nvim', {
+                \ 'do': 'UpdateRemotePlugins'} "Interact with REPL
 
     call plug#end()
 
@@ -258,3 +259,6 @@
     "Javascript plugins
     let g:javascript_plugin_jsdoc = 1
     let g:jsx_ext_required = 1
+
+    "Iron lua config (temporary until implementation)
+    luafile $HOME/.config/nvim/config/iron.lua

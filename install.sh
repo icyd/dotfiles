@@ -119,6 +119,6 @@ echo -e "\n${yellow}Updating Nvim'- remote plugins${reset}"
 nvim -c 'UpdateRemotePlugins | qa!'
 
 echo -e "\n${yellow}Creating Symlink to NVR${reset}"
-ln -sf "$HOME/.local/bin/nvr" "$(dirname $python)/nvr"
+ln -sf "$(dirname $python)/nvr" "$HOME/.local/bin/nvr"
 
 echo -e "\n${green}DONE!${reset}"

@@ -73,7 +73,7 @@ if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
 	if [ ! -e "~/.local/bin/nvr" ]; then
 		alias nvim='nvim'
 	else
-		alias nvim="nvr --remote-silent"
+		alias nvim="nvr -s --remote"
 	fi
     else
         alias nvim='echo "No nesting!"'
