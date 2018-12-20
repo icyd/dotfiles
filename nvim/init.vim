@@ -23,7 +23,7 @@
     " autocmd! BufRead,BufNewFile *.js setlocal shiftwidth=2 softtabstop=2
     " autocmd! FileType markdown,pandoc setlocal textwidth=79 spell
     " autocmd! BufNewFile,BufRead *.py
-        \ setlocal textwidth=79
+        " \ setlocal textwidth=79
 
     augroup mail
         autocmd!
@@ -131,7 +131,7 @@
 
     "Edit vimrc/zshrc and load vimrc bindings
     nnoremap <silent> <leader>ev :edit $MYVIMRC<CR>
-    nnoremap <silent> <leader>ep :edit $HOME/.config/nvim/config/plugins.vimrc <CR>
+    nnoremap <silent> <leader>ep :edit $HOME/.config/nvim/config/plugins.vim<CR>
 
     "Remaping to improve
     " Semicolon switch to command mode
@@ -229,5 +229,14 @@
 
     autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
 
+    "Source functions file
+    source $HOME/.config/nvim/config/functions.vim
+
+    "Grab nvr server
+    augroup nvr
+        autocmd!
+        autocmd VimEnter * call Grab()
+    augroup END
+
     "Plugin specific configuration comment out to disable plugins
-    source $HOME/.config/nvim/config/plugins.vimrc
+    source $HOME/.config/nvim/config/plugins.vim

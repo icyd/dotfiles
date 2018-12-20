@@ -88,11 +88,10 @@ output LVDS-1 {
 # Example configuration:
 #
 exec swayidle \
-    # timeout 3 'swaylock -c 000000' \
-    timeout 3 '/usr/local/bin/lock-screen' \
-    timeout 6 'swaymsg "output * dpms off"' \
-       resume 'swaymsg "output * dpms on"' \
-    before-sleep '/usr/local/bin/lock-screen'
+    timeout 600 '$HOME/.local/bin/lockscreen' \
+    timeout 900 'swaymsg "output * dpms off"' \
+    resume 'swaymsg "output * dpms on"' \
+    before-sleep '$HOME/.local/bin/lockscreen'
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
@@ -138,7 +137,8 @@ input 1:1:AT_Translated_Set_2_keyboard {
     bindsym $mod+Shift+q kill
 
     # start your launcher
-    bindsym $mod+d exec $menu
+    bindsym $mod+d exec rofi -show run
+    bindsym $mod+Shift+d exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -305,19 +305,21 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
     assign [class="(?i)falkon"] $ws3
     assign [class="(?i)chromium"] $ws3
     assign [class="(?i)urxvt" title="ranger"] $ws4
-    # assign [class="(?i)urxvt" title="Terminal"] $ws8
     assign [class="(?i)urxvt" title="ncmpcpp"] $ws9
     assign [class="(?i)urxvt" title="neomutt"] $ws10
 
 #
 # RpCalc in scratchpad
 #
-    for_window [class="rpcalc.py"] floating enable
-    # for_window [class="rpcalc.py"] move scratchpad
-    # for_window [class="rpcalc.py"] scratchpad show
+    for_window [class="(?i)urxvt" title="RPNCalc"] floating enable
+    for_window [class="(?i)urxvt" title="RPNCalc"] resize set 600 300
+    # for_window [class="(?i)urxvt" title="RPNCalc"] move scratchpad
 
-    # for_window [class="rpcalc.py"] resize set 200 px 200 px
-
+# Dropdown terminal
+    for_window [class="(?i)urxvt" instance="Dropdown"] floating enable
+    for_window [class="(?i)urxvt" instance="Dropdown"] resize set 800 400
+    for_window [class="(?i)urxvt" instance="Dropdown"] move scratchpad
+    bindsym $mod+t [class="(?i)urxvt" instance="Dropdown"] scratchpad show
 
 #
 # Binding
@@ -338,7 +340,14 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
     bindsym $mod+Shift+f exec $term -e "ranger"
     bindsym $mod+Shift+w exec "qutebrowser"
     bindsym $mod+x exec urxvtc -title "Nvim Server" -e nvim
-    bindsym $mod+Shift+p exec echo -e "Lock\nSuspend\nReboot\nShutdown" | dmenu -p "Power Option" -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Droid Sans-11" | awk '{print $1}' | tr -d '\r\n' | /usr/local/bin/rofi-power | xargs swaymsg exec
+    # bindsym $mod+Shift+p exec echo -e "Lock\nSuspend\nReboot\nShutdown" | dmenu -p "Power Option" -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Droid Sans-11" | awk '{print $1}' | tr -d '\r\n' | /usr/local/bin/rofi-power | xargs swaymsg exec
+    bindsym $mod+Shift+p exec echo -e "Lock\nSuspend\nReboot\nShutdown" | rofi -dmenu -i -p "Power Options"| awk '{print $1}' | tr -d '\r\n' | $HOME/.local/bin/rofi-power | xargs swaymsg exec
+    bindsym $mod+F11 exec $HOME/.local/bin/qrgen
+    bindsym $mod+F10 exec $HOME/.local/bin/browsersearch
+    bindsym $mod+F9 exec $HOME/.local/bin/zuluopen
+    bindsym $mod+Shift+F9 exec $HOME/.local/bin/udevilunmount
+    bindsym $mod+F8 exec $HOME/.local/bin/rofi_fa_ico_finder
+    bindsym $mod+F7 exec urxvtc -title "RPNCalc" -e $HOME/.local/bin/rpncalc
 
 #
 # Autostart:
@@ -346,6 +355,7 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
 exec urxvtd -q -o -f
 exec mako
 exec /home/beto/.local/bin/devmon_notify
+exec_always urxvtc -name "Dropdown"
 
 #
 # Status Bar:

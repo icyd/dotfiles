@@ -141,24 +141,24 @@ URxvt.background: rgba:2800/2800/2800/da00
 /* URxvw.perl-ext-common: */
 
 /* ! Rofi configuration */
-/* #define rofi00 argb:da282828 */
-/* #define transp argb:00000000 */
+#define rofi00 argb:da282828
+#define transp argb:00000000
 
-/* rofi.color-enabled:true */
+rofi.color-enabled:true
 
 /* ! Property Name     BG      Border      Separator */
-/* rofi.color-window:  rofi00, base01,     transp */
+rofi.color-window:  rofi00, base01,     transp
 
 /* ! Property Name     BG      FG      BG-alt  High-BG  High-FG */
-/* rofi.color-normal:  transp, base05, transp, base05,  base00 */
-/* rofi.color-active:  transp, base0D, transp, base0D,  base04 */
-/* rofi.color-urgent:  transp, base08, transp, base08,  base09 */
+rofi.color-normal:  transp, base05, transp, base05,  base00
+rofi.color-active:  transp, base0D, transp, base0D,  base04
+rofi.color-urgent:  transp, base08, transp, base08,  base09
 
-/* rofi.font:Droid Sans 14 */
-/* rofi.width:100 */
-/* rofi.padding:400 */
-/* rofi.lines:3 */
-/* rofi.columns:1 */
-/* roff.bw: 0 */
-/* rofi.eh:1 */
-/* rofi.hide-scrollbar:true */
+rofi.font:Droid Sans 14,Font Awesome 12
+rofi.width:100
+rofi.padding:400
+rofi.lines:3
+rofi.columns:1
+roff.bw: 0
+rofi.eh:1
+rofi.hide-scrollbar:true
