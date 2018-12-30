@@ -4,7 +4,7 @@
     "Reload configuration after save
     augroup reload_vimrc
         autocmd!
-        autocmd BufWritePost $MYVIMRC,*.vimrc nested source $MYVIMRC | echom "Reloaded " . $MYVIMRC | redraw
+        autocmd BufWritePost $MYVIMRC,*.vim nested source $MYVIMRC | echom "Reloaded " . $MYVIMRC | redraw
     augroup END
 
     "Colorscheme
@@ -179,6 +179,19 @@
     inoremap <C-v> <ESC>"+pa
     vnoremap <C-v> c<ESC>"+pa
     vnoremap <C-c> "+y
+    "wl-clipboard workaround
+    let g:clipboard = {
+                \   'name': 'wl-clipboard',
+                \   'copy': {
+                \       '+': 'wl-copy --foreground',
+                \       '*': 'wl-copy --foreground --primary',
+                \   },
+                \   'paste': {
+                \       '+': 'wl-paste --no-newline',
+                \       '*': 'wl-paste --no-newline --primary',
+                \   },
+                \   'cache_enabled': 1,
+                \ }
 
     "Defaults
     nnoremap <silent> <leader>b :ls<CR>:b<space>
@@ -201,6 +214,9 @@
     tnoremap <A-j> <C-\><C-N><C-w>j
     tnoremap <A-k> <C-\><C-N><C-w>k
     tnoremap <A-l> <C-\><C-N><C-w>l
+
+    "Define make shortcut
+    nnoremap <buffer> <F9> :make<CR>
 
     "netrw configuration
     let g:netrw_banner=0

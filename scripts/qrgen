@@ -1,0 +1,5 @@
+#!/bin/bash
+
+wl-paste -n | qrencode -o /tmp/qr.png
+imv -b ffffff /tmp/qr.png -s shrink
+rm -f /tmp/qr.png

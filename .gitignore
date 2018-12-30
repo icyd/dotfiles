@@ -5,3 +5,5 @@ nvim/plugged
 nvim/thesaurus
 qutebrowser/bookmarks
 qutebrowser/quickmarks
+mpd/pid
+mpd/state

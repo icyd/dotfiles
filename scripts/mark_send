@@ -1,0 +1,3 @@
+#!/bin/sh
+#$HOME/.local/bin/mark_and_send "/usr/bin/pandoc -s" | /usr/bin/msmtp -a supmoldie $@
+$HOME/.local/bin/mark_and_send "/usr/bin/pandoc -s" | cat > hola.txt

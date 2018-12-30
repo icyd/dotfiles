@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# handle being called from systemd service
+IMG="/tmp/lockscreen.png"
+ if [ -z "$XDG_RUNTIME_DIR" ] && [ -z "$SWAYSOCK"]; then
+         uid=$(id -u $USER)
+         export XDG_RUNTIME_DIR="/run/user/"$uid"/"
+         export SWAYSOCK=$(find $XDG_RUNTIME_DIR -iname sway*sock)
+ fi
+
+grim -o LVDS-1 $IMG
+if [ -f /usr/bin/convert ]; then
+    convert -blur 0x6 -swirl 360 $IMG $IMG
+    swaylock -f -i $IMG
+else
+    swaylock -f -c 000000
+fi

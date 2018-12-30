@@ -30,69 +30,22 @@ def read_xresources(prefix):
     return props
 
 xresources = read_xresources('*')
-darkblack = xresources['*color0'] 
-black = xresources['*color8'] 
-darkred = xresources['*color1'] 
-red = xresources['*color9'] 
-darkgreen = xresources['*color2'] 
+darkblack = xresources['*color0']
+black = xresources['*color8']
+darkred = xresources['*color1']
+red = xresources['*color9']
+darkgreen = xresources['*color2']
 green = xresources['*color10']
-darkyellow = xresources['*color3'] 
+darkyellow = xresources['*color3']
 yellow = xresources['*color11']
-darkblue = xresources['*color4'] 
+darkblue = xresources['*color4']
 blue = xresources['*color12']
-darkmagenta = xresources['*color5'] 
+darkmagenta = xresources['*color5']
 magenta = xresources['*color13']
-darkcyan = xresources['*color6'] 
+darkcyan = xresources['*color6']
 cyan = xresources['*color14']
 darkwhite = xresources['*color7']
 white = xresources['*color15']
-
-# base16-qutebrowser (https://github.com/theova/base16-qutebrowser)
-# Base16 qutebrowser template by theova
-# Gruvbox dark, medium scheme by Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
-
-
-# base00 = "#282828"
-# base01 = "#3c3836"
-# base02 = "#504945"
-# base03 = "#665c54"
-# base04 = "#bdae93"
-# base05 = "#d5c4a1"
-# base06 = "#ebdbb2"
-# base07 = "#fbf1c7"
-# base08 = "#fb4934"
-# base09 = "#fe8019"
-# base0A = "#fabd2f"
-# base0B = "#b8bb26"
-# base0C = "#8ec07c"
-# base0D = "#83a598"
-# base0E = "#d3869b"
-# base0F = "#d65d0e"
-
-# darkblack   = base00
-# black       = base03
-# darkred     = base08
-# red         = base09
-# darkgreen   = base0B
-# green       = base01
-# darkyellow  = base0A
-# yellow      = base02
-# darkblue    = base0D
-# blue        = base04
-# darkmagenta = base0E
-# magenta     = base06
-# darkcyan    = base0C
-# cyan        = base0F
-# darkwhite   = base05
-# white       = base07
-
-# # Use only dark colors
-# red     = darkred
-# green   = darkgreen
-# yellow  = darkyellow
-# blue    = darkblue
-# magenta = darkmagenta
-# cyan    = darkcyan
 
 # Text color of the completion widget. May be a single color to use for
 # all columns or a list of three colors, one for each column.

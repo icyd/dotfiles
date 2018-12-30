@@ -1,0 +1,10 @@
+#!/bin/bash
+
+STATE_FILE="$HOME/.config/mpd/state"
+echo $STATE_FILE
+#STATE=$(grep '^state' "$STATE_FILE" | cut -d ' ' -f2)
+#if [ "$STATE" = "play" ]; then
+#    /usr/bin/ncmpcpp --current-song="{{{%a - }%t}|{%f}}" --quie
+#else
+#    echo "-"
+#fi

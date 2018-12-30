@@ -301,7 +301,7 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
 # Windows assign
 #
     assign [class="(?i)urxvt" title="Nvim Server"] $ws1
-    assign [class="(?i)qutebrowser"] $ws2
+    assign [app_id="qutebrowser"] $ws2
     assign [class="(?i)falkon"] $ws3
     assign [class="(?i)chromium"] $ws3
     assign [class="(?i)urxvt" title="ranger"] $ws4
@@ -313,7 +313,8 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
 #
     for_window [class="(?i)urxvt" title="RPNCalc"] floating enable
     for_window [class="(?i)urxvt" title="RPNCalc"] resize set 600 300
-    # for_window [class="(?i)urxvt" title="RPNCalc"] move scratchpad
+    for_window [class="(?i)urxvt" title="RPNCalc"] move scratchpad
+    bindsym $mod+c [class="(?i)urxvt" title="RPNCalc"] scratchpad show
 
 # Dropdown terminal
     for_window [class="(?i)urxvt" instance="Dropdown"] floating enable
@@ -366,7 +367,8 @@ bar {
     # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
     status_command i3blocks
     pango_markup enabled
-    mode hide
+    mode dock
+    # mode hide
     #modifier none
     position top
     colors {

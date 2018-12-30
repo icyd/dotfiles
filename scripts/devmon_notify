@@ -1,0 +1,9 @@
+#!/bin/bash
+
+devmon  --no-gui &
+        --exec-on-drive "notify-send -a \"devmon\" \"Mounted\" \"Mounted %l on %d\"" \
+        # --exec-on-unmount "notify-send -a \"devmon\" \"Unmounted\" \"Unmounted %l.\"" \
+        # --exec-on-disc "notify-send -a \"devmon\" \"Mounted data CD/DVD.\"" \
+        # --exec-on-video "notify-send -a \"devmon\" \"Mounted video DVD.\"" \
+        # --exec-on-audio "notify-send -a \"devmon\" \"Inserted audio CD.\"" \
+        --exec-on-remove "notify-send -a \"devmon\" \"Drive removal\" \"Removed %l (%d).\"" > /dev/null 2>&1 &

@@ -50,11 +50,22 @@ find "${CWD}" -maxdepth 1 -type d -not \( -name ".git" -o -path "${CWD}" \) -pri
             echo -e "\t${red}Erasing symlink: ${reset}${name}"
             rm -f "${name}"
         fi
+
+        [ "${file}" = "scripts" ] && name="$HOME/.local/bin"
+
         echo -e "\t${green}Creating symlink:${reset} ${name} -> ${file}"
         ln -sf "${file}" "${name}"
     done
 
 echo -e "\n"
+
+
+## Uncomment for manual installation of antibody, otherwise install from repo
+# TMPDIR=$(mktemp -d)
+# LINK=$(curl -s https://api.github.com/repos/getantibody/antibody/releases/latest | egrep browser_download_url.*$(uname -s)_$(uname -m) | perl -lne 'print $1 if /(http.*)"/i')
+# curl -sLo /tmp/antibody.tar.gz "$LINK"
+# tar -xf /tmp/antibody.tar.gz -C "$TMPDIR"
+# mv -f "$TMPDIR/antibody" "$HOME/.local/bin/antibody"
 
 # Install Vim-plug
 if [ ! -f "${FOLDER_DD}/nvim/autoload/plug.vim" ]; then

@@ -1,0 +1,25 @@
+#!/bin/sh
+# A dmenu prompt to unmount drives.
+# Provides you with mounted partitions, select one to unmount.
+# Drives mounted at /, /boot and /home will not be options to unmount.
+
+unmountusb() {
+    [ -z "$drives" ] && exit
+    chosen=$(echo "$drives" | awk '{printf "%s (%s)\n",$4,$3}' | rofi -dmenu -i -p "Unmount which drive?" | awk '{print $1}')
+    [ -z "$chosen" ] && exit
+    part=$(echo "$drives" | grep "$chosen" | awk '{print $2}')
+    if [ "$part" = "part" ]; then
+        udevil umount "$chosen" && notify-send "$chosen unmounted."
+    else
+    (echo "$chosen" | rev | cut -d'/' -f1 | rev | awk '{print "/dev/"$1}' | xargs zuluCrypt-cli -q -d) && notify-send "$chosen unmounted."
+    fi
+}
+
+drives=$(lsblk -nrpo "name,type,size,mountpoint" | awk '/(?:\/run)?\/media/')
+
+if [ ! -z "$drives" ]; then
+    unmountusb
+else
+    notify-send "No drive mounted."
+    exit 1
+fi

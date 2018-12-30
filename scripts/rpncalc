@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PYENV_VERSION=rpnChilada
+
+[ -x $(command -v rpn) ] && rpn -i

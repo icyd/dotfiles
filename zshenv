@@ -1,51 +1,38 @@
-#
 # Defines environment variables.
-#
+if [ -x "$HOME/.local/bin/nvr" ]; then
+    NVIM='~/.local/bin/nvr -s --remote'
+else
 
-# Ensure that a non-login, non-interactive shell has a defined environment.
-if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprofile"
+    NVIM='nvim'
 fi
 
 # System's definitions
-export EDITOR="nvr -s"
-export SYSTEMD_EDITOR="nvr -s"
+export EDITOR="$NVIM"
 export TERMINAL="urxvtc"
 export BROWSER="qutebrowser"
+export PAGER="less"
+
+export DOTFILES="$HOME/.config/dotfiles"
+
+# User executables
+export USER_BIN="$HOME/.local/bin"
 
 # Python's pyenv configuration for neovim and virtualenv
 export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-fi
-
-export PATH="$HOME/.local/bin:$PATH"
 
 # Prevent wine file associations
 export WINEDLLOVERRIDES="winemenubuilder.exe=d"
-
-# Use pre-defined Neovim socket, to connect to via nvr
-export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
 
 #Use kwallet to ask sshpassword
 export SSH_ASKPASS=/usr/bin/lxqt-openssh-askpass
 export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
 
-# GTAGS
-export GTAGSLABEL=pygments
-export GTAGSCONF=/usr/share/gtags/gtags.conf
+# Path defitinion
+export PATH="$PYENV_ROOT/bin:$USER_BIN:$HOME/.luarocks/bin:$PATH"
 
-# npm config
-# PATH="$HOME/.node_modules/bin:$PATH"
-# export npm_config_prefix=~/.node_modules
-
-# sway config
-GDK_BACKEND=wayland
-CLUTTER_BACKEND=wayland
-QT_QPA_PLATFORM=wayland-egl
-SDL_VIDEODRIVER=wayland
-# QT_QPA_PLATFORM=qt5ct
-QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+# Force use wayland
+export GDK_BACKEND=wayland
+export CLUTTER_BACKEND=wayland
+export QT_QPA_PLATFORM=wayland-egl
+export SDL_VIDEODRIVER=wayland
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1

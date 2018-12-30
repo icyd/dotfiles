@@ -1,29 +1,159 @@
-# Zsh plugins to mimic fish functionality
-# Source system-wide (grml) zshrc
-if [  -f /etc/zsh/zshrc ]; then
-    source /etc/zsh/zshrc
+# Enable to debug loading times
+# zmodload zsh/zprof
+
+# On slow systems, checking the cached .zcompdump file to see if it must be
+# regenerated adds a noticable delay to zsh startup.  This little hack restricts
+# it to once a day.  It should be pasted into your own completion file.
+#
+# The globbing is a little complicated here:
+# - '#q' is an explicit glob qualifier that makes globbing work within zsh's [[ ]] construct.
+# - 'N' makes the glob pattern evaluate to nothing when it doesn't match (rather than throw a globbing error)
+# - '.' matches "regular files"
+# - 'mh+24' matches files (or directories or whatever) that are older than 24 hours.
+autoload -Uz compinit
+if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
+    compinit
+else
+    compinit -C
 fi
 
-# Zsh's plugins
-source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+# Static call
+gen_plugins_file(){
+    antibody bundle < "$HOME/.config/zsh/zsh_plugins.txt" > "$HOME/.config/zsh/zsh_plugins.sh"
+}
 
+# Source plugins
+if [ ! -e "$HOME/.config/zsh/zsh_plugins.sh" ]; then
+    gen_plugins_file
+    # Dynamic call
+    source <(antibody init)
+    antibody bundle < "$HOME/.config/zsh/zsh_plugins.txt"
+else
+    source "$HOME/.config/zsh/zsh_plugins.sh"
+fi
+
+
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+
+# don't nice background tasks
+setopt NO_BG_NICE
+setopt NO_HUP
+setopt NO_BEEP
+# allow functions to have local options
+setopt LOCAL_OPTIONS
+# allow functions to have local traps
+setopt LOCAL_TRAPS
+# share history between sessions ???
+setopt SHARE_HISTORY
+# add timestamps to history
+setopt EXTENDED_HISTORY
+setopt PROMPT_SUBST
+setopt CORRECT
+setopt COMPLETE_IN_WORD
+# adds history
+setopt APPEND_HISTORY
+# adds history incrementally and share it across sessions
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+# don't record dupes in history
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_VERIFY
+setopt HIST_EXPIRE_DUPS_FIRST
+# dont ask for confirmation in rm globs*
+setopt RM_STAR_SILENT
+setopt COMPLETE_ALIASES
+# lazy cd
+setopt AUTO_CD
+setopt AUTO_PUSHD
+setopt PUSHD_IGNORE_DUPS
+setopt PUSHD_SILENT
+setopt nolistambiguous
+
+# use cache
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.cache/zsh_cache
+
+# forces zsh to realize new commands
+zstyle ':completion:*' completer _oldlist _expand _complete _match _ignored _approximate
+
+# fuzzy complete on mistype
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+
+# remove traling slash on directory as argument
+zstyle ':completion:*' squeeze-slashes true
+
+# complete process' ID with menu selection
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+
+# matches case insensitive for lowercase
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# pasting with tabs doesn't perform completion
+zstyle ':completion:*' insert-tab pending
+
+# rehash if command not found (possibly recently installed)
+zstyle ':completion:*' rehash true
+
+# menu if nb items > 2
+zstyle ':completion:*' menu select=2
+
+zstyle ':completion:*:default'         list-colors ${(s.:.)LS_COLORS}
 
 # Enable Vi mode
 bindkey -v
+
+# Lower vi key lag
+export KEYTIMEOUT=1
 
 # Vi additional bindings
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 bindkey '^L' autosuggest-accept
-bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
-bindkey '^@' history-incremental-search-backward
 
 # AUTOSUGGEST color, different to bg
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4,bold'
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4,bold'
+
+# Configure fzf to use ripgrep
+[ -e "/usr/share/fzf/completion.zsh" ] && source /usr/share/fzf/completion.zsh
+[ -e "/usr/share/fzf/key-bindings.zsh" ] && source /usr/share/fzf/key-bindings.zsh
+export FZF_CTRL_T_OPTS="--select-1 --exit-0"
+export FZF_ALT_C_COMMAND='rg --files --hidden --null | xargs -0 dirname 2> /dev/null | uniq'
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_DEFAULT_OPTS='--reverse --height 15'
+
+# quick directory change
+rationalise-dot() {
+    if [[ $LBUFFER = *.. ]]; then
+        LBUFFER+=/..
+    else
+        LBUFFER+=.
+    fi
+}
+zle -N rationalise-dot
+bindkey . rationalise-dot
+
+pyenv(){
+    eval "$(command pyenv init -)"
+    pyenv "$@"
+}
+
+export AUTOENV_FILE_ENTER=".autoenv.zsh"
+export AUTOENV_FILE_LEAVE=".autoenv.zsh"
+export AUTOENV_HANDLE_LEAVE=1
+
+mkcd() {
+	mkdir -p "$1" && cd "$1" || return 1
+}
 
 # GPG as ssh-agent
 unset SSH_AGENT_PID
@@ -37,57 +167,42 @@ export GPG_TTY=$(tty)
 # Refresh gpg-agent tty in case user switches into an X session
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
-# Lower vi key lag
-export KEYTIMEOUT=1
-
-# Prompt configuration
-autoload $U promptinit; promptinit
-prompt pure
-# prompt_newline='%666v'
-VIM_PROMPT="❯"
-# PROMPT=' %(?.%F{magenta}.%F{red}!%F{magenta})${VIM_PROMPT}%f '
-
-
-# prompt_pure_update_vim_prompt() {
-#     zle || {
-#         print "error: pure_update_vim_prompt must be called when zle is active"
-#         return 1
-#     }
-#     VIM_PROMPT=${${KEYMAP/vicmd/❮}/(main|viins)/❯}
-#     zle .reset-prompt
-# }
-
-# function zle-line-init zle-keymap-select {
-#     prompt_pure_update_vim_prompt
-# }
-# zle -N zle-line-init
-# zle -N zle-keymap-select
-
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-# export PATH="$PATH:$HOME/.rvm/bin"
-
-# Support for nvm
-# source /usr/share/nvm/init-nvm.sh
-
-# Avoid nested nvim instances
-if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
-    if [ -x "$(command -v nvr)" ]; then
-	if [ ! -e "$HOME/.local/bin/nvr" ]; then
-		alias nvim='nvim'
-	else
-		alias nvim="nvr -s --remote"
-	fi
-    else
-        alias nvim='echo "No nesting!"'
-    fi
-fi
-
-# Configure fzf to use ripgrep
-source /usr/share/fzf/completion.zsh
-source /usr/share/fzf/key-bindings.zsh
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --glob "!{.git,node_modules}/*"' 2> /dev/null
-export FZF_DEFAULT_OPTS='--reverse'
-
 # Aliases
-# alias e="nvr --remote"
-alias dw="cd ~/Downloads"
+alias dw='cd ~/Downloads'
+alias cdC='cd ~/.config/dotfiles'
+alias nvim="$EDITOR"
+alias d='dirs -v'
+alias p='pushd >/dev/null'
+alias o='popd >/dev/null'
+alias vim="$EDITOR"
+alias svim='sudo -E '"$EDITOR"
+alias eZC="$EDITOR $HOME/.zshrc"
+alias eZE="$EDITOR $HOME/.zshenv"
+alias -g C='| wc -l'
+alias -g G='| grep -i'
+alias -g RG='| rg '
+alias -g X='| xargs '
+alias -g SED='| sed -E'
+alias -g AWK='| awk '
+alias -s txt="$EDITOR"
+alias -s html="$BROWSER"
+alias -s {jpg,png}="imv"
+alias -s pdf="zathura"
+alias cls='clear'
+alias sysstat='sudo systemctl status'
+alias sysini='sudo systemctl start'
+alias sysstop='sudo systemctl stop'
+alias syssena='sudo systemctl enable'
+alias syssdis='sudo systemctl disable'
+alias yayin='yay -S'
+alias yayloc='yay -U'
+alias yaysea='yay -Ss'
+alias yayupd='yay -Syy'
+alias yayupg='yay -Syg'
+alias yayinf='yay -Si'
+alias yaydb='yay -Qi'
+alias yayrm='yay -Rnsc'
+
+
+# Enable To debug loading times
+# zprof

@@ -1,0 +1,261 @@
+# You can edit this file by hand, but it's recommended not to do that.
+
+# Marks:
+'H
+	/home/beto/
+	..
+1546047506
+'b
+	/home/beto/bin/
+	..
+1546047506
+'c
+	/home/beto/.config/dotfiles
+	..
+1546090777
+'h
+	/home/beto/
+	..
+1546105374
+'m
+	/home/beto/media
+	..
+1546090777
+'t
+	/tmp
+	..
+1546090777
+'w
+	/home/beto/Downloads
+	..
+1546090777
+'z
+	/home/beto/.config/vifm
+	..
+1546047506
+
+# Bookmarks:
+
+# TUI:
+al
+q0
+v2
+ov
+m-1
+l2
+r2
+
+# Left window history (oldest to newest):
+d/home/beto
+	.bash_logout
+37
+d/home/beto/Projects/CV
+	cv.png
+23
+d/home/beto
+	test.sh
+40
+d/home/beto/.config/dotfiles
+	..
+0
+d/home/beto/.config
+	dotfiles
+16
+d/home/beto
+	..
+0
+d/home
+	beto
+1
+d/home/beto
+	Tarjeta SM.ai
+33
+d/home/beto/Downloads
+	Arrayanes.xls
+13
+d/tmp
+	..
+0
+d/home/beto/.config/dotfiles
+	vifm
+12
+d/home/beto/.config/dotfiles/vifm
+	vifmrc
+5
+d/home/beto/.config/dotfiles
+	vifm
+12
+d/home/beto/.config/dotfiles/vifm
+	vifmrc
+5
+d/home/beto/.config/dotfiles
+	vifm
+12
+d/home/beto/.config
+	dotfiles
+16
+d/home/beto
+	..
+0
+d/home
+	beto
+1
+d/home/beto
+	..
+0
+d/home/beto/.config/dotfiles
+	msmtprc
+21
+d/home/beto/.config
+	dotfiles
+16
+d/home/beto
+	..
+0
+d/home
+	beto
+1
+d/
+	home
+4
+d/home
+	..
+0
+d/
+	home
+4
+d/home
+	..
+0
+d/
+	home
+4
+d/home
+	..
+0
+d/
+	home
+4
+d/home
+	beto
+1
+d/home/beto
+	Calibre Library
+1
+d/home/beto/Calibre Library
+	..
+0
+d/home/beto
+	Calibre Library
+1
+d/home/beto/Calibre Library
+	Pedro Chagas Freitas
+10
+d/home/beto
+	.bashrc
+36
+d/home
+	beto
+1
+d/home/beto
+	..
+0
+d/home
+	beto
+1
+d/home/beto
+	.wget-hsts
+5
+d
+
+# Right window history (oldest to newest):
+D/
+	lib
+5
+D/home
+	beto
+1
+D/
+	home
+4
+D/home/beto
+	.designer
+11
+D/home/beto/.config
+	dotfiles
+17
+D/home/beto
+	.designer
+11
+D/home
+	beto
+1
+D/
+	home
+4
+D/home
+	beto
+1
+D/home/beto/.config/dotfiles
+	install.sh
+19
+D/
+	lib
+5
+D
+
+# Command line history (oldest to newest):
+:test
+:help
+:help colorscheme
+:!echo $XDG_CONFIG_HOME
+:colorscheme astrell
+:colorscheme molokai
+:colorscheme matrix
+:colorscheme snowwhite
+:colorscheme zenburn
+:colorscheme zenburn_1
+:colorscheme mc-like
+:colorscheme ph
+:colorscheme reicheltd-light
+:colorscheme semidarkdesert
+:colorscheme deser
+:colorscheme desert
+:colorscheme g80
+:colorscheme solarized-dark
+:colorscheme darkdesert
+:colorscheme lucius
+:colorscheme dracula
+:run
+:FZlocate
+:FZFFind
+:FZFfind
+:reload
+:FZFlocate
+:fzf
+:q
+
+# Search history (oldest to newest):
+/jpg
+/test
+
+# Prompt history (oldest to newest):
+
+# Local filter history (oldest to newest):
+
+# Registers:
+
+# Directory stack (oldest to newest):
+
+# Trash content:
+
+# State:
+f
+i1
+[.0
+[F
+F
+I1
+].1
+]F
+s0

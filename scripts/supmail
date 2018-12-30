@@ -1,0 +1,5 @@
+#!/bin/bash
+myvar=$(</dev/stdin)
+echo "$myvar" | $HOME/.local/bin/MIMEmbellish | /usr/bin/msmtp -a supmoldie "$@"
+#echo "$myvar" | MIMEmbellish | msmtp -a supmoldie "$@"
+#MIMEmbellish | msmtp -a supmoldie "$@"

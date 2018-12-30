@@ -1,0 +1,15 @@
+#!/bin/bash
+
+chosen=$(zuluCrypt-cli -S -Z | awk '/^\/dev/{printf "%s (%s %s)\n",$1,$2,$3}' | rofi -dmenu -p "Select drive to decrypt")
+[ -z "$chosen" ] && exit 1
+drive=$(echo "$chosen" | awk '{print $1}')
+rofi -dmenu -password -p "Enter passphrase" | xargs zuluCrypt-cli -o -d "$drive" -e rw -t vcrypt -p
+if [ "$?" -ne 0 ]; then
+    nofity-send "Could not mount $drive"
+    exit 1
+else
+    mountpoint=$(zuluCrypt-cli -L | grep "$drive" | awk '{print $2}')
+    echo $mountpoint
+    notify-send "$drive mounted on $mountpoint"
+    exit 0
+fi

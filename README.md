@@ -6,14 +6,16 @@ Before installing the configuration file please be sure to install the following
     - python3
     - pyenv
     - pyenv-virtualenv
+    - antibody
     - global
     - exhuberant-tags
     - zsh
-    - grml-zsh-config
-    - zsh-autosuggestions
-    - zsh-history-substring-search
-    - zsh-syntax-highlighting
-    - zsh-pure-propmt-git
+
+### Zsh'z plugins
+
+Plugins are managed by [antibody](http://getantibody.github.io/). To add a new
+plugin modify the file zsh_plugins.txt and afterward run the function
+`gen_plugins_file`, and reload the shell.
 
 ## Configurations
 
