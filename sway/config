@@ -303,13 +303,14 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
     for_window [class="(?i)urxvt" title="RPNCalc"] floating enable
     for_window [class="(?i)urxvt" title="RPNCalc"] resize set 600 300
     for_window [class="(?i)urxvt" title="RPNCalc"] move scratchpad
-    bindsym $mod+c [class="(?i)urxvt" title="RPNCalc"] scratchpad show
+    bindsym $mod+F7 [class="(?i)urxvt" title="RPNCalc"] scratchpad show
+
 
 # Dropdown terminal
-    for_window [class="(?i)urxvt" instance="Dropdown"] floating enable
-    for_window [class="(?i)urxvt" instance="Dropdown"] resize set 800 400
-    for_window [class="(?i)urxvt" instance="Dropdown"] move scratchpad
-    bindsym $mod+t [class="(?i)urxvt" instance="Dropdown"] scratchpad show
+    for_window [class="(?i)urxvt" title="Dropdown"] floating enable
+    for_window [class="(?i)urxvt" title="Dropdown"] resize set 800 400
+    for_window [class="(?i)urxvt" title="Dropdown"] move scratchpad
+    bindsym $mod+t [class="(?i)urxvt" title="Dropdown"] scratchpad show
 
 #
 # Binding
@@ -329,7 +330,7 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
     bindsym $mod+F12 exec 'rpcalc'
     bindsym $mod+Shift+f exec $term -e "ranger"
     bindsym $mod+Shift+w exec "qutebrowser"
-    bindsym $mod+x exec urxvtc -title "Nvim Server" -e nvim
+    bindsym $mod+x exec $term -title "Nvim Server" -e nvim
     # bindsym $mod+Shift+p exec echo -e "Lock\nSuspend\nReboot\nShutdown" | dmenu -p "Power Option" -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Droid Sans-11" | awk '{print $1}' | tr -d '\r\n' | /usr/local/bin/rofi-power | xargs swaymsg exec
     bindsym $mod+Shift+p exec echo -e "Lock\nSuspend\nReboot\nShutdown" | rofi -dmenu -i -p "Power Options"| awk '{print $1}' | tr -d '\r\n' | $HOME/.local/bin/rofi-power | xargs swaymsg exec
     bindsym $mod+F11 exec $HOME/.local/bin/qrgen
@@ -337,7 +338,8 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
     bindsym $mod+F9 exec $HOME/.local/bin/zuluopen
     bindsym $mod+Shift+F9 exec $HOME/.local/bin/udevilunmount
     bindsym $mod+F8 exec $HOME/.local/bin/rofi_fa_ico_finder
-    bindsym $mod+F7 exec urxvtc -title "RPNCalc" -e $HOME/.local/bin/rpncalc
+    bindsym $mod+Shift+F7 exec $term -title "RPNCalc" -e zsh -c rpncalc
+    bindsym $mod+Shift+F6 exec $term -title "Dropdown"
 
 #
 # Autostart:
@@ -345,7 +347,6 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
 exec urxvtd -q -o -f
 exec mako
 exec /home/beto/.local/bin/devmon_notify
-exec_always urxvtc -name "Dropdown"
 
 #
 # Status Bar:

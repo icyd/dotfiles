@@ -180,18 +180,18 @@
     vnoremap <C-v> c<ESC>"+pa
     vnoremap <C-c> "+y
     "wl-clipboard workaround
-    let g:clipboard = {
-                \   'name': 'wl-clipboard',
-                \   'copy': {
-                \       '+': 'wl-copy --foreground',
-                \       '*': 'wl-copy --foreground --primary',
-                \   },
-                \   'paste': {
-                \       '+': 'wl-paste --no-newline',
-                \       '*': 'wl-paste --no-newline --primary',
-                \   },
-                \   'cache_enabled': 1,
-                \ }
+    "let g:clipboard = {
+    "            \   'name': 'wl-clipboard',
+    "            \   'copy': {
+    "            \       '+': 'wl-copy --foreground',
+    "            \       '*': 'wl-copy --foreground --primary',
+    "            \   },
+    "            \   'paste': {
+    "            \       '+': 'wl-paste --no-newline',
+    "            \       '*': 'wl-paste --no-newline --primary',
+    "            \   },
+    "            \   'cache_enabled': 1,
+    "            \ }
 
     "Defaults
     nnoremap <silent> <leader>b :ls<CR>:b<space>
@@ -249,10 +249,10 @@
     source $HOME/.config/nvim/config/functions.vim
 
     "Grab nvr server
-    augroup nvr
-        autocmd!
-        autocmd VimEnter * call Grab()
-    augroup END
+    " augroup nvr
+    "     autocmd!
+    "     autocmd VimEnter * call Grab()
+    " augroup END
 
     "Plugin specific configuration comment out to disable plugins
     source $HOME/.config/nvim/config/plugins.vim

@@ -14,9 +14,6 @@ export PAGER="less"
 
 export DOTFILES="$HOME/.config/dotfiles"
 
-# User executables
-export USER_BIN="$HOME/.local/bin"
-
 # Python's pyenv configuration for neovim and virtualenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
@@ -29,7 +26,10 @@ export SSH_ASKPASS=/usr/bin/lxqt-openssh-askpass
 export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
 
 # Path defitinion: shims allow for pyenv to work
-export PATH="$PYENV_ROOT/shims:$USER_BIN:$HOME/.luarocks/bin:$PATH"
+export PATH="$PYENV_ROOT/shims:$USER_BIN:$HOME/.local/bin:$HOME/.luarocks/bin:$PATH"
+
+# Nvr's config
+export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
 
 # Force use wayland
 export GDK_BACKEND=wayland
