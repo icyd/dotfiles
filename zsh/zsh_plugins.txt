@@ -8,4 +8,5 @@ zpm-zsh/ls
 zpm-zsh/colors
 robbyrussell/oh-my-zsh path:plugins/extract
 robbyrussell/oh-my-zsh path:plugins/git
+robbyrussell/oh-my-zsh path:lib/git.zsh
 Tarrasch/zsh-autoenv

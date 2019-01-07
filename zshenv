@@ -19,6 +19,7 @@ export USER_BIN="$HOME/.local/bin"
 
 # Python's pyenv configuration for neovim and virtualenv
 export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_SHELL=zsh
 
 # Prevent wine file associations
 export WINEDLLOVERRIDES="winemenubuilder.exe=d"
@@ -27,8 +28,8 @@ export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 export SSH_ASKPASS=/usr/bin/lxqt-openssh-askpass
 export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
 
-# Path defitinion
-export PATH="$PYENV_ROOT/bin:$USER_BIN:$HOME/.luarocks/bin:$PATH"
+# Path defitinion: shims allow for pyenv to work
+export PATH="$PYENV_ROOT/shims:$USER_BIN:$HOME/.luarocks/bin:$PATH"
 
 # Force use wayland
 export GDK_BACKEND=wayland

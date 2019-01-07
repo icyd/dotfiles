@@ -125,6 +125,9 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4,bold'
 # Configure fzf to use ripgrep
 [ -e "/usr/share/fzf/completion.zsh" ] && source /usr/share/fzf/completion.zsh
 [ -e "/usr/share/fzf/key-bindings.zsh" ] && source /usr/share/fzf/key-bindings.zsh
+# Pyenv completion source
+[ -e '/opt/pyenv/libexec/../completions/pyenv.zsh' ] && source '/opt/pyenv/libexec/../completions/pyenv.zsh'
+
 export FZF_CTRL_T_OPTS="--select-1 --exit-0"
 export FZF_ALT_C_COMMAND='rg --files --hidden --null | xargs -0 dirname 2> /dev/null | uniq'
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
@@ -142,9 +145,21 @@ rationalise-dot() {
 zle -N rationalise-dot
 bindkey . rationalise-dot
 
-pyenv(){
-    eval "$(command pyenv init -)"
-    pyenv "$@"
+# Rehash should be run manually to update shims
+# command pyenv rehash 2>/dev/null
+pyenv() {
+  local command
+  command="${1:-}"
+  if [ "$#" -gt 0 ]; then
+    shift
+  fi
+
+  case "$command" in
+  activate|deactivate|rehash|shell)
+    eval "$(pyenv "sh-$command" "$@")";;
+  *)
+    command pyenv "$command" "$@";;
+  esac
 }
 
 export AUTOENV_FILE_ENTER=".autoenv.zsh"
@@ -169,11 +184,13 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 
 # Aliases
 alias dw='cd ~/Downloads'
+alias pj='cd ~/Projects'
 alias cdC='cd ~/.config/dotfiles'
-alias nvim="$EDITOR"
+#alias nvim="$EDITOR"
 alias d='dirs -v'
 alias p='pushd >/dev/null'
 alias o='popd >/dev/null'
+alias pdf='zathura'
 alias vim="$EDITOR"
 alias svim='sudo -E '"$EDITOR"
 alias eZC="$EDITOR $HOME/.zshrc"
@@ -192,17 +209,16 @@ alias cls='clear'
 alias sysstat='sudo systemctl status'
 alias sysini='sudo systemctl start'
 alias sysstop='sudo systemctl stop'
-alias syssena='sudo systemctl enable'
-alias syssdis='sudo systemctl disable'
+alias sysena='sudo systemctl enable'
+alias sysdis='sudo systemctl disable'
 alias yayin='yay -S'
 alias yayloc='yay -U'
 alias yaysea='yay -Ss'
 alias yayupd='yay -Syy'
-alias yayupg='yay -Syg'
+alias yayupg='yay -Syu'
 alias yayinf='yay -Si'
 alias yaydb='yay -Qi'
 alias yayrm='yay -Rnsc'
-
 
 # Enable To debug loading times
 # zprof

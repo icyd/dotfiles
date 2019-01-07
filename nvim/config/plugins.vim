@@ -20,14 +20,13 @@
        Plug 'sheerun/vim-polyglot'         "Syntaxes plugin
        Plug 'SirVer/ultisnips'             "Snippet engine
        Plug 'honza/vim-snippets'           "Snippet plugin
-       Plug 'Shougo/neomru.vim'            "Enable file_mru for denite
        Plug 'sjl/gundo.vim'                "Gundo tree
        Plug 'kana/vim-textobj-user'        "Declaration of custom textobj
        Plug 'editorconfig/editorconfig-vim' "EditorConfig plugin
+       Plug 'neomake/neomake'               "Run make async.
 
     "Fuzzy finder
        Plug 'junegunn/fzf.vim'             "fzf's vim wrapper
-       Plug 'tweekmonster/fzf-filemru'     "fzf filemru
 
     "Completion plugin
        Plug 'ncm2/ncm2'                    "Ncm2 completion plug
@@ -61,6 +60,7 @@
 
     "REPL plugin
        Plug 'Vigemus/iron.nvim'            "Interact with REPL
+       Plug 'lambdalisue/vim-pyenv'
 
     call plug#end()
 
@@ -131,7 +131,10 @@
     autocmd! FileType fzf tnoremap <buffer> <Esc> <Esc>
     nnoremap <silent> <leader>ff :<C-u>Files<CR>
     nnoremap <silent> <leader>fF :<C-u>Files $HOME<CR>
-    nnoremap <silent> <leader>fr :<C-u>FilesMru<CR>
+    nnoremap <silent> <leader>pr :<C-u>ProjectMru<CR>
+    nnoremap <silent> <leader>fr :<C-u>History<CR>
+    nnoremap <silent> <leader>hs :<C-u>History/<CR>
+    nnoremap <silent> <leader>hc :<C-u>History:<CR>
     nnoremap <silent> <leader>fg :<C-u>Find<CR>
     nnoremap <silent> <leader>ft :<C-u>Tags<CR>
     nnoremap <silent> <leader>fh :<C-u>Helptags<CR>
@@ -157,7 +160,7 @@
     let g:LanguageClient_autoStart=1
     let g:LanguageClient_settingsPath='/home/beto/.config/nvim/settings.json'
     let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
-    let g:LanguageClient_loggingLevel = 'Warning'
+    let g:LanguageClient_loggingLevel = 'WARN'
     let g:LanguageClient_serverStderr = '/tmp/LanguageServer.log'
     let g:LanguageClient_serverCommands = {
         \ 'python': ['~/.pyenv/versions/py3neovim/bin/pyls'],
@@ -170,6 +173,7 @@
         \ 'json': ['~/.pyenv/versions/py3neovim/bin/json-languageserver', '--stdio'],
         \ 'sh': ['~/.pyenv/versions/py3neovim/bin/bash-language-server', 'start'],
         \ 'lua': ['~/.luarocks/bin/lua-lsp'],
+        \ 'yaml': ['~/.pyenv/versions/py3neovim/bin/yaml-language-server', '--stdio'],
     \ }
 
     "LSP keymap definition
@@ -206,7 +210,8 @@
     "Pweave
     augroup pandoc
         autocmd!
-        autocmd BufNewFile,BufFilePre,BufRead *.pmd setlocal filetype=pandoc | setlocal makeprg=pweave\ -f\ pandoc\ %
+        autocmd BufNewFile,BufFilePre,BufRead *.pmd setlocal filetype=pandoc
+        autocmd FileType pandoc setlocal makeprg=pweave\ -f\ pandoc\ %
     augroup END
 
     "Grammarous

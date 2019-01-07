@@ -9,7 +9,7 @@ unmountusb() {
     [ -z "$chosen" ] && exit
     part=$(echo "$drives" | grep "$chosen" | awk '{print $2}')
     if [ "$part" = "part" ]; then
-        udevil umount "$chosen" && notify-send "$chosen unmounted."
+        udevil umount "$chosen" 2>&1 | notify-send "$chosen unmounted."
     else
     (echo "$chosen" | rev | cut -d'/' -f1 | rev | awk '{print "/dev/"$1}' | xargs zuluCrypt-cli -q -d) && notify-send "$chosen unmounted."
     fi

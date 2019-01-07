@@ -71,7 +71,6 @@ set $menu dmenu_path | dmenu -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkw
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-# output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 output LVDS-1 {
     background ~/.wallpaper.jpg fill
     resolution 1366x768
@@ -98,16 +97,6 @@ exec swayidle \
 # resumed. It will also lock your screen before your computer goes to sleep.
 
 ### Input configuration
-#
-# Example configuration:
-#
-#   input "2:14:SynPS/2_Synaptics_TouchPad" {
-#       dwt enabled
-#       tap enabled
-#       natural_scroll enabled
-#       middle_emulation enabled
-#   }
-#
 input "2:14:ETPS/2_Elantech_Touchpad" {
     click_method clickfinger
     scroll_method two_finger
@@ -369,7 +358,7 @@ bar {
     pango_markup enabled
     mode dock
     # mode hide
-    #modifier none
+    # modifier none
     position top
     colors {
         background $darkblack

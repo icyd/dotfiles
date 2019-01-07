@@ -3,7 +3,10 @@
 nvim/autoload
 nvim/plugged
 nvim/thesaurus
+nvim/spell
 qutebrowser/bookmarks
 qutebrowser/quickmarks
+qutebrowser/qsettings
 mpd/pid
 mpd/state
+zsh/zsh_plugins.sh
