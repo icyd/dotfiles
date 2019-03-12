@@ -3,10 +3,16 @@
 nvim/autoload
 nvim/plugged
 nvim/thesaurus
+nvim/config/plug_server.vim
 nvim/spell
+nvim/.netrwhist
 qutebrowser/bookmarks
 qutebrowser/quickmarks
 qutebrowser/qsettings
+qutebrowser/autoconfig.yml
 mpd/pid
 mpd/state
 zsh/zsh_plugins.sh
+zsh/antibody
+scripts/*
+tmux/plugins

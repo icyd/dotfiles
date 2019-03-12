@@ -119,7 +119,7 @@ set statusline="  Hint: %z%= %A %10u:%-7g %15s %20d  "
 mark b ~/bin/
 mark h ~/
 mark w ~/Downloads
-mark m ~/media
+mark m /media
 mark t /tmp
 mark c ~/.config/dotfiles
 
@@ -204,6 +204,8 @@ fileviewer *.flac soxi
 filextype *.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
          \*.fl[icv],*.m2v,*.mov,*.webm,*.ts,*.mts,*.m4v,*.r[am],*.qt,*.divx,
          \*.as[fx]
+        \ {View using mpv}
+        \ mpv %f,
         \ {View using ffplay}
         \ ffplay -fs -autoexit %f,
         \ {View using Dragon}

@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+usage() {
+    echo -e "Usage: ${0##*/} [options...]\n"
+    echo -e "\t-f|--file: Defines if will be runned on a file."
+    echo -e "\t-d|--directory: Defines the path to monitor (default is current directory)."
+    echo -e "\t-o|--options String of other options that will be passed to 'sassc' program."
+    echo -e "If file is given, instead of monitor the directory, only that file(s) will be monitored"
+    exit 1
+}
+
+run_command() {
+    inotifywait --quiet --timefmt '%T' --monitor --event modify --format '%w %f %T' --include "$2" "$1" |
+        while read path file time; do
+            echo "Compiled@${time}: ${file}->${file%.*}.css"
+            sassc $3 "${file}" "${file%.*}.css"
+        done
+}
+
+DIR=$(pwd)
+REGEX='\.(scss|sass)$'
+OPTS='-texpanded'
+declare -a FILES_AUX
+declare -a FILES
+
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        -p|--path)
+            DIR="${2}"
+            shift
+            ;;
+        -f|--file)
+            FILES_AUX+=("$2")
+            shift
+            ;;
+        -o|--options)
+            OPTS="$2"
+            shift
+            ;;
+        *)
+            usage
+            ;;
+    esac
+    shift
+done
+
+for i in "${FILES_AUX[@]}"; do
+    if [ -f "$i" ]; then
+        FILES+=("$i")
+    fi
+done
+
+if [ "${#FILES[@]}" -gt 0 ]; then
+    REGEX=$(printf "|%s" "${FILES[@]}")
+    REGEX="(^|/)(${REGEX:1})$"
+elif [ "${#FILES_AUX[@]}" -gt 0 ]; then
+    echo "Not file found"
+    exit 1
+fi
+
+run_command "$DIR" "$REGEX" "$OPTS"
+exit 0

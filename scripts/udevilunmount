@@ -4,14 +4,16 @@
 # Drives mounted at /, /boot and /home will not be options to unmount.
 
 unmountusb() {
-    [ -z "$drives" ] && exit
+    # [ -z "$drives" ] && exit
     chosen=$(echo "$drives" | awk '{printf "%s (%s)\n",$4,$3}' | rofi -dmenu -i -p "Unmount which drive?" | awk '{print $1}')
     [ -z "$chosen" ] && exit
-    part=$(echo "$drives" | grep "$chosen" | awk '{print $2}')
+    drive=$(echo "$drives" | grep -iF "$chosen" | awk '{print $1}')
+    part=$(echo "$drives" | grep -iF "$chosen" | awk '{print $2}')
     if [ "$part" = "part" ]; then
-        udevil umount "$chosen" 2>&1 | notify-send "$chosen unmounted."
+        udevil umount "$drive" 2>&1 && notify-send "$chosen unmounted." || notify-send "$chosen could not be unmounted."
     else
-    (echo "$chosen" | rev | cut -d'/' -f1 | rev | awk '{print "/dev/"$1}' | xargs zuluCrypt-cli -q -d) && notify-send "$chosen unmounted."
+    # (echo "$chosen" | rev | cut -d'/' -f1 | rev | awk '{print "/dev/"$1}' | xargs zuluCrypt-cli -q -d) && notify-send "$chosen unmounted."
+    zuluCrypt-cli -P -d "$drive" | xargs zuluCrypt-cli -q -d && notify-send "$chosen unmounted." || notify-send "$chosen could not be unmounted."
     fi
 }
 

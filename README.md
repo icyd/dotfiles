@@ -4,12 +4,11 @@ Before installing the configuration file please be sure to install the following
 
     - ripgrep
     - python3
-    - pyenv
-    - pyenv-virtualenv
     - antibody
     - global
     - exhuberant-tags
     - zsh
+    - tmux
 
 ### Zsh'z plugins
 
@@ -31,6 +30,8 @@ This repository have personal configuration for the following applications:
     - qutebrowser
     - ranger
     - sway
+    - tmux
+    - vifm
     - zsh
 
 ### Neovim's python support
@@ -57,7 +58,20 @@ To install simply run:
 ```
     cd ~/.config
     git clone https://github.com/icyd/dotfiles
-    cd dotfiles
-    chmod +x install.sh
-    ./install.sh
+    bash dotfiles/install.sh
+```
+
+## Minimalistic install for server
+
+In order to install the dotfiles in a server, the environment variable **SERVER** should be set. This only install the configuration for
+    - zsh
+    - tmux
+    - zsh
+
+And also will avoid part of the configuration not needed. Install this running:
+
+```
+    cd ~/.config
+    git clone https://github.com/icyd/dotfiles
+    SERVER=1 bash dotfiles/install.sh
 ```

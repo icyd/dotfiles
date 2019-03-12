@@ -3,7 +3,7 @@ local iron = require("iron")
 iron.core.add_repl_definitions{
   pandoc = { -- This should be the file type
     pandoc_repl = {
-      command = "ipython" -- This should be the command you want to run.
+      command = "/home/beto/.pyenv/versions/socialmedia/bin/ipython" -- This should be the command you want to run.
     }
   }
 }

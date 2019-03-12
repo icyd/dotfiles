@@ -10,6 +10,9 @@
 # - 'N' makes the glob pattern evaluate to nothing when it doesn't match (rather than throw a globbing error)
 # - '.' matches "regular files"
 # - 'mh+24' matches files (or directories or whatever) that are older than 24 hours.
+ZSH_PLUGIN_IN="$XDG_CONFIG_HOME/zsh/zsh_plugins.txt"
+ZSH_PLUGIN_OUT="$XDG_CONFIG_HOME/zsh/zsh_plugins.sh"
+
 autoload -Uz compinit
 if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
     compinit
@@ -19,21 +22,21 @@ fi
 
 # Static call
 gen_plugins_file(){
-    antibody bundle < "$HOME/.config/zsh/zsh_plugins.txt" > "$HOME/.config/zsh/zsh_plugins.sh"
+    antibody bundle < "$ZSH_PLUGIN_IN" > "$ZSH_PLUGIN_OUT"
 }
 
 # Source plugins
-if [ ! -e "$HOME/.config/zsh/zsh_plugins.sh" ]; then
+if [ ! -e "$ZSH_PLUGIN_OUT" ]; then
     gen_plugins_file
     # Dynamic call
     source <(antibody init)
-    antibody bundle < "$HOME/.config/zsh/zsh_plugins.txt"
+    antibody bundle < "$ZSH_PLUGIN_IN"
 else
-    source "$HOME/.config/zsh/zsh_plugins.sh"
+    source "$ZSH_PLUGIN_OUT"
 fi
 
 
-HISTFILE=~/.zsh_history
+HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 
@@ -76,7 +79,7 @@ setopt nolistambiguous
 
 # use cache
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.cache/zsh_cache
+zstyle ':completion:*' cache-path $HOME/.cache/zsh_cache
 
 # forces zsh to realize new commands
 zstyle ':completion:*' completer _oldlist _expand _complete _match _ignored _approximate
@@ -110,7 +113,7 @@ zstyle ':completion:*:default'         list-colors ${(s.:.)LS_COLORS}
 bindkey -v
 
 # Lower vi key lag
-export KEYTIMEOUT=1
+export KEYTIMEOUT="15"
 
 # Vi additional bindings
 bindkey '^P' history-substring-search-up
@@ -118,15 +121,13 @@ bindkey '^N' history-substring-search-down
 bindkey '^L' autosuggest-accept
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
+bindkey -s jk '\e'
 
 # AUTOSUGGEST color, different to bg
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4,bold'
 
 # Configure fzf to use ripgrep
-[ -e "/usr/share/fzf/completion.zsh" ] && source /usr/share/fzf/completion.zsh
-[ -e "/usr/share/fzf/key-bindings.zsh" ] && source /usr/share/fzf/key-bindings.zsh
-# Pyenv completion source
-[ -e '/opt/pyenv/libexec/../completions/pyenv.zsh' ] && source '/opt/pyenv/libexec/../completions/pyenv.zsh'
+[ -f "$XDG_CONFIG_HOME/fzf/fzf.zsh" ] && source "$XDG_CONFIG_HOME/fzf/fzf.zsh"
 
 export FZF_CTRL_T_OPTS="--select-1 --exit-0"
 export FZF_ALT_C_COMMAND='rg --files --hidden --null | xargs -0 dirname 2> /dev/null | uniq'
@@ -145,53 +146,58 @@ rationalise-dot() {
 zle -N rationalise-dot
 bindkey . rationalise-dot
 
-# Rehash should be run manually to update shims
-# command pyenv rehash 2>/dev/null
-pyenv() {
-  local command
-  command="${1:-}"
-  if [ "$#" -gt 0 ]; then
-    shift
-  fi
+if [ -z "$SERVER" ]; then
+    # Pyenv completion source
+    [ -e '/opt/pyenv/libexec/../completions/pyenv.zsh' ] && source '/opt/pyenv/libexec/../completions/pyenv.zsh'
 
-  case "$command" in
-  activate|deactivate|rehash|shell)
-    eval "$(pyenv "sh-$command" "$@")";;
-  *)
-    command pyenv "$command" "$@";;
-  esac
-}
+    # Rehash should be run manually to update shims
+    # command pyenv rehash 2>/dev/null
+    pyenv() {
+      local command
+      command="${1:-}"
+      if [ "$#" -gt 0 ]; then
+        shift
+      fi
 
-export AUTOENV_FILE_ENTER=".autoenv.zsh"
-export AUTOENV_FILE_LEAVE=".autoenv.zsh"
-export AUTOENV_HANDLE_LEAVE=1
+      case "$command" in
+      activate|deactivate|rehash|shell)
+        eval "$(pyenv "sh-$command" "$@")";;
+      *)
+        command pyenv "$command" "$@";;
+      esac
+    }
 
-mkcd() {
-	mkdir -p "$1" && cd "$1" || return 1
-}
+    export AUTOENV_FILE_ENTER=".autoenv.zsh"
+    export AUTOENV_FILE_LEAVE=".autoenv.zsh"
+    export AUTOENV_HANDLE_LEAVE=1
 
-# GPG as ssh-agent
-unset SSH_AGENT_PID
-if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
-  export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+    # GPG as ssh-agent
+    unset SSH_AGENT_PID
+    if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+      export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+    fi
+
+    # Set GPG TTY
+    export GPG_TTY=$(tty)
+
+    # Refresh gpg-agent tty in case user switches into an X session
+    gpg-connect-agent updatestartuptty /bye >/dev/null
 fi
 
-# Set GPG TTY
-export GPG_TTY=$(tty)
-
-# Refresh gpg-agent tty in case user switches into an X session
-gpg-connect-agent updatestartuptty /bye >/dev/null
+mkcd() {
+    mkdir -p "$1" && cd "$1" || return 1
+}
 
 # Aliases
-alias dw='cd ~/Downloads'
-alias pj='cd ~/Projects'
-alias cdC='cd ~/.config/dotfiles'
-#alias nvim="$EDITOR"
+alias dw="cd $HOME/Downloads"
+alias pj="cd $HOME/Projects"
+alias cdC="cd $XDG_CONFIG_HOME/dotfiles"
+alias la='ls --color=auto -al'
 alias d='dirs -v'
 alias p='pushd >/dev/null'
 alias o='popd >/dev/null'
 alias pdf='zathura'
-alias vim="$EDITOR"
+alias vim="${EDITOR}"
 alias svim='sudo -E '"$EDITOR"
 alias eZC="$EDITOR $HOME/.zshrc"
 alias eZE="$EDITOR $HOME/.zshenv"
@@ -207,6 +213,7 @@ alias -s {jpg,png}="imv"
 alias -s pdf="zathura"
 alias cls='clear'
 alias sysstat='sudo systemctl status'
+alias sysrest='sudo systemctl restart'
 alias sysini='sudo systemctl start'
 alias sysstop='sudo systemctl stop'
 alias sysena='sudo systemctl enable'
@@ -222,3 +229,7 @@ alias yayrm='yay -Rnsc'
 
 # Enable To debug loading times
 # zprof
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh

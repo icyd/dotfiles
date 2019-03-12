@@ -97,21 +97,22 @@ exec swayidle \
 # resumed. It will also lock your screen before your computer goes to sleep.
 
 ### Input configuration
-input "2:14:ETPS/2_Elantech_Touchpad" {
-    click_method clickfinger
-    scroll_method two_finger
-    middle_emulation enabled
-    tap_button_map lrm
-    tap enabled
-    natural_scroll disabled
-    dwt enabled
-}
+ input "2:14:ETPS/2_Elantech_Touchpad" {
+     click_method clickfinger
+     scroll_method two_finger
+     middle_emulation enabled
+     tap_button_map lrm
+     tap enabled
+     natural_scroll disabled
+     dwt enabled
+ }
 
-input 1:1:AT_Translated_Set_2_keyboard {
-    xkb_layout es
-    xkb_variant icyd
-    xkb_options "lv3:ralt_switch,compose:102,caps:swapescape"
-}
+#  input "1:1:AT_Translated_Set_2_keyboard" {
+ input * {
+      xkb_layout es
+      xkb_variant icyd
+      xkb_options "lv3:ralt_switch,compose:102,caps:swapescape"
+      }
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
 
@@ -119,7 +120,8 @@ input 1:1:AT_Translated_Set_2_keyboard {
 #
 # Basics:
 #
-    # start a terminal
+
+# start a terminal
     bindsym $mod+Return exec $term
 
     # kill focused window
@@ -192,7 +194,17 @@ input 1:1:AT_Translated_Set_2_keyboard {
     bindsym $mod+parenright workspace $ws8
     bindsym $mod+plus workspace $ws9
     bindsym $mod+bracketright workspace $ws10
-
+    # bindsym $mod+1 workspace $ws1
+    # bindsym $mod+2 workspace $ws2
+    # bindsym $mod+3 workspace $ws3
+    # bindsym $mod+4 workspace $ws4
+    # # bindsym $mod+ workspace $ws5
+    # # bindsym $mod+ workspace $ws6
+    # bindsym $mod+7 workspace $ws7
+    # bindsym $mod+8 workspace $ws8
+    # bindsym $mod+9 workspace $ws9
+    # # bindsym $mod+ workspace $ws10
+    #
     bindsym $mod+backslash  workspace back_and_forth
 
     # move focused container to workspace
@@ -294,6 +306,7 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
     assign [class="(?i)falkon"] $ws3
     assign [class="(?i)chromium"] $ws3
     assign [class="(?i)urxvt" title="ranger"] $ws4
+    assign [class="(?i)urxvt" title="vifm"] $ws4
     assign [class="(?i)urxvt" title="ncmpcpp"] $ws9
     assign [class="(?i)urxvt" title="neomutt"] $ws10
 
@@ -327,8 +340,8 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
     bindsym $mod+m exec $term -e "neomutt"
     # bindsym $mod+Shift+m exec $term -e "neomutt -R"
     bindsym $mod+Shift+r exec $term -e "ncmpcpp"
-    bindsym $mod+F12 exec 'rpcalc'
-    bindsym $mod+Shift+f exec $term -e "ranger"
+    # bindsym $mod+Shift+f exec $term -e "ranger"
+    bindsym $mod+Shift+f exec $term -e "vifm"
     bindsym $mod+Shift+w exec "qutebrowser"
     bindsym $mod+x exec $term -title "Nvim Server" -e nvim
     # bindsym $mod+Shift+p exec echo -e "Lock\nSuspend\nReboot\nShutdown" | dmenu -p "Power Option" -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Droid Sans-11" | awk '{print $1}' | tr -d '\r\n' | /usr/local/bin/rofi-power | xargs swaymsg exec
@@ -386,4 +399,4 @@ bar {
     # }
 }
 
-include /etc/sway/config.d/*
+# include /etc/sway/config.d/*

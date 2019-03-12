@@ -1,6 +1,9 @@
 "###############################################################################
 "General settings and configuration
 "###############################################################################
+    "Source functions file
+    source $XDG_CONFIG_HOME/nvim/config/functions.vim
+
     "Reload configuration after save
     augroup reload_vimrc
         autocmd!
@@ -8,22 +11,15 @@
     augroup END
 
     "Colorscheme
-    if has('termguicolors') && ($TERM != 'rxvt-unicode-256color')
-        set termguicolors
-    endif
+    " if has('termguicolors') && ($TERM != 'rxvt-unicode-256color')
+    "     set termguicolors
+    " endif
 
     "Indentation
     set expandtab
     set shiftwidth=4
     set softtabstop=4
     set autoindent
-
-    "Indentation for file types (deprecated by editorconfig file)
-    " autocmd! BufRead,BufNewFile *.html,*.htm,*.css setlocal shiftwidth=2 softtabstop=2
-    " autocmd! BufRead,BufNewFile *.js setlocal shiftwidth=2 softtabstop=2
-    " autocmd! FileType markdown,pandoc setlocal textwidth=79 spell
-    " autocmd! BufNewFile,BufRead *.py
-        " \ setlocal textwidth=79
 
     augroup mail
         autocmd!
@@ -39,8 +35,6 @@
     set smartcase
 
     "Folding
-    "set nofoldenable          "enable folding
-    "set foldlevelstart=2    "open most folds by default
     set foldnestmax=8       "defines max nested folds
     set foldmethod=indent   "fold based on indent level
     set foldlevel=99
@@ -88,11 +82,6 @@
     "Python provider (to use pyenv-virtualenv)
     let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
 
-    "Vertical split function
-    function! VerticalSplitBuffer(buffer)
-        execute "vert belowright sb" a:buffer
-    endfunction
-
     "VerticalSplitBuffer command
     command! -nargs=1 Vb call VerticalSplitBuffer(<f-args>)
     command! -nargs=1 Vbuffer call VerticalSplitBuffer(<f-args>)
@@ -112,14 +101,6 @@
     exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~,eol:\uAC"
     set list
 
-    "Function to remove trailing whitespaces
-    function! TrimTrailingSpaces()
-            " Delete trailing spaces
-            %s/\s*$//
-            "Jump back to previous position
-            ''
-    endfunction
-
     "Command to call function for removing trailing spaces
     command! Trim call TrimTrailingSpaces()
 
@@ -132,17 +113,6 @@
     "Edit vimrc/zshrc and load vimrc bindings
     nnoremap <silent> <leader>ev :edit $MYVIMRC<CR>
     nnoremap <silent> <leader>ep :edit $HOME/.config/nvim/config/plugins.vim<CR>
-
-    "Remaping to improve
-    " Semicolon switch to command mode
-    " nnoremap ; :
-    " vnoremap ; :
-    " " Comma find next match of f F t T etc
-    " nnoremap , ;
-    " vnoremap , ;
-    " " Colon find prev match of f F t T etc
-    " nnoremap : ,
-    " vnoremap : ,
 
     "Disable 'badhabit' keys
     nnoremap   <Up> <Nop>
@@ -157,7 +127,7 @@
     vnoremap   <Down>    <Nop>
     vnoremap   <Left>    <Nop>
     vnoremap   <Right>   <Nop>
-    " inoremap   <BS>      <Nop>
+    inoremap   <BS>      <Nop>
     inoremap   <Del>     <Nop>
 
     "Map to un-highlight
@@ -179,22 +149,6 @@
     inoremap <C-v> <ESC>"+pa
     vnoremap <C-v> c<ESC>"+pa
     vnoremap <C-c> "+y
-    "wl-clipboard workaround
-    "let g:clipboard = {
-    "            \   'name': 'wl-clipboard',
-    "            \   'copy': {
-    "            \       '+': 'wl-copy --foreground',
-    "            \       '*': 'wl-copy --foreground --primary',
-    "            \   },
-    "            \   'paste': {
-    "            \       '+': 'wl-paste --no-newline',
-    "            \       '*': 'wl-paste --no-newline --primary',
-    "            \   },
-    "            \   'cache_enabled': 1,
-    "            \ }
-
-    "Defaults
-    nnoremap <silent> <leader>b :ls<CR>:b<space>
 
     "Windows config
     inoremap <A-h> <C-\><C-N><C-w>h
@@ -216,7 +170,15 @@
     tnoremap <A-l> <C-\><C-N><C-w>l
 
     "Define make shortcut
-    nnoremap <buffer> <F9> :make<CR>
+    nnoremap <leader>x :make<CR>
+
+    " Define splits keybind
+    nnoremap <leader>- :split<CR>
+    nnoremap <leader>\ :vsplit<CR>
+
+    " Define tab keybind
+    nnoremap <leader>k :tabprev<CR>
+    nnoremap <leader>j :tabprev<CR>
 
     "netrw configuration
     let g:netrw_banner=0
@@ -233,26 +195,17 @@
     "Expand current active directory
     cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
-    "Change directory on tabenter
-    function! OnTabEnter(path)
-      if isdirectory(a:path)
-        let dirname = a:path
-      else
-        let dirname = fnamemodify(a:path, ":h")
-      endif
-      execute "tcd ". dirname
-    endfunction()
-
     autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
 
-    "Source functions file
-    source $HOME/.config/nvim/config/functions.vim
+    "Modify path to add bin from pyenv
+    let $PATH = '/home/beto/.pyenv/versions/py3neovim/bin/'.$PATH
 
-    "Grab nvr server
-    " augroup nvr
-    "     autocmd!
-    "     autocmd VimEnter * call Grab()
-    " augroup END
+    " Set colorscheme
+    colorscheme desert
 
-    "Plugin specific configuration comment out to disable plugins
-    source $HOME/.config/nvim/config/plugins.vim
+    "Dynamic loading for plugins
+    if empty($SERVER)
+        call CheckandSource("$XDG_CONFIG_HOME/nvim/config/plugins.vim")
+    else
+        call CheckandSource("$XDG_CONFIG_HOME/nvim/config/plug_server.vim")
+    endif

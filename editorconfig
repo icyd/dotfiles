@@ -12,7 +12,7 @@ charset = utf-8
 
 # Docstrings and comments use max_line_length = 79
 [*.py]
-max_line_length = 119
+max_line_length = 79
 
 # Use 2 spaces for the HTML files
 [*.html]
@@ -20,6 +20,11 @@ indent_size = 2
 
 # The JSON files contain newlines inconsistently
 [*.json]
+indent_size = 2
+insert_final_newline = ignore
+
+# The yaml files contain newlines inconsistently
+[*.yml]
 indent_size = 2
 insert_final_newline = ignore
 
@@ -35,6 +40,31 @@ insert_final_newline = ignore
 # Makefiles always use tabs for indentation
 [Makefile]
 indent_style = tab
+
+# C/C++ indentation
+[*.c]
+indent_style = tab
+
+[*.cpp]
+indent_style = tab
+
+[*.h]
+indent_style = tab
+
+[*.hpp]
+indent_style = tab
+
+# Javascript
+[*.js]
+indent_size = 2
+
+# Css
+[*.css]
+indent_size = 2
+
+# Scss
+[*.scss]
+indent_size = 2
 
 # Batch files use tabs for indentation
 [*.bat]
