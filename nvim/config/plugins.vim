@@ -42,8 +42,6 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'roxma/nvim-yarp'
     "Integration with Ultisnips
     Plug 'ncm2/ncm2-ultisnips'
-    "Gtags source for ncm2
-    Plug 'ncm2/ncm2-gtags'
     "Syntax source for ncm2
     Plug 'Shougo/neco-syntax'
     Plug 'ncm2/ncm2-syntax'
@@ -68,8 +66,6 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'tpope/vim-surround'
     "Comment plugin
     Plug 'tomtom/tcomment_vim'
-    "Async plugin for ctags & gtags managment
-    Plug 'jsfaint/gen_tags.vim'
     "Tabularize plugin
     Plug 'godlygeek/tabular'
 
@@ -88,6 +84,11 @@ call plug#begin('~/.config/nvim/plugged')
 "IGNORE
 "Colorschemes & themes
     Plug 'morhetz/gruvbox'
+
+"Async plugin for ctags & gtags managment
+    Plug 'jsfaint/gen_tags.vim'
+    "Gtags source for ncm2
+    Plug 'ncm2/ncm2-gtags'
 
 "Language server setup
     Plug 'autozimu/LanguageClient-neovim', {
@@ -133,12 +134,6 @@ call plug#end()
 "##############################################################################
 " Plugin's configuration and keybindings
 "##############################################################################
-    "Set colorscheme
-    let gruvbox_bold=1
-    let gruvbox_italic=1
-    set background=dark
-    colorscheme gruvbox
-
     "When openning new latex file, use latex filetype
     let g:tex_flavor="latex"    "Use latex as default filetype
 
@@ -179,13 +174,6 @@ call plug#end()
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
 
-
-    "Gen_tags config
-    let g:gen_tags#ctags=1
-    let g:gen_tags#gtags_auto_gen=1
-    let g:gen_tags#gtags_default_map=0
-    let g:gen_tags#statusline=1
-    let g:gen_tags#use_cache_dir=0
 
     "FZF config
     autocmd! FileType fzf tnoremap <buffer> <Esc> <Esc>
@@ -246,6 +234,20 @@ call plug#end()
     let g:jsx_ext_required = 1
 
 "IGNORE
+    "Set colorscheme
+    let gruvbox_bold=1
+    let gruvbox_italic=1
+    set background=dark
+    colorscheme gruvbox
+
+    "Gen_tags config
+    let g:gen_tags#ctags=1
+    let g:gen_tags#gtags_auto_gen=1
+    let g:gen_tags#gtags_default_map=0
+    let g:gen_tags#statusline=1
+    let g:gen_tags#use_cache_dir=0
+
+
     let g:rg_command = '
         \ rg --column --line-number --no-heading --fixed-strings --smart-case --no-ignore --hidden --color "always"
         \ -g "*.{js,json,php,md,styl,jade,html,config,py,cpp,c,go,hs,rb,conf}"

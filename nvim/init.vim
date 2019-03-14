@@ -77,10 +77,10 @@
     "Disable ruby, node.js and python2 support
     let g:loaded_python_provider = 1
     let g:loaded_node_provider = 1
-    let g:loaded_ruby_provider = 1
+    " let g:loaded_ruby_provider = 1
 
     "Python provider (to use pyenv-virtualenv)
-    let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
+    let g:python3_host_prog = '/home/admin/.pyenv/versions/py3neovim/bin/python'
 
     "VerticalSplitBuffer command
     command! -nargs=1 Vb call VerticalSplitBuffer(<f-args>)
@@ -109,10 +109,6 @@
 "###############################################################################
     "Map leader to 'space'
     let mapleader="\<space>"
-
-    "Edit vimrc/zshrc and load vimrc bindings
-    nnoremap <silent> <leader>ev :edit $MYVIMRC<CR>
-    nnoremap <silent> <leader>ep :edit $HOME/.config/nvim/config/plugins.vim<CR>
 
     "Disable 'badhabit' keys
     nnoremap   <Up> <Nop>
@@ -198,14 +194,19 @@
     autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
 
     "Modify path to add bin from pyenv
-    let $PATH = '/home/beto/.pyenv/versions/py3neovim/bin/'.$PATH
+    let $PATH = '/home/admin/.pyenv/versions/py3neovim/bin/'.$PATH
 
     " Set colorscheme
     colorscheme desert
 
+    "Edit vimrc/zshrc and load vimrc bindings
+    nnoremap <silent> <leader>ev :edit $MYVIMRC<CR>
+
     "Dynamic loading for plugins
     if empty($SERVER)
-        call CheckandSource("$XDG_CONFIG_HOME/nvim/config/plugins.vim")
+        let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plugings.vim"
     else
-        call CheckandSource("$XDG_CONFIG_HOME/nvim/config/plug_server.vim")
+        let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plug_server.vim"
     endif
+    exe "nnoremap <silent> <leader>ep :edit " . s:plugin_file . "<CR>"
+    call CheckandSource(s:plugin_file)

@@ -7,16 +7,25 @@ cd "$CWD"
 # Destination for configuration file
 FILE_DD="$HOME"
 # Destination for configuration folders
-FOLDER_DD="${XDG_CONFIG_HOME:-$HOME/.config}"
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CONFIG_HOME="$XDG_CONFIG_HOME"
+export SERVER="$SERVER"
+FOLDER_DD="$XDG_CONFIG_HOME"
+FOLDER_DD="$XDG_CONFIG_HOME"
 # Script destination
 LOCALBIN_DD="${LOCALBIN_DD:-$HOME/.local/bin}"
 # Pyenv distintation
 PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
 # Pyenv version to use, if not defined use system's version
-PYENV_VER=${PYENV_VER:-$(python --version | cut -d ' ' -f2)}
+if [ $(command -v python3) ]; then
+	PYTHON="python3"
+else
+	PYTHON="python"
+fi
+SYSTEM_PYTHON_VER="$($PYTHON --version | cut -d ' ' -f2)"
+PYENV_VER=${PYENV_VER:-$SYSTEM_PYTHON_VER}
 # Pyenv virtualenv name
 PYENV_NAME="${PYENV_NAME:-py3neovim}"
-
 
 red=`tput setaf 1`
 green=`tput setaf 2`
@@ -133,10 +142,12 @@ install_vplug() {
 # Installing plugins
 install_vim_plugins() {
     if [ -f "$FOLDER_DD/nvim/config/plugins.vim" ]; then
-        echo -e "${yellow}Creating base configuration for installing Neovim's pluggins in:${reset} /tmp/tmp.vimrc"
-        sed '/^\s*call\splug\#end\(\)/q' "$XDG_CONFIG_HOME/nvim/config/plugins.vim" > /tmp/tmp.vim
+        TMP=$(mktemp)
+        echo -e "${yellow}Creating base configuration for installing Neovim's pluggins in:${reset} $TMP"
+        sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" > "$TMP"
+        [ -n "$SERVER" ] && sed -i -e '/^"IGNORE/,/^"END_IGNORE/d' "$TMP"
         echo -e "${yellow}Installing pluggins...${reset}"
-        nvim -u /tmp/tmp.vim -c 'PlugInstall! | qa!'
+        nvim -u "$TMP" -c 'PlugInstall! | qa!'
     fi
     echo -e "\n"
 }
@@ -164,15 +175,15 @@ server_vim_config() {
 
 install_pyenv() {
     command -v pyenv >/dev/null 2>&1
-    if [ "$?" == 1 ]; then
+    if [ ! -f "$PYENV_ROOT/bin/pyenv" ]; then
         echo -e "${yellow}Installing pyenv${reset}"
         curl -sL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash >/dev/null 2>&1
     else
         echo -e "${green}Pyenv already installed${reset}"
     fi
+    export PATH="${PYENV_ROOT}/bin:$PATH"
     PYTHON=$(pyenv which python)
     echo -e "${yellow}Using python version:${reset} $PYENV_VER"
-    export PATH="${PYENV_ROOT}/bin:$PATH"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
     pyenv virtualenvs | egrep -w "$PYENV_NAME\$" >/dev/null
@@ -181,7 +192,7 @@ install_pyenv() {
         pyenv versions | egrep -w "$PYENV_VER\$" >/dev/null
         if [ "$?" -ne 0 ]; then
             echo -e "${yellow}Installing python version:${reset} $PYENV_VER"
-            pyenv install "$PYENV_VER" >/dev/null 2>&1
+            pyenv install "$PYENV_VER"
         else
             echo -e "${green}Python version already installed:${reset} $PYENV_VER"
         fi
@@ -203,6 +214,7 @@ install_pyenv() {
     else
         echo -e "${yellow}Installing pynvim${reset}"
         pip -q install -U pynvim
+        pip -q install -U neovim
         echo -e "${yellow}Installing neovim-remote${reset}"
         pip -q install -U neovim-remote
     fi
@@ -225,15 +237,16 @@ install_pyenv() {
     echo -e "\n"
 }
 
-# create_symlinks
-# install_antibody
+create_symlinks
+install_antibody
 install_tpm
-# install_vplug
-# install_vim_plugins
-# if [ -n "$SERVER" ]; then
-#     install_vim_thesaur
-#     server_vim_config
-# fi
-# install_pyenv
-# install_fzf
+install_vplug
+if [ -n "$SERVER" ]; then
+    server_vim_config
+else
+    install_vim_thesaur
+fi
+install_vim_plugins
+install_pyenv
+install_fzf
 echo -e "${green}DONE!${reset}"

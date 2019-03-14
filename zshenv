@@ -14,16 +14,15 @@ export PAGER="less"
 
 export DOTFILES="$HOME/.config/dotfiles"
 
-# Path defitinion: shims allow for pyenv to work
-export PATH="$PYENV_ROOT/shims:$HOME/.yarn/bin:$PATH"
-export PATH="/home/beto/.local/bin:$PATH"
-
-# Nvr's config
-export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
-
 # Python's pyenv configuration for neovim and virtualenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
+
+# Path defitinion: shims allow for pyenv to work
+export PATH="$PYENV_ROOT/shims:HOME/.yarn/bin:$PATH"
+
+# Nvr's config
+export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 

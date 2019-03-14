@@ -12,6 +12,7 @@
 # - 'mh+24' matches files (or directories or whatever) that are older than 24 hours.
 ZSH_PLUGIN_IN="$XDG_CONFIG_HOME/zsh/zsh_plugins.txt"
 ZSH_PLUGIN_OUT="$XDG_CONFIG_HOME/zsh/zsh_plugins.sh"
+ANTIBODY="$XDG_CONFIG_HOME/zsh/antibody"
 
 autoload -Uz compinit
 if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
@@ -22,19 +23,12 @@ fi
 
 # Static call
 gen_plugins_file(){
-    antibody bundle < "$ZSH_PLUGIN_IN" > "$ZSH_PLUGIN_OUT"
+    "$ANTIBODY" bundle < "$ZSH_PLUGIN_IN" > "$ZSH_PLUGIN_OUT"
 }
 
 # Source plugins
-if [ ! -e "$ZSH_PLUGIN_OUT" ]; then
-    gen_plugins_file
-    # Dynamic call
-    source <(antibody init)
-    antibody bundle < "$ZSH_PLUGIN_IN"
-else
-    source "$ZSH_PLUGIN_OUT"
-fi
-
+[ ! -f "$ZSH_PLUGIN_OUT" ] && gen_plugins_file
+source "$ZSH_PLUGIN_OUT"
 
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000
@@ -141,6 +135,27 @@ rationalise-dot() {
 zle -N rationalise-dot
 bindkey . rationalise-dot
 
+
+# Pyenv completion source
+[ -e '$PYENV_ROOT/completions/pyenv.zsh' ] && source '$PYENV_ROOT/completions/pyenv.zsh'
+
+# Rehash should be run manually to update shims
+# command pyenv rehash 2>/dev/null
+pyenv() {
+  local command
+  command="${1:-}"
+  if [ "$#" -gt 0 ]; then
+    shift
+  fi
+
+  case "$command" in
+  activate|deactivate|rehash|shell)
+    eval "$(pyenv "sh-$command" "$@")";;
+  *)
+    command pyenv "$command" "$@";;
+  esac
+}
+
 if [ -z "$SERVER" ]; then
     # Configure fzf to use ripgrep
     export FZF_CTRL_T_OPTS="--select-1 --exit-0"
@@ -148,26 +163,6 @@ if [ -z "$SERVER" ]; then
     export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
     export FZF_DEFAULT_OPTS='--reverse --height 15'
-
-    # Pyenv completion source
-    [ -e '/opt/pyenv/libexec/../completions/pyenv.zsh' ] && source '/opt/pyenv/libexec/../completions/pyenv.zsh'
-
-    # Rehash should be run manually to update shims
-    # command pyenv rehash 2>/dev/null
-    pyenv() {
-      local command
-      command="${1:-}"
-      if [ "$#" -gt 0 ]; then
-        shift
-      fi
-
-      case "$command" in
-      activate|deactivate|rehash|shell)
-        eval "$(pyenv "sh-$command" "$@")";;
-      *)
-        command pyenv "$command" "$@";;
-      esac
-    }
 
     export AUTOENV_FILE_ENTER=".autoenv.zsh"
     export AUTOENV_FILE_LEAVE=".autoenv.zsh"
