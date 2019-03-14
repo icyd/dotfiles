@@ -129,11 +129,6 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4,bold'
 # Configure fzf to use ripgrep
 [ -f "$XDG_CONFIG_HOME/fzf/fzf.zsh" ] && source "$XDG_CONFIG_HOME/fzf/fzf.zsh"
 
-export FZF_CTRL_T_OPTS="--select-1 --exit-0"
-export FZF_ALT_C_COMMAND='rg --files --hidden --null | xargs -0 dirname 2> /dev/null | uniq'
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_DEFAULT_OPTS='--reverse --height 15'
 
 # quick directory change
 rationalise-dot() {
@@ -147,6 +142,13 @@ zle -N rationalise-dot
 bindkey . rationalise-dot
 
 if [ -z "$SERVER" ]; then
+    # Configure fzf to use ripgrep
+    export FZF_CTRL_T_OPTS="--select-1 --exit-0"
+    export FZF_ALT_C_COMMAND='rg --files --hidden --null | xargs -0 dirname 2> /dev/null | uniq'
+    export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_DEFAULT_OPTS='--reverse --height 15'
+
     # Pyenv completion source
     [ -e '/opt/pyenv/libexec/../completions/pyenv.zsh' ] && source '/opt/pyenv/libexec/../completions/pyenv.zsh'
 

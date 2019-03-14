@@ -108,6 +108,7 @@ install_fzf() {
 install_tpm() {
     INSTALL_PATH="$FOLDER_DD/tmux/plugins/tpm"
     if [ ! -d "$INSTALL_PATH" ]; then
+        [ ! -d "${INSTALL_PATH%/*}" ] && mkdir -p "${INSTALL_PATH%/*}"
         echo -e "${yellow}Downloading tpm into:${reset} $INSTALL_PATH"
         git clone -q https://github.com/tmux-plugins/tpm $INSTALL_PATH > /dev/null
     else
@@ -224,15 +225,15 @@ install_pyenv() {
     echo -e "\n"
 }
 
-create_symlinks
-install_antibody
+# create_symlinks
+# install_antibody
 install_tpm
-install_vplug
-install_vim_plugins
-if [ -n "$SERVER" ]; then
-    install_vim_thesaur
-    server_vim_config
-fi
-install_pyenv
-install_fzf
+# install_vplug
+# install_vim_plugins
+# if [ -n "$SERVER" ]; then
+#     install_vim_thesaur
+#     server_vim_config
+# fi
+# install_pyenv
+# install_fzf
 echo -e "${green}DONE!${reset}"

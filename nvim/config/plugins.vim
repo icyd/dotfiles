@@ -34,6 +34,7 @@ call plug#begin('~/.config/nvim/plugged')
 "Fuzzy finder
     "Fzf's vim wrapper
     Plug '~/.config/fzf'
+    Plug 'junegunn/fzf.vim'
 
 "Completion plugin
     "Ncm2 completion plug
@@ -78,6 +79,8 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'tpope/vim-fugitive'
     "Syntax for Sass, Scss & Haml
     Plug 'tpope/vim-haml'
+    "Syntax jsx
+    Plug 'mxw/vim-jsx'
 
     "HTML plugins
     Plug 'mattn/emmet-vim'
@@ -205,15 +208,16 @@ call plug#end()
     nnoremap <silent> <leader>fo :<C-u>BLines<CR>
     let g:fzf_layout = { 'down': '~20%' }
     let g:fzf_tags_command = 'GenGTAGS'
-    let g:rg_command = '
-        \ rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --color "always"
-        \ -g "*.{js,json,php,md,styl,jade,html,config,py,cpp,c,go,hs,rb,conf}"
-        \ -g "!{.git,node_modules,vendor}/*" '
-    command! -bang -nargs=* Find call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
     "Emmet
     let g:user_emmet_install_global=0
-    autocmd FileType html,css EmmetInstall
+    " let g:user_emmet_leader_key='<C-z>'
+    " let g:user_emmet_settings = {
+    " \  'javascript.jsx' : {
+    " \      'extends' : 'jsx',
+    " \  },
+    " \}
+    autocmd FileType html,css,javascript,javascript.jsx EmmetInstall
 
     "Fugitive
     autocmd! User fugitive
@@ -242,6 +246,12 @@ call plug#end()
     let g:jsx_ext_required = 1
 
 "IGNORE
+    let g:rg_command = '
+        \ rg --column --line-number --no-heading --fixed-strings --smart-case --no-ignore --hidden --color "always"
+        \ -g "*.{js,json,php,md,styl,jade,html,config,py,cpp,c,go,hs,rb,conf}"
+        \ -g "!{.git,node_modules,vendor}/*" '
+    command! -bang -nargs=* Find call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
+
     "LSP
     let g:LanguageClient_autoStart=1
     " let g:LanguageClient_settingsPath='/home/beto/.config/nvim/settings.json'

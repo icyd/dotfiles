@@ -1,6 +1,7 @@
 # Defines environment variables.
-if $(command -v nvr >/dev/null 2>&1); then
-    NVIM='nvr --remote-silent'
+command -v nvr >/dev/null 2>&1
+if [ "$?" -eq 0 ]; then
+    NVIM='nvr -s --remote'
 else
 
     NVIM='nvim'
@@ -14,7 +15,7 @@ export PAGER="less"
 export DOTFILES="$HOME/.config/dotfiles"
 
 # Path defitinion: shims allow for pyenv to work
-export PATH="$PYENV_ROOT/shims:$PATH"
+export PATH="$PYENV_ROOT/shims:$HOME/.yarn/bin:$PATH"
 export PATH="/home/beto/.local/bin:$PATH"
 
 # Nvr's config
