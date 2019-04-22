@@ -3,94 +3,97 @@
 "##############################################################################
 call plug#begin('~/.config/nvim/plugged')
 
-"Gerenal plugins
-    "Bracket mapping
+" Gerenal plugins
+    " Bracket mapping
     Plug 'tpope/vim-unimpaired'
-    "Lightweight status bar plugin
+    " Lightweight status bar plugin
     Plug 'itchyny/lightline.vim'
-    "Snippet engine
+    " Snippet engine
     Plug 'SirVer/ultisnips'
-    "Snippet plugin
+    " Snippet plugin
     Plug 'honza/vim-snippets'
-    "Declaration of custom textobj
+    " Declaration of custom textobj
     Plug 'kana/vim-textobj-user'
-    "EditorConfig plugin
+    " EditorConfig plugin
     Plug 'editorconfig/editorconfig-vim'
-    "Run make async.
+    " Run make async.
     Plug 'neomake/neomake'
-    "Repeat plugins' commands
+    " Repeat plugins' commands
     Plug 'tpope/vim-repeat'
-    "Increment dates, times, etc
+    " Increment dates, times, etc
     Plug 'tpope/vim-speeddating'
-    "Gundo, undo tree
+    " Gundo, undo tree
     Plug 'sjl/gundo.vim'
-    "Lorem Ipsum
+    " Lorem Ipsum
     Plug 'vim-scripts/loremipsum'
-    "Autoread
+    " Autoread
     Plug 'chrisbra/vim-autoread'
-    "Seamless navigation tmux-vim
+    " Seamless navigation tmux-vim
     Plug 'christoomey/vim-tmux-navigator'
+    " Session manager
+    Plug 'tpope/vim-obsession'
 
-"Fuzzy finder
-    "Fzf's vim wrapper
+    " Fuzzy finder
+    " Fzf's vim wrapper
     Plug '~/.config/fzf'
     Plug 'junegunn/fzf.vim'
 
-"Completion plugin
-    "Ncm2 completion plug
+" Completion plugin
+    " Ncm2 completion plug
     Plug 'ncm2/ncm2'
     Plug 'roxma/nvim-yarp'
-    "Integration with Ultisnips
+    " Integration with Ultisnips
     Plug 'ncm2/ncm2-ultisnips'
-    "Syntax source for ncm2
+    " Syntax source for ncm2
     Plug 'Shougo/neco-syntax'
     Plug 'ncm2/ncm2-syntax'
-    "Detect js/css in html code
+    " Detect js/css in html code
     Plug 'ncm2/ncm2-html-subscope'
-    "Detect fenced code in mk
+    " Detect fenced code in mk
     Plug 'ncm2/ncm2-markdown-subscope'
     Plug 'ncm2/ncm2-path'
-    "Completion source for css/scss
+    " Completion source for css/scss
     Plug 'ncm2/ncm2-cssomni'
 
-"Editing
-    "Plugin to show marks
+" Editing
+    " Plugin to show marks
     Plug 'jacquesbh/vim-showmarks'
-    "Auto pairing brackets plugin
+    " Auto pairing brackets plugin
     Plug 'jiangmiao/auto-pairs'
-    "Plugin for sustitution, coresion, abbreviation
+    " Plugin for sustitution, coresion, abbreviation
     Plug 'tpope/vim-abolish'
-    "Plugin for enable star search in visual mode
+    " Plugin for enable star search in visual mode
     Plug 'bronson/vim-visual-star-search'
-    "Surround brackets plugin
+    " Surround brackets plugin
     Plug 'tpope/vim-surround'
-    "Comment plugin
+    " Comment plugin
     Plug 'tomtom/tcomment_vim'
-    "Tabularize plugin
+    " Tabularize plugin
     Plug 'godlygeek/tabular'
 
-    "Syntaxes plugin
+    " Syntaxes plugin
     Plug 'sheerun/vim-polyglot'
-    "Git
+    " Git
     Plug 'tpope/vim-fugitive'
-    "Syntax for Sass, Scss & Haml
+    " Syntax for Sass, Scss & Haml
     Plug 'tpope/vim-haml'
-    "Syntax jsx
+    " Syntax jsx
     Plug 'mxw/vim-jsx'
 
-    "HTML plugins
+    " HTML plugins
     Plug 'mattn/emmet-vim'
 
-"IGNORE
-"Colorschemes & themes
+"#IGNORE
+" DO NOT ERASE, USED TO GENERATE CONF FILE IGNORING FOLLOWING PLUGINS
+" Colorschemes & themes
     Plug 'morhetz/gruvbox'
 
-"Async plugin for ctags & gtags managment
+" Async plugin for ctags & gtags managment
     Plug 'jsfaint/gen_tags.vim'
     "Gtags source for ncm2
     Plug 'ncm2/ncm2-gtags'
 
-"Language server setup
+" Language server setup
     Plug 'autozimu/LanguageClient-neovim', {
         \ 'branch': 'next',
         \ 'do': 'bash install.sh',
@@ -99,45 +102,45 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'roxma/LanguageServer-php-neovim',  {'do':
          \ 'composer install && composer run-script parse-stubs'}
 
-"Grammar, spelling, related
-    "Plugin for grammar checking with languagetool
+" Grammar, spelling, related
+    " Plugin for grammar checking with languagetool
     Plug 'rhysd/vim-grammarous', { 'on': 'GrammarousCheck' }
-    "Synonims plugin
+    " Synonims plugin
     Plug 'Ron89/thesaurus_query.vim', {
         \ 'on': 'ThesaurusQueryReplaceCurrentWord' }
 
-"Syntax plugins
-    "Detect filetype in context
+" Syntax plugins
+    " Detect filetype in context
     Plug 'Shougo/context_filetype.vim'
-    "Jinja2 Syntax pluggin
+    " Jinja2 Syntax pluggin
     Plug 'Glench/Vim-Jinja2-Syntax'
-    "Pandoc's syntax module
+    " Markdown plugin
+    Plug 'plasticboy/vim-markdown'
+    " Pandoc's syntax module
     Plug 'vim-pandoc/vim-pandoc-syntax'
-    "Ansible syntax
+    " Ansible syntax
     Plug 'pearofducks/ansible-vim'
 
-"Other plugins
-    "Pandoc's Markdown integration
+" Other plugins
+    " Pandoc's Markdown integration
     Plug 'vim-pandoc/vim-pandoc'
-    "REPL plugin
+    " REPL plugin
     Plug 'Vigemus/iron.nvim'
-    "Pyenv plugin
+    " Pyenv plugin
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
-    "Multilanguage debugger
+    " Multilanguage debugger
     Plug 'vim-vdebug/vdebug'
-    "PHPUnit Plugin
-    " Plug 'joonty/vim-phpunitqf'
-"END_IGNORE
+"#ENDIGNORE
 
 call plug#end()
 
 "##############################################################################
 " Plugin's configuration and keybindings
 "##############################################################################
-    "When openning new latex file, use latex filetype
+    " When openning new latex file, use latex filetype
     let g:tex_flavor="latex"    "Use latex as default filetype
 
-    "Lightline configuration
+    " Lightline configuration
     set laststatus=2
     let g:lightline = {
         \ 'colorscheme': 'jellybeans',
@@ -150,32 +153,32 @@ call plug#end()
         \ },
         \ }
 
-    "Gundo
+    " Gundo configuration
     let g:gundo_prefer_python3 = 1
     let g:gundo_right=1
     nnoremap <silent> <leader>U :GundoToggle<CR>
 
-    "Run scripts
+    " Makeprg definitions to use :make
     autocmd! FileType python setlocal makeprg=python\ %
 
-    "Ncm2 config
+    " Ncm2 config
     autocmd! BufEnter * call ncm2#enable_for_buffer()
-    "Avoid open hover on autocompletion
+    " Avoid open hover on autocompletion
     set completeopt-=preview
-    "No text injection, show menu with one, no autoselect
+    " No text injection, show menu with one, no autoselect
     set completeopt=noinsert,menuone,noselect
-    "Enable selection with Tab
+    " Enable selection with Tab
     inoremap <expr><tab> pumvisible()? "\<c-n>" : "\<tab>"
     inoremap <expr><s-tab> pumvisible()? "\<c-p>" : "\<s-tab>"
 
-    "Snippet configuration
+    " Snippet configuration
     let g:UltiSnipsExpandTrigger="<c-l>"
     let g:UltiSnipsJumpForwardTrigger="<tab>"
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
 
 
-    "FZF config
+    " FZF config
     autocmd! FileType fzf tnoremap <buffer> <Esc> <Esc>
     nnoremap <silent> <leader>ff :<C-u>Files<CR>
     nnoremap <silent> <leader>fF :<C-u>Files $HOME<CR>
@@ -197,30 +200,24 @@ call plug#end()
     let g:fzf_layout = { 'down': '~20%' }
     let g:fzf_tags_command = 'GenGTAGS'
 
-    "Emmet
+    " Emmet
     let g:user_emmet_install_global=0
-    " let g:user_emmet_leader_key='<C-z>'
-    " let g:user_emmet_settings = {
-    " \  'javascript.jsx' : {
-    " \      'extends' : 'jsx',
-    " \  },
-    " \}
     autocmd FileType html,css,javascript,javascript.jsx EmmetInstall
 
-    "Fugitive
+    " Fugitive
     autocmd! User fugitive
          \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
          \   nnoremap <buffer> .. :edit %:h<CR> |
          \ endif
     autocmd BufReadPost fugitive://* set bufhidden=delete
 
-    "Autopair
+    " Autopair
     let g:AutoPairsFlyMode = 0
 
-    "Ansible-vim
+    " Ansible-vim
      let g:ansible_unindent_after_newline = 1
 
-    " vim-tmux-navigtar
+    " Vim-tmux-navigtar
     let g:tmux_navigator_no_mapping = 1
     let g:tmux_navigator_save_no_switch = 1
     nnoremap <silent> <A-k> :TmuxNavigateUp<CR>
@@ -229,18 +226,20 @@ call plug#end()
     nnoremap <silent> <A-l> :TmuxNavigateRight<CR>
     nnoremap <silent> <A-#> :TmuxNavigatePrevious<CR>
 
-    "Javascript plugins
+    " Javascript plugins
     let g:javascript_plugin_jsdoc = 1
     let g:jsx_ext_required = 1
 
-"IGNORE
-    "Set colorscheme
+"#IGNORE
+" DO NOT REMOVE, USED TO GENERATE CONF FILE FOR SERVER
+" FOLLOWING CONFIGURATIONS ARE IGNORED
+    " Set colorscheme
     let gruvbox_bold=1
     let gruvbox_italic=1
     set background=dark
     colorscheme gruvbox
 
-    "Gen_tags config
+    " Gen_tags config
     let g:gen_tags#ctags=1
     let g:gen_tags#gtags_auto_gen=1
     let g:gen_tags#gtags_default_map=0
@@ -254,9 +253,8 @@ call plug#end()
         \ -g "!{.git,node_modules,vendor}/*" '
     command! -bang -nargs=* Find call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
-    "LSP
+    " LSP
     let g:LanguageClient_autoStart=1
-    " let g:LanguageClient_settingsPath='/home/beto/.config/nvim/settings.json'
     let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
     let g:LanguageClient_serverStderr = '/tmp/LanguageServer.log'
     let g:LanguageClient_loggingLevel = 'WARN'
@@ -276,7 +274,7 @@ call plug#end()
         \ 'vue': ['vls'],
         \ }
 
-   "LSP keymap definition
+   " LSP keymap definition
     function! SetLSPShortcuts()
         nnoremap <leader>ld :call LanguageClient#textDocument_definition({'gotoCmd': 'split'})<CR>
         nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
@@ -289,29 +287,27 @@ call plug#end()
         nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<CR>
         nnoremap <leader>lm :call LanguageClient_contextMenu()<CR>
     endfunction()
-
     call SetLSPShortcuts()
 
 
-    "EditorConfig
+    " EditorConfig
     let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
     let g:EditorConfig_exec_path = '/usr/bin/editorconfig'
 
-    "Pandoc
+    " Pandoc
     let g:pandoc#modules#enabled = ["formatting"]
-    " let g:pandoc#formatting#mode="ha"
     let g:pandoc#filetypes#pandoc_markdown = 1
     let g:pandoc#syntax#codeblocks#embeds#langs = ['html', 'python', 'bash=sh']
     let g:polyglot_disabled = ['html', 'markdown', 'coffee-script', 'vue']
 
-    "Pweave
+    " Pweave
     augroup pandoc
         autocmd!
         autocmd BufNewFile,BufFilePre,BufRead *.pmd setlocal filetype=pandoc
         autocmd FileType pandoc setlocal makeprg=pweave\ -f\ pandoc\ %
     augroup END
 
-    "Grammarous
+    " Grammarous
     let g:grammarous#languagetool_cmd = 'languagetool'
     let g:grammarous#use_vim_spelllang = 1
     let g:grammarous#enable_spell_check = 1
@@ -338,7 +334,7 @@ call plug#end()
         " nunmap <buffer>gR
     endfunction
 
-    "Thesaurus
+    " Thesaurus
     let g:tq_map_keys=0
     nnoremap <Leader>zs :ThesaurusQueryReplaceCurrentWord<CR>
     let g:tq_mthesaur_file="~/.config/nvim/thesaurus/mthesaur.txt"
@@ -388,4 +384,4 @@ call plug#end()
 
     " Iron lua config (temporary until implementation)
     luafile $HOME/.config/nvim/config/iron.lua
-"END_IGNORE
+"#ENDIGNORE

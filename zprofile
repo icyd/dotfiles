@@ -1,7 +1,3 @@
-# Enviroment variables for rofi
-source "$HOME/.config/zsh/rofi.zsh"
-
-if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
-# sway config
-   sway
-fi
+# Set path
+export PATH="$PYENV_ROOT/shims:$HOME/.local/bin/:$HOME/.yarn/bin:$PATH"
+[ "$(uname -s)" = "Darwin" ] && export PATH="$(brew --prefix coreutils)/libexec/gnubin/:/usr/local/bin:$PATH"

@@ -1,42 +1,129 @@
 #!/usr/bin/env bash
+definitions() {
+    # Destination for configuration folders
+    XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+    export XDG_CONFIG_HOME="$XDG_CONFIG_HOME"
+    # Get current working directory
+    SCRIPT_PATH="$(cd "$(dirname "$0")"; pwd -P)"
+    CWD="$SCRIPT_PATH"
+    cd "$CWD"
+    # Destination for configuration file
+    FILE_DD="${FILE_DD:-$HOME}"
+    FOLDER_DD="$XDG_CONFIG_HOME"
+    # Script destination
+    LOCALBIN_DD="${LOCALBIN_DD:-$HOME/.local/bin}"
+    # Pyenv distintation
+    PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
+    # Pyenv version to use, if not defined use system's version
+    command -v "python3" >/dev/null 2>&1
+    # type "python3" >/dev/null 2>&1
+    if [ "$?" -eq 0 ]; then
+        PYTHON="python3"
+        PIP="pip3"
+    else
+        PYTHON="python"
+        PIP="pip"
+    fi
+    SYSTEM_PYTHON_VER="$($PYTHON --version | cut -d ' ' -f2)"
+    # Use given python version, otherwise use systems' version
+    PYENV_VER=${PYENV_VER:-$SYSTEM_PYTHON_VER}
+    # Pyenv virtualenv name
+    PYENV_NAME="${PYENV_NAME:-py3neovim}"
+    # String to cherrypick files/directories
+    SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, zsh, zshenv, zshrc, editorconfig"}
+}
 
-# Current working directory
-SCRIPT_PATH="$(readlink -e "$0")"
-CWD="$(dirname "$SCRIPT_PATH")"
-cd "$CWD"
-# Destination for configuration file
-FILE_DD="$HOME"
-# Destination for configuration folders
-XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_CONFIG_HOME="$XDG_CONFIG_HOME"
-export SERVER="$SERVER"
-FOLDER_DD="$XDG_CONFIG_HOME"
-FOLDER_DD="$XDG_CONFIG_HOME"
-# Script destination
-LOCALBIN_DD="${LOCALBIN_DD:-$HOME/.local/bin}"
-# Pyenv distintation
-PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
-# Pyenv version to use, if not defined use system's version
-if [ $(command -v python3) ]; then
-	PYTHON="python3"
-else
-	PYTHON="python"
-fi
-SYSTEM_PYTHON_VER="$($PYTHON --version | cut -d ' ' -f2)"
-PYENV_VER=${PYENV_VER:-$SYSTEM_PYTHON_VER}
-# Pyenv virtualenv name
-PYENV_NAME="${PYENV_NAME:-py3neovim}"
+usage() {
+    definitions
+    echo -e "Usage:\n"
+    echo -e "\t-c|--create-symlink \"foo, bar\"\tCreate symlinks of the following files/directories"
+    echo -e "\t-a|--install-antibody"
+    echo -e "\t-tpm|--install-tpm"
+    echo -e "\t-vplug|--install-vplug"
+    echo -e "\t-fzf|--install-fzf"
+    echo -e "\t-pyenv|--install-pyenv"
+    echo -e "\t-plugins|--install-vim-plugins"
+    echo -e "\t-server|--server-mode"
+    echo -e "\t-min|--minimal"
+    echo -e "\t-f|--file-destination foo\tDefine where to install files, default: $FILE_DD"
+    echo -e "\t-d|--directory-destination bar\tDefine where to install config. directories, default: $FOLDER_DD"
+    echo -e "\t-s|--script-destination foobar\tDefine where to install scripts, default: $LOCALBIN_DD"
+    echo -e "\t-ph|--pyenv-home\tDefine pyenv home, default: $PYENV_ROOT"
+    echo -e "\t-pv|--pyenv-version\tDefine pyenv version, default: System's python version -> $PYENV_VER"
+    echo -e "\t-pn|--pyenv-name\tDefine pyenv virtualenv name, default: $PYENV_NAME"
+    exit 1
+}
 
-red=`tput setaf 1`
-green=`tput setaf 2`
-yellow=`tput setaf 3`
-blue=`tput setaf 4`
-magenta=`tput setaf 5`
-reset=`tput sgr0`
+# Configuration variables
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case "$key" in
+        -c|--create-symlink)
+            CREATE_SYMLINK=1
+            SYMLINK_STRING="$2"
+            shift
+            ;;
+        -a|--install-antibody)
+            INSTALL_ANTIBODY=1
+            ;;
+        -tpm|--install-tpm)
+            INSTALL_TPM=1
+            ;;
+        -vplug|--install-vplug)
+            INSTALL_VPLUG=1
+            ;;
+        -fzf|--install-fzf)
+            INSTALL_FZF=1
+            ;;
+        -pyenv|--install-pyenv)
+            INSTALL_PYENV=1
+            ;;
+        -plugins|--install-vim-plugins)
+            INSTALL_VIM_PLUGINS=1
+            ;;
+        -server|--server_mode)
+            SERVER_MODE=1
+            ;;
+        -min|--minimal)
+            SKIP_THIS=1
+            ;;
+        -f|--file-destination)
+            FILE_DD="$2"
+            shift
+            ;;
+        -d|--directory-destination)
+            XDG_CONFIG_HOME="$2"
+            shift
+            ;;
+        -s|--script-destination)
+            LOCALBIN_DD="$2"
+            shift
+            ;;
+        -ph|--pyenv-home)
+            PYENV_ROOT="$2"
+            shift
+            ;;
+        -pv|--pyenv_version)
+            PYENV_VER="$2"
+            shift
+            ;;
+        -pn|--pyenv_name)
+            PYENV_NAME="$2"
+            shift
+            ;;
+        -h|--help)
+            usage
+            ;;
+        *)
+            usage
+            ;;
+    esac
+    shift
+done
 
 # Confirm function
 confirm() {
-    # call with a prompt string or use a default
+    # Call with a prompt string or use a default
     read -r -p "${1:-Are you sure? [y/N]} " response
     case "$response" in
         [yY][eE][sS]|[yY])
@@ -51,12 +138,15 @@ confirm() {
 create_symlinks() {
     [ ! -d "$FOLDER_DD" ] && mkdir -p "$FOLDER_DD"
     [ ! -d "$FILE_DD" ] && mkdir -p "$FILE_DD"
-    if [ -z "$SERVER" ]; then
+    if [ -z "$SERVER_MODE" ]; then
         readarray -d '' FILES < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print0)
     else
         # cherrypick when in server
-        FILES=(tmux.conf nvim zsh zshenv zshrc)
-        FILES=( "${FILES[@]/#/$CWD/}" )
+        FILES=( "${SYMLINK_ARRAY[@]/#/$CWD/}" )
+        for ele in "${FILES[@]}"; do
+            echo $ele
+        done
+        exit 1
     fi
 
     echo -e "${green}Creating symlink for configuration files${reset}"
@@ -67,8 +157,6 @@ create_symlinks() {
             name="$FOLDER_DD/$(basename $file)"
         fi
 
-        [ $(basename $file) == "rofi-ico-finder" ] && continue
-        [ $(basename $file) == "scripts" ] && continue
         if [ ! -L "$name" ] && [ -e "$name" ]; then
             echo -e "\t${red}Moving:${reset} ${name} to ${name}.bak"
             mv -f "$name" "${name}.bak"
@@ -145,7 +233,7 @@ install_vim_plugins() {
         TMP=$(mktemp)
         echo -e "${yellow}Creating base configuration for installing Neovim's pluggins in:${reset} $TMP"
         sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" > "$TMP"
-        [ -n "$SERVER" ] && sed -i -e '/^"IGNORE/,/^"END_IGNORE/d' "$TMP"
+        [ -n "$SERVER_MODE" ] && sed -i -e '/^"#IGNORE/,/^"#ENDIGNORE/d' "$TMP"
         echo -e "${yellow}Installing pluggins...${reset}"
         nvim -u "$TMP" -c 'PlugInstall! | qa!'
     fi
@@ -168,7 +256,7 @@ install_vim_thesaur() {
 server_vim_config() {
     if [ -f "${FOLDER_DD}/nvim/config/plugins.vim" ]; then
         echo -e "${yellow}Generating vim configuration file for server:${reset} ${FOLDER_DD}/nvim/config/plug_server.vim"
-        sed -e '/^"IGNORE/,/^"END_IGNORE/d' "${FOLDER_DD}/nvim/config/plugins.vim" > "${FOLDER_DD}/nvim/config/plug_server.vim"
+        sed -e '/^"#IGNORE/,/^"#ENDIGNORE/d' "${FOLDER_DD}/nvim/config/plugins.vim" > "${FOLDER_DD}/nvim/config/plug_server.vim"
     fi
     echo -e "\n"
 }
@@ -186,17 +274,17 @@ install_pyenv() {
     echo -e "${yellow}Using python version:${reset} $PYENV_VER"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
-    pyenv virtualenvs | egrep -w "$PYENV_NAME\$" >/dev/null
-    if [ "$?" -eq 0 ]; then
+    pyenv virtualenvs | egrep -w "$PYENV_NAME" >/dev/null
+    if [ "$?" -ne 0 ]; then
         echo -e "${yellow}Installing python virtualenv:${reset} $PYENV_NAME"
-        pyenv versions | egrep -w "$PYENV_VER\$" >/dev/null
+        pyenv versions | egrep -w "$PYENV_VER" >/dev/null
         if [ "$?" -ne 0 ]; then
             echo -e "${yellow}Installing python version:${reset} $PYENV_VER"
-            pyenv install "$PYENV_VER"
+            pyenv install "$PYENV_VER" >/dev/null
         else
             echo -e "${green}Python version already installed:${reset} $PYENV_VER"
         fi
-        pyenv virtualenv "$PYENV_VER" "$PYENV_NAME" >/dev/null 2>&1
+        pyenv virtualenv "$PYENV_VER" "$PYENV_NAME" >/dev/null
     else
         echo -e "${green}Pyenv virtualenv already exist:${reset} $PYENV_NAME"
     fi
@@ -205,15 +293,17 @@ install_pyenv() {
     echo -e "\n${yellow}Updating pip${reset}"
     pip install -q -U pip
     echo -e "${yellow}Installing python packages.${reset}"
-    if [ -z "$SERVER" ]; then
-        pip install -r "${CWD}/nvim/requirements.txt"
+    if [ -z "$SERVER_MODE" ]; then
+        pip install -r "${CWD}/nvim/requirements.txt" >/dev/null
         echo -e "${yellow}Installing node.js.${reset}"
-        nodeenv -p
+        nodeenv -p > /dev/null
         echo -e "${yellow}Installing node.js packages.${reset}"
-        cat "${CWD}/nvim/npm_requirements.txt" | xargs npm -g install
+        NPM="$(pyenv which npm)"
+        cat "${CWD}/nvim/npm_requirements.txt" | xargs $NPM -g install >/dev/null
     else
         echo -e "${yellow}Installing pynvim${reset}"
         pip -q install -U pynvim
+        echo -e "${yellow}Installing neovim${reset}"
         pip -q install -U neovim
         echo -e "${yellow}Installing neovim-remote${reset}"
         pip -q install -U neovim-remote
@@ -229,24 +319,39 @@ install_pyenv() {
     echo -e "${yellow}Creating Symlink to NVR${reset}"
     [ ! -d "$LOCALBIN_DD" ] && mkdir -p "$LOCALBIN_DD"
     ln -sf "${PYTHON%/*}/nvr" "$LOCALBIN_DD/nvr"
-    cat "${FILE_DD}/.zshenv" | egrep "PATH" | egrep "$LOCALBIN_DD" >/dev/null
-    if [ "$?" -ne 0 ]; then
-        echo -e "${yellow}Appending nvr path to paths in:${reset} ${FILE_DD}/.zshenv"
-        sed -i -e "/^export\sPATH.*/ a export\ PATH=\"${LOCALBIN_DD}:\$PATH\"" "${CWD}/zshenv"
-    fi
     echo -e "\n"
 }
 
-create_symlinks
-install_antibody
-install_tpm
-install_vplug
-if [ -n "$SERVER" ]; then
-    server_vim_config
-else
-    install_vim_thesaur
-fi
-install_vim_plugins
-install_pyenv
-install_fzf
-echo -e "${green}DONE!${reset}"
+main() {
+    definitions
+    IFS=", " read -r -a SYMLINK_ARRAY <<< "$SYMLINK_STRING"
+
+    red=`tput setaf 1`
+    green=`tput setaf 2`
+    yellow=`tput setaf 3`
+    blue=`tput setaf 4`
+    magenta=`tput setaf 5`
+    reset=`tput sgr0`
+
+
+    [ -n "$CREATE_SYMLINK" ] && create_symlinks
+    [ -n "$INSTALL_ANTIBODY" ] && install_antibody
+    [ -n "$INSTALL_TPM" ] && install_tpm
+    [ -n "$INSTALL_VPLUG" ] && install_vplug
+    [ -n "$INSTALL_FZF" ] && install_fzf
+    [ -n "$INSTALL_PYENV" ] && install_pyenv
+    if [ -n "$INSTALL_VIM_PLUGINS" ]; then
+        install_vim_plugins
+        if [ -n "$SERVER_MODE" ]; then
+            server_vim_config
+            echo -e "export SERVER_MODE=1" > "$FOLDER_DD/zsh/local.zsh"
+        else
+            install_vim_thesaur
+        fi
+    fi
+    [ -n "$SKIP_THIS" ] && echo -e "export SKIP_THIS=1" >> "$FOLDER_DD/zsh/local.zsh"
+    echo $SERVER_MODE
+    echo -e "${green}DONE!${reset}"
+}
+main
+exit 0

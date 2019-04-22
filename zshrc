@@ -1,6 +1,4 @@
-# Enable to debug loading times
 # zmodload zsh/zprof
-
 # On slow systems, checking the cached .zcompdump file to see if it must be
 # regenerated adds a noticable delay to zsh startup.  This little hack restricts
 # it to once a day.  It should be pasted into your own completion file.
@@ -21,15 +19,15 @@ else
     compinit -C
 fi
 
-# Static call
+# Static call of zsh's plugins
 gen_plugins_file(){
     "$ANTIBODY" bundle < "$ZSH_PLUGIN_IN" > "$ZSH_PLUGIN_OUT"
 }
 
 # Source plugins
-[ ! -f "$ZSH_PLUGIN_OUT" ] && gen_plugins_file
-source "$ZSH_PLUGIN_OUT"
+[ ! -f "$ZSH_PLUGIN_OUT" ] && gen_plugins_file; source "$ZSH_PLUGIN_OUT"
 
+#zsh's history
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
@@ -136,11 +134,10 @@ zle -N rationalise-dot
 bindkey . rationalise-dot
 
 
-# Pyenv completion source
+# # Pyenv completion source
 [ -e '$PYENV_ROOT/completions/pyenv.zsh' ] && source '$PYENV_ROOT/completions/pyenv.zsh'
-
-# Rehash should be run manually to update shims
-# command pyenv rehash 2>/dev/null
+# # Rehash should be run manually to update shims
+# # command pyenv rehash 2>/dev/null
 pyenv() {
   local command
   command="${1:-}"
@@ -150,13 +147,14 @@ pyenv() {
 
   case "$command" in
   activate|deactivate|rehash|shell)
-    eval "$(pyenv "sh-$command" "$@")";;
+    eval "$("$PYENV_ROOT/bin/pyenv" "sh-$command" "$@")";;
   *)
-    command pyenv "$command" "$@";;
+    command "$PYENV_ROOT/bin/pyenv" "$command" "$@";;
   esac
 }
+eval "$($PYENV_ROOT/bin/pyenv virtualenv-init -)"
 
-if [ -z "$SERVER" ]; then
+if [ -z "$SERVER_MODE" ]; then
     # Configure fzf to use ripgrep
     export FZF_CTRL_T_OPTS="--select-1 --exit-0"
     export FZF_ALT_C_COMMAND='rg --files --hidden --null | xargs -0 dirname 2> /dev/null | uniq'
@@ -164,9 +162,12 @@ if [ -z "$SERVER" ]; then
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
     export FZF_DEFAULT_OPTS='--reverse --height 15'
 
-    export AUTOENV_FILE_ENTER=".autoenv.zsh"
-    export AUTOENV_FILE_LEAVE=".autoenv.zsh"
-    export AUTOENV_HANDLE_LEAVE=1
+    # export AUTOENV_FILE_ENTER=".autoenv.zsh"
+    # export AUTOENV_FILE_LEAVE=".autoenv.zsh"
+    # export AUTOENV_HANDLE_LEAVE=1
+
+    # Set GPG TTY
+    export GPG_TTY=$(tty)
 
     # GPG as ssh-agent
     unset SSH_AGENT_PID
@@ -174,13 +175,11 @@ if [ -z "$SERVER" ]; then
       export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
     fi
 
-    # Set GPG TTY
-    export GPG_TTY=$(tty)
-
     # Refresh gpg-agent tty in case user switches into an X session
     gpg-connect-agent updatestartuptty /bye >/dev/null
 fi
 
+# Functions
 mkcd() {
     mkdir -p "$1" && cd "$1" || return 1
 }
@@ -193,9 +192,8 @@ alias la='ls --color=auto -al'
 alias d='dirs -v'
 alias p='pushd >/dev/null'
 alias o='popd >/dev/null'
-alias pdf='zathura'
 alias vim="${EDITOR}"
-alias svim='sudo -E '"$EDITOR"
+alias svim='sudo -E nvim'
 alias eZC="$EDITOR $HOME/.zshrc"
 alias eZE="$EDITOR $HOME/.zshenv"
 alias -g C='| wc -l'
@@ -224,9 +222,10 @@ alias yayinf='yay -Si'
 alias yaydb='yay -Qi'
 alias yayrm='yay -Rnsc'
 
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
+if [ "$(uname -s)" = "Darwin" ]; then
+   export PATH="/usr/local/opt/coreutils/libexec/gnubin/:/usr/local/bin:/usr/local/sbin/:$PATH"
+   export HOMEBREW_GITHUB_API_TOKEN=06ce472e6c54a26af0f53170e8a6adfc479b2f9f
+fi
 # Enable To debug loading times
 # zprof
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh

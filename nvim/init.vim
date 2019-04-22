@@ -1,26 +1,22 @@
 "###############################################################################
-"General settings and configuration
+" General settings and configuration
 "###############################################################################
-    "Source functions file
+    " Source functions file
     source $XDG_CONFIG_HOME/nvim/config/functions.vim
 
-    "Reload configuration after save
+    " Reload configuration after save
     augroup reload_vimrc
         autocmd!
         autocmd BufWritePost $MYVIMRC,*.vim nested source $MYVIMRC | echom "Reloaded " . $MYVIMRC | redraw
     augroup END
 
-    "Colorscheme
-    " if has('termguicolors') && ($TERM != 'rxvt-unicode-256color')
-    "     set termguicolors
-    " endif
-
-    "Indentation
+    " Indentation
     set expandtab
     set shiftwidth=4
     set softtabstop=4
     set autoindent
 
+    " Mail configuration for neomutt
     augroup mail
         autocmd!
         autocmd FileType mail setlocal spell spelllang=en,es
@@ -28,26 +24,26 @@
         autocmd BufWritePost neomutt-* :exe ':silent !mail2html.sh %'
     augroup END
 
-    "Search
+    " Search
     set incsearch           "search as characters are entered
     set hlsearch            "highlight matches
     set ignorecase
     set smartcase
 
-    "Folding
+    " Folding
     set foldnestmax=8       "defines max nested folds
     set foldmethod=indent   "fold based on indent level
     set foldlevel=99
 
-    "Softwrapping
+    " Softwrapping
     set wrap                "Enable wrapping
     set linebreak
     set nolist
 
-    "Clipboard
+    " Clipboard
     set clipboard=unnamedplus "Use plus register as default clipboard
 
-    "Defaults
+    " Defaults
     set number              "insert line number column
     set history=200         "increase history number
     set relativenumber      "show relative number from current line and absolute in the line
@@ -69,48 +65,51 @@
     syntax on
     syntax enable
     set undofile            "Preserve undo history
+    set scrolloff=2         "Preserve lines when scrolling
+    set shortmess=aTAqI
+    set autoread
     augroup undo_temp
         autocmd!
         autocmd BufWritePre /tmp/* setlocal noundofile
     augroup END
 
-    "Disable ruby, node.js and python2 support
+    " Disable ruby, node.js and python2 support
     let g:loaded_python_provider = 1
     let g:loaded_node_provider = 1
-    " let g:loaded_ruby_provider = 1
+    let g:loaded_ruby_provider = 1
 
-    "Python provider (to use pyenv-virtualenv)
-    let g:python3_host_prog = '/home/admin/.pyenv/versions/py3neovim/bin/python'
+    " Python provider (to use pyenv-virtualenv)
+    let g:python3_host_prog = '/Users/avazquez/.pyenv/versions/py3neovim/bin/python'
 
-    "VerticalSplitBuffer command
+    " VerticalSplitBuffer command
     command! -nargs=1 Vb call VerticalSplitBuffer(<f-args>)
     command! -nargs=1 Vbuffer call VerticalSplitBuffer(<f-args>)
 
-    "Windows config
+    " Windows config
     set splitbelow          "Split always below
     set splitright          "Split always right
 
-    "Terminal configuration
+    " Terminal configuration
     set shell=zsh
     autocmd! TermOpen * startinsert
 
-    "Highlight on lines with more than 80 characters
+    " Highlight on lines with more than 80 characters
     set colorcolumn=81
 
-    "Set characters to represent weird whitespaces
+    " Set characters to represent weird whitespaces
     exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~,eol:\uAC"
     set list
 
-    "Command to call function for removing trailing spaces
+    " Command to call function for removing trailing spaces
     command! Trim call TrimTrailingSpaces()
 
 "###############################################################################
-"General keybindings
+" General keybindings
 "###############################################################################
-    "Map leader to 'space'
+    " Map leader to 'space'
     let mapleader="\<space>"
 
-    "Disable 'badhabit' keys
+    " Disable 'badhabit' keys
     nnoremap   <Up> <Nop>
     nnoremap   <Down>    <Nop>
     nnoremap   <Left>    <Nop>
@@ -123,49 +122,53 @@
     vnoremap   <Down>    <Nop>
     vnoremap   <Left>    <Nop>
     vnoremap   <Right>   <Nop>
-    inoremap   <BS>      <Nop>
+    " inoremap   <BS>      <Nop>
     inoremap   <Del>     <Nop>
 
-    "Map to un-highlight
+    " Map to un-highlight
     nnoremap <silent> <leader><space> :nohlsearch<CR>
 
-    "Moving through lines
+    " Moving through lines
     nnoremap $ g$
     nnoremap ^ g^
     nnoremap j gj
     nnoremap k gk
 
-    "ESC secuence
+    " ESC secuence
     inoremap jk <ESC>
 
-    "Make session
+    " Make session
     nnoremap <silent> <leader>s :mksession<CR>
 
-    "Clipboard mapping
+    " Clipboard mapping
     inoremap <C-v> <ESC>"+pa
     vnoremap <C-v> c<ESC>"+pa
     vnoremap <C-c> "+y
 
-    "Windows config
-    inoremap <A-h> <C-\><C-N><C-w>h
-    inoremap <A-j> <C-\><C-N><C-w>j
-    inoremap <A-k> <C-\><C-N><C-w>k
-    inoremap <A-l> <C-\><C-N><C-w>l
-    nnoremap <A-h> <C-w>h
-    nnoremap <A-j> <C-w>j
-    nnoremap <A-k> <C-w>k
-    nnoremap <A-l> <C-w>l
+    " Windows config
+    inoremap <M-h> <C-\><C-N><C-w>h
+    inoremap <M-j> <C-\><C-N><C-w>j
+    inoremap <M-k> <C-\><C-N><C-w>k
+    inoremap <M-l> <C-\><C-N><C-w>l
+    nnoremap <M-h> <C-w>h
+    nnoremap <M-j> <C-w>j
+    nnoremap <M-k> <C-w>k
+    nnoremap <M-l> <C-w>l
 
-    "Terminal configuration
+    " Terminal configuration
     nnoremap <silent> <leader>' :terminal<CR>
     tnoremap <ESC> <C-\><C-N>
     tnoremap <C-q><Esc> <Esc>
-    tnoremap <A-h> <C-\><C-N><C-w>h
-    tnoremap <A-j> <C-\><C-N><C-w>j
-    tnoremap <A-k> <C-\><C-N><C-w>k
-    tnoremap <A-l> <C-\><C-N><C-w>l
+    tnoremap <M-h> <C-\><C-N><C-w>h
+    tnoremap <M-j> <C-\><C-N><C-w>j
+    tnoremap <M-k> <C-\><C-N><C-w>k
+    tnoremap <M-l> <C-\><C-N><C-w>l
 
-    "Define make shortcut
+    " Increase with alt to avoid conflic with tmux
+    nnoremap <M-a> <C-a>
+    nnoremap <M-x> <C-x>
+
+    " Define make shortcut
     nnoremap <leader>x :make<CR>
 
     " Define splits keybind
@@ -176,35 +179,36 @@
     nnoremap <leader>k :tabprev<CR>
     nnoremap <leader>j :tabprev<CR>
 
-    "netrw configuration
+    " netrw configuration
     let g:netrw_banner=0
     let g:netrw_liststyle=3
 
-    "Change directory to current file's folder
+    " Change directory to current file's folder
     nmap <silent> <leader>cd :lcd %:h<CR>:echo "Changed directory to: "expand('%:p:h')<CR>
-    "Create parent directory of current file
+    " Create parent directory of current file
     nmap <silent> <leader>md :!mkdir -p %:p:h<CR>
 
     " Open files located in the same dir in with the current file is edited
     map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
 
-    "Expand current active directory
+    " Expand current active directory
     cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
+    " On new tab, cd to the file's directory
     autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
 
-    "Modify path to add bin from pyenv
-    let $PATH = '/home/admin/.pyenv/versions/py3neovim/bin/'.$PATH
+    " Modify path to add bin for pyenv
+    let $PATH = '/Users/avazquez/.pyenv/versions/py3neovim/bin/'.$PATH
 
-    " Set colorscheme
+    " Set colorscheme as fallback theme
     colorscheme desert
 
-    "Edit vimrc/zshrc and load vimrc bindings
+    " Edit vimrc/zshrc and load vimrc bindings
     nnoremap <silent> <leader>ev :edit $MYVIMRC<CR>
 
-    "Dynamic loading for plugins
-    if empty($SERVER)
-        let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plugings.vim"
+    " Dynamic loading for plugins based on sys env
+    if empty($SERVER_MODE)
+        let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plugins.vim"
     else
         let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plug_server.vim"
     endif
