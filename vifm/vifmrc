@@ -346,6 +346,14 @@ filextype */
         \ {View in thunar}
         \ Thunar %f &,
 
+" view contents of archive files on opening them
+filetype *.7z,*.bz2,*.cab,*.cpio,*.deb,*.gz,
+        \*.msi,*.pkg,*.rar,*.tar,*.tgz,*.xz,*.zip
+        \ als %f | less
+" silently extract selected archives in background
+command extract aunpack %f &>/dev/null &
+" map extraction command
+nnoremap ex :extract<CR>
 " Syntax highlighting in preview
 "
 " Explicitly set highlight type for some extensions

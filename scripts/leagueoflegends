@@ -5,5 +5,5 @@ export MESA_GLTHREAD=true
 export GPU_MAX_HEAP_SIZE=100
 export GPU_MAX_ALLOC_PERCENT=100
 export WINEDLLOVERRIDES='winemenubuilder.exe=d'
-WINEPREFIX=/home/beto/.wineprefix/lol64 WINEDEBUG=-all wine "C:/Riot Games/League of Legends/LeagueClient.exe"
-# WINEPREFIX=/home/beto/.wineprefix/lol64 WINEDEBUG=-all wine "C:/Riot Games/League of Legends/LeagueClient.exe" -opengl
+# WINEPREFIX=/home/beto/.wineprefix/lol64 WINEDEBUG=-all wine "C:/Riot Games/League of Legends/LeagueClient.exe"
+WINEPREFIX=/home/beto/.wineprefix/lol64 WINEDEBUG=-all wine "C:/Riot Games/League of Legends/LeagueClient.exe" -opengl

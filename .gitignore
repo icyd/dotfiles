@@ -1,5 +1,6 @@
 *.log
 *.pass
+*.orig
 nvim/autoload
 nvim/plugged
 nvim/thesaurus

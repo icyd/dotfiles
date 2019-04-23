@@ -79,7 +79,7 @@
     let g:loaded_ruby_provider = 1
 
     " Python provider (to use pyenv-virtualenv)
-    let g:python3_host_prog = '/Users/avazquez/.pyenv/versions/py3neovim/bin/python'
+    let g:python3_host_prog = $HOME . "/.pyenv/versions/py3neovim/bin/python"
 
     " VerticalSplitBuffer command
     command! -nargs=1 Vb call VerticalSplitBuffer(<f-args>)
@@ -188,6 +188,11 @@
     " Create parent directory of current file
     nmap <silent> <leader>md :!mkdir -p %:p:h<CR>
 
+    " Turn on spell check for certain filetypes automatically
+    autocmd BufRead,BufNewFile *.md setlocal spell spelllang=en_us
+    autocmd BufRead,BufNewFile *.txt setlocal spell spelllang=en_us
+    autocmd FileType gitcommit setlocal spell spelllang=en_us
+
     " Open files located in the same dir in with the current file is edited
     map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
 
@@ -197,8 +202,11 @@
     " On new tab, cd to the file's directory
     autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
 
-    " Modify path to add bin for pyenv
-    let $PATH = '/Users/avazquez/.pyenv/versions/py3neovim/bin/'.$PATH
+    " Modify path to add bin from pyenv
+    let $PATH = $HOME . "/.pyenv/versions/py3neovim/bin/" . $PATH
+
+    " Write with sudo
+    cmap w!! w !sudo tee % >/dev/null
 
     " Set colorscheme as fallback theme
     colorscheme desert
