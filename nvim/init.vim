@@ -79,7 +79,7 @@
     let g:loaded_ruby_provider = 1
 
     " Python provider (to use pyenv-virtualenv)
-    let g:python3_host_prog = $HOME . "/.pyenv/versions/py3neovim/bin/python"
+    let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
 
     " VerticalSplitBuffer command
     command! -nargs=1 Vb call VerticalSplitBuffer(<f-args>)
@@ -203,7 +203,7 @@
     autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
 
     " Modify path to add bin from pyenv
-    let $PATH = $HOME . "/.pyenv/versions/py3neovim/bin/" . $PATH
+    let $PATH = $PYENV_ROOT.'/versions/py3neovim/bin/:'.$PATH
 
     " Write with sudo
     cmap w!! w !sudo tee % >/dev/null

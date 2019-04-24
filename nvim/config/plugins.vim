@@ -127,7 +127,7 @@ call plug#begin('~/.config/nvim/plugged')
     " REPL plugin
     Plug 'Vigemus/iron.nvim'
     " Pyenv plugin
-    Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
+    " Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
     Plug 'vim-vdebug/vdebug'
 "#ENDIGNORE
@@ -258,6 +258,8 @@ call plug#end()
     let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
     let g:LanguageClient_serverStderr = '/tmp/LanguageServer.log'
     let g:LanguageClient_loggingLevel = 'WARN'
+    let g:LanguageClient_selectionUI = 'fzf'
+    let g:LanguageClient_useVirtualText = 0
     let g:LanguageClient_serverCommands = {
         \ 'python': ['pyls'],
         \ 'c': ['ccls', '--log-file=/tmp/cc.log'],
@@ -292,7 +294,6 @@ call plug#end()
 
     " EditorConfig
     let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
-    let g:EditorConfig_exec_path = '/usr/bin/editorconfig'
 
     " Pandoc
     let g:pandoc#modules#enabled = ["formatting"]

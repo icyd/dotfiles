@@ -18,8 +18,10 @@ export TERMINAL="urxvtc"
 export PAGER="less"
 SKIP=1
 
-export DOTFILES="$HOME/.config/dotfiles"
+export DOTFILES="$XDG_CONFIG_HOME/dotfiles"
 
+# gnupg config
+export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
 # Python's pyenv configuration for neovim and virtualenv
 export PYENV_ROOT="$HOME/.pyenv"

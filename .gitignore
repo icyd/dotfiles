@@ -7,6 +7,8 @@ nvim/thesaurus
 nvim/config/plug_server.vim
 nvim/spell
 nvim/.netrwhist
+nvim/package*.json
+nvim/node_modules
 qutebrowser/bookmarks
 qutebrowser/quickmarks
 qutebrowser/qsettings
@@ -19,3 +21,4 @@ zsh/local.zsh
 scripts/*
 tmux/plugins
 vifm/vifminfo
+gnupg/*

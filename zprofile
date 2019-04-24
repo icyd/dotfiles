@@ -1,3 +1,4 @@
-# Set path
-export PATH="$PYENV_ROOT/shims:$HOME/.local/bin/:$HOME/.yarn/bin:$PATH"
-[ "$(uname -s)" = "Darwin" ] && export PATH="$(brew --prefix coreutils)/libexec/gnubin/:/usr/local/bin:$PATH"
+# If running from tty1 start sway
+if [ "$(uname)" = "Linux" ] && [ "$(tty)" = "/dev/tty1" ]; then
+    exec sway
+fi
