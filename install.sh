@@ -36,7 +36,9 @@ definitions() {
 usage() {
     definitions
     echo -e "Usage:\n"
-    echo -e "\t-c|--create-symlink \"foo, bar\"\tCreate symlinks of the following files/directories"
+    echo -e "\t-c|--create-symlink\tCreate symlinks of the files/directories inside the repository."
+    echo -e "\t-fd|--files-directories \"foo, bar\"\tYou may define which files to copy using --minimal or --server-mode option."
+    echo -e "\t-all|--install-all\tInstall all, means options: -c -a -tpm -vplug -fzf -pyenv -plugins are used."
     echo -e "\t-a|--install-antibody"
     echo -e "\t-tpm|--install-tpm"
     echo -e "\t-vplug|--install-vplug"
@@ -60,8 +62,19 @@ while [[ $# -gt 0 ]]; do
     case "$key" in
         -c|--create-symlink)
             CREATE_SYMLINK=1
+            ;;
+        -fd|--files-directories)
             SYMLINK_STRING="$2"
             shift
+            ;;
+        -all|--install-all)
+            CREATE_SYMLINK=1
+            INSTALL_ANTIBODY=1
+            INSTALL_TPM=1
+            INSTALL_VPLUG=1
+            INSTALL_FZF=1
+            INSTALL_PYENV=1
+            INSTALL_VIM_PLUGINS=1
             ;;
         -a|--install-antibody)
             INSTALL_ANTIBODY=1
@@ -138,7 +151,7 @@ confirm() {
 create_symlinks() {
     [ ! -d "$FOLDER_DD" ] && mkdir -p "$FOLDER_DD"
     [ ! -d "$FILE_DD" ] && mkdir -p "$FILE_DD"
-    if [ -z "$SERVER_MODE" ]; then
+    if [ -z "$SERVER_MODE" ] && [ -z "$SKIP_THIS" ]; then
         readarray -d '' FILES < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print0)
     else
         # cherrypick when in server
@@ -294,12 +307,13 @@ install_pyenv() {
     pip install -q -U pip
     echo -e "${yellow}Installing python packages.${reset}"
     if [ -z "$SERVER_MODE" ]; then
-        pip install -r "${CWD}/nvim/requirements.txt" >/dev/null
+        pip install -U -r "${CWD}/nvim/requirements.txt" >/dev/null
         echo -e "${yellow}Installing node.js.${reset}"
         nodeenv -p > /dev/null
         echo -e "${yellow}Installing node.js packages.${reset}"
         NPM="$(pyenv which npm)"
-        cat "${CWD}/nvim/npm_requirements.txt" | xargs $NPM -g install >/dev/null
+        cat "${CWD}/nvim/npm_requirements.txt" | cut -d ' ' -f2 | tail -n +2 | xargs npm install -g > /dev/null
+        npm update -g
     else
         echo -e "${yellow}Installing pynvim${reset}"
         pip -q install -U pynvim

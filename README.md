@@ -4,11 +4,11 @@ Before installing the configuration file please be sure to install the following
 
     - ripgrep
     - python3
-    - antibody
     - global
     - exhuberant-tags
     - zsh
     - tmux
+    - ccls
 
 ### Zsh'z plugins
 
@@ -58,20 +58,21 @@ To install simply run:
 ```
     cd ~/.config
     git clone https://github.com/icyd/dotfiles
-    bash dotfiles/install.sh
+    bash dotfiles/install.sh -all
 ```
 
 ## Minimalistic install for server
 
-In order to install the dotfiles in a server, the environment variable **SERVER** should be set. This only install the configuration for
+In order to install the dotfiles in a server, the environment variable **SERVER** should be set. This only install the configuration for:
+
     - zsh
     - tmux
-    - zsh
+    - nvim
 
 And also will avoid part of the configuration not needed. Install this running:
 
 ```
     cd ~/.config
     git clone https://github.com/icyd/dotfiles
-    SERVER=1 bash dotfiles/install.sh
+    SERVER=1 bash dotfiles/install.sh -server
 ```
