@@ -3,6 +3,14 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 # Source not hardcoded sys env definition
 [ -f "$XDG_CONFIG_HOME/zsh/local.zsh" ] && source "$XDG_CONFIG_HOME/zsh/local.zsh"
 
+# Define locales for Darwin
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    export LANG=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
+   export PATH="/usr/local/opt/coreutils/libexec/gnubin/:/usr/local/bin:/usr/local/sbin/:$PATH"
+   export HOMEBREW_GITHUB_API_TOKEN=06ce472e6c54a26af0f53170e8a6adfc479b2f9f
+fi
+
 # Defines environment variables.
 command -v nvr >/dev/null 2>&1
 if [ "$?" -eq 0 ]; then
@@ -16,6 +24,8 @@ fi
 export EDITOR="$NVIM"
 export TERMINAL="urxvtc"
 export PAGER="less"
+export TERM="xterm-256color"
+export TERMINFO="/usr/share/terminfo"
 SKIP=1
 
 export DOTFILES="$XDG_CONFIG_HOME/dotfiles"

@@ -16,14 +16,6 @@
     set softtabstop=4
     set autoindent
 
-    " Mail configuration for neomutt
-    augroup mail
-        autocmd!
-        autocmd FileType mail setlocal spell spelllang=en,es
-        autocmd FileType mail nnoremap <F12> :exe ':silent !qutebrowser /tmp/email.html'<CR>
-        autocmd BufWritePost neomutt-* :exe ':silent !mail2html.sh %'
-    augroup END
-
     " Search
     set incsearch           "search as characters are entered
     set hlsearch            "highlight matches
@@ -73,13 +65,26 @@
         autocmd BufWritePre /tmp/* setlocal noundofile
     augroup END
 
+    " Turn on spell check for certain filetypes automatically
+    autocmd BufRead,BufNewFile *.md setlocal spell spelllang=en_us
+    autocmd BufRead,BufNewFile *.txt setlocal spell spelllang=en_us
+    autocmd FileType gitcommit setlocal spell spelllang=en_us
+
+    " Mail configuration for neomutt
+    augroup mail
+        autocmd!
+        autocmd FileType mail setlocal spell spelllang=en,es
+        autocmd FileType mail nnoremap <F12> :exe ':silent !qutebrowser /tmp/email.html'<CR>
+        autocmd BufWritePost neomutt-* :exe ':silent !mail2html.sh %'
+    augroup END
+
     " Disable ruby, node.js and python2 support
     let g:loaded_python_provider = 1
     let g:loaded_node_provider = 1
     let g:loaded_ruby_provider = 1
 
     " Python provider (to use pyenv-virtualenv)
-    let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
+    let g:python3_host_prog =  $PYENV_ROOT.'/versions/py3neovim/bin/python'
 
     " VerticalSplitBuffer command
     command! -nargs=1 Vb call VerticalSplitBuffer(<f-args>)
@@ -187,11 +192,6 @@
     nmap <silent> <leader>cd :lcd %:h<CR>:echo "Changed directory to: "expand('%:p:h')<CR>
     " Create parent directory of current file
     nmap <silent> <leader>md :!mkdir -p %:p:h<CR>
-
-    " Turn on spell check for certain filetypes automatically
-    autocmd BufRead,BufNewFile *.md setlocal spell spelllang=en_us
-    autocmd BufRead,BufNewFile *.txt setlocal spell spelllang=en_us
-    autocmd FileType gitcommit setlocal spell spelllang=en_us
 
     " Open files located in the same dir in with the current file is edited
     map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>

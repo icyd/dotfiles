@@ -223,9 +223,5 @@ alias yaydb='yay -Qi'
 alias yayrm='yay -Rnsc'
 
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
-if [ "$(uname -s)" = "Darwin" ]; then
-   export PATH="/usr/local/opt/coreutils/libexec/gnubin/:/usr/local/bin:/usr/local/sbin/:$PATH"
-   export HOMEBREW_GITHUB_API_TOKEN=06ce472e6c54a26af0f53170e8a6adfc479b2f9f
-fi
 # Enable To debug loading times
 # zprof
