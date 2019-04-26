@@ -59,6 +59,7 @@
     set undofile            "Preserve undo history
     set scrolloff=2         "Preserve lines when scrolling
     set shortmess=aTAqI
+    set signcolumn=yes
     set autoread
     augroup undo_temp
         autocmd!

@@ -73,12 +73,11 @@ call plug#begin('~/.config/nvim/plugged')
 
     " Syntaxes plugin
     Plug 'sheerun/vim-polyglot'
+    Plug 'peitalin/vim-jsx-typescript'
     " Git
     Plug 'tpope/vim-fugitive'
     " Syntax for Sass, Scss & Haml
     Plug 'tpope/vim-haml'
-    " Syntax jsx
-    Plug 'mxw/vim-jsx'
 
     " HTML plugins
     Plug 'mattn/emmet-vim'
@@ -204,6 +203,9 @@ call plug#end()
     let g:user_emmet_install_global=0
     autocmd FileType html,css,javascript,javascript.jsx EmmetInstall
 
+    " set filetypes as typescript.tsx
+    autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
+
     " Fugitive
     autocmd! User fugitive
          \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
@@ -257,7 +259,8 @@ call plug#end()
     let g:LanguageClient_autoStart=1
     let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
     let g:LanguageClient_serverStderr = '/tmp/LanguageServer.log'
-    let g:LanguageClient_loggingLevel = 'WARN'
+    let g:LanguageClient_loggingLevel = 'DEBUG'
+    " let g:LanguageClient_loggingLevel = 'WARN'
     let g:LanguageClient_selectionUI = 'fzf'
     let g:LanguageClient_useVirtualText = 0
     let g:LanguageClient_serverCommands = {
@@ -272,7 +275,7 @@ call plug#end()
         \ 'sh': ['bash-language-server', 'start'],
         \ 'lua': ['~/.luarocks/bin/lua-lsp'],
         \ 'yaml': ['yaml-language-server', '--stdio'],
-        \ 'php': ['php', $HOME . '/.config/nvim/plugged/LanguageServer-php-neovim/vendor/bin/php-language-server.php'],
+        \ 'php': ['php', $XDG_CONFIG_HOME.'/nvim/plugged/LanguageServer-php-neovim/vendor/bin/php-language-server.php'],
         \ 'vue': ['vls'],
         \ }
 
