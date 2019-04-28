@@ -192,8 +192,8 @@ alias la='ls --color=auto -al'
 alias d='dirs -v'
 alias p='pushd >/dev/null'
 alias o='popd >/dev/null'
-alias vim="${EDITOR}"
-alias svim='sudo -E nvim'
+# alias vim="${EDITOR}"
+# alias svim='sudo -E nvim'
 alias eZC="$EDITOR $HOME/.zshrc"
 alias eZE="$EDITOR $HOME/.zshenv"
 alias -g C='| wc -l'

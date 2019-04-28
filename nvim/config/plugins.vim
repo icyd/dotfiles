@@ -1,7 +1,7 @@
 "##############################################################################
 " Plugin manager setup
 "##############################################################################
-call plug#begin('~/.config/nvim/plugged')
+call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
 
 " Gerenal plugins
     " Bracket mapping
@@ -54,6 +54,8 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'ncm2/ncm2-path'
     " Completion source for css/scss
     Plug 'ncm2/ncm2-cssomni'
+    " vim-lsp support plugin
+    Plug 'ncm2/ncm2-vim-lsp'
 
 " Editing
     " Plugin to show marks
@@ -94,13 +96,15 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'ncm2/ncm2-gtags'
 
 " Language server setup
-    Plug 'autozimu/LanguageClient-neovim', {
-        \ 'branch': 'next',
-        \ 'do': 'bash install.sh',
-        \ }
+    " Plug 'autozimu/LanguageClient-neovim', {
+        " \ 'branch': 'next',
+        " \ 'do': 'bash install.sh',
+        " \ }
+    Plug 'prabirshrestha/async.vim'
+    Plug 'prabirshrestha/vim-lsp'
     " Wrapper pluggin to install php-language-server
-    Plug 'roxma/LanguageServer-php-neovim',  {'do':
-         \ 'composer install && composer run-script parse-stubs'}
+    " Plug 'roxma/LanguageServer-php-neovim',  {'do':
+         " \ 'composer install && composer run-script parse-stubs'}
 
 " Grammar, spelling, related
     " Plugin for grammar checking with languagetool
@@ -127,7 +131,7 @@ call plug#begin('~/.config/nvim/plugged')
     " REPL plugin
     Plug 'Vigemus/iron.nvim'
     " Pyenv plugin
-    " Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
+    Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
     Plug 'vim-vdebug/vdebug'
 "#ENDIGNORE
@@ -254,27 +258,42 @@ call plug#end()
     command! -bang -nargs=* Find call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
     " LSP
-    let g:LanguageClient_autoStart=1
-    let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
-    let g:LanguageClient_serverStderr = '/tmp/LanguageServer.log'
-    let g:LanguageClient_loggingLevel = 'WARN'
-    let g:LanguageClient_selectionUI = 'fzf'
-    let g:LanguageClient_useVirtualText = 0
-    let g:LanguageClient_serverCommands = {
-        \ 'python': ['pyls'],
-        \ 'c': ['ccls', '--log-file=/tmp/cc.log'],
-        \ 'cpp': ['ccls', '--log-file=/tmp/cc.log'],
-        \ 'javascript': ['javascript-typescript-stdio'],
-        \ 'typescript': ['typescript-language-server', '--stdio'],
-        \ 'css': ['css-languageserver', '--stdio'],
-        \ 'html': ['html-languageserver', '--stdio'],
-        \ 'json': ['json-languageserver', '--stdio'],
-        \ 'sh': ['bash-language-server', 'start'],
-        \ 'lua': ['~/.luarocks/bin/lua-lsp'],
-        \ 'yaml': ['yaml-language-server', '--stdio'],
-        \ 'php': ['php', $HOME . '/.config/nvim/plugged/LanguageServer-php-neovim/vendor/bin/php-language-server.php'],
-        \ 'vue': ['vls'],
-        \ }
+    let g:lsp_log_verbose = 1
+    let g:lsp_log_file = '/tmp/vim-lsp.log'
+    let g:lsp_signs_enabled = 1         " enable signs
+    let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
+    let g:lsp_signs_error = {'text': '✗'}
+    let g:lsp_signs_warning = {'text': '⚠'}
+    let g:lsp_signs_information = {'text': '‼'}
+    let g:lsp_signs_hint = {'text': '✦'}
+
+    " Load lsp configuration files
+    let lsp_files = systemlist('find $XDG_CONFIG_HOME/nvim/config/lsp -name "*.vim" ! -name "_*" -type f')
+    for conf_file in lsp_files
+        execute 'source '.fnameescape(conf_file)
+    endfor
+
+    " let g:LanguageClient_autoStart=1
+    " let g:LanguageClient_loggingFile = '/tmp/LanguageClient.log'
+    " let g:LanguageClient_serverStderr = '/tmp/LanguageServer.log'
+    " let g:LanguageClient_loggingLevel = 'DEBUG'
+    " let g:LanguageClient_selectionUI = 'fzf'
+    " let g:LanguageClient_useVirtualText = 0
+    " let g:LanguageClient_serverCommands = {
+    "     \ 'python': ['pyls'],
+    "     \ 'c': ['ccls', '--log-file=/tmp/cc.log'],
+    "     \ 'cpp': ['ccls', '--log-file=/tmp/cc.log'],
+    "     \ 'javascript': ['javascript-typescript-stdio'],
+    "     \ 'typescript': ['typescript-language-server', '--stdio'],
+    "     \ 'css': ['css-languageserver', '--stdio'],
+    "     \ 'html': ['html-languageserver', '--stdio'],
+    "     \ 'json': ['json-languageserver', '--stdio'],
+    "     \ 'sh': ['bash-language-server', 'start'],
+    "     \ 'lua': ['~/.luarocks/bin/lua-lsp'],
+    "     \ 'yaml': ['yaml-language-server', '--stdio'],
+    "     \ 'php': ['php', $HOME . '/.config/nvim/plugged/LanguageServer-php-neovim/vendor/bin/php-language-server.php'],
+    "     \ 'vue': ['vls'],
+    "     \ }
 
    " LSP keymap definition
     function! SetLSPShortcuts()
@@ -294,6 +313,12 @@ call plug#end()
 
     " EditorConfig
     let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
+    " Neomake
+    augroup my_neomake
+      au!
+      autocmd FileType scss,html,yaml,json call neomake#configure#automake_for_buffer('nrwi', 500)
+    augroup END
 
     " Pandoc
     let g:pandoc#modules#enabled = ["formatting"]
@@ -344,45 +369,47 @@ call plug#end()
 
 
     " Vdebug
-     let g:vdebug_keymap = {
-         \    "run" : "<Leader>xs",
-         \    "run_to_cursor" : "<F9>",
-         \    "step_over" : "<F2>",
-         \    "step_into" : "<F3>",
-         \    "step_out" : "<F4>",
-         \    "close" : "<F6>",
-         \    "detach" : "<F7>",
-         \    "set_breakpoint" : "<Leader>xb",
-         \    "get_context" : "<F11>",
-         \    "eval_under_cursor" : "<F12>",
-         \    "eval_visual" : "<Leader>e",
-         \}
+     " let g:vdebug_keymap = {
+     "     \    "run" : "<Leader>xs",
+     "     \    "run_to_cursor" : "<F9>",
+     "     \    "step_over" : "<F2>",
+     "     \    "step_into" : "<F3>",
+     "     \    "step_out" : "<F4>",
+     "     \    "close" : "<F6>",
+     "     \    "detach" : "<F7>",
+     "     \    "set_breakpoint" : "<Leader>xb",
+     "     \    "get_context" : "<F11>",
+     "     \    "eval_under_cursor" : "<F12>",
+     "     \    "eval_visual" : "<Leader>e",
+     "     \}
 
-    if !exists('g:vdebug_options')
-        let g:vdebug_options = {}
-    endif
+    " if !exists('g:vdebug_options')
+    "     let g:vdebug_options = {}
+    " endif
 
     " let g:vdebug_options = {'ide_key': 'netbeans-xdebug'}
-    let g:vdebug_keymap['run'] = '<C-s>'
+    " let g:vdebug_keymap['run'] = '<C-s>'
     " -------- Vdebug ---------
-    let g:vdebug_options= {
-    \    "port" : 9009,
-    \    "timeout" : 20,
-    \    "on_close" : "detach",
-    \    "break_on_open" : 0,
-    \    "ide_key" : "PHPSTORM",
-    \    "path_maps" : {},
-    \    "server" : "",
-    \    "debug_window_level" : 0,
-    \    "debug_file_level" : 8,
-    \    "debug_file" : "/tmp/vdebug.log",
-    \    "continuous_mode" : 1,
-    \    "watch_window_style" : "expanded",
-    \    "marker_default" : "⬦",
-    \    "marker_closed_tree" : "▸",
-    \    "marker_open_tree" : "▾"
-    \}
+    " let g:vdebug_options= {
+    " \    "port" : 9009,
+    " \    "timeout" : 20,
+    " \    "on_close" : "detach",
+    " \    "break_on_open" : 0,
+    " \    "ide_key" : "PHPSTORM",
+    " \    "path_maps" : {},
+    " \    "server" : "",
+    " \    "debug_window_level" : 0,
+    " \    "debug_file_level" : 8,
+    " \    "debug_file" : "/tmp/vdebug.log",
+    " \    "continuous_mode" : 1,
+    " \    "watch_window_style" : "expanded",
+    " \    "marker_default" : "⬦",
+    " \    "marker_closed_tree" : "▸",
+    " \    "marker_open_tree" : "▾"
+    " \}
 
     " Iron lua config (temporary until implementation)
-    luafile $HOME/.config/nvim/config/iron.lua
+    if has('nvim')
+        luafile $HOME/.config/nvim/config/iron.lua
+    endif
 "#ENDIGNORE

@@ -94,10 +94,6 @@
     set splitbelow          "Split always below
     set splitright          "Split always right
 
-    " Terminal configuration
-    set shell=zsh
-    autocmd! TermOpen * startinsert
-
     " Highlight on lines with more than 80 characters
     set colorcolumn=81
 
@@ -160,14 +156,24 @@
     nnoremap <M-k> <C-w>k
     nnoremap <M-l> <C-w>l
 
-    " Terminal configuration
-    nnoremap <silent> <leader>' :terminal<CR>
-    tnoremap <ESC> <C-\><C-N>
-    tnoremap <C-q><Esc> <Esc>
-    tnoremap <M-h> <C-\><C-N><C-w>h
-    tnoremap <M-j> <C-\><C-N><C-w>j
-    tnoremap <M-k> <C-\><C-N><C-w>k
-    tnoremap <M-l> <C-\><C-N><C-w>l
+    if has('nvim')
+        " Terminal configuration
+        set shell=zsh
+        autocmd! TermOpen * startinsert
+
+        " Terminal configuration
+        nnoremap <silent> <leader>' :terminal<CR>
+        tnoremap <ESC> <C-\><C-N>
+        tnoremap <C-q><Esc> <Esc>
+        tnoremap <M-h> <C-\><C-N><C-w>h
+        tnoremap <M-j> <C-\><C-N><C-w>j
+        tnoremap <M-k> <C-\><C-N><C-w>k
+        tnoremap <M-l> <C-\><C-N><C-w>l
+
+        " On new tab, cd to the file's directory
+        autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
+
+    endif
 
     " Increase with alt to avoid conflic with tmux
     nnoremap <M-a> <C-a>
@@ -198,9 +204,6 @@
 
     " Expand current active directory
     cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
-
-    " On new tab, cd to the file's directory
-    autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
 
     " Modify path to add bin from pyenv
     let $PATH = $PYENV_ROOT.'/versions/py3neovim/bin/:'.$PATH
