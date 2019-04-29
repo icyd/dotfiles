@@ -2,7 +2,9 @@
 definitions() {
     # Destination for configuration folders
     XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+    XDG_CONFIG_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
     export XDG_CONFIG_HOME="$XDG_CONFIG_HOME"
+    export XDG_DATA_HOME="$XDG_DATA_HOME"
     # Get current working directory
     SCRIPT_PATH="$(cd "$(dirname "$0")"; pwd -P)"
     CWD="$SCRIPT_PATH"
@@ -229,7 +231,7 @@ install_tpm() {
 
 # Install Vim-plug
 install_vplug() {
-    INSTALL_PATH="$FOLDER_DD/nvim/autoload/plug.vim"
+    INSTALL_PATH="$XDG_DATA_HOME/nvim/site/autoload/plug.vim"
     if [ ! -f "$INSTALL_PATH" ]; then
         echo -e "${yellow}Downloading plug.vim into:${reset} $INSTALL_PATH"
         curl -fLo "$INSTALL_PATH" --create-dirs \
@@ -257,7 +259,7 @@ install_vim_plugins() {
 install_vim_thesaur() {
     if [ ! -f "${FOLDER_DD}/nvim/thesaurus/mthesaur.txt" ]; then
         echo -e "${yellow}Downloading mthesaur.txt into:${reset} ${FOLDER_DD}/nvim/thesaurus/mthesaur.txt"
-        curl -sfLo "${FOLDER_DD}/nvim/thesaurus/mthesaur.txt" --create-dirs \
+        curl -sfLo "${XDG_DATA_HOME}/nvim/site/thesaurus/mthesaur.txt" --create-dirs \
             http://www.gutenberg.org/files/3202/files/mthesaur.txt 2>/dev/null
     else
         echo -e "${green}thesaur already installed.${reset}"
