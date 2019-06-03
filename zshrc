@@ -160,15 +160,32 @@ mkcd() {
     mkdir -p "$1" && cd "$1" || return 1
 }
 
+own_pop() {
+    updown="$1"
+    shift
+    popd -q "$updown$@"
+}
+
+own_push() {
+    updown="$1"
+    shift
+    pushd -q "$updown$@"
+}
+
 # Aliases
 alias dw="cd $HOME/Downloads"
 alias pj="cd $HOME/Projects"
 alias cdC="cd $XDG_CONFIG_HOME/dotfiles"
 alias la='ls --color=auto -al'
 alias d='dirs -v'
-alias p='pushd >/dev/null'
-alias o='popd >/dev/null'
-alias n='nvr --remote-silent'
+alias p='pushd -q'
+alias o='popd -q '
+alias pu='own_push -'
+alias pd='own_push +'
+alias ou='own_pop -'
+alias od='own_pop +'
+alias n="${EDITOR}"
+# alias svim='sudo -E nvim'
 alias eZC="$EDITOR $HOME/.zshrc"
 alias eZE="$EDITOR $HOME/.zshenv"
 alias -g C='| wc -l'

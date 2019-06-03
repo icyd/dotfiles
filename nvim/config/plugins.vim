@@ -75,15 +75,14 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
 
     " Syntaxes plugin
     Plug 'sheerun/vim-polyglot'
+    Plug 'peitalin/vim-jsx-typescript'
     " Git
     Plug 'tpope/vim-fugitive'
     " Syntax for Sass, Scss & Haml
     Plug 'tpope/vim-haml'
-    " Syntax jsx
-    Plug 'mxw/vim-jsx'
 
     " HTML plugins
-    Plug 'mattn/emmet-vim'
+    Plug 'mattn/emmet-vim', { 'for': ['javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss'] }
 
 "#IGNORE
 " DO NOT ERASE, USED TO GENERATE CONF FILE IGNORING FOLLOWING PLUGINS
@@ -208,7 +207,18 @@ call plug#end()
 
     " Emmet
     let g:user_emmet_install_global=0
-    autocmd FileType html,css,javascript,javascript.jsx EmmetInstall
+    let g:user_emmet_settings = {
+    \  'javascript' : {
+    \      'extends' : 'jsx',
+    \  },
+    \ 'typescript' : {
+    \       'extends' : 'jsx',
+    \ },
+    \}
+    autocmd FileType html,css,javascript,javascript.jsx,javascript.tsx EmmetInstall
+
+    " set filetypes as typescript.tsx
+    autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
 
     " Fugitive
     autocmd! User fugitive

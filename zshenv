@@ -43,7 +43,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
 
 # Path definition
-export PATH="$PYENV_ROOT/bin/:$XDG_CONFIG_HOME/zsh/:$HOME/.local/bin/:$HOME/.yarn/bin:$PATH"
+export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$PATH"
 
 # Nvr's config
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
