@@ -5,7 +5,7 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 [ -f "$XDG_CONFIG_HOME/zsh/local.zsh" ] && source "$XDG_CONFIG_HOME/zsh/local.zsh"
 
 # Define locales for Darwin
-if [[ "$(uname -s)" == "Darwin" ]]; then
+if [ "$(uname -s)" = "Darwin" ]; then
     export LANG=en_US.UTF-8
     export LC_ALL=en_US.UTF-8
    export PATH="/usr/local/opt/coreutils/libexec/gnubin/:/usr/local/bin:/usr/local/sbin/:$PATH"
@@ -31,6 +31,10 @@ SKIP=1
 
 export DOTFILES="$XDG_CONFIG_HOME/dotfiles"
 
+# zsh config
+export ZSH_CONFIG="$XDG_CONFIG_HOME/zsh"
+export ZSH_CACHE_DIR="$HOME/.cache/zsh"
+
 # gnupg config
 export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
@@ -39,7 +43,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
 
 # Path definition
-export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.yarn/bin:$PATH"
+export PATH="$PYENV_ROOT/bin/:$XDG_CONFIG_HOME/zsh/:$HOME/.local/bin/:$HOME/.yarn/bin:$PATH"
 
 # Nvr's config
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"

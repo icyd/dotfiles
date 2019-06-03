@@ -88,7 +88,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
 "#IGNORE
 " DO NOT ERASE, USED TO GENERATE CONF FILE IGNORING FOLLOWING PLUGINS
 " Colorschemes & themes
-    Plug 'morhetz/gruvbox'
+    Plug 'flazz/vim-colorschemes'
 
 " Async plugin for ctags & gtags managment
     Plug 'jsfaint/gen_tags.vim'
@@ -133,7 +133,9 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     " Pyenv plugin
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
-    Plug 'vim-vdebug/vdebug'
+    " loaded on demand
+    Plug 'vim-vdebug/vdebug', { 'on': 'VdebugStart' }
+    "
 "#ENDIGNORE
 
 call plug#end()

@@ -326,6 +326,9 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
     for_window [class="(?i)urxvt" title="Dropdown"] move scratchpad
     bindsym $mod+t [class="(?i)urxvt" title="Dropdown"] scratchpad show
 
+    for_window [class="pinentry-qt"] floating enable
+    for_window [class="pinentry-qt"] resize set 600 300
+
 #
 # Binding
 #
