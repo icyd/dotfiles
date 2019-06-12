@@ -56,6 +56,10 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'ncm2/ncm2-cssomni'
     " vim-lsp support plugin
     Plug 'ncm2/ncm2-vim-lsp'
+    " Completion from the current buffer
+    Plug 'ncm2/ncm2-bufword'
+    " Completion from github
+    Plug 'ncm2/ncm2-github'
 
 " Editing
     " Plugin to show marks
@@ -75,6 +79,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
 
     " Syntaxes plugin
     Plug 'sheerun/vim-polyglot'
+    Plug 'mxw/vim-jsx'
     Plug 'peitalin/vim-jsx-typescript'
     " Git
     Plug 'tpope/vim-fugitive'
@@ -124,6 +129,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     " Ansible syntax
     Plug 'pearofducks/ansible-vim'
 
+    Plug 'metakirby5/codi.vim'
 " Other plugins
     " Pandoc's Markdown integration
     Plug 'vim-pandoc/vim-pandoc'
