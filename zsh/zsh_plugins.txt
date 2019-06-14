@@ -4,7 +4,6 @@ zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-autosuggestions
 mafredri/zsh-async
 sindresorhus/pure
-zpm-zsh/ls
 zpm-zsh/colors
 davidparsson/zsh-pyenv-lazy
 robbyrussell/oh-my-zsh path:plugins/extract

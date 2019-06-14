@@ -9,19 +9,12 @@
 # - '.' matches "regular files"
 # - 'mh+24' matches files (or directories or whatever) that are older than 24 hours.
 autoload -Uz compinit
-if [ "$(uname -s)" = "Linux" ]; then
-    if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
-        compinit
-    else
-        compinit -C
-    fi
-elif [ "$(uname -s)" = "Darwin" ]; then
-    if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' ~/.zcompdump) ]; then
-      compinit
-    else
-      compinit -C
-    fi
+if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
+    compinit
+else
+    compinit -C
 fi
+
 # Static call of zsh's plugins
 gen_plugins_file(){
     antibody bundle < "${ZSH_CONFIG}/zsh_plugins.txt" > "${ZSH_CONFIG}/zsh_plugins.sh"
