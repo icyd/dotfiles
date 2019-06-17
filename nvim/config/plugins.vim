@@ -84,7 +84,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'tpope/vim-fugitive'
 
     " HTML plugins
-    Plug 'mattn/emmet-vim', { 'for': ['javascrip', 'javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss'] }
+    Plug 'mattn/emmet-vim', { 'for': ['javascript', 'javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss'] }
 
 "#IGNORE
 " DO NOT ERASE, USED TO GENERATE CONF FILE IGNORING FOLLOWING PLUGINS
@@ -146,7 +146,10 @@ call plug#end()
         \   'gitbranch': 'fugitive#head'
         \ },
         \ }
-
+    let g:tcomment#filetype#guess_typescript = 1
+    let g:tcomment#filetype#guess_javascript = 1
+    autocmd BufNewFile,BufRead *.js set filetype=javascript.jsx
+    let g:vim_jsx_pretty_colorful_config = 1
     " Gundo configuration
     let g:gundo_prefer_python3 = 1
     let g:gundo_right=1
