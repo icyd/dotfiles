@@ -5,6 +5,7 @@ zsh-users/zsh-autosuggestions
 mafredri/zsh-async
 sindresorhus/pure
 zpm-zsh/colors
+DarrinTisdale/zsh-aliases-exa
 davidparsson/zsh-pyenv-lazy
 robbyrussell/oh-my-zsh path:plugins/extract
 robbyrussell/oh-my-zsh path:plugins/archlinux

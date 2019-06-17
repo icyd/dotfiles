@@ -79,15 +79,12 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
 
     " Syntaxes plugin
     Plug 'sheerun/vim-polyglot'
-    Plug 'mxw/vim-jsx'
-    Plug 'peitalin/vim-jsx-typescript'
+
     " Git
     Plug 'tpope/vim-fugitive'
-    " Syntax for Sass, Scss & Haml
-    Plug 'tpope/vim-haml'
 
     " HTML plugins
-    Plug 'mattn/emmet-vim', { 'for': ['javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss'] }
+    Plug 'mattn/emmet-vim', { 'for': ['javascrip', 'javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss'] }
 
 "#IGNORE
 " DO NOT ERASE, USED TO GENERATE CONF FILE IGNORING FOLLOWING PLUGINS
@@ -99,16 +96,8 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     "Gtags source for ncm2
     Plug 'ncm2/ncm2-gtags'
 
-" Language server setup
-    " Plug 'autozimu/LanguageClient-neovim', {
-        " \ 'branch': 'next',
-        " \ 'do': 'bash install.sh',
-        " \ }
     Plug 'prabirshrestha/async.vim'
     Plug 'prabirshrestha/vim-lsp'
-    " Wrapper pluggin to install php-language-server
-    " Plug 'roxma/LanguageServer-php-neovim',  {'do':
-         " \ 'composer install && composer run-script parse-stubs'}
 
 " Grammar, spelling, related
     " Plugin for grammar checking with languagetool
@@ -122,19 +111,13 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'Shougo/context_filetype.vim'
     " Jinja2 Syntax pluggin
     Plug 'Glench/Vim-Jinja2-Syntax'
-    " Markdown plugin
-    Plug 'plasticboy/vim-markdown'
     " Pandoc's syntax module
     Plug 'vim-pandoc/vim-pandoc-syntax'
-    " Ansible syntax
-    Plug 'pearofducks/ansible-vim'
 
     Plug 'metakirby5/codi.vim'
 " Other plugins
     " Pandoc's Markdown integration
     Plug 'vim-pandoc/vim-pandoc'
-    " REPL plugin
-    Plug 'Vigemus/iron.nvim'
     " Pyenv plugin
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
@@ -213,6 +196,7 @@ call plug#end()
 
     " Emmet
     let g:user_emmet_install_global=0
+    let g:user_emmet_leader_key='<C-Z>'
     let g:user_emmet_settings = {
     \  'javascript' : {
     \      'extends' : 'jsx',
@@ -224,7 +208,7 @@ call plug#end()
     autocmd FileType html,css,javascript,javascript.jsx,javascript.tsx EmmetInstall
 
     " set filetypes as typescript.tsx
-    autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
+    " autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
 
     " Fugitive
     autocmd! User fugitive
@@ -427,7 +411,7 @@ call plug#end()
     " \}
 
     " Iron lua config (temporary until implementation)
-    if has('nvim')
-        luafile $HOME/.config/nvim/config/iron.lua
-    endif
+    " if has('nvim')
+    "     luafile $HOME/.config/nvim/config/iron.lua
+    " endif
 "#ENDIGNORE
