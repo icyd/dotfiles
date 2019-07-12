@@ -193,6 +193,23 @@ alias -s {jpg,png}="imv"
 alias -s pdf="zathura"
 alias cls='clear'
 
+# #Pass teaming
+# # alias passown="PASSWORD_STORE_DIR=$HOME/pass/icyd pass"
+# alias passcbw="PASSWORD_STORE_DIR=$HOME/pass/cbw pass"
+
+compdef _pass passown
+zstyle ':completion::complete:passown::' prefix "$HOME/.pass/icyd"
+passown() {
+  PASSWORD_STORE_DIR="$HOME/.pass/icyd" pass $@
+}
+
+compdef _pass passcbw
+zstyle ':completion::complete:passcbw::' prefix "$HOME/.pass/cbw"
+passcbw() {
+  PASSWORD_STORE_DIR="$HOME/.pass/cbw" pass $@
+}
+
+
 # Configure fzf to use ripgrep
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
 

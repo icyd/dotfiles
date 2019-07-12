@@ -19,4 +19,5 @@ robbyrussell/oh-my-zsh path:plugins/git
 robbyrussell/oh-my-zsh path:plugins/gitignore
 robbyrussell/oh-my-zsh path:plugins/yarn
 robbyrussell/oh-my-zsh path:plugins/npm
+robbyrussell/oh-my-zsh path:plugins/pass
 robbyrussell/oh-my-zsh path:lib/git.zsh

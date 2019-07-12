@@ -15,7 +15,7 @@ fi
 # Defines environment variables.
 command -v nvr >/dev/null 2>&1
 if [ "$?" -eq 0 ]; then
-    NVIM='nvr -s --remote'
+    NVIM='nvr -s'
 else
 
     NVIM='nvim'
@@ -47,6 +47,9 @@ export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.yarn/bi
 
 # Nvr's config
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
+
+# Pass config
+export PASSWORD_STORE_GENERATED_LENGTH=12
 
 # Put all configuration to be skipped inside if-else declaration
 if [ -z "$SKIP_THIS" ]; then
