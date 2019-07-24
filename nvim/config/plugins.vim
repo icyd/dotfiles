@@ -43,7 +43,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'ncm2/ncm2'
     Plug 'roxma/nvim-yarp'
     " Integration with Ultisnips
-    Plug 'ncm2/ncm2-ultisnips'
+    " Plug 'ncm2/ncm2-ultisnips'
     " Syntax source for ncm2
     Plug 'Shougo/neco-syntax'
     Plug 'ncm2/ncm2-syntax'
@@ -87,7 +87,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'tpope/vim-fugitive'
 
     " HTML plugins
-    Plug 'mattn/emmet-vim', { 'for': ['javascript', 'javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss'] }
+    Plug 'mattn/emmet-vim', { 'for': ['javascript', 'javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss', 'php'] }
 
 "#IGNORE
 " DO NOT ERASE, USED TO GENERATE CONF FILE IGNORING FOLLOWING PLUGINS
@@ -202,7 +202,7 @@ call plug#end()
 
     " Emmet
     let g:user_emmet_install_global=0
-    let g:user_emmet_leader_key='<C-Z>'
+    " let g:user_emmet_leader_key='<C-Z>'
     let g:user_emmet_settings = {
     \  'javascript' : {
     \      'extends' : 'jsx',
@@ -211,7 +211,7 @@ call plug#end()
     \       'extends' : 'jsx',
     \ },
     \}
-    autocmd FileType html,css,javascript,javascript.jsx,javascript.tsx EmmetInstall
+    autocmd FileType html,css,php,javascript,javascript.jsx,javascript.tsx EmmetInstall
 
     " set filetypes as typescript.tsx
     " autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
@@ -245,6 +245,9 @@ call plug#end()
 "#IGNORE
 " DO NOT REMOVE, USED TO GENERATE CONF FILE FOR SERVER
 " FOLLOWING CONFIGURATIONS ARE IGNORED
+     if (has("termguicolors"))
+         set termguicolors
+     endif
     " Set colorscheme
     let gruvbox_bold=1
     let gruvbox_italic=1
