@@ -52,6 +52,9 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     " Detect fenced code in mk
     Plug 'ncm2/ncm2-markdown-subscope'
     Plug 'ncm2/ncm2-path'
+    Plug 'ncm2/ncm2-tmux'
+    Plug 'ncm2/ncm2-gtags'
+    Plug 'fgrsnau/ncm2-otherbuf'
     " Completion source for css/scss
     Plug 'ncm2/ncm2-cssomni'
     " vim-lsp support plugin
@@ -137,7 +140,7 @@ call plug#end()
     " Lightline configuration
     set laststatus=2
     let g:lightline = {
-        \ 'colorscheme': 'jellybeans',
+        \ 'colorscheme': 'nord',
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ],
         \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -246,7 +249,7 @@ call plug#end()
     let gruvbox_bold=1
     let gruvbox_italic=1
     set background=dark
-    colorscheme gruvbox
+    colorscheme nord
 
     " Gen_tags config
     let g:gen_tags#ctags=1
