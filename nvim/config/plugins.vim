@@ -140,7 +140,7 @@ call plug#end()
     " Lightline configuration
     set laststatus=2
     let g:lightline = {
-        \ 'colorscheme': 'nord',
+        \ 'colorscheme': 'jellybeans',
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ],
         \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -249,10 +249,12 @@ call plug#end()
          set termguicolors
      endif
     " Set colorscheme
-    let gruvbox_bold=1
-    let gruvbox_italic=1
     set background=dark
-    colorscheme nord
+    " let gruvbox_bold=1
+    " let gruvbox_italic=1
+    " let g:oceanic_next_terminal_bold=1
+    " let g:oceanic_next_terminal_italic=1
+    colorscheme Tomorrow-Night-Eighties
 
     " Gen_tags config
     let g:gen_tags#ctags=1
