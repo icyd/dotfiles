@@ -23,10 +23,11 @@ fi
 
 # System's definitions
 export EDITOR="$NVIM"
-export TERMINAL="urxvtc"
+export TERMINAL="alacritty"
 export PAGER="less"
-export TERM="xterm-256color"
-export TERMINFO="/usr/share/terminfo"
+# export TERM="xterm-256color"
+# export TERMINFO="/usr/share/terminfo"
+export BEMENU_BACKEND="wayland"
 SKIP=1
 
 export DOTFILES="$XDG_CONFIG_HOME/dotfiles"

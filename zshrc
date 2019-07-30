@@ -192,10 +192,10 @@ alias -s html="$BROWSER"
 alias -s {jpg,png}="imv"
 alias -s pdf="zathura"
 alias cls='clear'
-
-# #Pass teaming
-# # alias passown="PASSWORD_STORE_DIR=$HOME/pass/icyd pass"
-# alias passcbw="PASSWORD_STORE_DIR=$HOME/pass/cbw pass"
+# move to script to be executed by sway
+# alias passmenuown='PASSWORD_STORE_DIR="$HOME/.pass/icyd" passmenu --bottom --ignorecase --nb #282828 --nf #d5c4a1 --sb #d5c4a1 --sf #282828 --fn "Inconsolata 12"'
+# alias passmenucbw='PASSWORD_STORE_DIR="$HOME/.pass/cbw" passmenu --bottom --ignorecase --nb #282828 --nf #d5c4a1 --sb #d5c4a1 --sf #282828 --fn "Inconsolata 12"'
+alias gpgupd='gpg-connect-agent updatestartuptty /bye'
 
 compdef _pass passown
 zstyle ':completion::complete:passown::' prefix "$HOME/.pass/icyd"
@@ -214,9 +214,9 @@ passcbw() {
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
 
 # Start tmux on new shell
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  tmux attach || exec tmux new-session
-fi
+# if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+#   tmux attach || exec tmux new-session
+# fi
 
 # Enable To debug loading times
 # zprof

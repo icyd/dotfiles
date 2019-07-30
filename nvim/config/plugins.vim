@@ -140,7 +140,7 @@ call plug#end()
     " Lightline configuration
     set laststatus=2
     let g:lightline = {
-        \ 'colorscheme': 'jellybeans',
+        \ 'colorscheme': 'seoul256',
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ],
         \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -242,6 +242,10 @@ call plug#end()
     let g:javascript_plugin_jsdoc = 1
     let g:jsx_ext_required = 1
 
+    " Vim-pyenv
+    let g:pyenv#auto_activate=0
+    let g:pyenv#python_exec='/usr/bin/python'
+
 "#IGNORE
 " DO NOT REMOVE, USED TO GENERATE CONF FILE FOR SERVER
 " FOLLOWING CONFIGURATIONS ARE IGNORED
@@ -275,6 +279,7 @@ call plug#end()
     let g:lsp_log_file = '/tmp/vim-lsp.log'
     let g:lsp_signs_enabled = 1         " enable signs
     let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
+    let g:lsp_virtual_text_enabled = 0
     let g:lsp_signs_error = {'text': '✗'}
     let g:lsp_signs_warning = {'text': '⚠'}
     let g:lsp_signs_information = {'text': '‼'}
