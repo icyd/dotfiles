@@ -143,12 +143,22 @@ call plug#end()
         \ 'colorscheme': 'seoul256',
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ],
-        \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+        \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ],
+        \   'right': [ [ 'lineinfo' ],
+        \              [ 'percent' ],
+        \              [ 'spell', 'obsession', 'fileformat', 'fileencoding', 'filetype' ] ]
         \ },
         \ 'component_function': {
-        \   'gitbranch': 'fugitive#head'
+        \   'gitbranch': 'fugitive#head',
+        \   'obsession': 'ObsessionStatus'
+        \ },
+        \ 'component': {
+        \   'charvaluehex': '0x%B'
         \ },
         \ }
+    function! LightlineFilename()
+        return expand('%')
+    endfunction
     let g:tcomment#filetype#guess_typescript = 1
     let g:tcomment#filetype#guess_javascript = 1
     autocmd BufNewFile,BufRead *.js set filetype=javascript.jsx
