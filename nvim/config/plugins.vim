@@ -43,7 +43,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'ncm2/ncm2'
     Plug 'roxma/nvim-yarp'
     " Integration with Ultisnips
-    " Plug 'ncm2/ncm2-ultisnips'
+    Plug 'ncm2/ncm2-ultisnips'
     " Syntax source for ncm2
     Plug 'Shougo/neco-syntax'
     Plug 'ncm2/ncm2-syntax'
@@ -54,7 +54,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'ncm2/ncm2-path'
     Plug 'ncm2/ncm2-tmux'
     Plug 'ncm2/ncm2-gtags'
-    Plug 'fgrsnau/ncm2-otherbuf'
+    Plug 'fgrsnau/ncm2-otherbuf', { 'branch': 'ncm2' }
     " Completion source for css/scss
     Plug 'ncm2/ncm2-cssomni'
     " vim-lsp support plugin
