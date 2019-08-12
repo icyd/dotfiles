@@ -136,7 +136,7 @@ font:
     style: Italic
 
   # Point size
-  size: 11.0
+  size: 14.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -169,34 +169,48 @@ font:
 
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: true
-# Colors (Nord)
+
+# Colors (nova): https://trevordmiller.com/projects/nova
 colors:
-   # Default colors
-   primary:
-     background: '0x2E3440'
-     foreground: '0xD8DEE9'
+  # Default colors
+  primary:
+    background: '0x3c4c55'
+    foreground: '0xc5d4dd'
 
-   # Normal colors
-   normal:
-     black:   '0x3B4252'
-     red:     '0xBF616A'
-     green:   '0xA3BE8C'
-     yellow:  '0xEBCB8B'
-     blue:    '0x81A1C1'
-     magenta: '0xB48EAD'
-     cyan:    '0x88C0D0'
-     white:   '0xE5E9F0'
+  # Colors the cursor will use if `custom_cursor_colors` is true
+  cursor:
+    text: '0x3c4c55'
+    cursor: '0x7fc1ca'
 
-   # Bright colors
-   bright:
-     black:   '0x4C566A'
-     red:     '0xBF616A'
-     green:   '0xA3BE8C'
-     yellow:  '0xEBCB8B'
-     blue:    '0x81A1C1'
-     magenta: '0xB48EAD'
-     cyan:    '0x8FBCBB'
-     white:   '0xECEFF4'
+  # Normal colors
+  normal:
+    black:   '0x3c4c55'
+    red:     '0xdf8c8c'
+    green:   '0xa8ce93'
+    yellow:  '0xdada93'
+    blue:    '0x83afe5'
+    magenta: '0x9a93e1'
+    cyan:    '0x7fc1ca'
+    white:   '0xc5d4dd'
+
+  # Bright colors
+  bright:
+    black:   '0x899ba6'
+    red:     '0xf2c38f'
+    green:   '0xa8ce93'
+    yellow:  '0xdada93'
+    blue:    '0x83afe5'
+    magenta: '0xd18ec2'
+    cyan:    '0x7fc1ca'
+    white:   '0xe6eef3'
+
+    # Bright and dim foreground colors
+    #
+    # The dimmed foreground color is calculated automatically if it is not present.
+    # If the bright foreground color is not set, or `draw_bold_text_with_bright_colors`
+    # is `false`, the normal foreground color will be used.
+    #dim_foreground: '0x9a9a9a'
+    #bright_foreground: '0xffffff'
 
   # Cursor colors
   #
@@ -269,7 +283,7 @@ visual_bell:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.9
+background_opacity: 1.0
 
 # Mouse bindings
 #
@@ -357,8 +371,8 @@ live_config_reload: true
 #   - (macOS) /bin/bash --login
 #   - (Linux) user login shell
 #   - (Windows) powershell
-shell:
-  program: /usr/bin/zsh
+#shell:
+#  program: /bin/bash
 #  args:
 #    - --login
 
@@ -455,7 +469,7 @@ debug:
 #
 # Values for `chars`:
 #   The `chars` field writes the specified string to the terminal. This makes
-#   it possible to pass escape sequences.
+#  it possible to pass escape sequences.
 #   To find escape codes for bindings like `PageUp` ("\x1b[5~"), you can run
 #   the command `showkey -a` outside of tmux.
 #   Note that applications use terminfo to map escape sequences back to
@@ -526,8 +540,12 @@ key_bindings:
 
   - { key: Paste,                   action: Paste                            }
   - { key: Copy,                    action: Copy                             }
-  - { key: L,        mods: Control, action: ClearLogNotice                   }
+  # - { key: L,        mods: Control, action: ClearLogNotice                 }
   - { key: L,        mods: Control, chars: "\x0c"                            }
+  - { key: L,        mods: Command, chars: "\x1b\x6c"                        }
+  - { key: H,        mods: Command, chars: "\x1b\x68"                        }
+  - { key: K,        mods: Command, chars: "\x1b\x6a"                        }
+  - { key: J,        mods: Command, chars: "\x1b\x6b"                        }
   - { key: Home,     mods: Alt,     chars: "\x1b[1;3H"                       }
   - { key: Home,                    chars: "\x1bOH",        mode: AppCursor  }
   - { key: Home,                    chars: "\x1b[H",        mode: ~AppCursor }

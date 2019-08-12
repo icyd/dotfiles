@@ -25,7 +25,7 @@ fi
 export EDITOR="$NVIM"
 export TERMINAL="alacritty"
 export PAGER="less"
-# export TERM="xterm-256color"
+export TERM="xterm-256color"
 # export TERMINFO="/usr/share/terminfo"
 export BEMENU_BACKEND="wayland"
 SKIP=1

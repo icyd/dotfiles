@@ -66,6 +66,10 @@ indent_size = 2
 [*.scss]
 indent_size = 2
 
+# PHP
+[*.php]
+indent_size = 4
+
 # Batch files use tabs for indentation
 [*.bat]
 indent_style = tab
