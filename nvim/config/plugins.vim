@@ -180,6 +180,10 @@ call plug#end()
     " Enable selection with Tab
     inoremap <expr><tab> pumvisible()? "\<c-n>" : "\<tab>"
     inoremap <expr><s-tab> pumvisible()? "\<c-p>" : "\<s-tab>"
+    inoremap <expr> <Plug>(cr_prev) execute('let g:_prev_line = getline(".")')
+    inoremap <expr> <Plug>(cr_do) (g:_prev_line == getline('.') ? "\<cr>" : "")
+    inoremap <expr> <Plug>(cr_post) execute('unlet g:_prev_line')
+    imap <expr> <CR> (pumvisible() ? "\<Plug>(cr_prev)\<C-Y>\<Plug>(cr_do)\<Plug>(cr_post)" : "\<CR>")
 
     " Snippet configuration
     let g:UltiSnipsExpandTrigger="<c-l>"

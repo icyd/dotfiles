@@ -1,6 +1,7 @@
 *.log
 *.pass
 *.orig
+alacritty/alacritty.yml
 nvim/autoload
 nvim/plugged
 nvim/thesaurus
