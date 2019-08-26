@@ -121,6 +121,8 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
 " Other plugins
     " Pandoc's Markdown integration
     Plug 'vim-pandoc/vim-pandoc'
+    " reStructuredText plugin
+    Plug 'gu-fan/riv.vim'
     " Pyenv plugin
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
@@ -177,13 +179,11 @@ call plug#end()
     set completeopt-=preview
     " No text injection, show menu with one, no autoselect
     set completeopt=noinsert,menuone,noselect
+    set shortmess+=c
+    inoremap <c-c> <ESC>
     " Enable selection with Tab
-    inoremap <expr><tab> pumvisible()? "\<c-n>" : "\<tab>"
-    inoremap <expr><s-tab> pumvisible()? "\<c-p>" : "\<s-tab>"
-    inoremap <expr> <Plug>(cr_prev) execute('let g:_prev_line = getline(".")')
-    inoremap <expr> <Plug>(cr_do) (g:_prev_line == getline('.') ? "\<cr>" : "")
-    inoremap <expr> <Plug>(cr_post) execute('unlet g:_prev_line')
-    imap <expr> <CR> (pumvisible() ? "\<Plug>(cr_prev)\<C-Y>\<Plug>(cr_do)\<Plug>(cr_post)" : "\<CR>")
+    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
     " Snippet configuration
     let g:UltiSnipsExpandTrigger="<c-l>"
@@ -357,6 +357,9 @@ call plug#end()
     let g:pandoc#filetypes#pandoc_markdown = 1
     let g:pandoc#syntax#codeblocks#embeds#langs = ['html', 'python', 'bash=sh']
     let g:polyglot_disabled = ['html', 'markdown', 'coffee-script', 'vue']
+
+    "RIV
+    let g:riv_python_rst_hl = 1
 
     " Pweave
     augroup pandoc

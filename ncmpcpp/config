@@ -24,7 +24,7 @@ ncmpcpp_directory = ~/.config/ncmpcpp
 #
 #mpd_host = localhost
 #
-#mpd_port = 6600
+mpd_port = 6602
 #
 #mpd_connection_timeout = 5
 #
@@ -82,7 +82,8 @@ visualizer_sync_interval = 30
 ##
 visualizer_type = spectrum
 #
-visualizer_look = ●▮
+# visualizer_look = ●▮
+visualizer_look = "+|"
 #
 #visualizer_color = blue, cyan, green, yellow, magenta, red
 #
