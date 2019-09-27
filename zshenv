@@ -43,6 +43,7 @@ export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 # Python's pyenv configuration for neovim and virtualenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 # Path definition
 export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$PATH"

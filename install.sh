@@ -32,7 +32,7 @@ definitions() {
     # Pyenv virtualenv name
     PYENV_NAME="${PYENV_NAME:-py3neovim}"
     # String to cherrypick files/directories
-    SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, zsh, zshenv, zshrc, editorconfig"}
+    SYMLINK_STRING=${SYMLINK_STRING:-"alacritty tmux.conf, nvim, zsh, zshenv, zshrc, editorconfig"}
 }
 
 usage() {
@@ -154,15 +154,25 @@ create_symlinks() {
     [ ! -d "$FOLDER_DD" ] && mkdir -p "$FOLDER_DD"
     [ ! -d "$FILE_DD" ] && mkdir -p "$FILE_DD"
     if [ -z "$SERVER_MODE" ] && [ -z "$SKIP_THIS" ]; then
-        readarray -d '' FILES < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print0)
+        if [ $(command -v readarray) ]; then
+            readarray -d '' FILES < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print0)
+        else
+            echo 'si'
+            declare -a FILES
+            let i=0
+            while IFS=$'\n' read -r line; do
+                FILES[i]="${line}"
+                echo "$line"
+                ((++i))
+            done < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print)
+        fi
     else
         # cherrypick when in server
         FILES=( "${SYMLINK_ARRAY[@]/#/$CWD/}" )
-        for ele in "${FILES[@]}"; do
-            echo $ele
-        done
-        exit 1
     fi
+    # for ele in "${FILES[@]}"; do
+    #     echo $ele
+    # done
 
     echo -e "${green}Creating symlink for configuration files${reset}"
     for file in "${FILES[@]}"; do
@@ -181,6 +191,19 @@ create_symlinks() {
         echo -e "\t${yellow}Creating symlink:${reset} ${name} -> ${file}"
         ln -sf "${file}" "${name}"
     done
+    if [ -d "${CWD}/alacritty" ]; then
+        if [ $(uname -s) == "Darwin" ]; then
+            echo -e "${green}Using Darwin Alacritty config file${reset}"
+            ln -sf "${CWD}/alacritty/alacritty_darwin.yml" "${CWD}/alacritty/alacritty.yml"
+        else
+            echo -e "${green}Using Linux Alacritty config file${reset}"
+            ln -sf "${CWD}/alacritty/alacritty_linux.yml" "${CWD}/alacritty/alacritty.yml"
+        fi
+    fi
+    if [ -f "${CWD}/gnupg/gpg-agent.conf" ] && [ $(uname -s) == "Darwin" ]; then
+        echo -e "${green}Replacing pinentry-qt with pinentry-mac${reset}"
+        perl -pi -e 's/^pinentry-program.*/pinentry-program \/usr\/local\/bin\/pinentry-mac/' "${CWD}/gnupg/gpg-agent.conf"
+    fi
     echo -e "\n"
 }
 
