@@ -9,6 +9,9 @@ Before installing the configuration file please be sure to install the following
     - zsh
     - tmux
     - ccls
+    - bat
+    - exa
+    - git
 
 ### Zsh'z plugins
 
@@ -59,6 +62,12 @@ To install simply run:
     cd ~/.config
     git clone https://github.com/icyd/dotfiles
     bash dotfiles/install.sh -all
+```
+
+To install a lightweight version run instead:
+
+```
+    SKIP_THIS=1 bash dotfiles/install.sh -all
 ```
 
 ## Minimalistic install for server
