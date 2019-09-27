@@ -204,6 +204,10 @@ create_symlinks() {
         echo -e "${green}Replacing pinentry-qt with pinentry-mac${reset}"
         perl -pi -e 's/^pinentry-program.*/pinentry-program \/usr\/local\/bin\/pinentry-mac/' "${CWD}/gnupg/gpg-agent.conf"
     fi
+
+    echo -e "${green}Changing permissions to gnupg folder${reset}"
+    find "${CWD}/gnupg/" -type d -exec chmod 700 {} \;
+    find "${CWD}/gnupg/" -type f -exec chmod 600 {} \;
     echo -e "\n"
 }
 
