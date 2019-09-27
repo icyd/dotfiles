@@ -32,7 +32,7 @@ definitions() {
     # Pyenv virtualenv name
     PYENV_NAME="${PYENV_NAME:-py3neovim}"
     # String to cherrypick files/directories
-    SYMLINK_STRING=${SYMLINK_STRING:-"alacritty tmux.conf, nvim, zsh, zshenv, zshrc, editorconfig"}
+    SYMLINK_STRING=${SYMLINK_STRING:-"gitcofig, alacritty tmux.conf, gnupg, nvim, zsh, zshenv, zshrc, editorconfig"}
 }
 
 usage() {
