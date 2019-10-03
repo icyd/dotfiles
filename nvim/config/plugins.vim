@@ -268,11 +268,11 @@ call plug#end()
      endif
     " Set colorscheme
     set background=dark
-    " let gruvbox_bold=1
-    " let gruvbox_italic=1
+    let gruvbox_bold=1
+    let gruvbox_italic=1
     " let g:oceanic_next_terminal_bold=1
     " let g:oceanic_next_terminal_italic=1
-    colorscheme Tomorrow-Night-Eighties
+    colorscheme gruvbox
 
     " Gen_tags config
     let g:gen_tags#ctags=1
