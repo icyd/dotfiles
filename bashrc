@@ -4,6 +4,8 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export EDITOR="vim"
 export PAGER="less"
 export BROWSER="lynx"
+export SERVER_MODE=1
+[ $(uname) = "Darwin" ] && export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 # Trim long paths
 PROMPT_DIRTRIM=2
 # Allow global recursion
@@ -54,8 +56,12 @@ bind '"\C-e":end-of-line'
 bind '"\C-f":forward-char'
 bind '"\C-b":backward-char'
 bind "set show-mode-in-prompt on"
-bind "set vi-ins-mode-string \1\e[5 q\2"
-bind "set vi-cmd-mode-string \1\e[2 q\2"
+# bind "set vi-ins-mode-string \1\e[5 q\2"
+# bind "set vi-cmd-mode-string \1\e[2 q\2"
+# bind "set vi-ins-mode-string +"
+# bind "set vi-cmd-mode-string :"
+bind "set vi-cmd-mode-string \1\e[1;31m\2:\1\e[0m\2"
+bind "set vi-ins-mode-string \1\e[1;31m\2>\1\e[0m\2"
 
 mkcd() {
     mkdir -p "$1" && cd "$1" || return 1
