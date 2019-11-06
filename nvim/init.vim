@@ -230,6 +230,16 @@
     " Set colorscheme as fallback theme
     colorscheme desert
 
+    if !has('nvim')
+        " Create temp folder
+        silent execute '!mkdir -p "'.$HOME.'/.vim/tmp"'
+        " Clear old backups
+        silent execute '!rm -f "'.$HOME.'/.vim/tmp/*~"'
+        set backupdir=$HOME/.vim/tmp//
+        set directory=$HOME/.vim/tmp//
+        set undodir=$HOME/.vim/tmp//
+    endif
+
     " Edit vimrc/zshrc and load vimrc bindings
     let s:main_config="$XDG_CONFIG_HOME/nvim/init.vim"
     exe "nnoremap <silent> <leader>ev :edit" . s:main_config . "<CR>"
