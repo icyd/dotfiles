@@ -26,7 +26,11 @@ fi
 export EDITOR="$NVIM"
 export TERMINAL="alacritty"
 export PAGER="less"
-export TERM="xterm-256color"
+# if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+    export TERM="xterm-256color"
+# else
+#     export TERM="tmux-256color"
+# fi
 # export TERMINFO="/usr/share/terminfo"
 export BEMENU_BACKEND="wayland"
 SKIP=1
@@ -55,27 +59,25 @@ export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
 export PASSWORD_STORE_GENERATED_LENGTH=12
 
 # Put all configuration to be skipped inside if-else declaration
-if [ -z "$SKIP_THIS" ]; then
-    if [ -z "$SERVER_MODE" ]; then
-        [ -f "$XDG_CONFIG_HOME/zsh/rofi.zsh" ] && source "$XDG_CONFIG_HOME/zsh/rofi.zsh"
-        export PATH="$DOTFILES/scripts:$HOME/.luarocks/bin:$PATH"
-        export BROWSER="qutebrowser"
+if [ -z "$SERVER_MODE" ]; then
+    [ -f "$XDG_CONFIG_HOME/zsh/rofi.zsh" ] && source "$XDG_CONFIG_HOME/zsh/rofi.zsh"
+    export PATH="$DOTFILES/scripts:$HOME/.luarocks/bin:$PATH"
+    export BROWSER="qutebrowser"
 
-        # Prevent wine file associations
-        export WINEDLLOVERRIDES="winemenubuilder.exe=d"
+    # Prevent wine file associations
+    export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 
-        #Use kwallet to ask sshpassword
-        export SSH_ASKPASS=/usr/bin/lxqt-openssh-askpass
-        export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
+    #Use kwallet to ask sshpassword
+    export SSH_ASKPASS=/usr/bin/lxqt-openssh-askpass
+    export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
 
-        # Force use wayland
-        export GDK_BACKEND=wayland
-        export CLUTTER_BACKEND=wayland
-        export QT_QPA_PLATFORM=wayland-egl
-        export SDL_VIDEODRIVER=wayland
-        export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-    else
-        export TERM="xterm"
-        export BROWSER="lynx"
-    fi
+    # Force use wayland
+    export GDK_BACKEND=wayland
+    export CLUTTER_BACKEND=wayland
+    export QT_QPA_PLATFORM=wayland-egl
+    export SDL_VIDEODRIVER=wayland
+    export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+else
+    export TERM="xterm"
+    export BROWSER="lynx"
 fi

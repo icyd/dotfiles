@@ -43,6 +43,14 @@
     set showcmd             "show last executed command
     filetype indent on      "load specific filetype indent files
     filetype plugin on      "load specific filetype plugin files
+    set infercase
+    " Avoid open hover on autocompletion
+    set completeopt-=preview
+    " No text injection, show menu with one, no autoselect
+    set completeopt=noinsert,menuone,noselect
+    set shortmess+=c
+    inoremap <c-c> <ESC>
+
     set wildmenu            "visual autocomplete for command
     set wildmode=longest,full
     set wildignorecase
@@ -85,7 +93,12 @@
     let g:loaded_ruby_provider = 1
 
     " Python provider (to use pyenv-virtualenv)
-    let g:python3_host_prog =  $PYENV_ROOT.'/versions/py3neovim/bin/python'
+    if empty($SERVER_MODE)
+        let g:python3_host_prog =  $PYENV_ROOT.'/versions/py3neovim/bin/python'
+    else
+        let g:python3_host_prog = 1
+    endif
+
 
     " VerticalSplitBuffer command
     command! -nargs=1 Vb call VerticalSplitBuffer(<f-args>)
@@ -207,7 +220,9 @@
     cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
     " Modify path to add bin from pyenv
-    let $PATH = $PYENV_ROOT.'/versions/py3neovim/bin/:'.$PATH
+    if empty($SERVER_MODE)
+        let $PATH = $PYENV_ROOT.'/versions/py3neovim/bin/:'.$PATH
+    endif
 
     " Write with sudo
     cmap w!! w !sudo tee % >/dev/null
@@ -216,13 +231,11 @@
     colorscheme desert
 
     " Edit vimrc/zshrc and load vimrc bindings
-    nnoremap <silent> <leader>ev :edit $MYVIMRC<CR>
+    let s:main_config="$XDG_CONFIG_HOME/nvim/init.vim"
+    exe "nnoremap <silent> <leader>ev :edit" . s:main_config . "<CR>"
+    nnoremap <silent> <leader>eV :edit $MYVIMRC<CR>
 
     " Dynamic loading for plugins based on sys env
-    if empty($SERVER_MODE)
-        let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plugins.vim"
-    else
-        let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plug_server.vim"
-    endif
+    let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plugins.vim"
     exe "nnoremap <silent> <leader>ep :edit " . s:plugin_file . "<CR>"
     call CheckandSource(s:plugin_file)
