@@ -84,6 +84,18 @@ nonzero_return() {
     RETVAL=$?
     [ $RETVAL -ne 0 ] && echo ">${RETVAL}"
 }
+
+git_current_branch() {
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || \
+  ref=$(git rev-parse --short HEAD 2> /dev/null) || return
+  echo ${ref#refs/heads/}
+}
+
+git_current_repository() {
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || \
+  ref=$(git rev-parse --short HEAD 2> /dev/null) || return
+  echo $(git remote -v | cut -d':' -f 2)
+}
 export PS1="\[\e[31m\]\u\[\e[m\]\[\e[32m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\] \[\e[34m\]\w\[\e[m\]\[\e[31m\]\`nonzero_return\`\[\e[m\]\[\e[31m\]\\$\[\e[m\] "
 
 # souce bash completion
