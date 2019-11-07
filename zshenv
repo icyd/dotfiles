@@ -77,6 +77,8 @@ if [ -z "$SERVER_MODE" ]; then
     export QT_QPA_PLATFORM=wayland-egl
     export SDL_VIDEODRIVER=wayland
     export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+    export MOZ_ENABLE_WAYLAND=1
+    export BEMENU_BACKEND=wayland
 else
     export TERM="xterm"
     export BROWSER="lynx"
