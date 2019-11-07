@@ -32,15 +32,16 @@ definitions() {
     # Pyenv virtualenv name
     PYENV_NAME="${PYENV_NAME:-py3neovim}"
     # String to cherrypick files/directories
-    SYMLINK_STRING=${SYMLINK_STRING:-"gitcofig, alacritty tmux.conf, gnupg, nvim, zsh, zshenv, zshrc, editorconfig"}
+    SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, bashrc, editorconfig"}
 }
 
 usage() {
     definitions
     echo -e "Usage:\n"
     echo -e "\t-c|--create-symlink\tCreate symlinks of the files/directories inside the repository."
+    echo -e "\t-sv|--server-mode\tInstall dotfiles in server mode (${SYMLINK_STRING})."
     echo -e "\t-fd|--files-directories \"foo, bar\"\tYou may define which files to copy using --minimal or --server-mode option."
-    echo -e "\t-all|--install-all\tInstall all, means options: -c -a -tpm -vplug -fzf -pyenv -plugins are used."
+    echo -e "\t-all|--install-all\tInstall all, means options active:\n\t\t\t\t\t-c -a -tpm -vplug -fzf -pyenv -plugins are used if run in normal mode\n\t\t\t\t\t-c -vplug -plugins if run in server mode."
     echo -e "\t-a|--install-antibody"
     echo -e "\t-tpm|--install-tpm"
     echo -e "\t-vplug|--install-vplug"
@@ -65,18 +66,23 @@ while [[ $# -gt 0 ]]; do
         -c|--create-symlink)
             CREATE_SYMLINK=1
             ;;
+        -sv|--server-mode)
+            export SERVER_MODE=1
+            ;;
         -fd|--files-directories)
             SYMLINK_STRING="$2"
             shift
             ;;
         -all|--install-all)
             CREATE_SYMLINK=1
-            INSTALL_ANTIBODY=1
-            INSTALL_TPM=1
             INSTALL_VPLUG=1
-            INSTALL_FZF=1
-            INSTALL_PYENV=1
             INSTALL_VIM_PLUGINS=1
+            if [ -z "$SERVER_MODE" ]; then
+                INSTALL_ANTIBODY=1
+                INSTALL_TPM=1
+                INSTALL_FZF=1
+                INSTALL_PYENV=1
+            fi
             ;;
         -a|--install-antibody)
             INSTALL_ANTIBODY=1
@@ -153,7 +159,7 @@ confirm() {
 create_symlinks() {
     [ ! -d "$FOLDER_DD" ] && mkdir -p "$FOLDER_DD"
     [ ! -d "$FILE_DD" ] && mkdir -p "$FILE_DD"
-    if [ -z "$SERVER_MODE" ] && [ -z "$SKIP_THIS" ]; then
+    if [ -z "$SERVER_MODE" ]; then
         if [ $(command -v readarray) ]; then
             readarray -d '' FILES < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print0)
         else
@@ -170,9 +176,6 @@ create_symlinks() {
         # cherrypick when in server
         FILES=( "${SYMLINK_ARRAY[@]/#/$CWD/}" )
     fi
-    # for ele in "${FILES[@]}"; do
-    #     echo $ele
-    # done
 
     echo -e "${green}Creating symlink for configuration files${reset}"
     for file in "${FILES[@]}"; do
@@ -378,22 +381,13 @@ main() {
 
 
     [ -n "$CREATE_SYMLINK" ] && create_symlinks
+    [ -n "$SERVER_MODE" ] && echo -e "${yellow}Running in server mode: ${green}${SYMLINK_STRING}${reset}\n"
     [ -n "$INSTALL_ANTIBODY" ] && install_antibody
     [ -n "$INSTALL_TPM" ] && install_tpm
     [ -n "$INSTALL_VPLUG" ] && install_vplug
     [ -n "$INSTALL_FZF" ] && install_fzf
     [ -n "$INSTALL_PYENV" ] && install_pyenv
-    if [ -n "$INSTALL_VIM_PLUGINS" ]; then
-        install_vim_plugins
-        if [ -n "$SERVER_MODE" ]; then
-            server_vim_config
-            echo -e "export SERVER_MODE=1" > "$FOLDER_DD/zsh/local.zsh"
-        else
-            install_vim_thesaur
-        fi
-    fi
-    [ -n "$SKIP_THIS" ] && echo -e "export SKIP_THIS=1" >> "$FOLDER_DD/zsh/local.zsh"
-    echo $SERVER_MODE
+    [ -n "$INSTALL_VIM_PLUGINS" ] && install_vim_plugins
     echo -e "${green}DONE!${reset}"
 }
 main
