@@ -24,7 +24,7 @@
 #
 # The top properties below are applied to every block, but can be overridden.
 # Each block command defaults to the script name to avoid boilerplate.
-command=/usr/lib/i3blocks/$BLOCK_NAME
+command=/usr/lib/i3blocks/$BLOCK_NAME/$BLOCK_NAME
 separator_block_width=15
 markup=pango
 
@@ -43,7 +43,7 @@ separator=false
 [volume]
 #label=VOL
 label=&#xf028;
-command=/usr/lib/i3blocks/volume; [[ -z "${BLOCK_BUTTON}" ]] || swaymsg exec pavucontrol-qt
+command=/usr/lib/i3blocks/volume/volume; [[ -z "${BLOCK_BUTTON}" ]] || swaymsg exec pavucontrol-qt
 instance=Master
 #instance=PCM
 interval=once

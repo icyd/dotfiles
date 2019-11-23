@@ -26,12 +26,6 @@ fi
 export EDITOR="$NVIM"
 export TERMINAL="alacritty"
 export PAGER="less"
-# if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-    export TERM="xterm-256color"
-# else
-#     export TERM="tmux-256color"
-# fi
-# export TERMINFO="/usr/share/terminfo"
 export BEMENU_BACKEND="wayland"
 SKIP=1
 
