@@ -165,6 +165,14 @@ own_push() {
     pushd -q "$updown$@"
 }
 
+if [ "${EDITOR}" = "nvr -s" ] || [ "${EDITOR}" = "nvim"]; then
+    alias vim="${EDITOR}"
+    alias svim="sudo -E nvim"
+elif [ "${EDITOR}" = "vim" ]; then
+    alias nvim="${EDITOR}"
+    alias svim="sudo -E vim"
+fi
+
 # Aliases
 alias dw="cd $HOME/Downloads"
 alias pj="cd $HOME/Projects"
@@ -177,8 +185,6 @@ alias pu='own_push -'
 alias pd='own_push +'
 alias ou='own_pop -'
 alias od='own_pop +'
-alias n="${EDITOR}"
-alias svim="sudo -E ${EDITOR}"
 alias eZC="$EDITOR $HOME/.zshrc"
 alias eZE="$EDITOR $HOME/.zshenv"
 alias -g C='| wc -l'
@@ -218,5 +224,8 @@ passcbw() {
 #   tmux attach || exec tmux new-session
 # fi
 
+if [ "$TERM" = "st-256color" ]; then
+    cd "$HOME"
+fi
 # Enable To debug loading times
 # zprof

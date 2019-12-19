@@ -43,11 +43,20 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
+# Node global in user directory
+# export npm_config_prefix=~/.node_modules
 # Path definition
 export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$PATH"
 
 # Nvr's config
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
+
+# Nvm configuration
+[ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
+export NVM_SOURCE="/usr/share/nvm"                     # The AUR package installs it to here.
+source /usr/share/nvm/nvm.sh
+source /usr/share/nvm/bash_completion
+source /usr/share/nvm/install-nvm-exec
 
 # Pass config
 export PASSWORD_STORE_GENERATED_LENGTH=12
@@ -62,18 +71,18 @@ if [ -z "$SERVER_MODE" ]; then
     export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 
     #Use kwallet to ask sshpassword
-    export SSH_ASKPASS=/usr/bin/lxqt-openssh-askpass
-    export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
+    # export SSH_ASKPASS=/usr/bin/lxqt-openssh-askpass
+    # export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
 
     # Force use wayland
-    export GDK_BACKEND=wayland
-    export CLUTTER_BACKEND=wayland
-    export QT_QPA_PLATFORM=wayland-egl
-    export SDL_VIDEODRIVER=wayland
-    export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-    export MOZ_ENABLE_WAYLAND=1
-    export BEMENU_BACKEND=wayland
+    # export GDK_BACKEND=wayland
+    # export CLUTTER_BACKEND=wayland
+    # export QT_QPA_PLATFORM=wayland-egl
+    # export SDL_VIDEODRIVER=wayland
+    # export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+    # export MOZ_ENABLE_WAYLAND=1
+    # export BEMENU_BACKEND=wayland
 else
-    export TERM="xterm"
-    export BROWSER="lynx"
+    # export TERM="xterm"
+    # export BROWSER="lynx"
 fi
