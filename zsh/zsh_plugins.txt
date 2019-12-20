@@ -13,11 +13,11 @@ robbyrussell/oh-my-zsh path:plugins/ansible
 robbyrussell/oh-my-zsh path:plugins/systemd
 robbyrussell/oh-my-zsh path:plugins/docker
 robbyrussell/oh-my-zsh path:plugins/docker-compose
-robbyrussell/oh-my-zsh path:plugins/kubectl
 robbyrussell/oh-my-zsh path:plugins/tmux
+robbyrussell/oh-my-zsh path:lib/git.zsh
 robbyrussell/oh-my-zsh path:plugins/git
 robbyrussell/oh-my-zsh path:plugins/gitignore
 robbyrussell/oh-my-zsh path:plugins/yarn
+robbyrussell/oh-my-zsh path:plugins/kubectl
 lukechilds/zsh-better-npm-completion
 robbyrussell/oh-my-zsh path:plugins/pass
-robbyrussell/oh-my-zsh path:lib/git.zsh

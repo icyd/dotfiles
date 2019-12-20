@@ -9,6 +9,7 @@
 # - '.' matches "regular files"
 # - 'mh+24' matches files (or directories or whatever) that are older than 24 hours.
 autoload -Uz compinit
+autoload -Uz zcalc
 if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
     compinit
 else
@@ -178,6 +179,7 @@ alias dw="cd $HOME/Downloads"
 alias pj="cd $HOME/Projects"
 alias cdC="cd $XDG_CONFIG_HOME/dotfiles"
 alias la='ls --color=auto -al'
+alias cal='zcalc -r3'
 alias d='dirs -v'
 alias p='pushd -q'
 alias o='popd -q '

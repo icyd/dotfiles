@@ -34,6 +34,7 @@ export DOTFILES="$XDG_CONFIG_HOME/dotfiles"
 # zsh config
 export ZSH_CONFIG="$XDG_CONFIG_HOME/zsh"
 export ZSH_CACHE_DIR="$HOME/.cache/zsh"
+[ ! -d "$ZSH_CACHE_DIR" ] && mkdir "$ZSH_CACHE_DIR"
 
 # gnupg config
 export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
