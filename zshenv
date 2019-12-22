@@ -54,10 +54,9 @@ export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
 
 # Nvm configuration
 [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
-export NVM_SOURCE="/usr/share/nvm"                     # The AUR package installs it to here.
-source /usr/share/nvm/nvm.sh
-source /usr/share/nvm/bash_completion
-source /usr/share/nvm/install-nvm-exec
+[ -f "$NVM_SOURCE/nvm.sh" ] && source "$NVM_SOURCE/nvm.sh"
+[ -f "$NVM_SOURCE/bash_completion" ] && source "$NVM_SOURCE/bash_completion"
+[ -f "$NVM_SOURCE/bash_completion" ] && source "$NVM_SOURCE/install-nvm-exec"
 
 # Pass config
 export PASSWORD_STORE_GENERATED_LENGTH=12
