@@ -166,7 +166,7 @@ own_push() {
     pushd -q "$updown$@"
 }
 
-if [ "${EDITOR}" = "nvr -s" ] || [ "${EDITOR}" = "nvim"]; then
+if [ "${EDITOR}" = "nvr -s" ] || [ "${EDITOR}" = "nvim" ]; then
     alias vim="${EDITOR}"
     alias svim="sudo -E nvim"
 elif [ "${EDITOR}" = "vim" ]; then

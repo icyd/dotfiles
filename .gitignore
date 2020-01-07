@@ -24,3 +24,5 @@ tmux/plugins
 vifm/vifminfo
 gnupg/*
 tags
+kitty/kitty-themes
+kitty/theme.conf
