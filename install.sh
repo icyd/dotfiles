@@ -19,23 +19,19 @@ definitions() {
     # Pyenv version to use, if not defined use system's version
     if command -v python3 >/dev/null 2>&1; then
         PYTHON=$(which python3 2>/dev/null)
-        PIP=$(which pip3 2>/dev/null)
     else
         PYTHON=$(which python 2>/dev/null)
-        PIP=$(which pip 2>/dev/null)
-    fi
-    if [ ! -x "$PYTHON" ] || [ ! -x "$PIP" ]; then
-        echo -e "${red}Couldn't find python or pip, exiting.${reset}"
-        exit 255
     fi
     command -v /usr/bin/nvim2 >/dev/null 2>&1 && VIM="$(which nvim 2>/dev/null)" || VIM="$(which cat 2>/dev/null)"
     if [ ! -x "$VIM" ]; then
         echo -e "${red}nvim nor vim is installed, exiting${reset}"
         exit 255
     fi
-    SYSTEM_PYTHON_VER="$($PYTHON --version | cut -d ' ' -f2)"
-    # Use given python version, otherwise use systems' version
-    PYENV_VER=${PYENV_VER:-$SYSTEM_PYTHON_VER}
+    if [ -x "$PYTHON" ]; then
+        SYSTEM_PYTHON_VER="$($PYTHON --version | cut -d ' ' -f2)"
+        # Use given python version, otherwise use systems' version
+        PYENV_VER=${PYENV_VER:-$SYSTEM_PYTHON_VER}
+    fi
     # Pyenv virtualenv name
     PYENV_NAME="${PYENV_NAME:-py3neovim}"
     # String to cherrypick files/directories
@@ -314,6 +310,10 @@ server_vim_config() {
 }
 
 install_pyenv() {
+    if [ ! -x "$PYTHON" ]; then
+        echo -e "${red}Python not installed, exiting${reset}"
+        exit 255
+    fi
     command -v pyenv >/dev/null 2>&1
     if [ ! -f "$PYENV_ROOT/bin/pyenv" ]; then
         echo -e "${yellow}Installing pyenv${reset}"
@@ -322,7 +322,6 @@ install_pyenv() {
         echo -e "${green}Pyenv already installed${reset}"
     fi
     export PATH="${PYENV_ROOT}/bin:$PATH"
-    PYTHON=$(pyenv which python)
     echo -e "${yellow}Using python version:${reset} $PYENV_VER"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
@@ -341,7 +340,6 @@ install_pyenv() {
         echo -e "${green}Pyenv virtualenv already exist:${reset} $PYENV_NAME"
     fi
     pyenv activate "$PYENV_NAME"
-    PYTHON=$(pyenv which python)
     echo -e "\n${yellow}Updating pip${reset}"
     pip install -q -U pip
     echo -e "${yellow}Installing python packages.${reset}"
