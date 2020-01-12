@@ -36,6 +36,11 @@ definitions() {
     PYENV_NAME="${PYENV_NAME:-py3neovim}"
     # String to cherrypick files/directories
     SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, bashrc, editorconfig"}
+    CURL=$(which curl 2>/dev/null)
+    if [ ! -x "$CURL"! ]; then
+        echo -e "${red}curl not installed exiting${reset}"
+        exit 255
+    fi
 }
 
 usage() {
@@ -280,8 +285,12 @@ install_vim_plugins() {
     if [ -f "$FOLDER_DD/nvim/config/plugins.vim" ]; then
         TMP=$(mktemp)
         echo -e "${yellow}Creating base configuration for installing Neovim's pluggins in:${reset} $TMP"
-        sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" > "$TMP"
-        [ -n "$SERVER_MODE" ] && sed -i -e '/^"#IGNORE/,/^"#ENDIGNORE/d' "$TMP"
+        cat<<EOF > "$TMP"
+set runtimepath^="$XDG_DATA_HOME/nvim/site"
+let $packpath=&runtimepath
+set nocompatible
+EOF
+        sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" >> "$TMP"
         echo -e "${yellow}Installing pluggins...${reset}"
         "$VIM" -u "$TMP" -c 'PlugInstall! | qa!'
     fi
@@ -296,15 +305,6 @@ install_vim_thesaur() {
             http://www.gutenberg.org/files/3202/files/mthesaur.txt 2>/dev/null
     else
         echo -e "${green}thesaur already installed.${reset}"
-    fi
-    echo -e "\n"
-}
-
-# Generate nvim config for server
-server_vim_config() {
-    if [ -f "${FOLDER_DD}/nvim/config/plugins.vim" ]; then
-        echo -e "${yellow}Generating vim configuration file for server:${reset} ${FOLDER_DD}/nvim/config/plug_server.vim"
-        sed -e '/^"#IGNORE/,/^"#ENDIGNORE/d' "${FOLDER_DD}/nvim/config/plugins.vim" > "${FOLDER_DD}/nvim/config/plug_server.vim"
     fi
     echo -e "\n"
 }
