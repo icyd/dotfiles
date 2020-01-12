@@ -37,7 +37,7 @@ definitions() {
     # String to cherrypick files/directories
     SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, bashrc, editorconfig"}
     CURL=$(which curl 2>/dev/null)
-    if [ ! -x "$CURL"! ]; then
+    if [ ! -x "$CURL" ]; then
         echo -e "${red}curl not installed exiting${reset}"
         exit 255
     fi
@@ -286,8 +286,8 @@ install_vim_plugins() {
         TMP=$(mktemp)
         echo -e "${yellow}Creating base configuration for installing Neovim's pluggins in:${reset} $TMP"
         cat<<EOF > "$TMP"
-set runtimepath^="$XDG_DATA_HOME/nvim/site"
-let $packpath=&runtimepath
+set runtimepath^=$XDG_DATA_HOME/nvim/site
+let &packpath=&runtimepath
 set nocompatible
 EOF
         sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" >> "$TMP"
