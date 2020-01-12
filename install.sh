@@ -17,14 +17,21 @@ definitions() {
     # Pyenv distintation
     PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
     # Pyenv version to use, if not defined use system's version
-    command -v "python3" >/dev/null 2>&1
-    # type "python3" >/dev/null 2>&1
-    if [ "$?" -eq 0 ]; then
-        PYTHON="python3"
-        PIP="pip3"
+    if command -v python3 >/dev/null 2>&1; then
+        PYTHON=$(which python3 2>/dev/null)
+        PIP=$(which pip3 2>/dev/null)
     else
-        PYTHON="python"
-        PIP="pip"
+        PYTHON=$(which python 2>/dev/null)
+        PIP=$(which pip 2>/dev/null)
+    fi
+    if [ ! -x "$PYTHON" ] || [ ! -x "$PIP" ]; then
+        echo -e "${red}Couldn't find python or pip, exiting.${reset}"
+        exit 255
+    fi
+    command -v /usr/bin/nvim2 >/dev/null 2>&1 && VIM="$(which nvim 2>/dev/null)" || VIM="$(which cat 2>/dev/null)"
+    if [ ! -x "$VIM" ]; then
+        echo -e "${red}nvim nor vim is installed, exiting${reset}"
+        exit 255
     fi
     SYSTEM_PYTHON_VER="$($PYTHON --version | cut -d ' ' -f2)"
     # Use given python version, otherwise use systems' version
@@ -280,7 +287,7 @@ install_vim_plugins() {
         sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" > "$TMP"
         [ -n "$SERVER_MODE" ] && sed -i -e '/^"#IGNORE/,/^"#ENDIGNORE/d' "$TMP"
         echo -e "${yellow}Installing pluggins...${reset}"
-        nvim -u "$TMP" -c 'PlugInstall! | qa!'
+        "$VIM" -u "$TMP" -c 'PlugInstall! | qa!'
     fi
     echo -e "\n"
 }
@@ -360,7 +367,7 @@ install_pyenv() {
     sed -i -e "s!\(^\s*let\s\$PATH\s=\s\).*!\1'${PYTHON%/*}/'\.\$PATH!" "${FOLDER_DD}/nvim/init.vim"
 
     echo -e "${yellow}Updating Nvim'- remote plugins${reset}"
-    nvim -c 'UpdateRemotePlugins | qa!'
+    "$VIM" -c 'UpdateRemotePlugins | qa!'
 
     echo -e "${yellow}Creating Symlink to NVR${reset}"
     [ ! -d "$LOCALBIN_DD" ] && mkdir -p "$LOCALBIN_DD"
@@ -369,16 +376,14 @@ install_pyenv() {
 }
 
 main() {
-    definitions
-    IFS=", " read -r -a SYMLINK_ARRAY <<< "$SYMLINK_STRING"
-
     red=`tput setaf 1`
     green=`tput setaf 2`
     yellow=`tput setaf 3`
     blue=`tput setaf 4`
     magenta=`tput setaf 5`
     reset=`tput sgr0`
-
+    definitions
+    IFS=", " read -r -a SYMLINK_ARRAY <<< "$SYMLINK_STRING"
 
     [ -n "$CREATE_SYMLINK" ] && create_symlinks
     [ -n "$SERVER_MODE" ] && echo -e "${yellow}Running in server mode: ${green}${SYMLINK_STRING}${reset}\n"

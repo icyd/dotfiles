@@ -217,6 +217,7 @@ passcbw() {
   PASSWORD_STORE_DIR="$HOME/.pass/cbw" pass $@
 }
 
+source <(k completion zsh | sed s/kubectl/k/g)
 
 # Configure fzf to use ripgrep
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
