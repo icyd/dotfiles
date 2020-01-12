@@ -22,7 +22,7 @@ definitions() {
     else
         PYTHON=$(which python 2>/dev/null)
     fi
-    command -v /usr/bin/nvim2 >/dev/null 2>&1 && VIM="$(which nvim 2>/dev/null)" || VIM="$(which cat 2>/dev/null)"
+    command -v /usr/bin/nvim >/dev/null 2>&1 && VIM="$(which nvim 2>/dev/null)" || VIM="$(which vim 2>/dev/null)"
     if [ ! -x "$VIM" ]; then
         echo -e "${red}nvim nor vim is installed, exiting${reset}"
         exit 255
