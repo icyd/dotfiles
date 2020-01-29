@@ -24,7 +24,6 @@ fi
 
 # System's definitions
 export EDITOR="$NVIM"
-export TERMINAL="alacritty"
 export PAGER="less"
 export BEMENU_BACKEND="wayland"
 SKIP=1

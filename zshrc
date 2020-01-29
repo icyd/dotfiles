@@ -166,6 +166,12 @@ own_push() {
     pushd -q "$updown$@"
 }
 
+cd_in() {
+    dir="$1"
+    cd "$1" && l
+}
+
+
 if [ "${EDITOR}" = "nvr -s" ] || [ "${EDITOR}" = "nvim" ]; then
     alias vim="${EDITOR}"
     alias svim="sudo -E nvim"
@@ -200,6 +206,8 @@ alias -s html="$BROWSER"
 alias -s {jpg,png}="imv"
 alias -s pdf="zathura"
 alias cls='clear'
+alias lo='cd .. && l'
+alias li='cd_in'
 # move to script to be executed by sway
 # alias passmenuown='PASSWORD_STORE_DIR="$HOME/.pass/icyd" passmenu --bottom --ignorecase --nb #282828 --nf #d5c4a1 --sb #d5c4a1 --sf #282828 --fn "Inconsolata 12"'
 # alias passmenucbw='PASSWORD_STORE_DIR="$HOME/.pass/cbw" passmenu --bottom --ignorecase --nb #282828 --nf #d5c4a1 --sb #d5c4a1 --sf #282828 --fn "Inconsolata 12"'
