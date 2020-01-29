@@ -17,22 +17,30 @@ definitions() {
     # Pyenv distintation
     PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
     # Pyenv version to use, if not defined use system's version
-    command -v "python3" >/dev/null 2>&1
-    # type "python3" >/dev/null 2>&1
-    if [ "$?" -eq 0 ]; then
-        PYTHON="python3"
-        PIP="pip3"
+    if command -v python3 >/dev/null 2>&1; then
+        PYTHON=$(which python3 2>/dev/null)
     else
-        PYTHON="python"
-        PIP="pip"
+        PYTHON=$(which python 2>/dev/null)
     fi
-    SYSTEM_PYTHON_VER="$($PYTHON --version | cut -d ' ' -f2)"
-    # Use given python version, otherwise use systems' version
-    PYENV_VER=${PYENV_VER:-$SYSTEM_PYTHON_VER}
+    command -v /usr/bin/nvim >/dev/null 2>&1 && VIM="$(which nvim 2>/dev/null)" || VIM="$(which vim 2>/dev/null)"
+    if [ ! -x "$VIM" ]; then
+        echo -e "${red}nvim nor vim is installed, exiting${reset}"
+        exit 255
+    fi
+    if [ -x "$PYTHON" ]; then
+        SYSTEM_PYTHON_VER="$($PYTHON --version | cut -d ' ' -f2)"
+        # Use given python version, otherwise use systems' version
+        PYENV_VER=${PYENV_VER:-$SYSTEM_PYTHON_VER}
+    fi
     # Pyenv virtualenv name
     PYENV_NAME="${PYENV_NAME:-py3neovim}"
     # String to cherrypick files/directories
     SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, bashrc, editorconfig"}
+    CURL=$(which curl 2>/dev/null)
+    if [ ! -x "$CURL" ]; then
+        echo -e "${red}curl not installed exiting${reset}"
+        exit 255
+    fi
 }
 
 usage() {
@@ -277,10 +285,14 @@ install_vim_plugins() {
     if [ -f "$FOLDER_DD/nvim/config/plugins.vim" ]; then
         TMP=$(mktemp)
         echo -e "${yellow}Creating base configuration for installing Neovim's pluggins in:${reset} $TMP"
-        sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" > "$TMP"
-        [ -n "$SERVER_MODE" ] && sed -i -e '/^"#IGNORE/,/^"#ENDIGNORE/d' "$TMP"
+        cat<<EOF > "$TMP"
+set runtimepath^=$XDG_DATA_HOME/nvim/site
+let &packpath=&runtimepath
+set nocompatible
+EOF
+        sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" >> "$TMP"
         echo -e "${yellow}Installing pluggins...${reset}"
-        nvim -u "$TMP" -c 'PlugInstall! | qa!'
+        "$VIM" -u "$TMP" -c 'PlugInstall! | qa!'
     fi
     echo -e "\n"
 }
@@ -297,16 +309,11 @@ install_vim_thesaur() {
     echo -e "\n"
 }
 
-# Generate nvim config for server
-server_vim_config() {
-    if [ -f "${FOLDER_DD}/nvim/config/plugins.vim" ]; then
-        echo -e "${yellow}Generating vim configuration file for server:${reset} ${FOLDER_DD}/nvim/config/plug_server.vim"
-        sed -e '/^"#IGNORE/,/^"#ENDIGNORE/d' "${FOLDER_DD}/nvim/config/plugins.vim" > "${FOLDER_DD}/nvim/config/plug_server.vim"
-    fi
-    echo -e "\n"
-}
-
 install_pyenv() {
+    if [ ! -x "$PYTHON" ]; then
+        echo -e "${red}Python not installed, exiting${reset}"
+        exit 255
+    fi
     command -v pyenv >/dev/null 2>&1
     if [ ! -f "$PYENV_ROOT/bin/pyenv" ]; then
         echo -e "${yellow}Installing pyenv${reset}"
@@ -315,7 +322,6 @@ install_pyenv() {
         echo -e "${green}Pyenv already installed${reset}"
     fi
     export PATH="${PYENV_ROOT}/bin:$PATH"
-    PYTHON=$(pyenv which python)
     echo -e "${yellow}Using python version:${reset} $PYENV_VER"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
@@ -334,7 +340,6 @@ install_pyenv() {
         echo -e "${green}Pyenv virtualenv already exist:${reset} $PYENV_NAME"
     fi
     pyenv activate "$PYENV_NAME"
-    PYTHON=$(pyenv which python)
     echo -e "\n${yellow}Updating pip${reset}"
     pip install -q -U pip
     echo -e "${yellow}Installing python packages.${reset}"
@@ -360,7 +365,7 @@ install_pyenv() {
     sed -i -e "s!\(^\s*let\s\$PATH\s=\s\).*!\1'${PYTHON%/*}/'\.\$PATH!" "${FOLDER_DD}/nvim/init.vim"
 
     echo -e "${yellow}Updating Nvim'- remote plugins${reset}"
-    nvim -c 'UpdateRemotePlugins | qa!'
+    "$VIM" -c 'UpdateRemotePlugins | qa!'
 
     echo -e "${yellow}Creating Symlink to NVR${reset}"
     [ ! -d "$LOCALBIN_DD" ] && mkdir -p "$LOCALBIN_DD"
@@ -369,16 +374,14 @@ install_pyenv() {
 }
 
 main() {
-    definitions
-    IFS=", " read -r -a SYMLINK_ARRAY <<< "$SYMLINK_STRING"
-
     red=`tput setaf 1`
     green=`tput setaf 2`
     yellow=`tput setaf 3`
     blue=`tput setaf 4`
     magenta=`tput setaf 5`
     reset=`tput sgr0`
-
+    definitions
+    IFS=", " read -r -a SYMLINK_ARRAY <<< "$SYMLINK_STRING"
 
     [ -n "$CREATE_SYMLINK" ] && create_symlinks
     [ -n "$SERVER_MODE" ] && echo -e "${yellow}Running in server mode: ${green}${SYMLINK_STRING}${reset}\n"
