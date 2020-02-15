@@ -1,6 +1,3 @@
-[submodule "rofi-ico-finder"]
-	path = rofi-ico-finder
-	url = https://github.com/icyd/Rofi-Ico-Finder
 [submodule "vifm/colors"]
 	path = vifm/colors
 	url = https://github.com/vifm/vifm-colors

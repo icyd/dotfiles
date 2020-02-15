@@ -4,14 +4,16 @@ Before installing the configuration file please be sure to install the following
 
     - ripgrep
     - python3
-    - global
-    - exhuberant-tags
+    - universal-ctags
     - zsh
     - tmux
     - ccls
     - bat
     - exa
+    - node && npm
     - git
+
+Also check <https://github.com/pyenv/pyenv/wiki/Common-build-problems> for requirements to install pyenv.
 
 ### Zsh'z plugins
 
@@ -23,15 +25,11 @@ plugin modify the file zsh_plugins.txt and afterward run the function
 
 This repository have personal configuration for the following applications:
 
-    - isync (mbsync)
     - mako
     - mpd
-    - msmtp
-    - ncmpcpp
     - neomutt
     - neovim
     - qutebrowser
-    - ranger
     - sway
     - tmux
     - vifm
@@ -64,24 +62,16 @@ To install simply run:
     bash dotfiles/install.sh -all
 ```
 
-To install a lightweight version run instead:
+To install a lightweight version for server managent, also replacing neovim with vim, and bash instead of zsh.
 
 ```
-    SKIP_THIS=1 bash dotfiles/install.sh -all
+    bash dotfiles/install.sh -sv -all
 ```
 
 ## Minimalistic install for server
 
 In order to install the dotfiles in a server, the environment variable **SERVER** should be set. This only install the configuration for:
 
-    - zsh
+    - bash
     - tmux
-    - nvim
-
-And also will avoid part of the configuration not needed. Install this running:
-
-```
-    cd ~/.config
-    git clone https://github.com/icyd/dotfiles
-    SERVER=1 bash dotfiles/install.sh -server
-```
+    - vim

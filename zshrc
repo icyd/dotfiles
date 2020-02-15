@@ -172,15 +172,9 @@ cd_in() {
 }
 
 
-if [ "${EDITOR}" = "nvr -s" ] || [ "${EDITOR}" = "nvim" ]; then
-    alias vim="${EDITOR}"
-    alias svim="sudo -E nvim"
-elif [ "${EDITOR}" = "vim" ]; then
-    alias nvim="${EDITOR}"
-    alias svim="sudo -E vim"
-fi
-
 # Aliases
+[ -x "$(command -v bat)" ] && alias cat="bat"
+alias n='nvr -s'
 alias dw="cd $HOME/Downloads"
 alias pj="cd $HOME/Projects"
 alias cdC="cd $XDG_CONFIG_HOME/dotfiles"
@@ -225,7 +219,8 @@ passcbw() {
   PASSWORD_STORE_DIR="$HOME/.pass/cbw" pass $@
 }
 
-source <(k completion zsh | sed s/kubectl/k/g)
+# Allow completation with kubectl as 'k' alias
+[ -x "$(command -v bat)" ] && source <(k completion zsh | sed s/kubectl/k/g)
 
 # Configure fzf to use ripgrep
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh

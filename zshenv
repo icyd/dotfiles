@@ -14,16 +14,13 @@ if [ "$(uname -s)" = "Darwin" ]; then
 fi
 
 # Defines environment variables.
-command -v nvr >/dev/null 2>&1
-if [ "$?" -eq 0 ]; then
-    NVIM='nvr -s'
+if [ -x "$(command -v nvim)" ]; then
+    EDITOR='nvim'
 else
-
-    NVIM='nvim'
+    EDITOR='vim'
 fi
 
 # System's definitions
-export EDITOR="$NVIM"
 export PAGER="less"
 export BEMENU_BACKEND="wayland"
 SKIP=1

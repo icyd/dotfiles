@@ -341,10 +341,10 @@ install_pyenv() {
     fi
     pyenv activate "$PYENV_NAME"
     echo -e "\n${yellow}Updating pip${reset}"
-    pip install -q -U pip
+    pip install --user -q -U pip
     echo -e "${yellow}Installing python packages.${reset}"
     if [ -z "$SERVER_MODE" ]; then
-        pip install -U -r "${CWD}/nvim/requirements.txt" >/dev/null
+        pip install --user -U -r "${CWD}/nvim/requirements.txt" >/dev/null
         echo -e "${yellow}Installing node.js.${reset}"
         nodeenv -p > /dev/null
         echo -e "${yellow}Installing node.js packages.${reset}"
@@ -353,11 +353,11 @@ install_pyenv() {
         npm update -g
     else
         echo -e "${yellow}Installing pynvim${reset}"
-        pip -q install -U pynvim
+        pip -q install --user -U pynvim
         echo -e "${yellow}Installing neovim${reset}"
-        pip -q install -U neovim
+        pip -q install --user -U neovim
         echo -e "${yellow}Installing neovim-remote${reset}"
-        pip -q install -U neovim-remote
+        pip -q install --user -U neovim-remote
     fi
 
     echo -e "${yellow}Substituying python path in the configuration file: ${reset} ${PYTHON}"

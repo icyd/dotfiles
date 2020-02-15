@@ -1,2 +1,0 @@
-Alberto Vázquez
-
