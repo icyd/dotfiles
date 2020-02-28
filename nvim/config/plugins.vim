@@ -32,6 +32,8 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'mattn/emmet-vim', { 'for': ['javascript', 'javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss', 'php'] }
 
 " Editing
+"       set listchars=tab:‣\ ,trail:·,precedes:«,extends:»,eol:¬
+    Plug 'Yggdroot/indentLine'
     " Plugin to show marks
     Plug 'jacquesbh/vim-showmarks'
     " Auto pairing brackets plugin
@@ -125,6 +127,8 @@ if empty($SERVER_MODE)
     " Multilanguage debugger
     " loaded on demand
     Plug 'vim-vdebug/vdebug', { 'on': 'VdebugStart' }
+    " Golang plugin
+    Plug 'fatih/vim-go'
 else
     " Native vim completion engine
     Plug 'ajh17/VimCompletesMe'
@@ -138,6 +142,8 @@ call plug#end()
 "##############################################################################
     " When openning new latex file, use latex filetype
     let g:tex_flavor="latex"    "Use latex as default filetype
+
+    let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 
     " Lightline configuration
     set laststatus=2

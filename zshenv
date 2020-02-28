@@ -40,6 +40,9 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
+# Golang config
+export GOPATH="${HOME}/.go"
+
 # Node global in user directory
 # export npm_config_prefix=~/.node_modules
 # Path definition

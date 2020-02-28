@@ -114,9 +114,12 @@
     " Set characters to represent weird whitespaces
     exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~,eol:\uAC"
     set list
+    set cursorline
+    set cursorcolumn
 
     " Command to call function for removing trailing spaces
     command! Trim call TrimTrailingSpaces()
+
 
 "###############################################################################
 " General keybindings
