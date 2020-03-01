@@ -7,7 +7,9 @@ Before installing the configuration file please be sure to install the following
     - universal-ctags
     - zsh
     - tmux
-    - ccls
+    - ccls or clang
+    - Eclipse JDT Language Server
+    - gopls
     - bat
     - exa
     - node && npm

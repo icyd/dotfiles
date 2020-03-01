@@ -127,8 +127,6 @@ if empty($SERVER_MODE)
     " Multilanguage debugger
     " loaded on demand
     Plug 'vim-vdebug/vdebug', { 'on': 'VdebugStart' }
-    " Golang plugin
-    Plug 'fatih/vim-go'
 else
     " Native vim completion engine
     Plug 'ajh17/VimCompletesMe'

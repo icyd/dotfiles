@@ -361,6 +361,7 @@ install_pyenv() {
     fi
 
     echo -e "${yellow}Substituying python path in the configuration file: ${reset} ${PYTHON}"
+    PYTHON=$(pyenv which python 2>/dev/null)
     sed -i -e "s!\(^\s*let\sg:python3_host_prog\s=\s\).*!\1'${PYTHON}'!" "${FOLDER_DD}/nvim/init.vim"
     sed -i -e "s!\(^\s*let\s\$PATH\s=\s\).*!\1'${PYTHON%/*}/'\.\$PATH!" "${FOLDER_DD}/nvim/init.vim"
 
