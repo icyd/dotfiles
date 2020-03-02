@@ -220,7 +220,7 @@ passcbw() {
 }
 
 # Allow completation with kubectl as 'k' alias
-[ -x "$(command -v bat)" ] && source <(k completion zsh | sed s/kubectl/k/g)
+[ -x "$(command -v kubectl)" ] && source <(k completion zsh | sed s/kubectl/k/g)
 
 # Configure fzf to use ripgrep
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh

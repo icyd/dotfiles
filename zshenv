@@ -44,9 +44,9 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export GOPATH="${HOME}/.go"
 
 # Node global in user directory
-# export npm_config_prefix=~/.node_modules
+export npm_config_prefix=~/.node_modules
 # Path definition
-export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$PATH"
+export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$PATH"
 
 # Nvr's config
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
