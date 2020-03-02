@@ -94,9 +94,9 @@
 
     " Python provider (to use pyenv-virtualenv)
     if empty($SERVER_MODE)
-        let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
+        let g:python3_host_prog = $HOME.'/.pyenv/versions/py3neovim/bin/python'
     else
-        let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
+        let g:python3_host_prog = '/usr/bin/python'
     endif
 
 
@@ -224,7 +224,7 @@
 
     " Modify path to add bin from pyenv
     if empty($SERVER_MODE)
-        let $PATH = '/home/beto/.pyenv/versions/py3neovim/bin/'.$PATH
+        let $PATH = $HOME.'/.pyenv/versions/py3neovim/bin/'.$PATH
     endif
 
     " Write with sudo
