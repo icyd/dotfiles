@@ -42,28 +42,15 @@ insert_final_newline = ignore
 indent_style = tab
 
 # C/C++ indentation
-[*.c]
+[*.{c,cpp,h,hpp}]
 indent_style = tab
 
-[*.cpp]
-indent_style = tab
-
-[*.h]
-indent_style = tab
-
-[*.hpp]
-indent_style = tab
-
-# Javascript
-[*.js]
+# Javascript, Typescript, JSX, TSX
+[*.{js,ts,jsx,tsx}]
 indent_size = 2
 
-# Css
-[*.css]
-indent_size = 2
-
-# Scss
-[*.scss]
+# Css, Scss
+[*.{css,scss}]
 indent_size = 2
 
 # PHP
@@ -71,7 +58,7 @@ indent_size = 2
 indent_size = 4
 
 # Batch files use tabs for indentation
-[*.bat]
+[*.{bat,sh}]
 indent_style = tab
 
 [docs/**.txt]
