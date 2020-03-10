@@ -8,3 +8,6 @@ use_symbol_for_status = true
 
 [directory]
 style = "bold blue"
+
+[package]
+disabled = true
