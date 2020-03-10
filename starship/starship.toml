@@ -1,0 +1,10 @@
+add_newline = true
+
+[character]
+symbol = "➜"
+error_symbol = "✗"
+vicmd_symbol = "♠"
+use_symbol_for_status = true
+
+[directory]
+style = "bold blue"

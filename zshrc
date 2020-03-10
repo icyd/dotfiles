@@ -233,5 +233,8 @@ passcbw() {
 if [ "$TERM" = "st-256color" ]; then
     cd "$HOME"
 fi
+[ -x "$(command -v neofetch)" ] && neofetch
+source /Users/avazquez/Library/Preferences/org.dystroy.broot/launcher/bash/br
+eval "$(starship init zsh)"
 # Enable To debug loading times
 # zprof

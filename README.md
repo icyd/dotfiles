@@ -14,6 +14,9 @@ Before installing the configuration file please be sure to install the following
     - exa
     - node && npm
     - git
+    - neofetch
+    - starship
+    - broot
 
 Also check <https://github.com/pyenv/pyenv/wiki/Common-build-problems> for requirements to install pyenv.
 

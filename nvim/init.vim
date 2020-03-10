@@ -45,9 +45,9 @@
     filetype plugin on      "load specific filetype plugin files
     set infercase
     " Avoid open hover on autocompletion
-    set completeopt-=preview
+    " set completeopt-=preview
     " No text injection, show menu with one, no autoselect
-    set completeopt=noinsert,menuone,noselect
+    set completeopt=noinsert,menuone,noselect,preview
     set shortmess+=c
     inoremap <c-c> <ESC>
 
@@ -231,6 +231,7 @@
     cmap w!! w !sudo tee % >/dev/null
 
     " Set colorscheme as fallback theme
+    set background=dark
     colorscheme desert
 
     if !has('nvim')
@@ -238,9 +239,9 @@
         silent execute '!mkdir -p "'.$HOME.'/.vim/tmp"'
         " Clear old backups
         silent execute '!rm -f "'.$HOME.'/.vim/tmp/*~"'
-        set backupdir=$HOME/.vim/tmp//
-        set directory=$HOME/.vim/tmp//
-        set undodir=$HOME/.vim/tmp//
+        set backupdir=$HOME/.vim/tmp/
+        set directory=$HOME/.vim/tmp/
+        set undodir=$HOME/.vim/tmp/
     endif
 
     " Edit vimrc/zshrc and load vimrc bindings

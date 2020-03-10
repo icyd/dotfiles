@@ -32,7 +32,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'mattn/emmet-vim', { 'for': ['javascript', 'javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss', 'php'] }
 
 " Editing
-"       set listchars=tab:‣\ ,trail:·,precedes:«,extends:»,eol:¬
+    " Mark the indentation column
     Plug 'Yggdroot/indentLine'
     " Plugin to show marks
     Plug 'jacquesbh/vim-showmarks'
@@ -64,11 +64,11 @@ if empty($SERVER_MODE)
 " Completion plugin
     " Ncm2 completion plug
     Plug 'ncm2/ncm2'
+    Plug 'Shougo/neco-syntax'
     Plug 'roxma/nvim-yarp'
     " Integration with Ultisnips
     Plug 'ncm2/ncm2-ultisnips'
     " Syntax source for ncm2
-    Plug 'Shougo/neco-syntax'
     Plug 'ncm2/ncm2-syntax'
     " Detect js/css in html code
     Plug 'ncm2/ncm2-html-subscope'
@@ -76,8 +76,9 @@ if empty($SERVER_MODE)
     Plug 'ncm2/ncm2-markdown-subscope'
     Plug 'ncm2/ncm2-path'
     Plug 'ncm2/ncm2-tmux'
+    "Gtags source for ncm2
     Plug 'ncm2/ncm2-gtags'
-    Plug 'fgrsnau/ncm2-otherbuf', { 'branch': 'ncm2' }
+    Plug 'fgrsnau/ncm2-otherbuf', { 'branch': 'master' }
     " Completion source for css/scss
     Plug 'ncm2/ncm2-cssomni'
     " vim-lsp support plugin
@@ -94,10 +95,9 @@ if empty($SERVER_MODE)
 
 " Async plugin for ctags & gtags managment
     Plug 'ludovicchabant/vim-gutentags'
-    "Gtags source for ncm2
-    Plug 'ncm2/ncm2-gtags'
     " Run make async.
     Plug 'neomake/neomake'
+    " LSP
     Plug 'prabirshrestha/async.vim'
     Plug 'prabirshrestha/vim-lsp'
 
@@ -116,12 +116,14 @@ if empty($SERVER_MODE)
     " Pandoc's syntax module
     Plug 'vim-pandoc/vim-pandoc-syntax'
 
+    " Interactive interpreter
     Plug 'metakirby5/codi.vim'
 " Other plugins
     " Pandoc's Markdown integration
     Plug 'vim-pandoc/vim-pandoc'
     " reStructuredText plugin
     Plug 'gu-fan/riv.vim'
+    Plug 'Rykka/InstantRst'
     " Pyenv plugin
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
@@ -180,8 +182,20 @@ call plug#end()
      endif
 
     " Set colorscheme
-    set background=dark
     colorscheme gruvbox8_soft
+    let g:gruvbox_italics = 1
+    highlight SignColumn ctermbg=NONE guibg=NONE
+
+    if exists(":Tabularize")
+      nnoremap <silent> <Leader>a= :Tabularize /=<CR>
+      vnoremap <silent> <Leader>a= :Tabularize /=<CR>
+      nnoremap <silent> <Leader>a\| :Tabularize /\|<CR>
+      vnoremap <silent> <Leader>a\| :Tabularize /\|<CR>
+      nnoremap <silent> <Leader>a\: :Tabularize /:\zs<CR>
+      vnoremap <silent> <Leader>a\: :Tabularize /:\zs<CR>
+      nnoremap <silent> <Leader>a, :Tabularize /,\zs<CR>
+      vnoremap <silent> <Leader>a, :Tabularize /,\zs<CR>
+    endif
 
     " EditorConfig
     let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
@@ -278,24 +292,22 @@ call plug#end()
         let g:pyenv#auto_activate=0
         let g:pyenv#python_exec='/usr/bin/python'
 
-        " Gen_tags config
-        let g:gen_tags#ctags=1
-        let g:gen_tags#gtags_auto_gen=1
-        let g:gen_tags#gtags_default_map=0
-        let g:gen_tags#statusline=1
-        let g:gen_tags#use_cache_dir=0
         " Gutertags
-        let g:gutentags_ctags_exclude=['*.css', '*.html', '*.js', '*.json', '*.xml',
-        \ '*.phar', '*.ini', '*.rst', '*.md','*/vendor/*',
-        \ '*vendor/*/test*', '*vendor/*/Test*',
-        \ '*vendor/*/fixture*', '*vendor/*/Fixture*',
-        \ '*var/cache*', '*var/log*']
+        let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
+        let g:gutentags_add_ctrlp_root_markers = 0
+        let g:gutentags_ctags_exclude=[
+                         \ '*.css',            '*.html', '*.js','*.json',     '*.xml',
+                        \ '*.phar',             '*.ini','*.rst',  '*.md','*/vendor/*',
+               \ '*vendor/*/test*',   '*vendor/*/Test*',
+            \ '*vendor/*/fixture*','*vendor/*/Fixture*',
+                   \ '*var/cache*',         '*var/log*'
+        \ ]
 
-        " augroup MyGutentagsStatusLineRefresher
-        "     autocmd!
-        "     autocmd User GutentagsUpdating call lightline#update()
-        "     autocmd User GutentagsUpdated call lightline#update()
-        " augroup END
+        augroup MyGutentagsStatusLineRefresher
+            autocmd!
+            autocmd User GutentagsUpdating call lightline#update()
+            autocmd User GutentagsUpdated call lightline#update()
+        augroup END
 
         let g:rg_command = '
             \ rg --column --line-number --no-heading --fixed-strings --smart-case --no-ignore --hidden --color "always"
@@ -304,15 +316,22 @@ call plug#end()
         command! -bang -nargs=* Find call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
         " LSP
-        let g:lsp_log_verbose = 1
-        let g:lsp_log_file = '/tmp/vim-lsp.log'
-        let g:lsp_signs_enabled = 1         " enable signs
-        let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
-        let g:lsp_virtual_text_enabled = 0
+        " let g:lsp_log_file = '/tmp/vim-lsp.log'
+        let g:lsp_signs_enabled = 1
+        let g:lsp_diagnostics_echo_cursor = 1
+        let g:lsp_virtual_text_enabled = 1
+        let g:lsp_virtual_text_prefix = " ‣ "
         let g:lsp_signs_error = {'text': '✗'}
         let g:lsp_signs_warning = {'text': '⚠'}
-        let g:lsp_signs_information = {'text': '‼'}
-        let g:lsp_signs_hint = {'text': '✦'}
+        let g:lsp_signs_information = {'text': 'ⓘ'}
+        let g:lsp_signs_hint = {'text': '✻'}
+        let g:lsp_fold_enabled = 1
+        set foldmethod=expr
+          \ foldexpr=lsp#ui#vim#folding#foldexpr()
+          \ foldtext=lsp#ui#vim#folding#foldtext()
+
+        autocmd FileType rst setlocal foldmethod=expr | setlocal foldexpr=riv#fold#expr(v:lnum) | setlocal foldtext=riv#fold#text()
+
 
         " Load lsp configuration files
         let lsp_files = systemlist('find $XDG_CONFIG_HOME/nvim/config/lsp -name "*.vim" ! -name "_*" -type f')
@@ -322,16 +341,21 @@ call plug#end()
 
        " LSP keymap definition
         function! SetLSPShortcuts()
-            nnoremap <leader>ld :call LanguageClient#textDocument_definition({'gotoCmd': 'split'})<CR>
-            nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
-            nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<CR>
-            nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
-            nnoremap <leader>lx :call LanguageClient#textDocument_references()<CR>
-            nnoremap <leader>la :call LanguageClient_workspace_applyEdit()<CR>
-            nnoremap <leader>lc :call LanguageClient#textDocument_completion()<CR>
-            nnoremap <leader>lh :call LanguageClient#textDocument_hover()<CR>
-            nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<CR>
-            nnoremap <leader>lm :call LanguageClient_contextMenu()<CR>
+            nnoremap <leader>ld :LspPeekDefinition<CR>
+            nnoremap <leader>lD :LspDefinition<CR>
+            nnoremap <leader>lk :LspPeekDeclaration<CR>
+            nnoremap <leader>lK :LspDeclaration<CR>
+            nnoremap <leader>lr :LspRename<CR>
+            nnoremap <leader>lf :LspDocumentFormat<CR>
+            vnoremap <leader>lF :LspDocumentRangeFormat<CR>
+            nnoremap <leader>lt :LspPeekTypeDefinition<CR>
+            nnoremap <leader>lT :LspPeekTypeDefinition<CR>
+            nnoremap <leader>li :LspPeekImplementation<CR>
+            nnoremap <leader>lI :LspImplementation<CR>
+            nnoremap <leader>ls :LspDocumentSymbol<CR>
+            nnoremap <leader>lh :LspHover<CR>
+            nnoremap <leader>la :LspCodeAction<CR>
+            nnoremap <leader>lg :LspDocumentDiagnostics<CR>
         endfunction()
         call SetLSPShortcuts()
 

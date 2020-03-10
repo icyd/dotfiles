@@ -363,3 +363,5 @@ alias gupav='git pull --rebase --autostash -v'
 alias gupv='git pull --rebase -v'
 alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
 alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign -m "--wip-- [skip ci]"'
+
+source /Users/avazquez/Library/Preferences/org.dystroy.broot/launcher/bash/br

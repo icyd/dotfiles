@@ -2,8 +2,6 @@ zsh-users/zsh-completions
 zsh-users/zsh-history-substring-search
 zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-autosuggestions
-mafredri/zsh-async
-sindresorhus/pure
 zpm-zsh/colors
 DarrinTisdale/zsh-aliases-exa
 davidparsson/zsh-pyenv-lazy
