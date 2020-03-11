@@ -234,7 +234,12 @@ if [ "$TERM" = "st-256color" ]; then
     cd "$HOME"
 fi
 [ -x "$(command -v neofetch)" ] && neofetch
-source /Users/avazquez/Library/Preferences/org.dystroy.broot/launcher/bash/br
+if [ "$(uname -s)" = "Darwin" ]; then
+    source "$HOME/Library/Preferences/org.dystroy.broot/launcher/bash/br"
+else
+    source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
+fi
 eval "$(starship init zsh)"
 # Enable To debug loading times
 # zprof
+
