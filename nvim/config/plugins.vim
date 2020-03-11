@@ -128,7 +128,8 @@ if empty($SERVER_MODE)
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
     " loaded on demand
-    Plug 'vim-vdebug/vdebug', { 'on': 'VdebugStart' }
+    " Plug 'vim-vdebug/vdebug', { 'on': 'VdebugStart' }
+    Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh \| UpdateRemotePlugins' }
 else
     " Native vim completion engine
     Plug 'ajh17/VimCompletesMe'
