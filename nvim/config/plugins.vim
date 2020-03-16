@@ -128,7 +128,9 @@ if empty($SERVER_MODE)
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
     " loaded on demand
-    Plug 'vim-vdebug/vdebug', { 'on': 'VdebugStart' }
+    Plug 'puremourning/vimspector', {
+        \ 'do': './install_gadget.py --enable-c --enable-python --enable-go --enable-bash --force-enable-chrome'
+    \ }
 else
     " Native vim completion engine
     Plug 'ajh17/VimCompletesMe'
@@ -373,6 +375,9 @@ call plug#end()
 
         "RIV
         let g:riv_python_rst_hl = 1
+
+        "Vimspector
+        let g:vimspector_enable_mappings = 'HUMAN'
 
         " Pweave
         augroup pandoc

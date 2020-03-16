@@ -233,6 +233,11 @@ passcbw() {
 if [ "$TERM" = "st-256color" ]; then
     cd "$HOME"
 fi
+
+# Load NVM
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 [ -x "$(command -v neofetch)" ] && neofetch
 if [ "$(uname -s)" = "Darwin" ]; then
     source "$HOME/Library/Preferences/org.dystroy.broot/launcher/bash/br"

@@ -173,6 +173,16 @@
     nnoremap <M-k> <C-w>k
     nnoremap <M-l> <C-w>l
 
+    " Tab mapping
+    nnoremap th  :tabfirst<CR>
+    nnoremap tk  :tabnext<CR>
+    nnoremap tj  :tabprev<CR>
+    nnoremap tl  :tablast<CR>
+    nnoremap tt  :tabedit<Space>
+    nnoremap tn  :tabnext<Space>
+    nnoremap tm  :tabm<Space>
+    nnoremap td  :tabclose<CR>
+
     if has('nvim')
         " Terminal configuration
         set shell=zsh
