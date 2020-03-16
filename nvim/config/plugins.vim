@@ -127,7 +127,6 @@ if empty($SERVER_MODE)
     " Pyenv plugin
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
-    " loaded on demand
     Plug 'puremourning/vimspector', {
         \ 'do': './install_gadget.py --enable-c --enable-python --enable-go --enable-bash --force-enable-chrome'
     \ }
