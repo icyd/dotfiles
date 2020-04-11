@@ -202,22 +202,13 @@ alias -s pdf="zathura"
 alias cls='clear'
 alias lo='cd .. && l'
 alias li='cd_in'
-# move to script to be executed by sway
-# alias passmenuown='PASSWORD_STORE_DIR="$HOME/.pass/icyd" passmenu --bottom --ignorecase --nb #282828 --nf #d5c4a1 --sb #d5c4a1 --sf #282828 --fn "Inconsolata 12"'
-# alias passmenucbw='PASSWORD_STORE_DIR="$HOME/.pass/cbw" passmenu --bottom --ignorecase --nb #282828 --nf #d5c4a1 --sb #d5c4a1 --sf #282828 --fn "Inconsolata 12"'
 alias gpgupd='gpg-connect-agent updatestartuptty /bye'
 
-compdef _pass passown
-zstyle ':completion::complete:passown::' prefix "$HOME/.pass/icyd"
-passown() {
-  PASSWORD_STORE_DIR="$HOME/.pass/icyd" pass $@
-}
-
-compdef _pass passcbw
-zstyle ':completion::complete:passcbw::' prefix "$HOME/.pass/cbw"
-passcbw() {
-  PASSWORD_STORE_DIR="$HOME/.pass/cbw" pass $@
-}
+# compdef _pass passown
+# zstyle ':completion::complete:passown::' prefix "$HOME/.pass/icyd"
+# passown() {
+#   PASSWORD_STORE_DIR="$HOME/.pass/icyd" pass $@
+# }
 
 # Allow completation with kubectl as 'k' alias
 [ -x "$(command -v kubectl)" ] && source <(k completion zsh | sed s/kubectl/k/g)

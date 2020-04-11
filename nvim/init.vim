@@ -22,6 +22,14 @@
     set ignorecase
     set smartcase
 
+    " Permanent very magic
+    nnoremap   /      /\v
+    vnoremap   /      /\v
+    cnoremap   %s/    %smagic/
+    cnoremap   \>s/   \>smagic/
+    nnoremap   :g/    :g/\v
+    nnoremap   :g//   :g//
+
     " Folding
     set foldnestmax=8       "defines max nested folds
     set foldmethod=indent   "fold based on indent level
@@ -213,10 +221,6 @@
     nnoremap <leader>- :split<CR>
     nnoremap <leader>\ :vsplit<CR>
 
-    " Define tab keybind
-    nnoremap <leader>k :tabprev<CR>
-    nnoremap <leader>j :tabprev<CR>
-
     " netrw configuration
     let g:netrw_banner=0
     let g:netrw_liststyle=3
@@ -226,6 +230,8 @@
     " Create parent directory of current file
     nmap <silent> <leader>md :!mkdir -p %:p:h<CR>
 
+    nmap <silent> <Leader>n :Vex<CR>
+
     " Open files located in the same dir in with the current file is edited
     map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
 
@@ -234,7 +240,7 @@
 
     " Modify path to add bin from pyenv
     if empty($SERVER_MODE)
-        let $PATH = $HOME.'/.pyenv/versions/py3neovim/bin/'.$PATH
+        let $PATH = $HOME.'/.pyenv/versions/py3neovim/bin:'.$PATH
     endif
 
     " Write with sudo

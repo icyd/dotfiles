@@ -18,7 +18,6 @@ fi
 
 # System's definitions
 export PAGER="less"
-export BEMENU_BACKEND="wayland"
 SKIP=1
 
 export DOTFILES="$XDG_CONFIG_HOME/dotfiles"
@@ -40,14 +39,14 @@ export PYENV_SHELL=zsh
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 # Golang config
-export GOPATH="${HOME}/.go"
+export GOPATH="${HOME}/go"
 
 # Node global in user directory
 # export npm_config_prefix=~/.node_modules
 export NVM_DIR="$HOME/.nvm"
 
 # Path definition
-export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$PATH"
+export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$GOPATH/bin:$PATH"
 
 # Nvr's config
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
@@ -64,24 +63,27 @@ export PASSWORD_STORE_GENERATED_LENGTH=12
 # Put all configuration to be skipped inside if-else declaration
 if [ -z "$SERVER_MODE" ]; then
     [ -f "$XDG_CONFIG_HOME/zsh/rofi.zsh" ] && source "$XDG_CONFIG_HOME/zsh/rofi.zsh"
-    # export PATH="$DOTFILES/scripts:$HOME/.luarocks/bin:$PATH"
+    export PATH="$DOTFILES/scripts:$PATH"
     export BROWSER="qutebrowser"
 
     # Prevent wine file associations
     export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 
-    #Use kwallet to ask sshpassword
-    # export SSH_ASKPASS=/usr/bin/lxqt-openssh-askpass
-    # export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
-
-    # Force use wayland
-    # export GDK_BACKEND=wayland
-    # export CLUTTER_BACKEND=wayland
-    # export QT_QPA_PLATFORM=wayland-egl
-    # export SDL_VIDEODRIVER=wayland
-    # export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-    # export MOZ_ENABLE_WAYLAND=1
-    # export BEMENU_BACKEND=wayland
+    if [[ $DESKTOP_SESSION =~ "sway" ]]; then
+        # Force use wayland
+        # export CLUTTER_BACKEND=wayland
+        # export QT_QPA_PLATFORM=wayland-egl
+        export ECORE_EVAS_ENGINE=wayland_egl
+        export ELM_ENGINE=wayland_egl
+        export _JAVA_AWT_WM_NONREPARENTING=1
+        export SDL_VIDEODRIVER=wayland
+        export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+        export MOZ_ENABLE_WAYLAND=1
+        export BEMENU_BACKEND=wayland
+        alias dmenu=bemenu
+        alias dmenu_run=bemenu-run
+        export SAL_USE_VCLPLUGIN=gtk3
+    fi
 else
     export TERM="xterm"
     export BROWSER="lynx"

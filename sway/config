@@ -8,6 +8,7 @@
 #
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
+set $mod2 Mod1
 # Home row direction keys, like vim
 set $left h
 set $down j
@@ -52,8 +53,6 @@ set $darkred        $base08
 set $red            $base09
 set $darkgreen      $base0B
 set $green          $base01
-set $darkyellow     $base0A
-set $yellow         $base02
 set $darkblue       $base0D
 set $blue           $base04
 set $darkmagenta    $base0E
@@ -66,14 +65,15 @@ set $transparent  #00000000
 
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
-# set $menu dmenu_path | dmenu -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Droid Sans-11" | xargs swaymsg exec
-set $menu dmenu-run --bottom --ignorecase --nb "$darkblack" --nf "$darkwhite" --sb "$darkwhite" --sf "$darkblack" --fn "Inconsolata 12"
+set $menu dmenu_run -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Courier Code-10" | xargs swaymsg exec
+# set $menu dmenu_run --bottom --ignorecase --nb "$darkblack" --nf "$darkwhite" --sb "$darkwhite" --sf "$darkblack" --fn "Inconsolata 12"
+set $passmenu passmenu -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Courier Code-10" | xargs swaymsg exec
 
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 output LVDS-1 {
-    background ~/.wallpaper.jpg fill
+    # background ~/.wallpaper.jpg fill
     resolution 1366x768
 }
 #
@@ -129,8 +129,9 @@ exec swayidle \
     bindsym $mod+Shift+q kill
 
     # start your launcher
-    bindsym $mod+Shift+d exec rofi -show run
-    bindsym $mod+d exec $menu
+    # bindsym $mod+Shift+d exec rofi -show run
+    bindsym Mod1+d exec $menu
+    bindsym Mod1+Shift+d exec $passmenu
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -206,7 +207,9 @@ exec swayidle \
     # bindsym $mod+9 workspace $ws9
     # # bindsym $mod+ workspace $ws10
     #
-    bindsym $mod+backslash  workspace back_and_forth
+    bindsym $mod2+numbersign  workspace back_and_forth
+    bindsym $mod2+Tab  workspace next
+    bindsym $mod2+Shift+Tab  workspace prev
 
     # move focused container to workspace
     bindsym $mod+Shift+ampersand move container to workspace $ws1
@@ -348,8 +351,6 @@ client.focused              $transparent    $darkwhite   $darkblack  $darkwhite 
     bindsym $mod+Shift+f exec $term -e "vifm"
     bindsym $mod+Shift+w exec "qutebrowser"
     bindsym $mod+x exec $term -title "Nvim Server" -e nvim
-    bindsym $mod+i exec zsh -c 'passmenuown'
-    bindsym $mod+Shift+i exec zsh -c 'passmenucbw'
 
     # bindsym $mod+Shift+p exec echo -e "Lock\nSuspend\nReboot\nShutdown" | dmenu -p "Power Option" -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Droid Sans-11" | awk '{print $1}' | tr -d '\r\n' | /usr/local/bin/rofi-power | xargs swaymsg exec
     bindsym $mod+Shift+p exec echo -e "Lock\nSuspend\nReboot\nShutdown" | rofi -dmenu -i -p "Power Options"| awk '{print $1}' | tr -d '\r\n' | $HOME/.local/bin/rofi-power | xargs swaymsg exec
@@ -374,26 +375,27 @@ exec /home/beto/.local/bin/devmon_notify
 #
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-    font pango:Droid Sans, FontAwesome 11
+    # font pango:Droid Sans, FontAwesome 11
     # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
-    status_command i3blocks
-    pango_markup enabled
+    status_command i3status
+    # status_command i3blocks
+    # pango_markup enabled
     mode dock
     # mode hide
     # modifier none
     position top
-    colors {
-        background $darkblack
-        separator  $transparent
-        statusline $white
-
-        # State             Border      BG          Text
-        focused_workspace   $darkwhite  $darkwhite   $darkblack
-        active_workspace    $darkblack  $darkblack   $black
-        inactive_workspace  $darkblack  $darkblack   $darkwhite
-        urgent_workspace    $darkred    $darkred    $darkblack
-        binding_mode        $darkred    $darkred    $darkblack
-    }
+    # colors {
+    #     background $darkblack
+    #     separator  $transparent
+    #     statusline $white
+    #
+    #     # State             Border      BG          Text
+    #     focused_workspace   $darkwhite  $darkwhite   $darkblack
+    #     active_workspace    $darkblack  $darkblack   $black
+    #     inactive_workspace  $darkblack  $darkblack   $darkwhite
+    #     urgent_workspace    $darkred    $darkred    $darkblack
+    #     binding_mode        $darkred    $darkred    $darkblack
+    # }
     # position top
 
     # When the status_command prints a new line to stdout, swaybar updates.

@@ -40,10 +40,16 @@ insert_final_newline = ignore
 # Makefiles always use tabs for indentation
 [Makefile]
 indent_style = tab
+indent_size = 8
 
 # C/C++ indentation
 [*.{c,cpp,h,hpp}]
 indent_style = tab
+indent_size = 8
+
+[{go.mod,go.sum,*.go}]
+indent_style = tab
+indent_size = 8
 
 # Javascript, Typescript, JSX, TSX
 [*.{js,ts,jsx,tsx}]

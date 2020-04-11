@@ -10,6 +10,8 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'itchyny/lightline.vim'
     " Declaration of custom textobj
     Plug 'kana/vim-textobj-user'
+    " Object by indentation
+    Plug 'michaeljsmith/vim-indent-object'
     " EditorConfig plugin
     Plug 'editorconfig/editorconfig-vim'
     " Repeat plugins' commands
@@ -115,6 +117,8 @@ if empty($SERVER_MODE)
     Plug 'Glench/Vim-Jinja2-Syntax'
     " Pandoc's syntax module
     Plug 'vim-pandoc/vim-pandoc-syntax'
+    " Golang plugin
+    Plug 'arp242/gopher.vim'
 
     " Interactive interpreter
     Plug 'metakirby5/codi.vim'
@@ -188,8 +192,10 @@ call plug#end()
     highlight SignColumn ctermbg=NONE guibg=NONE
 
     if exists(":Tabularize")
-      nnoremap <silent> <Leader>a= :Tabularize /=<CR>
-      vnoremap <silent> <Leader>a= :Tabularize /=<CR>
+      nnoremap <silent> <Leader>ae :Tabularize /=<CR>
+      vnoremap <silent> <Leader>ae :Tabularize /=<CR>
+      nnoremap <silent> <Leader>a<space> :Tabularize / <CR>
+      vnoremap <silent> <Leader>a<space> :Tabularize / <CR>
       nnoremap <silent> <Leader>a\| :Tabularize /\|<CR>
       vnoremap <silent> <Leader>a\| :Tabularize /\|<CR>
       nnoremap <silent> <Leader>a\: :Tabularize /:\zs<CR>
@@ -317,9 +323,11 @@ call plug#end()
         command! -bang -nargs=* Find call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
         " LSP
-        " let g:lsp_log_file = '/tmp/vim-lsp.log'
-        let g:lsp_signs_enabled = 1
+        let g:lsp_diagnostics_enabled = 1
+        let g:lsp_diagnostics_float_cursor = 1
         let g:lsp_diagnostics_echo_cursor = 1
+        let g:lsp_log_file = '/tmp/vim-lsp.log'
+        let g:lsp_signs_enabled = 1
         let g:lsp_virtual_text_enabled = 1
         let g:lsp_virtual_text_prefix = " ‣ "
         let g:lsp_signs_error = {'text': '✗'}
@@ -374,6 +382,15 @@ call plug#end()
 
         "RIV
         let g:riv_python_rst_hl = 1
+
+        "Gopher plugin
+        autocmd FileType go nnoremap <leader>gb :setl makeprg=go\ build\|:make<CR>
+        autocmd FileType go nnoremap <leader>gr :setl makeprg=go\ run\|:make %<CR>
+        autocmd FileType go nnoremap <leader>gt :compiler gotest\|:make<CR>
+        autocmd FileType go nnoremap <Leader>gc :GoCoverage toggle<CR>
+        autocmd FileType go nnoremap <Leader>gi :GoImport<Space>
+        autocmd FileType go nnoremap <Leader>gd :GoImport -rm<Space>
+
 
         "Vimspector
         let g:vimspector_enable_mappings = 'HUMAN'
