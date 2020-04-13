@@ -194,8 +194,8 @@ call plug#end()
     if exists(":Tabularize")
       nnoremap <silent> <Leader>ae :Tabularize /=<CR>
       vnoremap <silent> <Leader>ae :Tabularize /=<CR>
-      nnoremap <silent> <Leader>a<space> :Tabularize / <CR>
-      vnoremap <silent> <Leader>a<space> :Tabularize / <CR>
+      nnoremap <silent> <Leader>a<space> :Tabularize /\s\zs<CR>
+      vnoremap <silent> <Leader>a<space> :Tabularize /\s\zs<CR>
       nnoremap <silent> <Leader>a\| :Tabularize /\|<CR>
       vnoremap <silent> <Leader>a\| :Tabularize /\|<CR>
       nnoremap <silent> <Leader>a\: :Tabularize /:\zs<CR>

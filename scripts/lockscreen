@@ -2,6 +2,7 @@
 
 # handle being called from systemd service
 IMG="/tmp/lockscreen.png"
+CONFIG=""
  if [ -z "$XDG_RUNTIME_DIR" ] && [ -z "$SWAYSOCK"]; then
          uid=$(id -u $USER)
          export XDG_RUNTIME_DIR="/run/user/"$uid"/"
@@ -9,9 +10,10 @@ IMG="/tmp/lockscreen.png"
  fi
 
 grim -o LVDS-1 $IMG
+[ -f "DOTFILES/swaylock/conf" ] && CONFIG="-C $DOTFILES/swaylock/config"
 if [ -f /usr/bin/convert ]; then
-    convert -blur 0x6 -swirl 360 $IMG $IMG
-    swaylock -f -i $IMG
+    mogrify -blur 0x6 -swirl 360 $IMG
+    swaylock -f -i $IMG "$CONFIG"
 else
-    swaylock -f -c 000000
+    swaylock -f -c 000000 "$CONFIG"
 fi

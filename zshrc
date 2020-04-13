@@ -15,7 +15,6 @@ if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
 else
     compinit -C
 fi
-
 # Static call of zsh's plugins
 gen_plugins_file(){
     antibody bundle < "${ZSH_CONFIG}/zsh_plugins.txt" > "${ZSH_CONFIG}/zsh_plugins.sh"
@@ -213,6 +212,12 @@ alias gpgupd='gpg-connect-agent updatestartuptty /bye'
 # Allow completation with kubectl as 'k' alias
 [ -x "$(command -v kubectl)" ] && source <(k completion zsh | sed s/kubectl/k/g)
 
+if [ -x "$(command -v gopass)" ]; then
+    alias gpw='gopass'
+    source <(gopass completion zsh | sed /^_gopass$/d)
+    compdef _gopass gopass
+    compdef _gopass gpw
+fi
 # Configure fzf to use ripgrep
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
 
