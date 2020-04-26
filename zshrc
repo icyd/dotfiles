@@ -234,13 +234,20 @@ fi
 [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# Aws-cli autocompletion script
+[ -x "$(command -v aws_completer)" ] && complete -C aws_completer aws
+
+# Use neofetch
 [ -x "$(command -v neofetch)" ] && neofetch
+
+# Source broot
 if [ "$(uname -s)" = "Darwin" ]; then
     source "$HOME/Library/Preferences/org.dystroy.broot/launcher/bash/br"
 else
     source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
 fi
+
+# Enable starship prompt
 eval "$(starship init zsh)"
 # Enable To debug loading times
 # zprof
-

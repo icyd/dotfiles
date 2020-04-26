@@ -148,8 +148,10 @@
     vnoremap   <Down>    <Nop>
     vnoremap   <Left>    <Nop>
     vnoremap   <Right>   <Nop>
-    " inoremap   <BS>      <Nop>
+    inoremap   <BS>      <Nop>
     inoremap   <Del>     <Nop>
+
+    imap <C-D> <C-O>x
 
     " Map to un-highlight
     nnoremap <silent> <leader><space> :nohlsearch<CR>

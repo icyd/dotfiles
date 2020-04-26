@@ -10,7 +10,9 @@ robbyrussell/oh-my-zsh path:plugins/archlinux
 robbyrussell/oh-my-zsh path:plugins/ansible
 robbyrussell/oh-my-zsh path:plugins/systemd
 robbyrussell/oh-my-zsh path:plugins/docker
+robbyrussell/oh-my-zsh path:plugins/doctl
 robbyrussell/oh-my-zsh path:plugins/docker-compose
+robbyrussell/oh-my-zsh path:plugins/golang
 robbyrussell/oh-my-zsh path:plugins/tmux
 robbyrussell/oh-my-zsh path:lib/git.zsh
 robbyrussell/oh-my-zsh path:plugins/git
