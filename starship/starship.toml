@@ -29,6 +29,11 @@ symbol = " "
 [hg_branch]
 symbol = " "
 
+[hostname]
+ssh_only = false
+prefix = "ﯟ "
+style = "bold blue dimmed"
+
 [java]
 symbol = " "
 

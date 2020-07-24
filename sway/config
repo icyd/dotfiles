@@ -63,10 +63,10 @@ output LVDS-1 {
 
 ### Screensaver config
 exec swayidle \
-    timeout 600 "$DOTFILES/scripts/lockscreen" \
+    timeout 600 /home/beto/.config/dotfiles/scripts/lockscreen \
     timeout 900 'swaymsg "output * dpms off"' \
     resume 'swaymsg "output * dpms on"' \
-    before-sleep "$DOTFILES/scripts/lockscreen"
+    before-sleep /home/beto/.config/dotfiles/scripts/lockscreen
 
 ### Input configuration
  input "2:14:ETPS/2_Elantech_Touchpad" {
@@ -80,10 +80,10 @@ exec swayidle \
  }
 
 input * {
-    # xkb_layout es
-    # xkb_variant icyd
-    xkb_layout us
-    xkb_variant dvp
+    xkb_layout es
+    xkb_variant icyd
+    # xkb_layout us
+    # xkb_variant dvp
     xkb_options "lv3:ralt_switch,compose:102,caps:swapescape"
 }
 
@@ -231,10 +231,10 @@ bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 bindsym Print exec grim -o LVDS-1 /tmp/screenshot.png
 bindsym $mod+Shift+r exec $term -e "ncmpcpp"
 bindsym $mod+Shift+f exec $term -e "vifm"
-bindsym $mod+Shift+w exec "qutebrowser"
+bindsym $mod+Shift+w exec "firefox"
 bindsym $mod+x exec $term -t "Nvim Server" -e nvim
 
-bindsym $mod+Shift+p exec echo -e "Exit\nLock\nSuspend\nReboot\nShutdown" | $powermenu | "$DOTFILES/scripts/rofi-power" | xargs swaymsg exec
+bindsym $mod+Shift+p exec echo -e "Exit\nLock\nSuspend\nReboot\nShutdown" | $powermenu | "/var/home/beto/.config/dotfiles/scripts/rofi-power" | xargs swaymsg exec
 bindsym $mod+F11 exec $DOTFILES/scripts/qrgen
 bindsym $mod+F10 exec $DOTFILES/scripts/browsersearch
 bindsym $mod+Shift+F7 exec $term -title "RPNCalc" -e zsh -c rpncalc

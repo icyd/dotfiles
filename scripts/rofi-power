@@ -8,20 +8,16 @@ if [ ${#option} -gt 0 ]
 then
     case $option in
       Reboot)
-        echo 'reboot'
-        # systemctl reboot
+        systemctl reboot
         ;;
 	Shutdown)
-        echo 'shutdown'
-        # systemctl poweroff
+        systemctl poweroff
         ;;
       Suspend)
-        echo 'suspend'
-        # systemctl suspend
+        systemctl suspend
         ;;
       Lock)
-        echo 'lock'
-        # "$LOCKER"
+        "$LOCKER"
         ;;
       *)
         ;;
