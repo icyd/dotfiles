@@ -9,9 +9,9 @@ charging_symbol = ""
 discharging_symbol = ""
 
 [character]
-symbol = "➜"
-error_symbol = "✗"
-vicmd_symbol = "♠"
+symbol = ""
+error_symbol = ""
+vicmd_symbol = ""
 use_symbol_for_status = true
 
 [directory]

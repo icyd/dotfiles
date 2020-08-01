@@ -47,6 +47,11 @@ indent_size = 8
 indent_style = tab
 indent_size = 8
 
+# Java and related files
+[*.{java,gradle,groovy}]
+indent_style = tab
+indent_size = 4
+
 [{go.mod,go.sum,*.go}]
 indent_style = tab
 indent_size = 8

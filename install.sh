@@ -35,7 +35,7 @@ definitions() {
     # Pyenv virtualenv name
     PYENV_NAME="${PYENV_NAME:-py3neovim}"
     # String to cherrypick files/directories
-    SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, bashrc, editorconfig"}
+    SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, zshenv, zshrc, editorconfig"}
     CURL=$(which curl 2>/dev/null)
     if [ ! -x "$CURL" ]; then
         echo -e "${red}curl not installed exiting${reset}"
@@ -169,16 +169,15 @@ create_symlinks() {
     [ ! -d "$FILE_DD" ] && mkdir -p "$FILE_DD"
     if [ -z "$SERVER_MODE" ]; then
         if [ $(command -v readarray) ]; then
-            readarray -d '' FILES < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print0)
+            readarray -d '' FILES < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -name "other" -not -path "$CWD" -print0)
         else
-            echo 'si'
             declare -a FILES
             let i=0
             while IFS=$'\n' read -r line; do
                 FILES[i]="${line}"
                 echo "$line"
                 ((++i))
-            done < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print)
+            done < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -name "other" -not -path "$CWD" -print)
         fi
     else
         # cherrypick when in server
@@ -372,6 +371,18 @@ install_pyenv() {
     [ ! -d "$LOCALBIN_DD" ] && mkdir -p "$LOCALBIN_DD"
     ln -sf "${PYTHON%/*}/nvr" "$LOCALBIN_DD/nvr"
     echo -e "\n"
+
+	if [ -d "${XDG_CONFIG_HOME}/gnupg" ]; then
+		echo -e "${yellow}Creating Symlink to gpg-agent.conf${reset}"
+		# If WSL
+		if [ -z "${$(uname -r)##*microsoft*}"  ]; then
+			ln -s "${XDG_CONFIG_HOME}/gnupg/gpg-agent.win.conf" "${XDG_CONFIG_HOME}/gnupg/gpg-agent.conf"
+		elif [ "$(uname -s)" = "Darwin" ]; then
+			ln -s "${XDG_CONFIG_HOME}/gnupg/gpg-agent.darwin.conf" "${XDG_CONFIG_HOME}/gnupg/gpg-agent.conf"
+		else
+			ln -s "${XDG_CONFIG_HOME}/gnupg/gpg-agent.linux.conf" "${XDG_CONFIG_HOME}/gnupg/gpg-agent.conf"
+		fi
+	fi
 }
 
 main() {

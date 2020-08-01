@@ -14,3 +14,6 @@
 
 [credential]
 	helper = store
+
+[alias]
+    p4 = /usr/local/bin/git-p4

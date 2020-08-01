@@ -135,17 +135,17 @@ if [ -z "$SERVER_MODE" ]; then
         export FZF_DEFAULT_OPTS='--reverse --height 15'
     fi
 
-    # Set GPG TTY
-    export GPG_TTY=$(tty)
-
-    if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
-      export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
-      unset SSH_AGENT_PID
+    PIDFOUND=$(pgrep gpg-agent)
+    if [ -n "$PIDFOUND" ]; then
+        export GPG_AGENT_INFO="$GNUPGHOME/S.gpg-agent:$PIDFOUND:1"
+        export GPG_TTY=$(tty)
+        export SSH_AUTH_SOCK="$GNUPGHOME/S.gpg-agent.ssh"
+        unset SSH_AGENT_PID
     fi
-
-    # Refresh gpg-agent tty in case user switches into an X session
-    # gpg-connect-agent updatestartuptty /bye >/dev/null
-    # GPG as ssh-agent
+    PIDFOUND=$(pgrep dirmngr)
+    if [ -n "$PIDFOUND" ]; then
+        export DIRMNGR_INFO="$GNUPGHOME/S.dirmngr:$PIDFOUND:1"
+    fi
 fi
 
 # Functions
@@ -170,10 +170,10 @@ cd_in() {
     cd "$1" && l
 }
 
-
 # Aliases
 [ -x "$(command -v bat)" ] && alias cat="bat"
 alias n='nvr -s'
+alias svim='sudo -E nvim'
 alias dw="cd $HOME/Downloads"
 alias pj="cd $HOME/Projects"
 alias cdC="cd $XDG_CONFIG_HOME/dotfiles"
@@ -203,11 +203,9 @@ alias lo='cd .. && l'
 alias li='cd_in'
 alias gpgupd='gpg-connect-agent updatestartuptty /bye'
 
-# compdef _pass passown
-# zstyle ':completion::complete:passown::' prefix "$HOME/.pass/icyd"
-# passown() {
-#   PASSWORD_STORE_DIR="$HOME/.pass/icyd" pass $@
-# }
+if [ -n "$WSL" ]; then
+    alias wuso="python3 $HOME/Projects/wsl-sudo/wsl-sudo.py"
+fi
 
 # Allow completation with kubectl as 'k' alias
 [ -x "$(command -v kubectl)" ] && source <(k completion zsh | sed s/kubectl/k/g)
@@ -218,13 +216,9 @@ if [ -x "$(command -v gopass)" ]; then
     compdef _gopass gopass
     compdef _gopass gpw
 fi
+#
 # Configure fzf to use ripgrep
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
-
-# Start tmux on new shell
-# if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-#   tmux attach || exec tmux new-session
-# fi
 
 if [ "$TERM" = "st-256color" ]; then
     cd "$HOME"
@@ -249,5 +243,15 @@ fi
 
 # Enable starship prompt
 eval "$(starship init zsh)"
+
+if service dns-sync.sh status | grep -q 'dns-sync is not running'; then
+	sudo service dns-sync.sh start
+fi
+
+if [ -f "$HOME/.P4ENV" ]; then
+    source "$HOME/.P4ENV"
+fi
 # Enable To debug loading times
 # zprof
+
+source /home/beto/.config/broot/launcher/bash/br

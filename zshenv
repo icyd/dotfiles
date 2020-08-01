@@ -1,6 +1,8 @@
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export DOTFILES="$XDG_CONFIG_HOME/dotfiles"
 export XDG_MUSIC_DIR="${HOME}/Music"
+[ -x "$(command -v wsl.exe)" ] && export WSL=/mnt/c/Users/aj.vazquez
 
 # Source not hardcoded sys env definition
 [ -f "$XDG_CONFIG_HOME/zsh/local.zsh" ] && source "$XDG_CONFIG_HOME/zsh/local.zsh"
@@ -18,9 +20,6 @@ fi
 
 # System's definitions
 export PAGER="less"
-SKIP=1
-
-export DOTFILES="$XDG_CONFIG_HOME/dotfiles"
 
 # zsh config
 export ZSH_CONFIG="$XDG_CONFIG_HOME/zsh"
@@ -62,17 +61,14 @@ export PASSWORD_STORE_GENERATED_LENGTH=12
 
 # Put all configuration to be skipped inside if-else declaration
 if [ -z "$SERVER_MODE" ]; then
-    [ -f "$XDG_CONFIG_HOME/zsh/rofi.zsh" ] && source "$XDG_CONFIG_HOME/zsh/rofi.zsh"
     export PATH="$DOTFILES/scripts:$PATH"
-    export BROWSER="qutebrowser"
+    export BROWSER="firefox"
 
     # Prevent wine file associations
     export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 
     if [[ $DESKTOP_SESSION =~ "sway" ]]; then
         # Force use wayland
-        # export CLUTTER_BACKEND=wayland
-        # export QT_QPA_PLATFORM=wayland-egl
         export ECORE_EVAS_ENGINE=wayland_egl
         export ELM_ENGINE=wayland_egl
         export _JAVA_AWT_WM_NONREPARENTING=1
@@ -87,4 +83,11 @@ if [ -z "$SERVER_MODE" ]; then
 else
     export TERM="xterm"
     export BROWSER="lynx"
+fi
+
+if [ -n "$WSL" ]; then
+    export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
+    export VAGRANT_WSL_WINDOWS_ACCESS_USER="aj.vazquez"
+    export VAGRANT_DEFAULT_PROVIDER="hyperv"
+    export PATH="$PATH:/mnt/c/Program Files/Oracle/VirtualBox"
 fi
