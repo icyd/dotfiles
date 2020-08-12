@@ -198,10 +198,11 @@ alias -s txt="$EDITOR"
 alias -s html="$BROWSER"
 alias -s {jpg,png}="imv"
 alias -s pdf="zathura"
-alias cls='clear'
+alias cl='clear'
 alias lo='cd .. && l'
 alias li='cd_in'
 alias gpgupd='gpg-connect-agent updatestartuptty /bye'
+alias ssh="TERM=xterm ssh"
 
 if [ -n "$WSL" ]; then
     alias wuso="python3 $HOME/Projects/wsl-sudo/wsl-sudo.py"
@@ -232,7 +233,7 @@ fi
 [ -x "$(command -v aws_completer)" ] && complete -C aws_completer aws
 
 # Use neofetch
-[ -x "$(command -v neofetch)" ] && neofetch
+[ "$ACTIVE_NEOFETCH" -ne 0 ] && [ -x "$(command -v neofetch)" ] && neofetch
 
 # Source broot
 if [ "$(uname -s)" = "Darwin" ]; then
@@ -244,7 +245,7 @@ fi
 # Enable starship prompt
 eval "$(starship init zsh)"
 
-if service dns-sync.sh status | grep -q 'dns-sync is not running'; then
+if [ -n "$WSL" ] && service dns-sync.sh status | grep -q 'dns-sync is not running'; then
 	sudo service dns-sync.sh start
 fi
 

@@ -91,3 +91,5 @@ if [ -n "$WSL" ]; then
     export VAGRANT_DEFAULT_PROVIDER="hyperv"
     export PATH="$PATH:/mnt/c/Program Files/Oracle/VirtualBox"
 fi
+
+ACTIVE_NEOFETCH=0
