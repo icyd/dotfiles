@@ -83,8 +83,6 @@ if empty($SERVER_MODE)
     Plug 'fgrsnau/ncm2-otherbuf', { 'branch': 'master' }
     " Completion source for css/scss
     Plug 'ncm2/ncm2-cssomni'
-    " vim-lsp support plugin
-    Plug 'ncm2/ncm2-vim-lsp'
     " Completion from the current buffer
     Plug 'ncm2/ncm2-bufword'
     " Completion from github
@@ -100,8 +98,7 @@ if empty($SERVER_MODE)
     " Run make async.
     Plug 'neomake/neomake'
     " LSP
-    Plug 'prabirshrestha/async.vim'
-    Plug 'prabirshrestha/vim-lsp'
+    Plug 'neovim/nvim-lsp'
 
 " Grammar, spelling, related
     " Plugin for grammar checking with languagetool
@@ -322,49 +319,17 @@ call plug#end()
             \ -g "!{.git,node_modules,vendor}/*" '
         command! -bang -nargs=* Find call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
-        " LSP
-        let g:lsp_diagnostics_enabled = 1
-        let g:lsp_diagnostics_float_cursor = 1
-        let g:lsp_diagnostics_echo_cursor = 1
-        let g:lsp_log_file = '/tmp/vim-lsp.log'
-        let g:lsp_signs_enabled = 1
-        let g:lsp_virtual_text_enabled = 1
-        let g:lsp_virtual_text_prefix = " ‣ "
-        let g:lsp_signs_error = {'text': '✗'}
-        let g:lsp_signs_warning = {'text': '⚠'}
-        let g:lsp_signs_information = {'text': 'ⓘ'}
-        let g:lsp_signs_hint = {'text': '✻'}
-        let g:lsp_fold_enabled = 1
-        set foldmethod=expr
-          \ foldexpr=lsp#ui#vim#folding#foldexpr()
-          \ foldtext=lsp#ui#vim#folding#foldtext()
-
-        autocmd FileType rst setlocal foldmethod=expr | setlocal foldexpr=riv#fold#expr(v:lnum) | setlocal foldtext=riv#fold#text()
-
-
-        " Load lsp configuration files
-        let lsp_files = systemlist('find $XDG_CONFIG_HOME/nvim/config/lsp -name "*.vim" ! -name "_*" -type f')
-        for conf_file in lsp_files
-            execute 'source '.fnameescape(conf_file)
-        endfor
-
-       " LSP keymap definition
+        " LSP keymap definition
         function! SetLSPShortcuts()
-            nnoremap <leader>ld :LspPeekDefinition<CR>
-            nnoremap <leader>lD :LspDefinition<CR>
-            nnoremap <leader>lk :LspPeekDeclaration<CR>
-            nnoremap <leader>lK :LspDeclaration<CR>
-            nnoremap <leader>lr :LspRename<CR>
-            nnoremap <leader>lf :LspDocumentFormat<CR>
-            vnoremap <leader>lF :LspDocumentRangeFormat<CR>
-            nnoremap <leader>lt :LspPeekTypeDefinition<CR>
-            nnoremap <leader>lT :LspPeekTypeDefinition<CR>
-            nnoremap <leader>li :LspPeekImplementation<CR>
-            nnoremap <leader>lI :LspImplementation<CR>
-            nnoremap <leader>ls :LspDocumentSymbol<CR>
-            nnoremap <leader>lh :LspHover<CR>
-            nnoremap <leader>la :LspCodeAction<CR>
-            nnoremap <leader>lg :LspDocumentDiagnostics<CR>
+            nnoremap <leader>ld <cmd>lua vim.lsp.buf.definition()<CR>
+            nnoremap <leader>lk <cmd>lua vim.lsp.buf.declaration()<CR>
+            nnoremap <leader>lf <cmd>lua vim.lsp.buf.references()<CR>
+            nnoremap <leader>lt <cmd>lua vim.lsp.buf.type_definition()<CR>
+            nnoremap <leader>li <cmd>lua vim.lsp.buf.implementation()<CR>
+            nnoremap <leader>ls <cmd>lua vim.lsp.buf.signature_help()<CR>
+            nnoremap <leader>lh <cmd>lua vim.lsp.buf.hover()<CR>
+            nnoremap <leader>lW <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+            nnoremap <silent>lD <cmd>lua vim.lsp.buf.document_symbol()<CR>
         endfunction()
         call SetLSPShortcuts()
 
@@ -437,4 +402,22 @@ call plug#end()
             let g:tq_enabled_backends=["openoffice_en", "mthesaur_txt", "datamuse_com", "openthesaurus_de"]
             let g:tq_language=['en', 'de']
         endif
+
+        " LSP
+        lua << EOF
+        local nvim_lsp = require('nvim_lsp')
+        local ncm2 = require('ncm2')
+        nvim_lsp.bashls.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.ccls.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.cssls.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.dockerls.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.gopls.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.html.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.jsonls.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.pyls.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.terraformls.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.tsserver.setup{on_init = ncm2.register_lsp_source}
+        nvim_lsp.yamlls.setup{on_init = ncm2.register_lsp_source}
+EOF
+    autocmd Filetype go setlocal omnifunc=v:lua.vim.lsp.omnifunc
     endif

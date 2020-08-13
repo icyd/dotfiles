@@ -201,15 +201,6 @@ create_symlinks() {
         echo -e "\t${yellow}Creating symlink:${reset} ${name} -> ${file}"
         ln -sf "${file}" "${name}"
     done
-    if [ -d "${CWD}/alacritty" ]; then
-        if [ $(uname -s) == "Darwin" ]; then
-            echo -e "${green}Using Darwin Alacritty config file${reset}"
-            ln -sf "${CWD}/alacritty/alacritty_darwin.yml" "${CWD}/alacritty/alacritty.yml"
-        else
-            echo -e "${green}Using Linux Alacritty config file${reset}"
-            ln -sf "${CWD}/alacritty/alacritty_linux.yml" "${CWD}/alacritty/alacritty.yml"
-        fi
-    fi
     if [ -f "${CWD}/gnupg/gpg-agent.conf" ] && [ $(uname -s) == "Darwin" ]; then
         echo -e "${green}Replacing pinentry-qt with pinentry-mac${reset}"
         perl -pi -e 's/^pinentry-program.*/pinentry-program \/usr\/local\/bin\/pinentry-mac/' "${CWD}/gnupg/gpg-agent.conf"
@@ -341,23 +332,8 @@ install_pyenv() {
     pyenv activate "$PYENV_NAME"
     echo -e "\n${yellow}Updating pip${reset}"
     pip install --user -q -U pip
-    echo -e "${yellow}Installing python packages.${reset}"
-    if [ -z "$SERVER_MODE" ]; then
-        pip install --user -U -r "${CWD}/nvim/requirements.txt" >/dev/null
-        echo -e "${yellow}Installing node.js.${reset}"
-        nodeenv -p > /dev/null
-        echo -e "${yellow}Installing node.js packages.${reset}"
-        NPM="$(pyenv which npm)"
-        cat "${CWD}/nvim/npm_requirements.txt" | cut -d ' ' -f2 | tail -n +2 | xargs npm install -g > /dev/null
-        npm update -g
-    else
-        echo -e "${yellow}Installing pynvim${reset}"
-        pip -q install --user -U pynvim
-        echo -e "${yellow}Installing neovim${reset}"
-        pip -q install --user -U neovim
-        echo -e "${yellow}Installing neovim-remote${reset}"
-        pip -q install --user -U neovim-remote
-    fi
+	echo -e "${yellow}Installing pynvim${reset}"
+	pip install pynvim
 
     echo -e "${yellow}Substituying python path in the configuration file: ${reset} ${PYTHON}"
     PYTHON=$(pyenv which python 2>/dev/null)

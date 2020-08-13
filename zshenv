@@ -45,7 +45,7 @@ export GOPATH="${HOME}/go"
 export NVM_DIR="$HOME/.nvm"
 
 # Path definition
-export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$GOPATH/bin:$PATH"
+export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$GOPATH/bin:$HOME/.bin:$PATH"
 
 # Nvr's config
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
