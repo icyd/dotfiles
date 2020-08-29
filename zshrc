@@ -1,4 +1,5 @@
 # zmodload zsh/zprof
+
 # On slow systems, checking the cached .zcompdump file to see if it must be
 # regenerated adds a noticable delay to zsh startup.  This little hack restricts
 # it to once a day.  It should be pasted into your own completion file.
@@ -8,13 +9,20 @@
 # - 'N' makes the glob pattern evaluate to nothing when it doesn't match (rather than throw a globbing error)
 # - '.' matches "regular files"
 # - 'mh+24' matches files (or directories or whatever) that are older than 24 hours.
-autoload -Uz compinit
-autoload -Uz zcalc
+# Load powerlevel10k configuration file
+[ -f "${ZSH_CONFIG}/p10k.zsh" ] && source "${ZSH_CONFIG}/p10k.zsh"
+
+autoload -Uz +X compinit
+autoload -Uz +X bashcompinit
+autoload -Uz +X zcalc
 if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
     compinit
+    bashcompinit
 else
     compinit -C
+    bashcompinit -C
 fi
+
 # Static call of zsh's plugins
 gen_plugins_file(){
     antibody bundle < "${ZSH_CONFIG}/zsh_plugins.txt" > "${ZSH_CONFIG}/zsh_plugins.sh"
@@ -173,6 +181,8 @@ cd_in() {
 # Aliases
 [ -x "$(command -v bat)" ] && alias cat="bat"
 alias n='nvr -s'
+alias nvim="$EDITOR"
+alias vim="$EDITOR"
 alias svim='sudo -E nvim'
 alias dw="cd $HOME/Downloads"
 alias pj="cd $HOME/Projects"
@@ -203,10 +213,10 @@ alias lo='cd .. && l'
 alias li='cd_in'
 alias gpgupd='gpg-connect-agent updatestartuptty /bye'
 alias ssh="TERM=xterm ssh"
+alias t="/usr/local/bin/todo.sh -d $XDG_CONFIG_HOME/todo/todo.cfg"
 
-if [ -n "$WSL" ]; then
-    alias wuso="python3 $HOME/Projects/wsl-sudo/wsl-sudo.py"
-fi
+# Todotxt-cli completion
+source /usr/local/share/bash-completion/completions/todo_completion
 
 # Allow completation with kubectl as 'k' alias
 [ -x "$(command -v kubectl)" ] && source <(k completion zsh | sed s/kubectl/k/g)
@@ -233,7 +243,7 @@ fi
 [ -x "$(command -v aws_completer)" ] && complete -C aws_completer aws
 
 # Use neofetch
-[ "$ACTIVE_NEOFETCH" -ne 0 ] && [ -x "$(command -v neofetch)" ] && neofetch
+# [ "$ACTIVE_NEOFETCH" -ne 0 ] && [ -x "$(command -v neofetch)" ] && neofetch
 
 # Source broot
 if [ "$(uname -s)" = "Darwin" ]; then
@@ -243,16 +253,9 @@ else
 fi
 
 # Enable starship prompt
-eval "$(starship init zsh)"
-
-if [ -n "$WSL" ] && service dns-sync.sh status | grep -q 'dns-sync is not running'; then
-	sudo service dns-sync.sh start
-fi
-
-if [ -f "$HOME/.P4ENV" ]; then
-    source "$HOME/.P4ENV"
-fi
-# Enable To debug loading times
-# zprof
+# eval "$(starship init zsh)"
 
 source /home/beto/.config/broot/launcher/bash/br
+#
+# Enable To debug loading times
+# zprof

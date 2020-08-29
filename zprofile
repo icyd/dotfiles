@@ -10,3 +10,4 @@ fi
 if [ -z "$(pgrep dirmngr)" ]; then
     dirmngr --homedir $GNUPGHOME --daemon >/dev/null 2>&1
 fi
+export DISPLAY=:0

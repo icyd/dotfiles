@@ -5,12 +5,12 @@
     editor = nvim
 [diff]
     tool = nvr
-[difftool "nvr"]
-    cmd = nvr -s -d $LOCAL $REMOTE
+[difftool "nvim"]
+    cmd = nvim -d $LOCAL $REMOTE
 [merge]
-    tool = nvr
-[mergetool "nvr"]
-    cmd = nvr -s -d $LOCAL $BASE $REMOTE $MERGED -c 'wincmd J | wincmd ='
+    tool = nvim
+[mergetool "nvim"]
+    cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c 'wincmd J | wincmd ='
 
 [credential]
 	helper = store

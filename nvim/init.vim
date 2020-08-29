@@ -17,63 +17,82 @@
     set autoindent
 
     " Search
-    set incsearch           "search as characters are entered
-    set hlsearch            "highlight matches
+    " Search as characters are entered
+    set incsearch
+    " Highlight matches
+    set hlsearch
     set ignorecase
     set smartcase
 
-    " Permanent very magic
-    nnoremap   /      /\v
-    vnoremap   /      /\v
-    cnoremap   %s/    %smagic/
-    cnoremap   \>s/   \>smagic/
-    nnoremap   :g/    :g/\v
-    nnoremap   :g//   :g//
+"     " Permanent very magic
+"     nnoremap   /      /\v
+"     vnoremap   /      /\v
+"     cnoremap   %s/    %smagic/
+"     cnoremap   \>s/   \>smagic/
+"     nnoremap   :g/    :g/\v
+"     nnoremap   :g//   :g//
 
     " Folding
-    set foldnestmax=8       "defines max nested folds
-    set foldmethod=indent   "fold based on indent level
+    " Defines max nested folds
+    set foldnestmax=8
+    " Fold based on indent level
+    set foldmethod=indent
     set foldlevel=99
 
     " Softwrapping
-    set wrap                "Enable wrapping
+    set wrap
     set linebreak
     set nolist
 
     " Clipboard
-    set clipboard=unnamedplus "Use plus register as default clipboard
+    " Use plus register as default clipboard
+    set clipboard=unnamedplus
 
     " Defaults
-    set number              "insert line number column
-    set history=200         "increase history number
-    set relativenumber      "show relative number from current line and absolute in the line
-    set cursorline          "highlight the actual line
-    set showcmd             "show last executed command
-    filetype indent on      "load specific filetype indent files
-    filetype plugin on      "load specific filetype plugin files
+    " Insert line number column
+    set number
+    " Increase history number
+    set history=200
+    " Show relative number from current line and absolute in the line
+    set relativenumber
+    " Highlight the actual line
+    set cursorline
+    " Show last executed command
+    set showcmd
+    filetype indent on
+    filetype plugin on
     set infercase
-    " Avoid open hover on autocompletion
-    " set completeopt-=preview
     " No text injection, show menu with one, no autoselect
     set completeopt=noinsert,menuone,noselect,preview
     set shortmess+=c
     inoremap <c-c> <ESC>
 
-    set wildmenu            "visual autocomplete for command
+    " Visual autocomplete for command
+    set wildmenu
     set wildmode=longest,full
     set wildignorecase
-    set lazyredraw          "redraw only when needed
-    set showmatch           "highlight matching parenthesis
-    set noshowmode          "remove showing mode, because of status line
-    set hidden              "Allow buffer to keep open as hidden
-    set fileformat=unix     "Use only LF for new lines
-    set encoding=utf-8      "Set encoding displayed
-    set fileencoding=utf-8  "Encoding of written file
-    set nospell             "Disable spell check
+    " Redraw only when needed
+    set lazyredraw
+    " Highlight matching parenthesis
+    set showmatch
+    " Remove showing mode, because of status line
+    set noshowmode
+    " Allow buffer to keep open as hidden
+    set hidden
+    " Use only LF for new lines
+    set fileformat=unix
+    " Set encoding displayed
+    set encoding=utf-8
+    " Encoding of written file
+    set fileencoding=utf-8
+    " Disable spell check
+    set nospell
     syntax on
     syntax enable
-    set undofile            "Preserve undo history
-    set scrolloff=2         "Preserve lines when scrolling
+    " Preserve undo history
+    set undofile
+    "Preserve lines when scrolling
+    set scrolloff=2
     set shortmess=aTAqI
     set signcolumn=yes
     set autoread
@@ -101,11 +120,7 @@
     let g:loaded_ruby_provider = 1
 
     " Python provider (to use pyenv-virtualenv)
-    if empty($SERVER_MODE)
-        let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
-    else
-        let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
-    endif
+    let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
 
 
     " VerticalSplitBuffer command
@@ -113,8 +128,10 @@
     command! -nargs=1 Vbuffer call VerticalSplitBuffer(<f-args>)
 
     " Windows config
-    set splitbelow          "Split always below
-    set splitright          "Split always right
+    " Split always below
+    set splitbelow
+    " Split always right
+    set splitright
 
     " Highlight on lines with more than 80 characters
     set colorcolumn=81
@@ -127,6 +144,7 @@
 
     " Command to call function for removing trailing spaces
     command! Trim call TrimTrailingSpaces()
+    autocmd BufWritePost * call TrimTrailingSpaces()
 
 
 "###############################################################################
@@ -134,6 +152,7 @@
 "###############################################################################
     " Map leader to 'space'
     let mapleader="\<space>"
+    let maplocalleader="\\"
 
     " Disable 'badhabit' keys
     nnoremap   <Up> <Nop>
@@ -162,7 +181,7 @@
     nnoremap j gj
     nnoremap k gk
 
-    " ESC secuence
+    " ESC sequence
     inoremap jk <ESC>
 
     " Make session

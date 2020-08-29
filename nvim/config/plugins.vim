@@ -93,32 +93,17 @@ if empty($SERVER_MODE)
     Plug '~/.config/fzf'
     Plug 'junegunn/fzf.vim'
 
-" Async plugin for ctags & gtags managment
+    " Async plugin for ctags & gtags managment
     Plug 'ludovicchabant/vim-gutentags'
-    " Run make async.
-    Plug 'neomake/neomake'
     " LSP
     Plug 'neovim/nvim-lsp'
 
-" Grammar, spelling, related
-    " Plugin for grammar checking with languagetool
-    Plug 'rhysd/vim-grammarous', { 'on': 'GrammarousCheck' }
-    " Synonims plugin
-    Plug 'Ron89/thesaurus_query.vim', {
-        \ 'on': 'ThesaurusQueryReplaceCurrentWord' }
-
 " Syntax plugins
-    " Detect filetype in context
-    Plug 'Shougo/context_filetype.vim'
-    " Jinja2 Syntax pluggin
-    Plug 'Glench/Vim-Jinja2-Syntax'
-    " Pandoc's syntax module
-    Plug 'vim-pandoc/vim-pandoc-syntax'
     " Golang plugin
     Plug 'arp242/gopher.vim'
+    " Interactive interpreter REPL
+    Plug 'jpalardy/vim-slime'
 
-    " Interactive interpreter
-    Plug 'metakirby5/codi.vim'
 " Other plugins
     " Pandoc's Markdown integration
     Plug 'vim-pandoc/vim-pandoc'
@@ -135,7 +120,7 @@ else
     " Native vim completion engine
     Plug 'ajh17/VimCompletesMe'
 endif
-    "
+
 
 call plug#end()
 
@@ -173,8 +158,6 @@ call plug#end()
     endfunction
     let g:tcomment#filetype#guess_typescript = 1
     let g:tcomment#filetype#guess_javascript = 1
-    autocmd BufNewFile,BufRead *.js set filetype=javascript.jsx
-    let g:vim_jsx_pretty_colorful_config = 1
 
     " Makeprg definitions to use :make
     autocmd! FileType python setlocal makeprg=python\ %
@@ -292,10 +275,6 @@ call plug#end()
         let g:javascript_plugin_jsdoc = 1
         let g:jsx_ext_required = 1
 
-        " Vim-pyenv
-        let g:pyenv#auto_activate=0
-        let g:pyenv#python_exec='/usr/bin/python'
-
         " Gutertags
         let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
         let g:gutentags_add_ctrlp_root_markers = 0
@@ -329,15 +308,9 @@ call plug#end()
             nnoremap <leader>ls <cmd>lua vim.lsp.buf.signature_help()<CR>
             nnoremap <leader>lh <cmd>lua vim.lsp.buf.hover()<CR>
             nnoremap <leader>lW <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-            nnoremap <silent>lD <cmd>lua vim.lsp.buf.document_symbol()<CR>
+            nnoremap <leader>lD <cmd>lua vim.lsp.buf.document_symbol()<CR>
         endfunction()
         call SetLSPShortcuts()
-
-        " Neomake
-        augroup my_neomake
-          au!
-          autocmd FileType scss,html,yaml,json call neomake#configure#automake_for_buffer('nrwi', 500)
-        augroup END
 
         " Pandoc
         let g:pandoc#modules#enabled = ["formatting"]
@@ -345,10 +318,10 @@ call plug#end()
         let g:pandoc#syntax#codeblocks#embeds#langs = ['html', 'python', 'bash=sh']
         let g:polyglot_disabled = ['html', 'markdown', 'coffee-script', 'vue']
 
-        "RIV
+        " RIV
         let g:riv_python_rst_hl = 1
 
-        "Gopher plugin
+        " Gopher plugin
         autocmd FileType go nnoremap <leader>gb :setl makeprg=go\ build\|:make<CR>
         autocmd FileType go nnoremap <leader>gr :setl makeprg=go\ run\|:make %<CR>
         autocmd FileType go nnoremap <leader>gt :compiler gotest\|:make<CR>
@@ -357,7 +330,7 @@ call plug#end()
         autocmd FileType go nnoremap <Leader>gd :GoImport -rm<Space>
 
 
-        "Vimspector
+        " Vimspector
         let g:vimspector_enable_mappings = 'HUMAN'
 
         " Pweave
@@ -367,57 +340,16 @@ call plug#end()
             autocmd FileType pandoc setlocal makeprg=pweave\ -f\ pandoc\ %
         augroup END
 
-        " Grammarous
-        let g:grammarous#languagetool_cmd = 'languagetool'
-        let g:grammarous#use_vim_spelllang = 1
-        let g:grammarous#enable_spell_check = 1
-        let g:grammarous#use_location_list = 1
-        let g:grammarous#default_comments_only_filetypes = {
-            \ '*' : 1, 'help' : 0, 'markdown' : 0,
-            \ 'pandoc' : 0,
-            \ }
-        nnoremap <silent> <buffer><leader>zg :GrammarousCheck<CR>
-        nnoremap <silent> <buffer><leader>zr :GrammarousReset<CR>
-        let g:grammarous#hooks = {}
-        function! g:grammarous#hooks.on_check(errs) abort
-            nmap <buffer>gn <Plug>(grammarous-move-to-next-error)
-            nmap <buffer>gp <Plug>(grammarous-move-to-previous-error)
-            " nmap <buffer>gr <Plug>(grammarous-move-to-info-window)r
-            nmap <buffer>gf <Plug>(grammarous-move-to-info-window)f
-            " nmap <buffer>gR <Plug>(grammarous-move-to-info-window)R
-        endfunction
-        function! g:grammarous#hooks.on_reset(errs) abort
-            nunmap <buffer>gn
-            nunmap <buffer>gp
-            " nunmap <buffer>gr
-            nunmap <buffer>gf
-            " nunmap <buffer>gR
-        endfunction
-
-        " Thesaurus
-        if filereadable("$XDG_CONFIG_HOME/nvim/thesaurus/mthesaur.txt")
-            let g:tq_map_keys=0
-            nnoremap <Leader>zs :ThesaurusQueryReplaceCurrentWord<CR>
-            let g:tq_mthesaur_file="~/.config/nvim/thesaurus/mthesaur.txt"
-            let g:tq_enabled_backends=["openoffice_en", "mthesaur_txt", "datamuse_com", "openthesaurus_de"]
-            let g:tq_language=['en', 'de']
-        endif
-
-        " LSP
-        lua << EOF
-        local nvim_lsp = require('nvim_lsp')
-        local ncm2 = require('ncm2')
-        nvim_lsp.bashls.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.ccls.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.cssls.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.dockerls.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.gopls.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.html.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.jsonls.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.pyls.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.terraformls.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.tsserver.setup{on_init = ncm2.register_lsp_source}
-        nvim_lsp.yamlls.setup{on_init = ncm2.register_lsp_source}
-EOF
-    autocmd Filetype go setlocal omnifunc=v:lua.vim.lsp.omnifunc
-    endif
+        " Slime
+        let g:slime_target = "tmux"
+        let g:slime_paste_file = "/tmp/slime_paste"
+        let g:slime_default_config = {"socket_name": "default", "target_pane": "{last}"}
+        let g:slime_python_ipython = 1
+        let g:slime_dont_ask_default = 1
+        let g:slime_no_mappings = 1
+        xmap <localleader>s    <Plug>SlimeRegionSend
+        nmap <localleader>s    <Plug>SlimeParagraphSend
+        nmap <localleader>l    :SlimeSend0 "<c-l>"<CR>
+        nmap <localleader>c    :SlimeSend0 "<c-c>"<CR>
+        nmap <localleader>q    :SlimeSend0 "<c-d>"<CR>
+endif
