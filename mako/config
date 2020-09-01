@@ -1,0 +1,10 @@
+font=pango:Courier Code 10
+anchor=bottom-right
+sort=+time
+default-timeout=5000
+font=Fira Code 10
+width=500
+padding=8
+border-size=0
+text-color=#FFFFFF
+background-color=#578C72
