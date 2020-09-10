@@ -114,7 +114,7 @@ if empty($SERVER_MODE)
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
     Plug 'puremourning/vimspector', {
-        \ 'do': './install_gadget.py --enable-c --enable-python --enable-go --enable-bash --force-enable-chrome'
+        \ 'do': './install_gadget.py --enable-c --enable-python --enable-go --enable-bash --force-enable-chrome --force-enable-rust'
     \ }
 else
     " Native vim completion engine
@@ -352,4 +352,8 @@ call plug#end()
         nmap <localleader>l    :SlimeSend0 "<c-l>"<CR>
         nmap <localleader>c    :SlimeSend0 "<c-c>"<CR>
         nmap <localleader>q    :SlimeSend0 "<c-d>"<CR>
+
+        " LSP
+        let s:nvimlsp_file="$XDG_CONFIG_HOME/nvim/config/nvimlsp.lua"
+        call CheckandSourceLua(s:nvimlsp_file)
 endif
