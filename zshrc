@@ -147,7 +147,8 @@ if [ -z "$SERVER_MODE" ]; then
     if [ -n "$PIDFOUND" ]; then
         export GPG_AGENT_INFO="$GNUPGHOME/S.gpg-agent:$PIDFOUND:1"
         export GPG_TTY=$(tty)
-        export SSH_AUTH_SOCK="$GNUPGHOME/S.gpg-agent.ssh"
+        # export SSH_AUTH_SOCK="$GNUPGHOME/S.gpg-agent.ssh"
+	export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
         unset SSH_AGENT_PID
     fi
     PIDFOUND=$(pgrep dirmngr)
@@ -216,7 +217,8 @@ alias ssh="TERM=xterm ssh"
 alias t="/usr/local/bin/todo.sh -d $XDG_CONFIG_HOME/todo/todo.cfg"
 
 # Todotxt-cli completion
-source /usr/local/share/bash-completion/completions/todo_completion
+TODO_CMPL="/usr/local/share/bash-completion/completions/todo_completion"
+[ -f "$TODO_CMPL" ] && source "$TODO_CMPL"
 
 # Allow completation with kubectl as 'k' alias
 [ -x "$(command -v kubectl)" ] && source <(k completion zsh | sed s/kubectl/k/g)
