@@ -6,9 +6,10 @@ set  $down   j
 set  $up     k
 set  $right  l
 
-set $term st
-set $powermenu bemenu -b -i -p "Power Options:" --hb "$darkwhite" --fb "$darkblack" --tb "$darkblack" --tf "$darkwhite" --nb "$darkblack" --nf "$darkwhite" --sb "$darkwhite" --hf "$darkblack" --sf "$darkblack" --fn "Courier Code 10"
-set $menurun bemenu-run -b -i -p "" --hb "$darkwhite" --fb "$darkblack" --nb "$darkblack" --nf "$darkwhite" --sb "$darkwhite" --hf "$darkblack" --sf "$darkblack" --fn "Courier Code 10" | xargs swaymsg exec
+set $term "toolbox run alacritty -e /bin/zsh"
+set $termsys alacritty
+set $powermenu dmenu -b -i -p "Power Options:" --hb "$darkwhite" --fb "$darkblack" --tb "$darkblack" --tf "$darkwhite" --nb "$darkblack" --nf "$darkwhite" --sb "$darkwhite" --hf "$darkblack" --sf "$darkblack" --fn "Courier Code 10"
+set $menurun dmenu_run -b -i -p "" --hb "$darkwhite" --fb "$darkblack" --nb "$darkblack" --nf "$darkwhite" --sb "$darkwhite" --hf "$darkblack" --sf "$darkblack" --fn "Courier Code 10" | xargs swaymsg exec
 set $passmenu passmenu -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Courier Code-10" | xargs swaymsg exec
 
 
@@ -57,7 +58,7 @@ client.urgent            $darkred        $darkred    $darkwhite  $darkred    $da
 
 ### Output configuration
 output LVDS-1 {
-    background ~/.wallpaper.jpg fill
+    # background ~/.wallpaper.jpg fill
     resolution 1366x768
 }
 
@@ -69,7 +70,7 @@ exec swayidle \
     before-sleep /home/beto/.config/dotfiles/scripts/lockscreen
 
 ### Input configuration
- input "2:14:ETPS/2_Elantech_Touchpad" {
+input "2:14:ETPS/2_Elantech_Touchpad" {
      click_method clickfinger
      scroll_method two_finger
      middle_emulation enabled
@@ -77,11 +78,21 @@ exec swayidle \
      tap enabled
      natural_scroll enabled
      dwt enabled
- }
+}
+
+input "2:7:SynPS/2_Synaptics_TouchPad" {
+     click_method clickfinger
+     scroll_method two_finger
+     middle_emulation enabled
+     tap_button_map lrm
+     tap enabled
+     natural_scroll enabled
+     dwt enabled
+}
+
 
 input * {
-    xkb_layout es
-    xkb_variant icyd
+    xkb_file $HOME/.config/xkb/icyd
     # xkb_layout us
     # xkb_variant dvp
     xkb_options "lv3:ralt_switch,compose:102,caps:swapescape"
@@ -89,12 +100,13 @@ input * {
 
 ### Key bindings
 bindsym $mod+Return exec $term
+bindsym $mod+Shift+Return exec $termsys
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start your launcher
-bindsym Mod1+d exec $menurun
+bindsym Mod1+d exec dmenu_run
 bindsym Mod1+Shift+d exec $passmenu
 
 # Drag floating windows by holding down $mod and left mouse button.
