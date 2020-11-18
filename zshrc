@@ -165,23 +165,11 @@ if [ -z "$SERVER_MODE" ]; then
         }
     fi
 
-    gpg() {
-        PIDFOUND=$(pgrep gpg-agent)
-        if [ -n "$PIDFOUND" ]; then
-            export GPG_AGENT_INFO="$GNUPGHOME/S.gpg-agent:$PIDFOUND:1"
-            export GPG_TTY=$(tty)
-            export SSH_AUTH_SOCK="$GNUPGHOME/S.gpg-agent.ssh"
-            unset SSH_AGENT_PID
-        fi
-
-        PIDFOUND=$(pgrep dirmngr)
-        if [ -n "$PIDFOUND" ]; then
-            export DIRMNGR_INFO="$GNUPGHOME/S.dirmngr:$PIDFOUND:1"
-        fi
-    }
-
-    lazyload ssh -- 'gpg'
-    lazyload gpg -- 'gpg'
+    export GPG_TTY=$(tty)
+    unset SSH_AGENT_PID
+    if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+        export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+    fi
 fi
 
 # Functions

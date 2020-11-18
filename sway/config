@@ -6,13 +6,6 @@ set  $down   j
 set  $up     k
 set  $right  l
 
-set $term "toolbox run alacritty -e /bin/zsh"
-set $termsys alacritty
-set $powermenu dmenu -b -i -p "Power Options:" --hb "$darkwhite" --fb "$darkblack" --tb "$darkblack" --tf "$darkwhite" --nb "$darkblack" --nf "$darkwhite" --sb "$darkwhite" --hf "$darkblack" --sf "$darkblack" --fn "Courier Code 10"
-set $menurun dmenu_run -b -i -p "" --hb "$darkwhite" --fb "$darkblack" --nb "$darkblack" --nf "$darkwhite" --sb "$darkwhite" --hf "$darkblack" --sf "$darkblack" --fn "Courier Code 10" | xargs swaymsg exec
-set $passmenu passmenu -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Courier Code-10" | xargs swaymsg exec
-
-
 ## Base16 Gruvbox dark, medium
 # Author: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
 
@@ -50,6 +43,12 @@ set $darkwhite      $base05
 set $white          $base07
 set $transparent    #00000000
 
+set $term "toolbox run alacritty -e /bin/zsh"
+set $termsys alacritty
+set $menudesk j4-dmenu-desktop --dmenu='dmenu -b -i -p "" -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "MesloLGS NF-10"'
+set $menurun dmenu_run -b -i -p "" -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "MesloLGS NF-10" | xargs swaymsg exec
+set $passmenu passmenu -b -i -nb "$darkblack" -nf "$darkwhite" -sb "$darkwhite" -sf "$darkblack" -fn "Courier Code-10" | xargs swaymsg exec
+
 #Colors                  Title_border    Background  Text        Indicator   Child_border
 client.focused           $transparent    $darkwhite  $darkblack  $darkwhite  $darkwhite
 client.unfocused         $transparent    $darkblack  $darkwhite  $red        $darkblack
@@ -58,7 +57,7 @@ client.urgent            $darkred        $darkred    $darkwhite  $darkred    $da
 
 ### Output configuration
 output LVDS-1 {
-    # background ~/.wallpaper.jpg fill
+    background ~/.wallpaper.jpg fill
     resolution 1366x768
 }
 
@@ -106,8 +105,8 @@ bindsym $mod+Shift+Return exec $termsys
 bindsym $mod+Shift+q kill
 
 # start your launcher
-bindsym Mod1+d exec dmenu_run
-bindsym Mod1+Shift+d exec $passmenu
+bindsym Mod1+d exec $menurun
+bindsym Mod1+Shift+d exec $menudesk
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
