@@ -63,7 +63,6 @@ if [ -z "$SERVER_MODE" ]; then
         export HOMEBREW_GITHUB_API_TOKEN=06ce472e6c54a26af0f53170e8a6adfc479b2f9f
     fi
 
-    export SSH_AUTH_SOCK="$GNUPGHOME/S.gpg-agent.ssh"
 else
     export BROWSER="lynx"
     export TERM="xterm"
