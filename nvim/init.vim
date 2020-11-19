@@ -57,6 +57,7 @@
     set relativenumber
     " Highlight the actual line
     set cursorline
+    set cursorcolumn
     " Show last executed command
     set showcmd
     filetype indent on
@@ -116,11 +117,12 @@
 
     " Disable ruby, node.js and python2 support
     let g:loaded_python_provider = 1
-    let g:loaded_node_provider = 1
-    let g:loaded_ruby_provider = 1
+    let g:loaded_node_provider   = 1
+    let g:loaded_ruby_provider   = 1
+    let g:loaded_perl_provider   = 1
 
     " Python provider (to use pyenv-virtualenv)
-    let g:python3_host_prog = '/home/beto/.pyenv/versions/py3neovim/bin/python'
+    let g:python3_host_prog = '/var/home/beto/.pyenv/versions/pynvim/bin/python'
 
 
     " VerticalSplitBuffer command
@@ -139,8 +141,6 @@
     " Set characters to represent weird whitespaces
     exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~,eol:\uAC"
     set list
-    set cursorline
-    set cursorcolumn
 
     " Command to call function for removing trailing spaces
     command! Trim call TrimTrailingSpaces()
@@ -155,7 +155,7 @@
     let maplocalleader="\\"
 
     " Disable 'badhabit' keys
-    nnoremap   <Up> <Nop>
+    nnoremap   <Up>      <Nop>
     nnoremap   <Down>    <Nop>
     nnoremap   <Left>    <Nop>
     nnoremap   <Right>   <Nop>
@@ -167,7 +167,7 @@
     vnoremap   <Down>    <Nop>
     vnoremap   <Left>    <Nop>
     vnoremap   <Right>   <Nop>
-    inoremap   <BS>      <Nop>
+    " inoremap   <BS>      <Nop>
     inoremap   <Del>     <Nop>
 
     imap <C-D> <C-O>x
@@ -261,7 +261,7 @@
 
     " Modify path to add bin from pyenv
     if empty($SERVER_MODE)
-        let $PATH = '/home/beto/.pyenv/versions/py3neovim/bin/'.$PATH
+        let $PATH = '/var/home/beto/.pyenv/versions/pynvim/bin/'.$PATH
     endif
 
     " Write with sudo

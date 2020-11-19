@@ -9,12 +9,13 @@
 # - 'N' makes the glob pattern evaluate to nothing when it doesn't match (rather than throw a globbing error)
 # - '.' matches "regular files"
 # - 'mh+24' matches files (or directories or whatever) that are older than 24 hours.
+
 # Load powerlevel10k configuration file
-[ -f "${ZSH_CONFIG}/p10k.zsh" ] && source "${ZSH_CONFIG}/p10k.zsh"
+POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
 autoload -Uz +X compinit
-autoload -Uz +X bashcompinit
 autoload -Uz +X zcalc
+autoload -Uz +X bashcompinit
 if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
     compinit
     bashcompinit
@@ -30,6 +31,8 @@ gen_plugins_file(){
 
 # Source plugins
 [ ! -f "${ZSH_CONFIG}/zsh_plugins.sh" ] && gen_plugins_file; source "${ZSH_CONFIG}/zsh_plugins.sh"
+
+[ -f "${ZSH_CONFIG}/p10k.zsh" ] && source "${ZSH_CONFIG}/p10k.zsh"
 
 #zsh's history
 HISTFILE=$HOME/.zsh_history
@@ -134,26 +137,38 @@ zle -N rationalise-dot
 bindkey . rationalise-dot
 
 if [ -z "$SERVER_MODE" ]; then
-    if command -v rg >/dev/null; then
-        # Configure fzf to use ripgrep
-        export FZF_CTRL_T_OPTS="--select-1 --exit-0"
-        export FZF_ALT_C_COMMAND='rg --files --hidden --null -g "!{.local,.cache}" "$HOME"| xargs -0 dirname 2> /dev/null | uniq'
-        export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
-        export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-        export FZF_DEFAULT_OPTS='--reverse --height 15'
+    if command -v sk >/dev/null; then
+    [ -f "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh" ] && source "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh"
+    lazyload sk -- 'source "$XDG_CONFIG_HOME/skim/shell/completion.zsh"'
+        export SKIM_DEFAULT_COMMAND="fd --hidden --ignore-case --follow \
+            --exclude .git --exclude node_modules --exclude .hg --exclude .svn \
+            --type d --type f --type l"
+        export SKIM_DEFAULT_OPTIONS="--ansi --reverse --height=40% --regex \
+            --bind='ctrl-j:page-down,ctrl-k:page-up,alt-j:preview-down,\
+            alt-k:preview-up,alt-d:preview-page-down,alt-u:preview-page-up,\
+            alt-o:execute('$EDITOR' {})+abort'
+            --preview-window='right:66%' \
+            --preview='bat --color=always --style=full {}'"
+        export SKIM_CTRL_T_COMMAND="$SKIM_DEFAULT_COMMAND"
+        export SKIM_CTRL_T_OPTS="$SKIM_DEFAULT_OPTIONS"
+        export SKIM_CTRL_R_OPTS="--preview={} --preview-window=:hidden \
+            --height=20% --bind=''"
+        export SKIM_ALT_C_OPTS="$SKIM_CTRL_R_OPTS"
+        _skim_compgen_path() {
+            fd --ignore-case --follow --hidden --exclude .git --exclude .hg \
+                --exclude .svn --type d --type f --type l . "$1"
+        }
+
+        _skim_compgen_dir() {
+            fd --ignore-case --follow --hidden --exclude .git --exclude .hg \
+                --exclude .svn --type d . "$1"
+        }
     fi
 
-    PIDFOUND=$(pgrep gpg-agent)
-    if [ -n "$PIDFOUND" ]; then
-        export GPG_AGENT_INFO="$GNUPGHOME/S.gpg-agent:$PIDFOUND:1"
-        export GPG_TTY=$(tty)
-        # export SSH_AUTH_SOCK="$GNUPGHOME/S.gpg-agent.ssh"
-	export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
-        unset SSH_AGENT_PID
-    fi
-    PIDFOUND=$(pgrep dirmngr)
-    if [ -n "$PIDFOUND" ]; then
-        export DIRMNGR_INFO="$GNUPGHOME/S.dirmngr:$PIDFOUND:1"
+    export GPG_TTY=$(tty)
+    unset SSH_AGENT_PID
+    if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+        export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
     fi
 fi
 
@@ -178,6 +193,9 @@ cd_in() {
     dir="$1"
     cd "$1" && l
 }
+
+# Defines editor
+[ -x "$(command -v nvim)" ] && export EDITOR='nvim' || export EDITOR='vim'
 
 # Aliases
 [ -x "$(command -v bat)" ] && alias cat="bat"
@@ -214,50 +232,27 @@ alias lo='cd .. && l'
 alias li='cd_in'
 alias gpgupd='gpg-connect-agent updatestartuptty /bye'
 alias ssh="TERM=xterm ssh"
-alias t="/usr/local/bin/todo.sh -d $XDG_CONFIG_HOME/todo/todo.cfg"
+alias gpw='gopass'
 
-# Todotxt-cli completion
-TODO_CMPL="/usr/local/share/bash-completion/completions/todo_completion"
-[ -f "$TODO_CMPL" ] && source "$TODO_CMPL"
+# Allow completation with kubectl as 'k' alias, could be enabled by default
+lazyload kubectl -- 'source <(kubectl completion zsh | sed s/kubectl/k/g)'
 
-# Allow completation with kubectl as 'k' alias
-[ -x "$(command -v kubectl)" ] && source <(k completion zsh | sed s/kubectl/k/g)
-
-if [ -x "$(command -v gopass)" ]; then
-    alias gpw='gopass'
-    source <(gopass completion zsh | sed /^_gopass$/d)
-    compdef _gopass gopass
-    compdef _gopass gpw
-fi
-#
-# Configure fzf to use ripgrep
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
-
-if [ "$TERM" = "st-256color" ]; then
-    cd "$HOME"
-fi
+lazyload gopass -- 'gpg; source <(gopass completion zsh | sed s/gopass/gpw/g)'
 
 # Load NVM
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+lazyload nvm -- 'source <(cat "$NVM_DIR/nvm.sh" "$NVM_DIR/bash_completion")'
 
 # Aws-cli autocompletion script
-[ -x "$(command -v aws_completer)" ] && complete -C aws_completer aws
-
-# Use neofetch
-# [ "$ACTIVE_NEOFETCH" -ne 0 ] && [ -x "$(command -v neofetch)" ] && neofetch
+lazyload aws -- 'complete -C $(which aws_completer) aws'
 
 # Source broot
-if [ "$(uname -s)" = "Darwin" ]; then
-    source "$HOME/Library/Preferences/org.dystroy.broot/launcher/bash/br"
-else
-    source "$XDG_CONFIG_HOME/broot/launcher/bash/br"
-fi
+BROOT=$([ "$(uname -s)" = "Darwin" ] && \
+    echo "$HOME/Library/Preferences/org.dystroy.broot/launcher/bash/br" || \
+    echo "$XDG_CONFIG_HOME/broot/launcher/bash/br")
+lazyload br -- 'source $BROOT'
 
-# Enable starship prompt
-# eval "$(starship init zsh)"
+# Source not hardcoded sys env definition
+[ -f "$XDG_CONFIG_HOME/zsh/local.zsh" ] && source "$XDG_CONFIG_HOME/zsh/local.zsh"
 
-source /home/beto/.config/broot/launcher/bash/br
-#
 # Enable To debug loading times
 # zprof

@@ -8,8 +8,6 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'tpope/vim-unimpaired'
     " Lightweight status bar plugin
     Plug 'itchyny/lightline.vim'
-    " Declaration of custom textobj
-    Plug 'kana/vim-textobj-user'
     " Object by indentation
     Plug 'michaeljsmith/vim-indent-object'
     " EditorConfig plugin
@@ -19,7 +17,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     " Increment dates, times, etc
     Plug 'tpope/vim-speeddating'
     " Lorem Ipsum
-    Plug 'vim-scripts/loremipsum'
+    Plug 'vim-scripts/loremipsum', { 'on': 'Loremipsum' }
     " Autoread
     Plug 'chrisbra/vim-autoread'
     " Seamless navigation tmux-vim
@@ -27,11 +25,10 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     " Session manager
     Plug 'tpope/vim-obsession'
     " Syntaxes plugin
+    let g:polyglot_disabled = ['html', 'markdown', 'coffee-script', 'vue']
     Plug 'sheerun/vim-polyglot'
     " Git
     Plug 'tpope/vim-fugitive'
-    " HTML plugins
-    Plug 'mattn/emmet-vim', { 'for': ['javascript', 'javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss', 'php'] }
 
 " Editing
     " Mark the indentation column
@@ -46,10 +43,10 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'bronson/vim-visual-star-search'
     " Surround brackets plugin
     Plug 'tpope/vim-surround'
-    " Comment plugin
-    Plug 'tomtom/tcomment_vim'
+     " Comment plugin
+     Plug 'tomtom/tcomment_vim'
     " Tabularize plugin
-    Plug 'godlygeek/tabular'
+    Plug 'godlygeek/tabular', { 'on': ['Tabularize', 'Tab'] }
 
 " Colorschemes & themes
     Plug 'lifepillar/vim-gruvbox8'
@@ -57,41 +54,36 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
 if empty($SERVER_MODE)
 " General plugins that require python
     " Gundo, undo tree
-    Plug 'sjl/gundo.vim'
+    Plug 'sjl/gundo.vim', { 'on': 'GundoToggle' }
     " Snippet engine
     Plug 'SirVer/ultisnips'
     " Snippet plugin
     Plug 'honza/vim-snippets'
 
 " Completion plugin
+    " HTML plugins
+    Plug 'mattn/emmet-vim', { 'for': ['javascript', 'javascript.jsx', 'javascript.tsx', 'html', 'css', 'scss', 'php'] }
     " Ncm2 completion plug
     Plug 'ncm2/ncm2'
-    Plug 'Shougo/neco-syntax'
     Plug 'roxma/nvim-yarp'
     " Integration with Ultisnips
     Plug 'ncm2/ncm2-ultisnips'
-    " Syntax source for ncm2
-    Plug 'ncm2/ncm2-syntax'
     " Detect js/css in html code
     Plug 'ncm2/ncm2-html-subscope'
     " Detect fenced code in mk
     Plug 'ncm2/ncm2-markdown-subscope'
+    Plug 'ncm2/ncm2-rst-subscope'
     Plug 'ncm2/ncm2-path'
     Plug 'ncm2/ncm2-tmux'
     "Gtags source for ncm2
     Plug 'ncm2/ncm2-gtags'
     Plug 'fgrsnau/ncm2-otherbuf', { 'branch': 'master' }
-    " Completion source for css/scss
-    Plug 'ncm2/ncm2-cssomni'
     " Completion from the current buffer
     Plug 'ncm2/ncm2-bufword'
-    " Completion from github
-    Plug 'ncm2/ncm2-github'
 
     " Fuzzy finder
-    " Fzf's vim wrapper
-    Plug '~/.config/fzf'
-    Plug 'junegunn/fzf.vim'
+    Plug 'lotabout/skim', { 'dir': '~/.config/skim', 'do': './install' }
+    Plug 'lotabout/skim.vim'
 
     " Async plugin for ctags & gtags managment
     Plug 'ludovicchabant/vim-gutentags'
@@ -100,21 +92,20 @@ if empty($SERVER_MODE)
 
 " Syntax plugins
     " Golang plugin
-    Plug 'arp242/gopher.vim'
+    Plug 'arp242/gopher.vim', { 'for': 'go' }
     " Interactive interpreter REPL
     Plug 'jpalardy/vim-slime'
 
 " Other plugins
-    " Pandoc's Markdown integration
-    Plug 'vim-pandoc/vim-pandoc'
     " reStructuredText plugin
-    Plug 'gu-fan/riv.vim'
-    Plug 'Rykka/InstantRst'
+    Plug 'gu-fan/riv.vim', { 'for': 'rst' }
+    Plug 'Rykka/InstantRst', { 'on': 'InstantRst' }
     " Pyenv plugin
     Plug 'lambdalisue/vim-pyenv', { 'for': 'python' }
     " Multilanguage debugger
     Plug 'puremourning/vimspector', {
-        \ 'do': './install_gadget.py --enable-c --enable-python --enable-go --enable-bash --force-enable-chrome --force-enable-rust'
+        \ 'do': './install_gadget.py --enable-c --enable-python --enable-go --enable-bash --force-enable-chrome',
+        \ 'on': '<Plug>VimspectorContinue'
     \ }
 else
     " Native vim completion engine
@@ -127,9 +118,6 @@ call plug#end()
 "##############################################################################
 " Plugin's configuration and keybindings
 "##############################################################################
-    " When openning new latex file, use latex filetype
-    let g:tex_flavor="latex"    "Use latex as default filetype
-
     let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 
     " Lightline configuration
@@ -156,6 +144,7 @@ call plug#end()
     function! LightlineFilename()
         return expand('%')
     endfunction
+
     let g:tcomment#filetype#guess_typescript = 1
     let g:tcomment#filetype#guess_javascript = 1
 
@@ -163,7 +152,7 @@ call plug#end()
     autocmd! FileType python setlocal makeprg=python\ %
 
      if (has("termguicolors"))
-         set termguicolors
+        set termguicolors
      endif
 
     " Set colorscheme
@@ -187,7 +176,7 @@ call plug#end()
     " EditorConfig
     let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 
-    " Vim-tmux-navigtar
+    " Vim-tmux-navigtor
     let g:tmux_navigator_no_mapping = 1
     let g:tmux_navigator_save_no_switch = 1
     if has('nvim')
@@ -202,6 +191,9 @@ call plug#end()
         nnoremap <silent> <Esc>h :TmuxNavigateLeft<CR>
         nnoremap <silent> <Esc>l :TmuxNavigateRight<CR>
     endif
+
+    " When openning new latex file, use latex filetype
+    let g:tex_flavor="latex"    "Use latex as default filetype
 
     if empty($SERVER_MODE)
         " Ncm2 config
@@ -292,12 +284,13 @@ call plug#end()
             autocmd User GutentagsUpdated call lightline#update()
         augroup END
 
-        let g:rg_command = '
-            \ rg --column --line-number --no-heading --fixed-strings --smart-case --no-ignore --hidden --color "always"
-            \ -g "*.{js,json,php,md,styl,jade,html,config,py,cpp,c,go,hs,rb,conf}"
-            \ -g "!{.git,node_modules,vendor}/*" '
-        command! -bang -nargs=* Find call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
-
+"         " let g:rg_command = '
+"         "     \ rg --column --line-number --no-heading --fixed-strings --smart-case --no-ignore --hidden --color "always"
+"         "     \ -g "*.{js,json,php,md,styl,jade,html,config,py,cpp,c,go,hs,rb,conf}"
+"         "     \ -g "!{.git,node_modules,vendor}/*" '
+"         " command! -bang -nargs=* Find call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
+"         command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
+"
         " LSP keymap definition
         function! SetLSPShortcuts()
             nnoremap <leader>ld <cmd>lua vim.lsp.buf.definition()<CR>
@@ -312,12 +305,6 @@ call plug#end()
         endfunction()
         call SetLSPShortcuts()
 
-        " Pandoc
-        let g:pandoc#modules#enabled = ["formatting"]
-        let g:pandoc#filetypes#pandoc_markdown = 1
-        let g:pandoc#syntax#codeblocks#embeds#langs = ['html', 'python', 'bash=sh']
-        let g:polyglot_disabled = ['html', 'markdown', 'coffee-script', 'vue']
-
         " RIV
         let g:riv_python_rst_hl = 1
 
@@ -329,16 +316,8 @@ call plug#end()
         autocmd FileType go nnoremap <Leader>gi :GoImport<Space>
         autocmd FileType go nnoremap <Leader>gd :GoImport -rm<Space>
 
-
         " Vimspector
         let g:vimspector_enable_mappings = 'HUMAN'
-
-        " Pweave
-        augroup pandoc
-            autocmd!
-            autocmd BufNewFile,BufFilePre,BufRead *.pmd setlocal filetype=pandoc
-            autocmd FileType pandoc setlocal makeprg=pweave\ -f\ pandoc\ %
-        augroup END
 
         " Slime
         let g:slime_target = "tmux"
@@ -352,8 +331,4 @@ call plug#end()
         nmap <localleader>l    :SlimeSend0 "<c-l>"<CR>
         nmap <localleader>c    :SlimeSend0 "<c-c>"<CR>
         nmap <localleader>q    :SlimeSend0 "<c-d>"<CR>
-
-        " LSP
-        let s:nvimlsp_file="$XDG_CONFIG_HOME/nvim/config/nvimlsp.lua"
-        call CheckandSourceLua(s:nvimlsp_file)
 endif
