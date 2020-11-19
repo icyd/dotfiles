@@ -1,4 +1,4 @@
-local nvim_lsp = require('nvim_lsp')
+local nvim_lsp = require('lspconfig')
 local ncm2 = require('ncm2')
 nvim_lsp.bashls.setup{on_init = ncm2.register_lsp_source}
 nvim_lsp.ccls.setup{on_init = ncm2.register_lsp_source}

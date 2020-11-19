@@ -22,3 +22,4 @@ robbyrussell/oh-my-zsh path:plugins/kubectl
 lukechilds/zsh-better-npm-completion
 robbyrussell/oh-my-zsh path:plugins/pass
 romkatv/powerlevel10k
+qoomon/zsh-lazyload
