@@ -116,13 +116,13 @@
     augroup END
 
     " Disable ruby, node.js and python2 support
-    let g:loaded_python_provider = 1
-    let g:loaded_node_provider   = 1
-    let g:loaded_ruby_provider   = 1
-    let g:loaded_perl_provider   = 1
+    let g:loaded_python_provider = 0
+    let g:loaded_node_provider   = 0
+    let g:loaded_ruby_provider   = 0
+    let g:loaded_perl_provider   = 0
 
     " Python provider (to use pyenv-virtualenv)
-    let g:python3_host_prog = '/var/home/beto/.pyenv/versions/pynvim/bin/python'
+    let g:python3_host_prog = '/home/beto/.pyenv/versions/pynvim/bin/python'
 
 
     " VerticalSplitBuffer command
@@ -261,7 +261,7 @@
 
     " Modify path to add bin from pyenv
     if empty($SERVER_MODE)
-        let $PATH = '/var/home/beto/.pyenv/versions/pynvim/bin/'.$PATH
+        let $PATH = '/home/beto/.pyenv/versions/pynvim/bin/'.$PATH
     endif
 
     " Write with sudo

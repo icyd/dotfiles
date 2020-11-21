@@ -95,6 +95,8 @@ if empty($SERVER_MODE)
     Plug 'arp242/gopher.vim', { 'for': 'go' }
     " Interactive interpreter REPL
     Plug 'jpalardy/vim-slime'
+    " Terraform plugin
+    Plug 'hashivim/vim-terraform'
 
 " Other plugins
     " reStructuredText plugin
@@ -160,18 +162,19 @@ call plug#end()
     let g:gruvbox_italics = 1
     highlight SignColumn ctermbg=NONE guibg=NONE
 
-    if exists(":Tabularize")
-      nnoremap <silent> <Leader>ae :Tabularize /=<CR>
-      vnoremap <silent> <Leader>ae :Tabularize /=<CR>
-      nnoremap <silent> <Leader>a<space> :Tabularize /\s\zs<CR>
-      vnoremap <silent> <Leader>a<space> :Tabularize /\s\zs<CR>
-      nnoremap <silent> <Leader>a\| :Tabularize /\|<CR>
-      vnoremap <silent> <Leader>a\| :Tabularize /\|<CR>
-      nnoremap <silent> <Leader>a\: :Tabularize /:\zs<CR>
-      vnoremap <silent> <Leader>a\: :Tabularize /:\zs<CR>
-      nnoremap <silent> <Leader>a, :Tabularize /,\zs<CR>
-      vnoremap <silent> <Leader>a, :Tabularize /,\zs<CR>
-    endif
+    function! TabularizeMapping()
+      nnoremap <silent> <localleader>e :Tabularize /=<CR>
+      vnoremap <silent> <localleader>e :Tabularize /=<CR>
+      nnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
+      vnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
+      nnoremap <silent> <localleader>\| :Tabularize /\|<CR>
+      vnoremap <silent> <localleader>\| :Tabularize /\|<CR>
+      nnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
+      vnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
+      nnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
+      vnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
+    endfunction
+    autocmd! VimEnter * if exists(":Tabularize") | call TabularizeMapping() | endif
 
     " EditorConfig
     let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
@@ -251,6 +254,10 @@ call plug#end()
         " autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
 
         " Fugitive
+        nnoremap <leader>gs :Gstatus<CR>
+        nnoremap <leader>gd :Gvdiff<CR>
+        nnoremap <leader>gdh :diffget //2<CR>
+        nnoremap <leader>gdl :diffget //3<CR>
         autocmd! User fugitive
              \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
              \   nnoremap <buffer> .. :edit %:h<CR> |
@@ -302,7 +309,7 @@ call plug#end()
             nnoremap <leader>lh <cmd>lua vim.lsp.buf.hover()<CR>
             nnoremap <leader>lW <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
             nnoremap <leader>lD <cmd>lua vim.lsp.buf.document_symbol()<CR>
-        endfunction()
+        endfunction
         call SetLSPShortcuts()
 
         " RIV
@@ -319,6 +326,18 @@ call plug#end()
         " Vimspector
         let g:vimspector_enable_mappings = 'HUMAN'
 
+        " Pweave
+        augroup pandoc
+            autocmd!
+            autocmd BufNewFile,BufFilePre,BufRead *.pmd setlocal filetype=pandoc
+            autocmd FileType pandoc setlocal makeprg=pweave\ -f\ pandoc\ %
+        augroup END
+
+        " Terraform
+        let g:terraform_align = 1
+        let g:terraform_fold_sections = 1
+        let g:terraform_fmt_on_save = 1
+
         " Slime
         let g:slime_target = "tmux"
         let g:slime_paste_file = "/tmp/slime_paste"
@@ -331,4 +350,8 @@ call plug#end()
         nmap <localleader>l    :SlimeSend0 "<c-l>"<CR>
         nmap <localleader>c    :SlimeSend0 "<c-c>"<CR>
         nmap <localleader>q    :SlimeSend0 "<c-d>"<CR>
+
+        " LSP
+        let s:nvimlsp_file="$XDG_CONFIG_HOME/nvim/config/nvimlsp.lua"
+        call CheckandSourceLua(s:nvimlsp_file)
 endif

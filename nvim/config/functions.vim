@@ -38,3 +38,10 @@ function! CheckandSource(file)
         exec "source " . expand(a:file)
     endif
 endfunction
+
+"Function to check if lua file exist and source it
+function! CheckandSourceLua(file)
+    if filereadable(expand(a:file))
+        exec "luafile " . expand(a:file)
+    endif
+endfunction

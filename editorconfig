@@ -1,5 +1,4 @@
 # https://editorconfig.org/
-
 root = true
 
 [*]
@@ -24,7 +23,7 @@ indent_size = 2
 insert_final_newline = ignore
 
 # The yaml files contain newlines inconsistently
-[*.yml]
+[*.{yml, yaml}]
 indent_size = 2
 insert_final_newline = ignore
 
@@ -52,9 +51,15 @@ indent_size = 8
 indent_style = tab
 indent_size = 4
 
+# Go
 [{go.mod,go.sum,*.go}]
 indent_style = tab
 indent_size = 8
+
+# Rust
+[*.rs]
+indent_style = space
+indent_space = 4
 
 # Javascript, Typescript, JSX, TSX
 [*.{js,ts,jsx,tsx}]
@@ -74,3 +79,12 @@ indent_style = tab
 
 [docs/**.txt]
 max_line_length = 79
+
+[*.{xml,xsd}]
+max_line_length = off
+end_of_line = lf
+indent_style = space
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+indent_size = 2
