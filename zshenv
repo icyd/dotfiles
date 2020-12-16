@@ -29,14 +29,14 @@ export CARGO_HOME="$HOME/.cargo"
 # Krew
 export KREW_ROOT=$HOME/.krew
 
-# Path definition
-export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$GOPATH/bin:$CARGO_HOME/bin:$HOME/.bin:$XDG_CONFIG_HOME/skim/bin:$KREW_ROOT/bin:$PATH"
-
 # Nvm configuration
 export NVM_DIR="$HOME/.nvm"
 
 # asdf config
 export ASDF_DIR="$HOME/.asdf"
+
+# Path definition
+export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$GOPATH/bin:$CARGO_HOME/bin:$HOME/.bin:$XDG_CONFIG_HOME/skim/bin:$KREW_ROOT/bin:$ASDF_DIR/bin:$PATH"
 
 # Pass config
 export PASSWORD_STORE_GENERATED_LENGTH=12

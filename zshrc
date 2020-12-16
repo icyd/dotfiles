@@ -143,7 +143,7 @@ if [ -z "$SERVER_MODE" ]; then
         export SKIM_DEFAULT_COMMAND="fd --hidden --ignore-case --follow \
             --exclude .git --exclude node_modules --exclude .hg --exclude .svn \
             --type d --type f --type l"
-        export SKIM_DEFAULT_OPTIONS="--ansi --reverse --height=40% --regex \
+        export SKIM_DEFAULT_OPTIONS="--ansi --reverse --height=40% \
             --bind='ctrl-j:page-down,ctrl-k:page-up,alt-j:preview-down,\
             alt-k:preview-up,alt-d:preview-page-down,alt-u:preview-page-up,\
             alt-o:execute('$EDITOR' {})+abort'
@@ -237,7 +237,7 @@ alias gpw='gopass'
 # Allow completation with kubectl as 'k' alias, could be enabled by default
 lazyload kubectl -- 'source <(kubectl completion zsh | sed s/kubectl/k/g)'
 
-lazyload gopass -- 'gpg; source <(gopass completion zsh | sed s/gopass/gpw/g)'
+lazyload gopass -- 'source <(gopass completion zsh | head -n -1 | tail -n +2); compdef _gopass gpw'
 
 # Load NVM
 lazyload nvm -- 'source <(cat "$NVM_DIR/nvm.sh" "$NVM_DIR/bash_completion")'
