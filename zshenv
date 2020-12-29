@@ -36,7 +36,7 @@ export NVM_DIR="$HOME/.nvm"
 export ASDF_DIR="$HOME/.asdf"
 
 # Path definition
-export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$GOPATH/bin:$CARGO_HOME/bin:$HOME/.bin:$XDG_CONFIG_HOME/skim/bin:$KREW_ROOT/bin:$ASDF_DIR/bin:$PATH"
+export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin/:$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$GOPATH/bin:$CARGO_HOME/bin:$HOME/.bin:$XDG_CONFIG_HOME/skim/bin:$KREW_ROOT/bin:$ASDF_DIR/bin:$ASDF_DIR/shims:$PATH"
 
 # Pass config
 export PASSWORD_STORE_GENERATED_LENGTH=12
