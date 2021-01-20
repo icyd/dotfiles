@@ -19,6 +19,7 @@ mpd/state
 zsh/zsh_plugins.sh
 zsh/antibody
 zsh/local.zsh
+zsh/completions
 scripts/*
 tmux/plugins
 vifm/vifminfo

@@ -15,23 +15,24 @@ POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
 autoload -Uz +X compinit
 autoload -Uz +X zcalc
-autoload -Uz +X bashcompinit
+# autoload -Uz +X bashcompinit
 if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
     compinit
-    bashcompinit
+    # bashcompinit
 else
     compinit -C
-    bashcompinit -C
+    # bashcompinit -C
 fi
 
 # Static call of zsh's plugins
 gen_plugins_file(){
-    antibody bundle < "${ZSH_CONFIG}/zsh_plugins.txt" > "${ZSH_CONFIG}/zsh_plugins.sh"
+    antibody bundle < "${ZSH_CONFIG}/zsh_plugins.txt" \
+        | perl -pe 's/fpath\+=\(\s+([^\s]+).*/idem_fpath_prepend $1/' \
+        > "${ZSH_CONFIG}/zsh_plugins.sh"
 }
 
 # Source plugins
 [ ! -f "${ZSH_CONFIG}/zsh_plugins.sh" ] && gen_plugins_file; source "${ZSH_CONFIG}/zsh_plugins.sh"
-
 [ -f "${ZSH_CONFIG}/p10k.zsh" ] && source "${ZSH_CONFIG}/p10k.zsh"
 
 #zsh's history
@@ -68,13 +69,13 @@ setopt HIST_VERIFY
 setopt HIST_EXPIRE_DUPS_FIRST
 # dont ask for confirmation in rm globs*
 setopt RM_STAR_SILENT
-setopt COMPLETE_ALIASES
 # lazy cd
 setopt AUTO_CD
 setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 setopt PUSHD_SILENT
 setopt nolistambiguous
+setopt complete_aliases
 
 # use cache
 zstyle ':completion:*' use-cache on
@@ -105,14 +106,13 @@ zstyle ':completion:*' rehash true
 
 # menu if nb items > 2
 zstyle ':completion:*' menu select=2
-
 zstyle ':completion:*:default'         list-colors ${(s.:.)LS_COLORS}
 
 # Enable Vi mode
 bindkey -v
 
 # Lower vi key lag
-export KEYTIMEOUT="15"
+export KEYTIMEOUT="12"
 
 # Vi additional bindings
 bindkey '^P' history-substring-search-up
@@ -136,40 +136,38 @@ rationalise-dot() {
 zle -N rationalise-dot
 bindkey . rationalise-dot
 
-if [ -z "$SERVER_MODE" ]; then
-    if command -v sk >/dev/null; then
-    [ -f "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh" ] && source "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh"
-    lazyload sk -- 'source "$XDG_CONFIG_HOME/skim/shell/completion.zsh"'
-        export SKIM_DEFAULT_COMMAND="fd --hidden --ignore-case --follow \
-            --exclude .git --exclude node_modules --exclude .hg --exclude .svn \
-            --type d --type f --type l"
-        export SKIM_DEFAULT_OPTIONS="--ansi --reverse --height=40% \
-            --bind='ctrl-j:page-down,ctrl-k:page-up,alt-j:preview-down,\
-            alt-k:preview-up,alt-d:preview-page-down,alt-u:preview-page-up,\
-            alt-o:execute('$EDITOR' {})+abort'
-            --preview-window='right:66%' \
-            --preview='bat --color=always --style=full {}'"
-        export SKIM_CTRL_T_COMMAND="$SKIM_DEFAULT_COMMAND"
-        export SKIM_CTRL_T_OPTS="$SKIM_DEFAULT_OPTIONS"
-        export SKIM_CTRL_R_OPTS="--preview={} --preview-window=:hidden \
-            --height=20% --bind=''"
-        export SKIM_ALT_C_OPTS="$SKIM_CTRL_R_OPTS"
-        _skim_compgen_path() {
-            fd --ignore-case --follow --hidden --exclude .git --exclude .hg \
-                --exclude .svn --type d --type f --type l . "$1"
-        }
+if command -v sk >/dev/null 2>&1; then
+[ -f "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh" ] && source "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh"
+# lazyload sk -- 'source ""'
+    export SKIM_DEFAULT_COMMAND="fd --hidden --ignore-case --follow \
+#         --exclude .git --exclude node_modules --exclude .hg --exclude .svn \
+#         --type d --type f --type l"
+    export SKIM_DEFAULT_OPTIONS="--ansi --reverse --height=40% \
+#         --bind='ctrl-j:page-down,ctrl-k:page-up,alt-j:preview-down,\
+#         alt-k:preview-up,alt-d:preview-page-down,alt-u:preview-page-up,\
+#         alt-o:execute('$EDITOR' {})+abort'
+#         --preview-window='right:66%' \
+#         --preview='bat --color=always --style=full {}'"
+    export SKIM_CTRL_T_COMMAND=$SKIM_DEFAULT_COMMAND
+    export SKIM_CTRL_T_OPTS=$SKIM_DEFAULT_OPTIONS
+    export SKIM_CTRL_R_OPTS="--preview={} --preview-window=:hidden \
+         --height=20% --bind=''"
+    export SKIM_ALT_C_OPTS="$SKIM_CTRL_R_OPTS"
+    _skim_compgen_path() {
+        fd --ignore-case --follow --hidden --exclude .git --exclude .hg \
+            --exclude .svn --type d --type f --type l . "$1"
+    }
 
-        _skim_compgen_dir() {
-            fd --ignore-case --follow --hidden --exclude .git --exclude .hg \
-                --exclude .svn --type d . "$1"
-        }
-    fi
+    _skim_compgen_dir() {
+        fd --ignore-case --follow --hidden --exclude .git --exclude .hg \
+            --exclude .svn --type d . "$1"
+    }
+fi
 
-    export GPG_TTY=$(tty)
-    unset SSH_AGENT_PID
-    if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
-        export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
-    fi
+export GPG_TTY=$(tty)
+unset SSH_AGENT_PID
+if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+    export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 fi
 
 # Functions
@@ -195,61 +193,36 @@ cd_in() {
 }
 
 # Defines editor
-[ -x "$(command -v nvim)" ] && export EDITOR='nvim' || export EDITOR='vim'
+if command -v nvim >/dev/null 2>&1; then
+	export EDITOR=nvim
+	alias vim=$EDITOR
+else
+	export EDITOR=vim
+fi
 
-# Aliases
-[ -x "$(command -v bat)" ] && alias cat="bat"
-alias n='nvr -s'
-alias nvim="$EDITOR"
-alias vim="$EDITOR"
-alias svim='sudo -E nvim'
-alias dw="cd $HOME/Downloads"
-alias pj="cd $HOME/Projects"
-alias cdC="cd $XDG_CONFIG_HOME/dotfiles"
-alias la='ls --color=auto -al'
-alias cal='zcalc -r3'
-alias d='dirs -v'
-alias p='pushd -q'
-alias o='popd -q '
-alias pu='own_push -'
-alias pd='own_push +'
-alias ou='own_pop -'
-alias od='own_pop +'
-alias eZC="$EDITOR $HOME/.zshrc"
-alias eZE="$EDITOR $HOME/.zshenv"
-alias -g C='| wc -l'
-alias -g G='| grep -i'
-alias -g RG='| rg '
-alias -g X='| xargs '
-alias -g SED='| sed -E'
-alias -g AWK='| awk '
-alias -s txt="$EDITOR"
-alias -s html="$BROWSER"
-alias -s {jpg,png}="imv"
-alias -s pdf="zathura"
-alias cl='clear'
-alias lo='cd .. && l'
-alias li='cd_in'
-alias gpgupd='gpg-connect-agent updatestartuptty /bye'
-alias ssh="TERM=xterm ssh"
-alias gpw='gopass'
+gen_completions() {
+    kubectl completion zsh | sed 's/kubectl/k/g' > $ZSH_COMPLETIONS/_kubectl
+    gopass completion zsh  > $ZSH_COMPLETIONS/_gopass
+}
 
-# Allow completation with kubectl as 'k' alias, could be enabled by default
-lazyload kubectl -- 'source <(kubectl completion zsh | sed s/kubectl/k/g)'
+[ -f $ZSH_CONFIG/aliases.sh ] && source $ZSH_CONFIG/aliases.sh
 
-lazyload gopass -- 'source <(gopass completion zsh | head -n -1 | tail -n +2); compdef _gopass gpw'
+if (( ${+_comps[gopass]} )); then
+ compdef gpw=gopass
+fi
 
-# Load NVM
-lazyload nvm -- 'source <(cat "$NVM_DIR/nvm.sh" "$NVM_DIR/bash_completion")'
-
-# Aws-cli autocompletion script
-lazyload aws -- 'complete -C $(which aws_completer) aws'
-
-# Source broot
-BROOT=$([ "$(uname -s)" = "Darwin" ] && \
-    echo "$HOME/Library/Preferences/org.dystroy.broot/launcher/bash/br" || \
-    echo "$XDG_CONFIG_HOME/broot/launcher/bash/br")
-lazyload br -- 'source $BROOT'
+pyenv() {
+    PYTHON=$(asdf which python)
+    if [ -d "$PY_VENV/$1" ] && [ -f "$PY_VENV/$1/bin/activate" ]; then
+        echo "Activating venv $1"
+        source "$PY_VENV/$1/bin/activate"
+    else
+        echo "Creating venv $1 with python $PYTHON"
+        $PYTHON -m venv "$PY_VENV/$1"
+        echo "Activating venv $1"
+        source "$PY_VENV/$1/bin/activate"
+    fi
+}
 
 # Source not hardcoded sys env definition
 [ -f "$XDG_CONFIG_HOME/zsh/local.zsh" ] && source "$XDG_CONFIG_HOME/zsh/local.zsh"

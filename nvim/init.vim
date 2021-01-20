@@ -47,6 +47,10 @@
     " Clipboard
     " Use plus register as default clipboard
     set clipboard=unnamedplus
+    " On visual mode delete and paste from register in the same position
+    vnoremap <localleader>P "_dP
+    nnoremap <localleader>P "_ddP
+
 
     " Defaults
     " Insert line number column
@@ -56,16 +60,16 @@
     " Show relative number from current line and absolute in the line
     set relativenumber
     " Highlight the actual line
-    set cursorline
-    set cursorcolumn
+    " set cursorline
+    " set cursorcolumn
     " Show last executed command
-    set showcmd
+    " set showcmd
     filetype indent on
     filetype plugin on
     set infercase
+    set cmdheight=2
     " No text injection, show menu with one, no autoselect
     set completeopt=noinsert,menuone,noselect,preview
-    set shortmess+=c
     inoremap <c-c> <ESC>
 
     " Visual autocomplete for command
@@ -94,7 +98,7 @@
     set undofile
     "Preserve lines when scrolling
     set scrolloff=2
-    set shortmess=aTAqI
+    set shortmess+=atTAIc
     set signcolumn=yes
     set autoread
     augroup undo_temp
@@ -107,14 +111,6 @@
     autocmd BufRead,BufNewFile *.txt setlocal spell spelllang=en_us
     autocmd FileType gitcommit setlocal spell spelllang=en_us
 
-    " Mail configuration for neomutt
-    augroup mail
-        autocmd!
-        autocmd FileType mail setlocal spell spelllang=en,es
-        autocmd FileType mail nnoremap <F12> :exe ':silent !qutebrowser /tmp/email.html'<CR>
-        autocmd BufWritePost neomutt-* :exe ':silent !mail2html.sh %'
-    augroup END
-
     " Disable ruby, node.js and python2 support
     let g:loaded_python_provider = 0
     let g:loaded_node_provider   = 0
@@ -122,8 +118,7 @@
     let g:loaded_perl_provider   = 0
 
     " Python provider (to use pyenv-virtualenv)
-    let g:python3_host_prog = '/home/beto/.pyenv/versions/pynvim/bin/python'
-
+    let g:python3_host_prog = $PY_VENV.'/pynvim/bin/python'
 
     " VerticalSplitBuffer command
     command! -nargs=1 Vb call VerticalSplitBuffer(<f-args>)
@@ -146,7 +141,6 @@
     command! Trim call TrimTrailingSpaces()
     autocmd BufWritePost * call TrimTrailingSpaces()
 
-
 "###############################################################################
 " General keybindings
 "###############################################################################
@@ -167,8 +161,6 @@
     vnoremap   <Down>    <Nop>
     vnoremap   <Left>    <Nop>
     vnoremap   <Right>   <Nop>
-    " inoremap   <BS>      <Nop>
-    inoremap   <Del>     <Nop>
 
     imap <C-D> <C-O>x
 
@@ -203,14 +195,15 @@
     nnoremap <M-l> <C-w>l
 
     " Tab mapping
-    nnoremap th  :tabfirst<CR>
-    nnoremap tk  :tabnext<CR>
-    nnoremap tj  :tabprev<CR>
-    nnoremap tl  :tablast<CR>
-    nnoremap tt  :tabedit<Space>
-    nnoremap tn  :tabnext<Space>
-    nnoremap tm  :tabm<Space>
-    nnoremap td  :tabclose<CR>
+    nnoremap <leader>ac  :tabnew<CR>
+    nnoremap <leader>a^  :tabfirst<CR>
+    nnoremap <leader>an  :tabnext<CR>
+    nnoremap <leader>ap  :tabprev<CR>
+    nnoremap <leader>a$  :tablast<CR>
+    nnoremap <leader>ae  :tabedit<Space>
+    nnoremap <leader>ab  :tabnext<Space>
+    nnoremap <leader>am  :tabm<Space>
+    nnoremap <leader>ax  :tabclose<CR>
 
     if has('nvim')
         " Terminal configuration
@@ -253,16 +246,11 @@
 
     nmap <silent> <Leader>n :Vex<CR>
 
-    " Open files located in the same dir in with the current file is edited
+    " Open files located in the same dir in which the current file is located
     map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
 
     " Expand current active directory
     cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
-
-    " Modify path to add bin from pyenv
-    if empty($SERVER_MODE)
-        let $PATH = '/home/beto/.pyenv/versions/pynvim/bin/'.$PATH
-    endif
 
     " Write with sudo
     cmap w!! w !sudo tee % >/dev/null
@@ -282,9 +270,7 @@
     endif
 
     " Edit vimrc/zshrc and load vimrc bindings
-    let s:main_config="$XDG_CONFIG_HOME/nvim/init.vim"
-    exe "nnoremap <silent> <leader>ev :edit" . s:main_config . "<CR>"
-    nnoremap <silent> <leader>eV :edit $MYVIMRC<CR>
+    nnoremap <silent> <leader>ev :edit $MYVIMRC<CR>
 
     " Dynamic loading for plugins based on sys env
     let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plugins.vim"
