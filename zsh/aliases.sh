@@ -35,8 +35,6 @@ alias gpw='gopass'
 
 # This command is used a LOT both below and in daily life
 alias k='kubectl'
-alias kctx='kubectl ctx'
-alias kns='kubectl ns'
 
 # Execute a kubectl command against all namespaces
 alias kca='_kca(){ kubectl "$@" --all-namespaces;  unset -f _kca; }; _kca'
@@ -197,4 +195,4 @@ alias kdelcj='kubectl delete cronjob'
 kj(){ kubectl "$@" -o json | jq; }
 ky(){ kubectl "$@" -o yaml | yq; }
 kcx(){ [ $# -ge 1 ] && kubectl ctx $1 || kubectl ctx $(kubectl ctx | sk)  }
-kcn(){ [ $# -ge 1 ] && kubectl ns $1 || kubectl ns $(kubectl ns | sk)  }
+kns(){ [ $# -ge 1 ] && kubectl ns $1 || kubectl ns $(kubectl ns | sk)  }

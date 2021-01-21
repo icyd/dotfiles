@@ -20,7 +20,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     " Increment dates, times, etc
     Plug 'tpope/vim-speeddating'
     " Lorem Ipsum
-    Plug 'vim-scripts/loremipsum', { 'on': 'Loremipsum' }
+    Plug 'vim-scripts/loremipsum'
     " Seamless navigation tmux-vim
     Plug 'christoomey/vim-tmux-navigator'
     " Session manager
@@ -31,7 +31,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'tpope/vim-fugitive'
     Plug 'idanarye/vim-merginal'
     " Maximizer
-    Plug 'szw/vim-maximizer', { 'on': 'MaximizerToggle' }
+    Plug 'szw/vim-maximizer'
 
 " Editing
     " Mark the indentation column
@@ -52,7 +52,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
 
 " General plugins that require python
     " Undo tree
-    Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+    Plug 'mbbill/undotree'
     " Snips engine
     Plug 'Shougo/neosnippet.vim'
     " Snippets
@@ -61,6 +61,9 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     " cheat.sh
     Plug 'RishabhRD/popfix'
     Plug 'RishabhRD/nvim-cheat.sh'
+    " Async make
+    Plug 'neomake/neomake'
+    " Plug 'tpope/vim-dispatch'
 
 " Completion plugin
     " HTML plugins
@@ -88,18 +91,20 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'ludovicchabant/vim-gutentags'
     " LSP
     Plug 'neovim/nvim-lspconfig'
-    Plug 'mattn/vim-lsp-settings'
+    Plug 'mattn/vim-lsp-settings', { 'on': 'LspInstallServer' }
 
 " Syntax plugins
     " Golang plugin
-    Plug 'arp242/gopher.vim', { 'for': 'go' }
-    Plug 'tweekmonster/gofmt.vim', { 'for': 'go' }
+    " Plug 'arp242/gopher.vim'
+    " Plug 'tweekmonster/gofmt.vim'
     " Terraform plugin
-    Plug 'hashivim/vim-terraform', { 'for': 'terraform' }
+    Plug 'hashivim/vim-terraform'
+    " Dockerfile
+    Plug 'ekalinin/Dockerfile.vim'
     " Rust plugin
-    Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+    Plug 'rust-lang/rust.vim'
     " Openscad
-    Plug 'sirtaj/vim-openscad', {'for': 'openscad' }
+    Plug 'sirtaj/vim-openscad'
 
 " Other plugins
     " reStructuredText plugin
@@ -109,8 +114,7 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'jpalardy/vim-slime'
     " Multilanguage debugger
     Plug 'puremourning/vimspector', {
-        \ 'do': './install_gadget.py --enable-c --enable-python --enable-go --enable-bash --force-enable-chrome',
-        \ 'on': '<Plug>VimspectorContinue'
+        \ 'do': './install_gadget.py --enable-c --enable-python --enable-go --enable-bash --force-enable-chrome'
     \ }
 call plug#end()
 
@@ -153,29 +157,31 @@ endfunction
 let g:tcomment#filetype#guess_typescript = 1
 let g:tcomment#filetype#guess_javascript = 1
 
-"     " Makeprg definitions to use :make
-"     autocmd! FileType python setlocal makeprg=python\ %
+" Neomake
+let g:neomake_place_signs = 0
+let g:neomake_open_list = 2
 
-"     let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-"     " let g:indentLine_loaded = 0
-"     let g:indentLine_fileTypeExclude = ["fzf", "skim"]
-"
+" Makeprg definitions to use :make
+" autocmd! FileType python setlocal makeprg=python\ %
 
-"     highlight SignColumn ctermbg=NONE guibg=NONE
-"
-"     function! TabularizeMapping()
-"       nnoremap <silent> <localleader>e :Tabularize /=<CR>
-"       vnoremap <silent> <localleader>e :Tabularize /=<CR>
-"       nnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
-"       vnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
-"       nnoremap <silent> <localleader>\| :Tabularize /\|<CR>
-"       vnoremap <silent> <localleader>\| :Tabularize /\|<CR>
-"       nnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
-"       vnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
-"       nnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
-"       vnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
-"     endfunction
-"     autocmd! VimEnter * if exists(":Tabularize") | call TabularizeMapping() | endif
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+let g:indentLine_fileTypeExclude = ["fzf", "skim"]
+
+" highlight SignColumn ctermbg=NONE guibg=NONE
+
+function! TabularizeMapping()
+  nnoremap <silent> <localleader>e :Tabularize /=<CR>
+  vnoremap <silent> <localleader>e :Tabularize /=<CR>
+  nnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
+  vnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
+  nnoremap <silent> <localleader>\| :Tabularize /\|<CR>
+  vnoremap <silent> <localleader>\| :Tabularize /\|<CR>
+  nnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
+  vnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
+  nnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
+  vnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
+endfunction
+autocmd! VimEnter * if exists(":Tabularize") | call TabularizeMapping() | endif
 
 " EditorConfig
 let g:EditorConfig_exclude_patterns = [
@@ -209,7 +215,7 @@ nnoremap <silent> <leader>U :UndotreeToggle<CR>
 " Enable selection with Tab
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-let g:completion_confirm_key = "\<C-y>"
+let g:completion_confirm_key = "\<C-l>"
 let g:completion_matching_strategy_list = ['exact', 'substring']
 " let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 let g:completion_matching_smart_case = 1
@@ -309,12 +315,12 @@ endfunction
 call SetLSPShortcuts()
 
 " Gopher plugin
-autocmd FileType go nnoremap <localleader>gb :setl makeprg=go\ build\|:make<CR>
-autocmd FileType go nnoremap <localleader>gr :setl makeprg=go\ run\|:make %<CR>
-autocmd FileType go nnoremap <localleader>gt :compiler gotest\|:make<CR>
-autocmd FileType go nnoremap <localLeader>gc :GoCoverage toggle<CR>
-autocmd FileType go nnoremap <localLeader>gi :GoImport<Space>
-autocmd FileType go nnoremap <localLeader>gd :GoImport -rm<Space>
+" autocmd FileType go nnoremap <localleader>gb :setl makeprg=go\ build\|:make<CR>
+" autocmd FileType go nnoremap <localleader>gr :setl makeprg=go\ run\|:make %<CR>
+" autocmd FileType go nnoremap <localleader>gt :compiler gotest\|:make<CR>
+" autocmd FileType go nnoremap <localLeader>gc :GoCoverage toggle<CR>
+" autocmd FileType go nnoremap <localLeader>gi :GoImport<Space>
+" autocmd FileType go nnoremap <localLeader>gd :GoImport -rm<Space>
 
 " Vimspector
 let g:vimspector_enable_mappings = 'HUMAN'

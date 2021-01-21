@@ -195,15 +195,15 @@
     nnoremap <M-l> <C-w>l
 
     " Tab mapping
-    nnoremap <leader>ac  :tabnew<CR>
-    nnoremap <leader>a^  :tabfirst<CR>
-    nnoremap <leader>an  :tabnext<CR>
-    nnoremap <leader>ap  :tabprev<CR>
-    nnoremap <leader>a$  :tablast<CR>
-    nnoremap <leader>ae  :tabedit<Space>
-    nnoremap <leader>ab  :tabnext<Space>
-    nnoremap <leader>am  :tabm<Space>
-    nnoremap <leader>ax  :tabclose<CR>
+    nnoremap <silent><leader>ac  :tabnew<CR>
+    nnoremap <silent><leader>a^  :tabfirst<CR>
+    nnoremap <silent><leader>an  :tabnext<CR>
+    nnoremap <silent><leader>ap  :tabprev<CR>
+    nnoremap <silent><leader>a$  :tablast<CR>
+    nnoremap <silent><leader>ae  :tabedit<Space>
+    nnoremap <silent><leader>ab  :tabnext<Space>
+    nnoremap <silent><leader>am  :tabm<Space>
+    nnoremap <silent><leader>ax  :tabclose<CR>
 
     if has('nvim')
         " Terminal configuration
