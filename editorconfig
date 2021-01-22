@@ -64,6 +64,10 @@ indent_size = 2
 [*.{css,scss}]
 indent_size = 2
 
+# Rust
+[*.rs]
+indent_size = 4
+
 # PHP
 [*.php]
 indent_size = 4

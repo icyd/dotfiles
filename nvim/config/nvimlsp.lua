@@ -27,7 +27,17 @@ nvim_lsp.pyls.setup{
     cmd = { servers .. "pyls-all/pyls-all" }
 }
 nvim_lsp.rust_analyzer.setup{
-    cmd = { servers .. "rust-analyzer/rust-analyzer" }
+    cmd = { servers .. "rust-analyzer/rust-analyzer" },
+    settings = {
+        ["rust-analyzer"] = {
+            procMacro = {
+                enable = true;
+            },
+            cargo = {
+                loadOutDirsFromCheck = true;
+            }
+        }
+    }
 }
 nvim_lsp.terraformls.setup{
     cmd = { servers .. "terraform-ls/terraform-ls", "serve" }
