@@ -252,6 +252,9 @@
     " Expand current active directory
     cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
+    " Use rg for vim grep
+    set grepprg=rg\ --vimgrep\ --smart-case\ --follow
+
     " Write with sudo
     cmap w!! w !sudo tee % >/dev/null
 
@@ -271,6 +274,8 @@
 
     " Edit vimrc/zshrc and load vimrc bindings
     nnoremap <silent> <leader>ev :edit $MYVIMRC<CR>
+    " Change servername to this instance
+    nnoremap <localleader>ss :call GrabServerName()<CR>
 
     " Dynamic loading for plugins based on sys env
     let s:plugin_file="$XDG_CONFIG_HOME/nvim/config/plugins.vim"

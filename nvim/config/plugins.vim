@@ -1,4 +1,4 @@
-"##############################################################################
+"#############################################################################
 " Plugin manager setup
 "##############################################################################
 call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
@@ -27,6 +27,8 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'tpope/vim-obsession'
     " Nvim-treesitter
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    " Polyglot
+    Plug 'sheerun/vim-polyglot'
     " Git
     Plug 'tpope/vim-fugitive'
     Plug 'idanarye/vim-merginal'
@@ -184,6 +186,8 @@ endfunction
 autocmd! VimEnter * if exists(":Tabularize") | call TabularizeMapping() | endif
 
 " EditorConfig
+" let g:EditorConfig_core_mode = "external_command"
+" let g:EditorConfig_exec_path = "/usr/bin/editorconfig"
 let g:EditorConfig_exclude_patterns = [
     \ 'fugitive://.*',
     \ 'scp://.*',
@@ -236,6 +240,7 @@ imap <c-k> <Plug>(completion_prev_source)
 autocmd BufEnter * lua require'completion'.on_attach()
 
 " Skim config
+command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
 autocmd! FileType fzf tnoremap <buffer> <Esc> <Esc>
 nnoremap <silent> <leader>ff :<C-u>Files<CR>
 nnoremap <silent> <leader>fF :<C-u>Files $HOME<CR>
@@ -243,7 +248,7 @@ nnoremap <silent> <leader>pr :<C-u>ProjectMru<CR>
 nnoremap <silent> <leader>fr :<C-u>History<CR>
 nnoremap <silent> <leader>hs :<C-u>History/<CR>
 nnoremap <silent> <leader>hc :<C-u>History:<CR>
-nnoremap <silent> <leader>fg :<C-u>Find<CR>
+nnoremap <silent> <leader>fg :<C-u>Rg<CR>
 nnoremap <silent> <leader>ft :<C-u>Tags<CR>
 nnoremap <silent> <leader>fh :<C-u>Helptags<CR>
 nnoremap <silent> <leader>b :<C-u>Buffers<CR>

@@ -1,4 +1,4 @@
-skip_global_compinit=1
+export skip_global_compinit=1
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export DOTFILES="$XDG_CONFIG_HOME/dotfiles"
@@ -20,13 +20,10 @@ export PY_VENV=$HOME/.venv
 
 # Neovim socket, for Neovim-remote
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
+export NVR_GRAB_FILE=/tmp/nvim-server
 
 # Golang config
 export GOPATH="$HOME/go"
-
-# Rust config
-export RUSTUP_HOME="$HOME/.rustup"
-export CARGO_HOME="$HOME/.cargo"
 
 # Krew
 export KREW_ROOT=$HOME/.krew

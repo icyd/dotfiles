@@ -15,7 +15,7 @@ definitions() {
     # Script destination
     LOCALBIN_DD="${LOCALBIN_DD:-$HOME/.local/bin}"
     # Pyenv distintation
-    PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
+    PYENV_ROOT="${PYENV_ROOT:-$HOME/.venv}"
     # Pyenv version to use, if not defined use system's version
     if command -v python3 >/dev/null 2>&1; then
         PYTHON=$(which python3 2>/dev/null)
@@ -33,7 +33,7 @@ definitions() {
         PYENV_VER=${PYENV_VER:-$SYSTEM_PYTHON_VER}
     fi
     # Pyenv virtualenv name
-    PYENV_NAME="${PYENV_NAME:-py3neovim}"
+    PYENV_NAME="${PYENV_NAME:-pynvim}"
     # String to cherrypick files/directories
     SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, zshenv, zshrc, editorconfig"}
     CURL=$(which curl 2>/dev/null)

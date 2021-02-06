@@ -1,6 +1,6 @@
 # Aliases
-command -v bat >/dev/null 2&>1 && alias cat="bat"
-alias n='nvr -s'
+command -v bat >/dev/null 2>&1 && alias cat="bat"
+alias n='nvr --servername $(cat $NVR_GRAB_FILE)'
 alias svim='sudo -E $EDITOR'
 alias dw="cd $HOME/Downloads"
 alias pj="cd $HOME/Projects"
@@ -193,6 +193,6 @@ alias kdelcj='kubectl delete cronjob'
 
 
 kj(){ kubectl "$@" -o json | jq; }
-ky(){ kubectl "$@" -o yaml | yq; }
+ky(){ kubectl "$@" -o yaml | yq -C -P r -; }
 kcx(){ [ $# -ge 1 ] && kubectl ctx $1 || kubectl ctx $(kubectl ctx | sk)  }
 kns(){ [ $# -ge 1 ] && kubectl ns $1 || kubectl ns $(kubectl ns | sk)  }

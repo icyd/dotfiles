@@ -106,7 +106,7 @@ zstyle ':completion:*' rehash true
 
 # menu if nb items > 2
 zstyle ':completion:*' menu select=2
-zstyle ':completion:*:default'         list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # Enable Vi mode
 bindkey -v
@@ -117,9 +117,10 @@ export KEYTIMEOUT="12"
 # Vi additional bindings
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
-bindkey '^L' autosuggest-accept
+bindkey '^Y' autosuggest-accept
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
+bindkey '^[[Z' reverse-menu-complete
 bindkey -s jk '\e'
 
 # AUTOSUGGEST color, different to bg
@@ -138,16 +139,15 @@ bindkey . rationalise-dot
 
 if command -v sk >/dev/null 2>&1; then
 [ -f "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh" ] && source "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh"
-# lazyload sk -- 'source ""'
     export SKIM_DEFAULT_COMMAND="fd --hidden --ignore-case --follow \
-#         --exclude .git --exclude node_modules --exclude .hg --exclude .svn \
-#         --type d --type f --type l"
-    export SKIM_DEFAULT_OPTIONS="--ansi --reverse --height=40% \
-#         --bind='ctrl-j:page-down,ctrl-k:page-up,alt-j:preview-down,\
-#         alt-k:preview-up,alt-d:preview-page-down,alt-u:preview-page-up,\
-#         alt-o:execute('$EDITOR' {})+abort'
-#         --preview-window='right:66%' \
-#         --preview='bat --color=always --style=full {}'"
+         --exclude .git --exclude node_modules --exclude .hg --exclude .svn \
+         --type d --type f --type l"
+    export SKIM_DEFAULT_OPTIONS="--ansi --multi --reverse --height=40% \
+         --bind='ctrl-j:page-down,ctrl-k:page-up,alt-j:preview-down,\
+         alt-k:preview-up,alt-d:preview-page-down,alt-u:preview-page-up,\
+         alt-o:execute('$EDITOR' {})+abort'
+         --preview-window='right:66%' \
+         --preview='bat --color=always --style=full {}'"
     export SKIM_CTRL_T_COMMAND=$SKIM_DEFAULT_COMMAND
     export SKIM_CTRL_T_OPTS=$SKIM_DEFAULT_OPTIONS
     export SKIM_CTRL_R_OPTS="--preview={} --preview-window=:hidden \
@@ -190,6 +190,10 @@ own_push() {
 cd_in() {
     dir="$1"
     cd "$1" && l
+}
+
+fkill() {
+    ps -ef | sed 1d | sk --multi --preview-window=:hidden --regex
 }
 
 # Defines editor
