@@ -205,6 +205,9 @@
     nnoremap <silent><leader>am  :tabm<Space>
     nnoremap <silent><leader>ax  :tabclose<CR>
 
+    vnoremap <C-j> :move '>+1<CR>gv=gv
+    vnoremap <C-k> :move '<-2<CR>gv=gv
+
     if has('nvim')
         " Terminal configuration
         set shell=zsh
@@ -235,6 +238,8 @@
     nnoremap <leader>- :split<CR>
     nnoremap <leader>\ :vsplit<CR>
 
+    set diffopt+=vertical
+
     " netrw configuration
     let g:netrw_banner=0
     let g:netrw_liststyle=3
@@ -261,6 +266,8 @@
     " Set colorscheme as fallback theme
     set background=dark
     colorscheme desert
+
+    set mouse=n
 
     if !has('nvim')
         " Create temp folder

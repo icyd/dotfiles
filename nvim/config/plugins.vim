@@ -51,18 +51,14 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     " Tabularize plugin
     Plug 'godlygeek/tabular', { 'on': ['Tabularize', 'Tab'] }
 
-
 " General plugins that require python
     " Undo tree
     Plug 'mbbill/undotree'
     " Snips engine
-    Plug 'Shougo/neosnippet.vim'
+    Plug 'hrsh7th/vim-vsnip'
+    Plug 'hrsh7th/vim-vsnip-integ'
     " Snippets
-    Plug 'Shougo/neosnippet-snippets'
-    " Plug 'honza/vim-snippets'
-    " cheat.sh
-    Plug 'RishabhRD/popfix'
-    Plug 'RishabhRD/nvim-cheat.sh'
+    Plug 'rafamadriz/friendly-snippets'
     " Async make
     Plug 'neomake/neomake'
     " Plug 'tpope/vim-dispatch'
@@ -86,8 +82,8 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'nvim-treesitter/completion-treesitter'
 
     " Fuzzy finder
-    Plug 'lotabout/skim', { 'dir': '~/.config/skim', 'do': './install' }
-    Plug 'lotabout/skim.vim'
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf.vim'
 
     " Async plugin for ctags & gtags managment
     Plug 'ludovicchabant/vim-gutentags'
@@ -167,7 +163,7 @@ let g:neomake_open_list = 2
 " autocmd! FileType python setlocal makeprg=python\ %
 
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-let g:indentLine_fileTypeExclude = ["fzf", "skim"]
+let g:indentLine_fileTypeExclude = ["fzf"]
 
 " highlight SignColumn ctermbg=NONE guibg=NONE
 
@@ -191,7 +187,6 @@ autocmd! VimEnter * if exists(":Tabularize") | call TabularizeMapping() | endif
 let g:EditorConfig_exclude_patterns = [
     \ 'fugitive://.*',
     \ 'scp://.*',
-    \ 'skim://.*',
     \ 'fzf://.*',
 \ ]
 
@@ -217,30 +212,38 @@ nnoremap <silent> <leader>U :UndotreeToggle<CR>
 
 " Completion-nvim config
 " Enable selection with Tab
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-let g:completion_confirm_key = "\<C-l>"
+inoremap <expr> <Tab> pumvisible() ? '<C-n>' : vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<Tab>'
+inoremap <expr> <S-Tab> pumvisible() ? '<C-p>' vsnip #jumpable(1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+imap <c-j> <Plug>(completion_next_source)
+imap <c-k> <Plug>(completion_prev_source)
+let g:completion_confirm_key = '<C-y>'
 let g:completion_matching_strategy_list = ['exact', 'substring']
-" let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 let g:completion_matching_smart_case = 1
 let g:completion_auto_change_source = 1
-let g:completion_trigger_keyword_length = 3 " default = 1
-let g:completion_enable_snippets = 'Neosnippet'
+let g:completion_trigger_keyword_length = 1
+let g:completion_enable_snippet = 'vim-vsnip'
 let g:completion_chain_complete_list = {
     \ 'default': [
-        \{'complete_items': ['lsp', 'snippet', 'ts', 'tags']},
-        \{'complete_items': ['buffers', 'tmux']},
+        \{'complete_items': ['lsp', 'snippet', 'ts']},
+        \{'complete_items': ['tags', 'buffers', 'tmux']},
         \{'mode': '<c-p>'},
         \{'mode': '<c-n>'}
     \ ],
 \}
-imap <c-j> <Plug>(completion_next_source)
-imap <c-k> <Plug>(completion_prev_source)
+
+"" Expand
+imap <expr> <C-l> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-l>'
+smap <expr> <C-l> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-l>'
+
+" Jump forward or backward
+smap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+
 " Use completion-nvim in every buffer
 autocmd BufEnter * lua require'completion'.on_attach()
 
-" Skim config
-command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
+" Fzf config
+command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('down:~30%:hidden', 'alt-h'))
 autocmd! FileType fzf tnoremap <buffer> <Esc> <Esc>
 nnoremap <silent> <leader>ff :<C-u>Files<CR>
 nnoremap <silent> <leader>fF :<C-u>Files $HOME<CR>
@@ -259,8 +262,13 @@ nnoremap <silent> <leader>f/ :<C-u>History/<CR>
 nnoremap <silent> <leader>f: :<C-u>History:<CR>
 nnoremap <silent> <leader>fl :<C-u>Lines<CR>
 nnoremap <silent> <leader>fo :<C-u>BLines<CR>
-let g:skim_layout = { 'down': '~30%' }
 let g:fzf_tags_command = 'GenGTAGS'
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --regexp --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
 
 " Maximize
 let g:maximizer_set_default_mapping = 0
@@ -271,10 +279,24 @@ vnoremap <silent><leader>az :MaximizerToggle<CR>gv
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
 
 " Fugitive
+function! GitPushUpstream() abort
+    echo "Pushing..."
+    exec 'Git push -u origin ' . FugitiveHead()
+    echo 'Pushed!'
+endfunction
+
+function! GitPullUpstream() abort
+    echo "Pulling..."
+    exec 'Git pull --set-upstream origin ' . FugitiveHead()
+    echo 'Pulled!'
+endfunction
 nnoremap <leader>gs :Gstatus<CR>
-nnoremap <leader>gd :Gvdiffsplit<CR>
-nnoremap <leader>gdh :diffget //2<CR>
-nnoremap <leader>gdl :diffget //3<CR>
+nnoremap <leader>gd :Gvdiffsplit!<CR>
+nnoremap <silent> <leader>gph :call GitPushUpstream()<CR>
+nnoremap <silent> <leader>gpl :call GitPullUpstream()<CR>
+nnoremap <leader>gh :diffget //2<CR>
+nnoremap <leader>gl :diffget //3<CR>
+
 autocmd! User fugitive
      \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
      \   nnoremap <buffer> .. :edit %:h<CR> |

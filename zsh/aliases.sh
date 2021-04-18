@@ -123,8 +123,16 @@ kres(){
     kubectl set env $@ REFRESHED_AT=$(date +%Y%m%d%H%M%S)
 }
 
+# Replicaset management
+alias kgrs='kubectl get replicaset'
+alias kgrsw='kubectl get replicaset --watch'
+alias kgrswide='kubectl get replicaset -o wide'
+alias kers='kubectl edit replicaset'
+alias kdrs='kubectl describe replicaset'
+alias kers='kubectl edit replicaset'
+alias kdelrs='kubectl delete replicaset'
+
 # Rollout management.
-alias kgrs='kubectl get rs'
 alias krh='kubectl rollout history'
 alias kru='kubectl rollout undo'
 
@@ -190,6 +198,10 @@ alias kgcj='kubectl get cronjob'
 alias kecj='kubectl edit cronjob'
 alias kdcj='kubectl describe cronjob'
 alias kdelcj='kubectl delete cronjob'
+
+alias -g KN='-oyaml | kubectl neat | yh '
+alias -g YQ='-oyaml | yq r -'
+alias -g B64D='| base64 -d'
 
 
 kj(){ kubectl "$@" -o json | jq; }

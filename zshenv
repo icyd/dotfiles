@@ -36,7 +36,7 @@ idem_path_prepend() {
 	export PATH=$1:${PATH//"$1:"/}
 }
 
-idem_path_prepend "$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$GOPATH/bin:$CARGO_HOME/bin:$HOME/.bin:$XDG_CONFIG_HOME/skim/bin:$KREW_ROOT/bin:$ASDF_DIR/bin:$ASDF_DIR/shims"
+idem_path_prepend "$HOME/.local/bin/:$HOME/.node_modules/bin:$HOME/.yarn/bin:$XDG_CONFIG_HOME/zsh:$GOPATH/bin:$CARGO_HOME/bin:$HOME/.bin:$HOME/.fzf/bin:$KREW_ROOT/bin:$ASDF_DIR/bin:$ASDF_DIR/shims"
 
 idem_fpath_prepend() {
 	case ":${FPATH:=$1}:" in
@@ -45,7 +45,7 @@ idem_fpath_prepend() {
     esac
 }
 
-idem_fpath_prepend "$XDG_CONFIG_HOME/skim/shell/completion.zsh:$ZSH_COMPLETIONS"
+idem_fpath_prepend "$HOME/.fzf/shell/completion.zsh:$ZSH_COMPLETIONS"
 
 # Pass config
 export PASSWORD_STORE_GENERATED_LENGTH=12

@@ -137,28 +137,26 @@ rationalise-dot() {
 zle -N rationalise-dot
 bindkey . rationalise-dot
 
-if command -v sk >/dev/null 2>&1; then
-[ -f "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh" ] && source "$XDG_CONFIG_HOME/skim/shell/key-bindings.zsh"
-    export SKIM_DEFAULT_COMMAND="fd --hidden --ignore-case --follow \
+if command -v fzf >/dev/null 2>&1; then
+[ -f "$HOME/.fzf/shell/key-bindings.zsh" ] && source "$HOME/.fzf/shell/key-bindings.zsh"
+    export FZF_DEFAULT_COMMAND="fd --hidden --ignore-case --follow \
          --exclude .git --exclude node_modules --exclude .hg --exclude .svn \
-         --type d --type f --type l"
-    export SKIM_DEFAULT_OPTIONS="--ansi --multi --reverse --height=40% \
-         --bind='ctrl-j:page-down,ctrl-k:page-up,alt-j:preview-down,\
-         alt-k:preview-up,alt-d:preview-page-down,alt-u:preview-page-up,\
-         alt-o:execute('$EDITOR' {})+abort'
+         --type f --type l"
+    export FZF_DEFAULT_OPTS="--ansi --multi --reverse --height=40% \
          --preview-window='right:66%' \
-         --preview='bat --color=always --style=full {}'"
-    export SKIM_CTRL_T_COMMAND=$SKIM_DEFAULT_COMMAND
-    export SKIM_CTRL_T_OPTS=$SKIM_DEFAULT_OPTIONS
-    export SKIM_CTRL_R_OPTS="--preview={} --preview-window=:hidden \
-         --height=20% --bind=''"
-    export SKIM_ALT_C_OPTS="$SKIM_CTRL_R_OPTS"
-    _skim_compgen_path() {
+         --preview='bat --color=always --style=full {}' \
+         --bind='ctrl-d:page-down,ctrl-u:page-up,alt-u:preview-page-up,alt-d:preview-page-down,alt-o:execute('$EDITOR' {})+abort'"
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND --type d"
+    export FZF_CTRL_R_OPTS="--preview={} --preview-window=:hidden \
+         --height=20%"
+    export FZF_ALT_C_COMMAND="fd --type d"
+    export FZF_ALT_C_OPTS=$FZF_CTRL_R_OPTS
+    _fzf_compgen_path() {
         fd --ignore-case --follow --hidden --exclude .git --exclude .hg \
             --exclude .svn --type d --type f --type l . "$1"
     }
 
-    _skim_compgen_dir() {
+    _fzf_compgen_dir() {
         fd --ignore-case --follow --hidden --exclude .git --exclude .hg \
             --exclude .svn --type d . "$1"
     }
@@ -233,3 +231,5 @@ pyenv() {
 
 # Enable To debug loading times
 # zprof
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
