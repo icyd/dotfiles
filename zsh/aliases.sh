@@ -206,5 +206,5 @@ alias -g B64D='| base64 -d'
 
 kj(){ kubectl "$@" -o json | jq; }
 ky(){ kubectl "$@" -o yaml | yq -C -P r -; }
-kcx(){ [ $# -ge 1 ] && kubectl ctx $1 || kubectl ctx $(kubectl ctx | sk)  }
-kns(){ [ $# -ge 1 ] && kubectl ns $1 || kubectl ns $(kubectl ns | sk)  }
+kcx(){ [ $# -ge 1 ] && kubectl ctx $1 || kubectl ctx $(kubectl ctx | fzf --preview={} --preview-window=:hidden)  }
+kns(){ [ $# -ge 1 ] && kubectl ns $1 || kubectl ns $(kubectl ns | fzf --preview={} --preview-window=:hidden)  }

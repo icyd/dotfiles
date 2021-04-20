@@ -190,10 +190,6 @@ cd_in() {
     cd "$1" && l
 }
 
-fkill() {
-    ps -ef | sed 1d | sk --multi --preview-window=:hidden --regex
-}
-
 # Defines editor
 if command -v nvim >/dev/null 2>&1; then
 	export EDITOR=nvim

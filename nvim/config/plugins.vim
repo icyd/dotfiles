@@ -65,15 +65,15 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
 
 " Completion plugin
     " HTML plugins
-    Plug 'mattn/emmet-vim', { 'for': [
-                \ 'javascript',
-                \ 'javascript.jsx',
-                \ 'javascript.tsx',
-                \ 'html',
-                \ 'css',
-                \ 'scss',
-                \ 'php',
-                \ ] }
+   Plug 'mattn/emmet-vim', { 'for': [
+               \ 'javascript',
+               \ 'javascript.jsx',
+               \ 'javascript.tsx',
+               \ 'html',
+               \ 'css',
+               \ 'scss',
+               \ 'php',
+               \ ] }
     " Completion plugin
     Plug 'nvim-lua/completion-nvim'
     Plug 'steelsojka/completion-buffers'
@@ -110,17 +110,16 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'Rykka/InstantRst', { 'on': 'InstantRst' }
     " Interactive interpreter REPL
     Plug 'jpalardy/vim-slime'
-    " Multilanguage debugger
-    Plug 'puremourning/vimspector', {
-        \ 'do': './install_gadget.py --enable-c --enable-python --enable-go --enable-bash --force-enable-chrome'
-    \ }
+    " Debugger
+    Plug 'mfussenegger/nvim-dap'
+
 call plug#end()
 
 "##############################################################################
 " Plugin's configuration and keybindings
 "##############################################################################
 if (has('termguicolors'))
-   set termguicolors
+  set termguicolors
 endif
 
 " Set colorscheme
@@ -165,45 +164,43 @@ let g:neomake_open_list = 2
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 let g:indentLine_fileTypeExclude = ["fzf"]
 
-" highlight SignColumn ctermbg=NONE guibg=NONE
-
 function! TabularizeMapping()
-  nnoremap <silent> <localleader>e :Tabularize /=<CR>
-  vnoremap <silent> <localleader>e :Tabularize /=<CR>
-  nnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
-  vnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
-  nnoremap <silent> <localleader>\| :Tabularize /\|<CR>
-  vnoremap <silent> <localleader>\| :Tabularize /\|<CR>
-  nnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
-  vnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
-  nnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
-  vnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
+ nnoremap <silent> <localleader>e :Tabularize /=<CR>
+ vnoremap <silent> <localleader>e :Tabularize /=<CR>
+ nnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
+ vnoremap <silent> <localleader><space> :Tabularize /\s\zs<CR>
+ nnoremap <silent> <localleader>\| :Tabularize /\|<CR>
+ vnoremap <silent> <localleader>\| :Tabularize /\|<CR>
+ nnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
+ vnoremap <silent> <localleader>\: :Tabularize /:\zs<CR>
+ nnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
+ vnoremap <silent> <localleader>, :Tabularize /,\zs<CR>
 endfunction
 autocmd! VimEnter * if exists(":Tabularize") | call TabularizeMapping() | endif
 
 " EditorConfig
-" let g:EditorConfig_core_mode = "external_command"
-" let g:EditorConfig_exec_path = "/usr/bin/editorconfig"
+let g:EditorConfig_core_mode = "external_command"
+let g:EditorConfig_exec_path = "/usr/bin/editorconfig"
 let g:EditorConfig_exclude_patterns = [
-    \ 'fugitive://.*',
-    \ 'scp://.*',
-    \ 'fzf://.*',
+   \ 'fugitive://.*',
+   \ 'scp://.*',
+   \ 'fzf://.*',
 \ ]
 
 " Vim-tmux-navigtor
 let g:tmux_navigator_no_mapping = 1
 let g:tmux_navigator_save_no_switch = 1
 if has('nvim')
-    nnoremap <silent> <M-k> :TmuxNavigateUp<CR>
-    nnoremap <silent> <M-j> :TmuxNavigateDown<CR>
-    nnoremap <silent> <M-h> :TmuxNavigateLeft<CR>
-    nnoremap <silent> <M-l> :TmuxNavigateRight<CR>
-    nnoremap <silent> <M-#> :TmuxNavigatePrevious<CR>
+   nnoremap <silent> <M-k> :TmuxNavigateUp<CR>
+   nnoremap <silent> <M-j> :TmuxNavigateDown<CR>
+   nnoremap <silent> <M-h> :TmuxNavigateLeft<CR>
+   nnoremap <silent> <M-l> :TmuxNavigateRight<CR>
+   nnoremap <silent> <M-#> :TmuxNavigatePrevious<CR>
 else
-    nnoremap <silent> <Esc>k :TmuxNavigateUp<CR>
-    nnoremap <silent> <Esc>j :TmuxNavigateDown<CR>
-    nnoremap <silent> <Esc>h :TmuxNavigateLeft<CR>
-    nnoremap <silent> <Esc>l :TmuxNavigateRight<CR>
+   nnoremap <silent> <Esc>k :TmuxNavigateUp<CR>
+   nnoremap <silent> <Esc>j :TmuxNavigateDown<CR>
+   nnoremap <silent> <Esc>h :TmuxNavigateLeft<CR>
+   nnoremap <silent> <Esc>l :TmuxNavigateRight<CR>
 endif
 
 " Undotree configuration
@@ -212,8 +209,8 @@ nnoremap <silent> <leader>U :UndotreeToggle<CR>
 
 " Completion-nvim config
 " Enable selection with Tab
-inoremap <expr> <Tab> pumvisible() ? '<C-n>' : vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<Tab>'
-inoremap <expr> <S-Tab> pumvisible() ? '<C-p>' vsnip #jumpable(1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+imap <expr> <Tab> pumvisible() ? '<C-n>' : vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<Tab>'
+imap <expr> <S-Tab> pumvisible() ? '<C-p>' : vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
 imap <c-j> <Plug>(completion_next_source)
 imap <c-k> <Plug>(completion_prev_source)
 let g:completion_confirm_key = '<C-y>'
@@ -221,23 +218,31 @@ let g:completion_matching_strategy_list = ['exact', 'substring']
 let g:completion_matching_smart_case = 1
 let g:completion_auto_change_source = 1
 let g:completion_trigger_keyword_length = 1
+let g:completion_trigger_keyword_length = 3 " default = 1
 let g:completion_enable_snippet = 'vim-vsnip'
 let g:completion_chain_complete_list = {
-    \ 'default': [
-        \{'complete_items': ['lsp', 'snippet', 'ts']},
-        \{'complete_items': ['tags', 'buffers', 'tmux']},
-        \{'mode': '<c-p>'},
-        \{'mode': '<c-n>'}
-    \ ],
+   \ 'default': [
+       \{'complete_items': ['lsp', 'snippet', 'ts']},
+       \{'complete_items': ['tags', 'buffers', 'tmux']},
+       \{'mode': '<c-p>'},
+       \{'mode': '<c-n>'}
+   \ ],
 \}
 
-"" Expand
-imap <expr> <C-l> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-l>'
-smap <expr> <C-l> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-l>'
+" Expand or jump
+imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 
 " Jump forward or backward
-smap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<Tab>'
-smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+" Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+" See https://github.com/hrsh7th/vim-vsnip/pull/50
+nmap        s   <Plug>(vsnip-select-text)
+xmap        s   <Plug>(vsnip-select-text)
+nmap        S   <Plug>(vsnip-cut-text)
+xmap        S   <Plug>(vsnip-cut-text)
 
 " Use completion-nvim in every buffer
 autocmd BufEnter * lua require'completion'.on_attach()
@@ -266,29 +271,29 @@ let g:fzf_tags_command = 'GenGTAGS'
 let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 
 command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --regexp --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview(), <bang>0)
+ \ call fzf#vim#grep(
+ \   'rg --regexp --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+ \   fzf#vim#with_preview(), <bang>0)
 
 " Maximize
 let g:maximizer_set_default_mapping = 0
 nnoremap <silent><leader>az :MaximizerToggle<CR>
 vnoremap <silent><leader>az :MaximizerToggle<CR>gv
-
+"
 " set filetypes as typescript.tsx
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx
 
 " Fugitive
 function! GitPushUpstream() abort
-    echo "Pushing..."
-    exec 'Git push -u origin ' . FugitiveHead()
-    echo 'Pushed!'
+   echo "Pushing..."
+   exec 'Git push -u origin ' . FugitiveHead()
+   echo 'Pushed!'
 endfunction
 
 function! GitPullUpstream() abort
-    echo "Pulling..."
-    exec 'Git pull --set-upstream origin ' . FugitiveHead()
-    echo 'Pulled!'
+   echo "Pulling..."
+   exec 'Git pull --set-upstream origin ' . FugitiveHead()
+   echo 'Pulled!'
 endfunction
 nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gd :Gvdiffsplit!<CR>
@@ -298,9 +303,9 @@ nnoremap <leader>gh :diffget //2<CR>
 nnoremap <leader>gl :diffget //3<CR>
 
 autocmd! User fugitive
-     \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
-     \   nnoremap <buffer> .. :edit %:h<CR> |
-     \ endif
+    \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
+    \   nnoremap <buffer> .. :edit %:h<CR> |
+    \ endif
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
 " Autopair
@@ -310,34 +315,30 @@ let g:AutoPairsFlyMode = 0
 let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
 let g:gutentags_add_ctrlp_root_markers = 0
 let g:gutentags_ctags_exclude=[
-                 \ '*.css',            '*.html', '*.js','*.json',     '*.xml',
-                \ '*.phar',             '*.ini','*.rst',  '*.md','*/vendor/*',
-       \ '*vendor/*/test*',   '*vendor/*/Test*',
-    \ '*vendor/*/fixture*','*vendor/*/Fixture*',
-           \ '*var/cache*',         '*var/log*'
+                \ '*.css',            '*.html', '*.js','*.json',     '*.xml',
+               \ '*.phar',             '*.ini','*.rst',  '*.md','*/vendor/*',
+      \ '*vendor/*/test*',   '*vendor/*/Test*',
+   \ '*vendor/*/fixture*','*vendor/*/Fixture*',
+          \ '*var/cache*',         '*var/log*'
 \ ]
 
 augroup MyGutentagsStatusLineRefresher
-    autocmd!
-    autocmd User GutentagsUpdating call lightline#update()
-    autocmd User GutentagsUpdated call lightline#update()
+   autocmd!
+   autocmd User GutentagsUpdating call lightline#update()
+   autocmd User GutentagsUpdated call lightline#update()
 augroup END
-
-" Snippets
-" let g:neosnippet#enable_snipmate_compatibility = 1
-" let g:neosnippet#snippets_directory='~/.local/share/nvim/site/plugged/vim-snippets/snippets'
 
 " LSP keymap definition
 function! SetLSPShortcuts()
-    nnoremap <leader>ld <cmd>lua vim.lsp.buf.definition()<CR>
-    nnoremap <leader>lk <cmd>lua vim.lsp.buf.declaration()<CR>
-    nnoremap <leader>lf <cmd>lua vim.lsp.buf.references()<CR>
-    nnoremap <leader>lt <cmd>lua vim.lsp.buf.type_definition()<CR>
-    nnoremap <leader>li <cmd>lua vim.lsp.buf.implementation()<CR>
-    nnoremap <leader>ls <cmd>lua vim.lsp.buf.signature_help()<CR>
-    nnoremap <leader>lh <cmd>lua vim.lsp.buf.hover()<CR>
-    nnoremap <leader>lW <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-    nnoremap <leader>lD <cmd>lua vim.lsp.buf.document_symbol()<CR>
+   nnoremap <leader>ld <cmd>lua vim.lsp.buf.definition()<CR>
+   nnoremap <leader>lk <cmd>lua vim.lsp.buf.declaration()<CR>
+   nnoremap <leader>lf <cmd>lua vim.lsp.buf.references()<CR>
+   nnoremap <leader>lt <cmd>lua vim.lsp.buf.type_definition()<CR>
+   nnoremap <leader>li <cmd>lua vim.lsp.buf.implementation()<CR>
+   nnoremap <leader>ls <cmd>lua vim.lsp.buf.signature_help()<CR>
+   nnoremap <leader>lh <cmd>lua vim.lsp.buf.hover()<CR>
+   nnoremap <leader>lW <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+   nnoremap <leader>lD <cmd>lua vim.lsp.buf.document_symbol()<CR>
 endfunction
 call SetLSPShortcuts()
 
@@ -348,9 +349,6 @@ call SetLSPShortcuts()
 " autocmd FileType go nnoremap <localLeader>gc :GoCoverage toggle<CR>
 " autocmd FileType go nnoremap <localLeader>gi :GoImport<Space>
 " autocmd FileType go nnoremap <localLeader>gd :GoImport -rm<Space>
-
-" Vimspector
-let g:vimspector_enable_mappings = 'HUMAN'
 
 " Terraform
 let g:terraform_align = 1
@@ -372,7 +370,7 @@ nmap <localleader>s    <Plug>SlimeParagraphSend
 nmap <localleader>l    :SlimeSend0 "<c-l>"<CR>
 nmap <localleader>c    :SlimeSend0 "<c-c>"<CR>
 nmap <localleader>q    :SlimeSend0 "<c-d>"<CR>
-
+"
 " When openning new latex file, use latex filetype
 let g:tex_flavor="latex" "Use latex as default filetype
 
