@@ -17,7 +17,7 @@ alias eZC="$EDITOR $HOME/.zshrc"
 alias eZE="$EDITOR $HOME/.zshenv"
 alias eVC="$EDITOR $XDG_CONFIG_HOME/nvim/init.vim"
 alias eVP="$EDITOR $XDG_CONFIG_HOME/nvim/config/plugins.vim"
-alias -g C='| wc -l'
+alias -g WC='| wc -l'
 alias -g G='| grep -i'
 alias -g RG='| rg '
 alias -g X='| xargs '
@@ -169,9 +169,18 @@ alias kcp='kubectl cp'
 
 # Node Management
 alias kgno='kubectl get nodes'
+alias kgnowide='kubectl get nodes -owide'
 alias keno='kubectl edit node'
 alias kdno='kubectl describe node'
 alias kdelno='kubectl delete node'
+
+# PV management.
+alias kgpv='kubectl get pv'
+alias kgpva='kubectl get pv --all-namespaces'
+alias kgpvw='kgpv --watch'
+alias kepv='kubectl edit pv'
+alias kdpv='kubectl describe pv'
+alias kdelpv='kubectl delete pv'
 
 # PVC management.
 alias kgpvc='kubectl get pvc'
@@ -193,16 +202,52 @@ alias keds='kubectl edit daemonset'
 alias kdds='kubectl describe daemonset'
 alias kdelds='kubectl delete daemonset'
 
+# Job management.
+alias kgj='kubectl get job'
+alias kgja='kubectl get job --all-namespaces'
+alias kgjw='kgj --watch'
+alias kgjwide='kgj -o wide'
+alias kej='kubectl edit job'
+alias kdj='kubectl describe job'
+alias kdelj='kubectl delete job'
+
 # CronJob management.
 alias kgcj='kubectl get cronjob'
 alias kecj='kubectl edit cronjob'
 alias kdcj='kubectl describe cronjob'
 alias kdelcj='kubectl delete cronjob'
 
+# Istio gateway management.
+alias kggw='kubectl get gw'
+alias kggwa='kubectl get gw --all-namespaces'
+alias kggww='kggw --watch'
+alias kegw='kubectl edit gw'
+alias kdgw='kubectl describe gw'
+alias kdelgw='kubectl delete gw'
+
+# Istio VirtualService.
+alias kgvs='kubectl get vs'
+alias kgvsa='kubectl get vs --all-namespaces'
+alias kgvsw='kgvs --watch'
+alias kevs='kubectl edit vs'
+alias kdvs='kubectl describe vs'
+alias kdelvs='kubectl delete vs'
+
+# Istio ServiceEntry.
+alias kgse='kubectl get se'
+alias kgsea='kubectl get se --all-namespaces'
+alias kgsew='kgse --watch'
+alias kese='kubectl edit se'
+alias kdse='kubectl describe se'
+alias kdelse='kubectl delete se'
+
 alias -g KN='-oyaml | kubectl neat | yh '
 alias -g YQ='-oyaml | yq r -'
+alias -g OY='-oyaml'
+alias -g OJ='-ojson'
+alias -g OJP='f() { echo "-ojsonpath=$1"; };f'
+alias -g SL='--show-labels'
 alias -g B64D='| base64 -d'
-
 
 kj(){ kubectl "$@" -o json | jq; }
 ky(){ kubectl "$@" -o yaml | yq -C -P r -; }
