@@ -105,9 +105,9 @@ call plug#begin($XDG_DATA_HOME.'/nvim/site/plugged')
     Plug 'sirtaj/vim-openscad'
 
 " Other plugins
-    " reStructuredText plugin
-    Plug 'gu-fan/riv.vim', { 'for': 'rst' }
-    Plug 'Rykka/InstantRst', { 'on': 'InstantRst' }
+    Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+    Plug 'vim-pandoc/vim-pandoc-syntax'
+    Plug 'vim-pandoc/vim-pandoc'
     " Interactive interpreter REPL
     Plug 'jpalardy/vim-slime'
     " Debugger
@@ -248,7 +248,6 @@ xmap        S   <Plug>(vsnip-cut-text)
 autocmd BufEnter * lua require'completion'.on_attach()
 
 " Fzf config
-command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('down:~30%:hidden', 'alt-h'))
 autocmd! FileType fzf tnoremap <buffer> <Esc> <Esc>
 nnoremap <silent> <leader>ff :<C-u>Files<CR>
 nnoremap <silent> <leader>fF :<C-u>Files $HOME<CR>
@@ -271,9 +270,9 @@ let g:fzf_tags_command = 'GenGTAGS'
 let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 
 command! -bang -nargs=* Rg
- \ call fzf#vim#grep(
- \   'rg --regexp --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
- \   fzf#vim#with_preview(), <bang>0)
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
 
 " Maximize
 let g:maximizer_set_default_mapping = 0
@@ -349,6 +348,18 @@ call SetLSPShortcuts()
 " autocmd FileType go nnoremap <localLeader>gc :GoCoverage toggle<CR>
 " autocmd FileType go nnoremap <localLeader>gi :GoImport<Space>
 " autocmd FileType go nnoremap <localLeader>gd :GoImport -rm<Space>
+
+let g:pandoc#syntax#conceal#use = 0
+let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
+let g:pandoc#filetypes#pandoc_markdown = 0
+" let g:mkdp_open_to_the_world = 1
+let g:mkdp_echo_preview_url = 1
+" let g:mkdp_command_for_global = 1
+let g:mkdp_browser = 'Chrome'
+let g:mkdp_filetypes = ['markdown', 'pandoc']
+" Debug
+" let $NVIM_MKDP_LOG_FILE = expand('~/mkdp-log.log')
+" let $NVIM_MKDP_LOG_LEVEL = 'debug'
 
 " Terraform
 let g:terraform_align = 1
