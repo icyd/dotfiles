@@ -8,7 +8,9 @@ local paq = require('paq-nvim').paq
 paq{'savq/paq-nvim', opt=true}
 
 -- Colorscheme & themes
-paq 'lifepillar/vim-gruvbox8'
+-- paq 'lifepillar/vim-gruvbox8'
+paq 'rktjmp/lush.nvim'
+paq 'npxbr/gruvbox.nvim'
 -- Neovim lsp
 paq 'neovim/nvim-lspconfig'
 -- Lsp server installer
@@ -17,7 +19,10 @@ paq 'kabouzeid/nvim-lspinstall'
 paq 'nvim-lua/plenary.nvim'
 -- Statusbar
 paq 'hoob3rt/lualine.nvim'
+-- paq 'glepnir/galaxyline.nvim'
+-- paq {'glepnir/galaxyline.nvim', branch='main'}
 paq {'kyazdani42/nvim-web-devicons', opt=true}
+-- paq 'tjdevries/astronauta.nvim'
 -- Bracket mapping
 paq 'tpope/vim-unimpaired'
 -- Indentation by vim object
@@ -83,17 +88,23 @@ paq {'sirtaj/vim-openscad', opt=true}
 paq {'iamcco/markdown-preview.nvim', run='cd app && yarn install'}
 paq 'vim-pandoc/vim-pandoc-syntax'
 paq 'vim-pandoc/vim-pandoc'
+paq 'vimwiki/vimwiki'
 -- Async ctags & gtags management
 paq 'ludovicchabant/vim-gutentags'
 -- REPL
 paq 'jpalardy/vim-slime'
 -- Debugger
 paq 'mfussenegger/nvim-dap'
+-- Easy motion
+paq 'phaazon/hop.nvim'
+-- Registers preview
+paq 'gennaro-tedesco/nvim-peekup'
 
 --[[
 Configurations
 --]]
-cmd [[colorscheme gruvbox8_soft]]
+-- cmd [[colorscheme gruvbox8_soft]]
+cmd [[colorscheme gruvbox]]
 cmd [[autocmd Filetype openscad packadd! vim-openscad]]
 
 -- Autopair
@@ -187,6 +198,7 @@ augroup('fzf', {
  })
 map('n', '<leader>ff', ':<C-u>Files<CR>')
 map('n', '<leader>fF', ':<C-u>Files $HOME<CR>')
+map('n', '<leader>fv', ':<C-u>Files $XDG_CONFIG_HOME/nvim<CR>')
 map('n', '<leader>pr', ':<C-u>ProjectMru<CR>')
 map('n', '<leader>fr', ':<C-u>History<CR>')
 map('n', '<leader>hs', ':<C-u>History/<CR>')
@@ -217,6 +229,14 @@ g.gutentags_ctags_exclude={'*.css', '*.html', '*.js', '*.json', '*.xml',
     '*var/cache*', '*var/log*',
 }
 
+-- Hop
+require('hop').setup{winblend=0.85}
+map('n', '<localleader>w', "<CMD>lua require'hop'.hint_words()<CR>")
+map('n', '<localleader>l', "<CMD>lua require'hop'.hint_lines()<CR>")
+map('n', '<localleader>x', "<CMD>lua require'hop'.hint_char1()<CR>")
+map('n', '<localleader>X', "<CMD>lua require'hop'.hint_char2()<CR>")
+map('n', '<localleader>n', "<CMD>lua require'hop'.hint_patterns()<CR>")
+
 -- IndentLine
 g.indentLine_char_list = {'|', '¦', '┆', '┊'}
 g.indentLine_fileTypeExclude = {"fzf"}
@@ -235,7 +255,13 @@ map('v', '<leader>az', ':MaximizerToggle<CR>gv')
 g.neomake_place_signs = 0
 g.neomake_open_list = 2
 
+-- Neovim-peekup
+g.peekup_open = '<leader>"'
+require('nvim-peekup.config').on_keystroke["delay"] = ''
+
 -- Pandoc
+g['pandoc#speel#enabled'] = 1
+g['pandoc#spell#default_langs'] = {'en_us', 'es'}
 g['pandoc#syntax#conceal#use'] = 0
 g['pandoc#filetypes#handled'] = {"pandoc", "markdown"}
 g['pandoc#filetypes#pandoc_markdown'] = 0
@@ -292,6 +318,17 @@ map('n', '<M-j>', ':TmuxNavigateDown<CR>')
 map('n', '<M-h>', ':TmuxNavigateLeft<CR>')
 map('n', '<M-l>', ':TmuxNavigateRight<CR>')
 map('n', '<M-#>', ':TmuxNavigatePrevious<CR>')
+
+-- VimWiki
+g.vimwiki_global_ext = 0
+g.vimwiki_list = {
+    {
+        path = '~/vimwiki/',
+        syntax = 'markdown',
+        ext = '.wiki',
+    }
+}
+g.vimwiki_filetypes = {'markdown', 'pandoc'}
 
 -- Other
 augroup('typescript_tsx', {
