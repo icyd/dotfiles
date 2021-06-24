@@ -343,6 +343,7 @@ map('n', '<leader>fs', ":lua require('telescope.builtin').grep_string({ search =
 map('n', '<leader>fw', ":lua require('telescope.builtin').grep_string({ search = vim.fn.expand(\"<cword>\") })<CR>")
 
 map('n', '<localleader>r', ':Telescope registers<CR>')
+map('n', '<localleader>m', ':Telescope marks<CR>')
 map('n', '<localleader>x', ':Telescope commands<CR>')
 map('n', '<localleader>n', ":lua require('my.telescope').find_notes()<CR>")
 
