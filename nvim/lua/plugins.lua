@@ -43,7 +43,7 @@ paq 'tpope/vim-obsession'
 paq 'sheerun/vim-polyglot'
 -- Git
 paq 'tpope/vim-fugitive'
-paq 'idanarye/vim-merginal'
+-- paq 'idanarye/vim-merginal'
 -- Window maximizer
 paq 'szw/vim-maximizer'
 -- Treesitter
@@ -71,8 +71,13 @@ paq 'hrsh7th/vim-vsnip'
 paq 'hrsh7th/vim-vsnip-integ'
 paq 'rafamadriz/friendly-snippets'
 -- Fuzzy finder
-paq {'junegunn/fzf', run='-> fzf#install()'}
-paq 'junegunn/fzf.vim'
+-- paq {'junegunn/fzf', run='-> fzf#install()'}
+-- paq 'junegunn/fzf.vim'
+paq 'nvim-lua/popup.nvim'
+paq 'nvim-lua/plenary.nvim'
+paq 'nvim-telescope/telescope.nvim'
+paq {'nvim-telescope/telescope-fzy-native.nvim', run='git submodule update --init --recursive'}
+paq {'nvim-telescope/telescope-fzf-native.nvim', run='make'}
 -- Completion
 paq 'nvim-lua/completion-nvim'
 paq 'steelsojka/completion-buffers'
@@ -98,7 +103,7 @@ paq 'mfussenegger/nvim-dap'
 -- Easy motion
 paq 'phaazon/hop.nvim'
 -- Registers preview
-paq 'gennaro-tedesco/nvim-peekup'
+-- paq 'gennaro-tedesco/nvim-peekup'
 
 --[[
 Configurations
@@ -148,9 +153,7 @@ map('x', 's', '<Plug>(vsnip-select-text)')
 map('n', 'S', '<Plug>(vsnip-cut-text)')
 map('x', 'S', '<Plug>(vsnip-cut-text)')
 
-augroup('completion', {
-   [[BufEnter * lua require'completion'.on_attach()]],
-})
+cmd[[autocmd BufEnter * if &buftype != "nofile" | lua require'completion'.on_attach()]]
 
 -- EditorConfig
 g.EditorConfig_core_mode = "external_command"
@@ -191,37 +194,38 @@ augroup('fugitive', {
 })
 
 -- FZF
-g.fzf_tags_command = 'GenGTAGS'
-g.fzf_preview_window = {'right:50%', 'ctrl-/'}
-augroup('fzf', {
-    'FileType fzf tnoremap <buffer> <Esc> <Esc>',
- })
-map('n', '<leader>ff', ':<C-u>Files<CR>')
-map('n', '<leader>fF', ':<C-u>Files $HOME<CR>')
-map('n', '<leader>fv', ':<C-u>Files $XDG_CONFIG_HOME/nvim<CR>')
-map('n', '<leader>pr', ':<C-u>ProjectMru<CR>')
-map('n', '<leader>fr', ':<C-u>History<CR>')
-map('n', '<leader>hs', ':<C-u>History/<CR>')
-map('n', '<leader>hc', ':<C-u>History:<CR>')
-map('n', '<leader>fg', ':<C-u>Rg<CR>')
-map('n', '<leader>ft', ':<C-u>Tags<CR>')
-map('n', '<leader>fh', ':<C-u>Helptags<CR>')
-map('n', '<leader>b',  ':<C-u>Buffers<CR>')
-map('n', '<leader>fc', ':<C-u>Commits<CR>')
-map('n', '<leader>fx', ':<C-u>Commands<CR>')
-map('n', '<leader>fs', ':<C-u>Snippets<CR>')
-map('n', '<leader>f/', ':<C-u>History/<CR>')
-map('n', '<leader>f:', ':<C-u>History:<CR>')
-map('n', '<leader>fl', ':<C-u>Lines<CR>')
-map('n', '<leader>fo', ':<C-u>BLines<CR>')
+-- g.fzf_tags_command = 'GenGTAGS'
+-- g.fzf_preview_window = {'right:50%', 'ctrl-/'}
+-- augroup('fzf', {
+--     'FileType fzf tnoremap <buffer> <Esc> <Esc>',
+--  })
+-- map('n', '<leader>ff', ':<C-u>Files<CR>')
+-- map('n', '<leader>fF', ':<C-u>Files $HOME<CR>')
+-- map('n', '<leader>fv', ':<C-u>Files $XDG_CONFIG_HOME/nvim<CR>')
+-- map('n', '<leader>pr', ':<C-u>ProjectMru<CR>')
+-- map('n', '<leader>fr', ':<C-u>History<CR>')
+-- map('n', '<leader>hs', ':<C-u>History/<CR>')
+-- map('n', '<leader>hc', ':<C-u>History:<CR>')
+-- map('n', '<leader>fg', ':<C-u>Rg<CR>')
+-- map('n', '<leader>ft', ':<C-u>Tags<CR>')
+-- map('n', '<leader>fh', ':<C-u>Helptags<CR>')
+-- map('n', '<leader>b',  ':<C-u>Buffers<CR>')
+-- map('n', '<leader>fc', ':<C-u>Commits<CR>')
+-- map('n', '<leader>fx', ':<C-u>Commands<CR>')
+-- map('n', '<leader>fs', ':<C-u>Snippets<CR>')
+-- map('n', '<leader>f/', ':<C-u>History/<CR>')
+-- map('n', '<leader>f:', ':<C-u>History:<CR>')
+-- map('n', '<leader>fl', ':<C-u>Lines<CR>')
+-- map('n', '<leader>fo', ':<C-u>BLines<CR>')
 
-cmd([[command! -bang -nargs=* Rg call ]]..
-    [[fzf#vim#grep('rg --column --line-number --no-heading --color=always ]]..
-    [[--smart-case -- '.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
+-- cmd([[command! -bang -nargs=* Rg call ]]..
+--     [[fzf#vim#grep('rg --column --line-number --no-heading --color=always ]]..
+--     [[--smart-case -- '.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
 
 -- Gutentags
-local home = os.getenv('HOME')
-g.gutentags_cache_dir = home..'/.cache/guten_tags'
+-- local home = os.getenv('HOME')
+-- g.gutentags_cache_dir = home..'/.cache/guten_tags'
+g.gutentags_ctags_tagfile = ".tags"
 g.gutentags_add_ctrlp_root_markers = 0
 g.gutentags_ctags_exclude={'*.css', '*.html', '*.js', '*.json', '*.xml',
     '*.phar', '*.ini', '*.rst', '*.md', '*/vendor/*', '*vendor/*/test*',
@@ -256,8 +260,8 @@ g.neomake_place_signs = 0
 g.neomake_open_list = 2
 
 -- Neovim-peekup
-g.peekup_open = '<leader>"'
-require('nvim-peekup.config').on_keystroke["delay"] = ''
+-- g.peekup_open = '<leader>"'
+-- require('nvim-peekup.config').on_keystroke["delay"] = ''
 
 -- Pandoc
 g['pandoc#speel#enabled'] = 1
@@ -297,6 +301,56 @@ map('v', '<localleader>,', ':Tabularize /,\zs<CR>')
 -- Tcomment
 g['tcomment#filetype#guess_typescript'] = 1
 g['tcomment#filetype#guess_javascript'] = 1
+
+-- Telescope
+require('telescope').setup {
+    defaults = {
+        file_sorter = require('telescope.sorters').get_fzf_sorter,
+        prompt_prefix = '> ',
+        color_devicons = true,
+        file_previewer = require('telescope.previewers').vim_buffer_cat.new,
+        grep_previewer = require('telescope.previewers').vim_buffer_vimgrep.new,
+        qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
+        mappings = {
+            i = {
+                ["<C-x>"] = false,
+                ["<C-q>"] = require('telescope.actions').send_to_qflist,
+            },
+        },
+    },
+    extensions = {
+        fzf = {
+            fuzzy = true,
+            override_generic_sorter = false,
+            override_file_sorter = true,
+            case_mode = 'smart_case',
+        },
+    }
+}
+require('telescope').load_extension('fzf')
+map('n', '<leader>ff', ":Telescope find_files<CR>")
+map('n', '<leader>fg', ":Telescope git_files<CR>")
+map('n', '<leader>fG', ":Telescope live_grep<CR>")
+map('n', '<leader>vh', ":Telescope help_tags<CR>")
+map('n', '<leader>fr', ":Telescope oldfiles<CR>")
+map('n', '<leader>b', ":Telescope buffers<CR>")
+map('n', '<leader>fv', ":lua require('my.telescope').search_dotfiles()<CR>")
+map('n', '<leader>fF', ":lua require('my.telescope').search_home()<CR>")
+map('n', '<leader>f/', ':Telescope search_history<CR>')
+map('n', '<leader>f:', ':Telescope command_history<CR>')
+map('n', '<leader>ft', ":lua require('telescope.builtin').tags({ ctags_file = \".tags\" })<CR>")
+map('n', '<leader>fs', ":lua require('telescope.builtin').grep_string({ search = vim.fn.input(\"Grep for: \") })<CR>")
+map('n', '<leader>fw', ":lua require('telescope.builtin').grep_string({ search = vim.fn.expand(\"<cword>\") })<CR>")
+
+map('n', '<localleader>r', ':Telescope registers<CR>')
+map('n', '<localleader>x', ':Telescope commands<CR>')
+
+map('n', '<leader>gb', ':Telescope git_branches<CR>')
+map('n', '<leader>gc', ':Telescope git_commits<CR>')
+map('n', '<leader>gC', ':Telescope git_bcommits<CR>')
+map('n', '<leader>fz', ':Telescope current_buffer_fuzzy_find<CR>')
+map('n', '<leader>fi', ':Telescope treesitter<CR>')
+-- map('n', '<leader>fs', ':<C-u>Snippets<CR>')
 
 -- Terraform
 g.terraform_align = 1
