@@ -329,7 +329,7 @@ require('telescope').setup {
 }
 require('telescope').load_extension('fzf')
 map('n', '<leader>ff', ":Telescope find_files<CR>")
-map('n', '<leader>fg', ":Telescope git_files<CR>")
+map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
 map('n', '<leader>vh', ":Telescope help_tags<CR>")
 map('n', '<leader>fr', ":Telescope oldfiles<CR>")
@@ -344,6 +344,7 @@ map('n', '<leader>fw', ":lua require('telescope.builtin').grep_string({ search =
 
 map('n', '<localleader>r', ':Telescope registers<CR>')
 map('n', '<localleader>x', ':Telescope commands<CR>')
+map('n', '<localleader>n', ":lua require('my.telescope').find_notes()<CR>")
 
 map('n', '<leader>gb', ':Telescope git_branches<CR>')
 map('n', '<leader>gc', ':Telescope git_commits<CR>')
