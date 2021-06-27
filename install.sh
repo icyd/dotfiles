@@ -53,9 +53,11 @@ usage() {
     echo -e "\t-a|--install-antibody"
     echo -e "\t-tpm|--install-tpm"
     echo -e "\t-vplug|--install-vplug"
+    echo -e "\t-paq|--install-paq"
     echo -e "\t-fzf|--install-fzf"
     echo -e "\t-pyenv|--install-pyenv"
     echo -e "\t-plugins|--install-vim-plugins"
+    echo -e "\t-lua-plugins|--install-lua-plugins"
     echo -e "\t-server|--server-mode"
     echo -e "\t-min|--minimal"
     echo -e "\t-f|--file-destination foo\tDefine where to install files, default: $FILE_DD"
@@ -101,6 +103,9 @@ while [[ $# -gt 0 ]]; do
         -vplug|--install-vplug)
             INSTALL_VPLUG=1
             ;;
+        -paq|--install-paq)
+            INSTALL_PAQ=1
+            ;;
         -fzf|--install-fzf)
             INSTALL_FZF=1
             ;;
@@ -109,6 +114,9 @@ while [[ $# -gt 0 ]]; do
             ;;
         -plugins|--install-vim-plugins)
             INSTALL_VIM_PLUGINS=1
+            ;;
+        -lua-plugins|--install-lua-plugins)
+            INSTALL_LUA_PLUGINS=1
             ;;
         -server|--server_mode)
             SERVER_MODE=1
@@ -233,11 +241,11 @@ install_antibody() {
 
 # Install fzf
 install_fzf() {
-    INSTALL_PATH="$FOLDER_DD/fzf"
+    INSTALL_PATH="$HOME/.fzf"
     if [ ! -d "$INSTALL_PATH" ]; then
         echo -e "${yellow}Downloading fzf into:${reset} $INSTALL_PATH"
         git clone --depth 1 https://github.com/junegunn/fzf.git "$INSTALL_PATH"
-        bash "$INSTALL_PATH"/install --xdg --no-fish --no-bash --key-bindings --completion --64 --update-rc
+        bash "$INSTALL_PATH"/install --no-zsh --no-fish --no-bash --key-bindings --completion --no-update-rc
     else
         echo -e "${green}fzf already installed.${reset}"
     fi
@@ -270,6 +278,19 @@ install_vplug() {
     echo -e "\n"
 }
 
+# Install paq-nvim
+install_paq() {
+    INSTALL_PATH="$XDG_DATA_HOME/nvim/site/pack/paqs/start/paq-nvim"
+    if [ ! -f "$INSTALL_PATH" ]; then
+        echo -e "${yellow}Downloading paq-nvim into:${reset} $INSTALL_PATH"
+        git clone --depth=1 https://github.com/savq/paq-nvim.git \
+        $INSTALL_PATH
+    else
+        echo -e "${green}paq-nvim already installed${reset}"
+    fi
+    echo -e "\n"
+}
+
 # Installing plugins
 install_vim_plugins() {
     if [ -f "$FOLDER_DD/nvim/config/plugins.vim" ]; then
@@ -283,6 +304,24 @@ EOF
         sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" >> "$TMP"
         echo -e "${yellow}Installing pluggins...${reset}"
         "$VIM" -u "$TMP" -c 'PlugInstall! | qa!'
+    fi
+    echo -e "\n"
+}
+
+# Installing lua plugins
+install_lua_plugins() {
+    if [ -f "$FOLDER_DD/nvim/lua/plugins.lua" ]; then
+        TMP=$(mktemp)
+        echo -e "${yellow}Creating base configuration for installing Neovim's pluggins in:${reset} $TMP"
+        cat<<EOF > "$TMP"
+lua <<EOL
+vim.cmd[[packadd paq-nvim]]
+local paq = require('paq-nvim').paq
+EOF
+        sed -n '/^\s*paq.*/p' "$FOLDER_DD/nvim/lua/plugins.lua" >> "$TMP"
+        echo "EOL" >> "$TMP"
+        echo -e "${yellow}Installing pluggins...${reset}"
+        "$VIM" -u "$TMP" -c 'PaqInstall'
     fi
     echo -e "\n"
 }
@@ -376,9 +415,11 @@ main() {
     [ -n "$INSTALL_ANTIBODY" ] && install_antibody
     [ -n "$INSTALL_TPM" ] && install_tpm
     [ -n "$INSTALL_VPLUG" ] && install_vplug
+    [ -n "$INSTALL_PAQ" ] && install_paq
     [ -n "$INSTALL_FZF" ] && install_fzf
     [ -n "$INSTALL_PYENV" ] && install_pyenv
     [ -n "$INSTALL_VIM_PLUGINS" ] && install_vim_plugins
+    [ -n "$INSTALL_LUA_PLUGINS" ] && install_lua_plugins
     echo -e "${green}DONE!${reset}"
 }
 main

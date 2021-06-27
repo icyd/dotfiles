@@ -71,8 +71,9 @@ paq 'hrsh7th/vim-vsnip'
 paq 'hrsh7th/vim-vsnip-integ'
 paq 'rafamadriz/friendly-snippets'
 -- Fuzzy finder
--- paq {'junegunn/fzf', run='-> fzf#install()'}
--- paq 'junegunn/fzf.vim'
+paq 'junegunn/fzf'
+paq 'junegunn/fzf.vim'
+paq 'ojroques/nvim-lspfuzzy'
 paq 'nvim-lua/popup.nvim'
 paq 'nvim-lua/plenary.nvim'
 paq 'nvim-telescope/telescope.nvim'
@@ -217,10 +218,11 @@ augroup('fugitive', {
 -- map('n', '<leader>f:', ':<C-u>History:<CR>')
 -- map('n', '<leader>fl', ':<C-u>Lines<CR>')
 -- map('n', '<leader>fo', ':<C-u>BLines<CR>')
+require('lspfuzzy').setup {}
 
--- cmd([[command! -bang -nargs=* Rg call ]]..
---     [[fzf#vim#grep('rg --column --line-number --no-heading --color=always ]]..
---     [[--smart-case -- '.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
+cmd([[command! -bang -nargs=* Rg call ]]..
+    [[fzf#vim#grep('rg --column --line-number --no-heading --color=always ]]..
+    [[--smart-case -- '.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
 
 -- Gutentags
 -- local home = os.getenv('HOME')
@@ -249,6 +251,10 @@ g.indentLine_fileTypeExclude = {"fzf"}
 g.mkdp_echo_preview_url = 1
 g.mkdp_browser = 'Chrome'
 g.mkdp_filetypes = {'markdown', 'pandoc'}
+-- cmd[[
+-- let $NVIM_MKDP_LOG_FILE = expand('~/mkdp-log.log')
+-- let $NVIM_MKDP_LOG_LEVEL = 'debug'
+-- ]]
 
 -- Maximize
 g.maximizer_set_default_mapping = 0
@@ -333,7 +339,7 @@ map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
 map('n', '<leader>vh', ":Telescope help_tags<CR>")
 map('n', '<leader>fr', ":Telescope oldfiles<CR>")
-map('n', '<leader>b', ":Telescope buffers<CR>")
+map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buffers = true, sort_lastused = true })<CR>")
 map('n', '<leader>fv', ":lua require('my.telescope').search_dotfiles()<CR>")
 map('n', '<leader>fF', ":lua require('my.telescope').search_home()<CR>")
 map('n', '<leader>f/', ':Telescope search_history<CR>')
