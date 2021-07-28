@@ -1,154 +1,38 @@
 #!/usr/bin/env bash
-definitions() {
-    # Destination for configuration folders
-    XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-    XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-    export XDG_CONFIG_HOME="$XDG_CONFIG_HOME"
-    export XDG_DATA_HOME="$XDG_DATA_HOME"
-    # Get current working directory
-    SCRIPT_PATH="$(cd "$(dirname "$0")"; pwd -P)"
-    CWD="$SCRIPT_PATH"
-    cd "$CWD"
-    # Destination for configuration file
-    FILE_DD="${FILE_DD:-$HOME}"
-    FOLDER_DD="$XDG_CONFIG_HOME"
-    # Script destination
-    LOCALBIN_DD="${LOCALBIN_DD:-$HOME/.local/bin}"
-    # Pyenv distintation
-    PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
-    # Pyenv version to use, if not defined use system's version
-    if command -v python3 >/dev/null 2>&1; then
-        PYTHON=$(which python3 2>/dev/null)
-    else
-        PYTHON=$(which python 2>/dev/null)
-    fi
-    command -v /usr/bin/nvim >/dev/null 2>&1 && VIM="$(which nvim 2>/dev/null)" || VIM="$(which vim 2>/dev/null)"
-    if [ ! -x "$VIM" ]; then
-        echo -e "${red}nvim nor vim is installed, exiting${reset}"
-        exit 255
-    fi
-    if [ -x "$PYTHON" ]; then
-        SYSTEM_PYTHON_VER="$($PYTHON --version | cut -d ' ' -f2)"
-        # Use given python version, otherwise use systems' version
-        PYENV_VER=${PYENV_VER:-$SYSTEM_PYTHON_VER}
-    fi
-    # Pyenv virtualenv name
-    PYENV_NAME="${PYENV_NAME:-py3neovim}"
-    # String to cherrypick files/directories
-    SYMLINK_STRING=${SYMLINK_STRING:-"tmux.conf, nvim, bashrc, editorconfig"}
-    CURL=$(which curl 2>/dev/null)
-    if [ ! -x "$CURL" ]; then
-        echo -e "${red}curl not installed exiting${reset}"
-        exit 255
-    fi
-}
+# Check requirements
+VIM="$(which nvim 2>/dev/null || which vim 2>/dev/null)"
+if [ ! -x "$VIM" ]; then
+    echo -e "${red}nvim nor vim is installed, exiting${reset}"
+    exit 255
+fi
 
+CURL=$(which curl 2>/dev/null)
+if [ ! -x "$CURL" ]; then
+    echo -e "${red}curl not installed exiting${reset}"
+    exit 255
+fi
+
+STOW=$(which stow 2>/dev/null)
+if [ ! -x "$STOW" ]; then
+    echo -e "${red}stow not installed exiting${reset}"
+    exit 255
+fi
+
+EXCLUDE="${EXCLUDE:-\"Microsoft Terminal\"}"
+
+# Functions definitions
 usage() {
-    definitions
     echo -e "Usage:\n"
     echo -e "\t-c|--create-symlink\tCreate symlinks of the files/directories inside the repository."
-    echo -e "\t-sv|--server-mode\tInstall dotfiles in server mode (${SYMLINK_STRING})."
-    echo -e "\t-fd|--files-directories \"foo, bar\"\tYou may define which files to copy using --minimal or --server-mode option."
-    echo -e "\t-all|--install-all\tInstall all, means options active:\n\t\t\t\t\t-c -a -tpm -vplug -fzf -pyenv -plugins are used if run in normal mode\n\t\t\t\t\t-c -vplug -plugins if run in server mode."
     echo -e "\t-a|--install-antibody"
     echo -e "\t-tpm|--install-tpm"
-    echo -e "\t-vplug|--install-vplug"
+    echo -e "\t-paq|--install-paq"
+    echo -e "\t-lua-plugins|--install-lua-plugins"
     echo -e "\t-fzf|--install-fzf"
-    echo -e "\t-pyenv|--install-pyenv"
-    echo -e "\t-plugins|--install-vim-plugins"
-    echo -e "\t-server|--server-mode"
-    echo -e "\t-min|--minimal"
-    echo -e "\t-f|--file-destination foo\tDefine where to install files, default: $FILE_DD"
-    echo -e "\t-d|--directory-destination bar\tDefine where to install config. directories, default: $FOLDER_DD"
-    echo -e "\t-s|--script-destination foobar\tDefine where to install scripts, default: $LOCALBIN_DD"
-    echo -e "\t-ph|--pyenv-home\tDefine pyenv home, default: $PYENV_ROOT"
-    echo -e "\t-pv|--pyenv-version\tDefine pyenv version, default: System's python version -> $PYENV_VER"
-    echo -e "\t-pn|--pyenv-name\tDefine pyenv virtualenv name, default: $PYENV_NAME"
+    echo -e "\t-light|--light-version"
+    echo -e "\t-thesaurus|--install-vim-thesaurus"
     exit 1
 }
-
-# Configuration variables
-while [[ $# -gt 0 ]]; do
-    key="$1"
-    case "$key" in
-        -c|--create-symlink)
-            CREATE_SYMLINK=1
-            ;;
-        -sv|--server-mode)
-            export SERVER_MODE=1
-            ;;
-        -fd|--files-directories)
-            SYMLINK_STRING="$2"
-            shift
-            ;;
-        -all|--install-all)
-            CREATE_SYMLINK=1
-            INSTALL_VPLUG=1
-            INSTALL_VIM_PLUGINS=1
-            if [ -z "$SERVER_MODE" ]; then
-                INSTALL_ANTIBODY=1
-                INSTALL_TPM=1
-                INSTALL_FZF=1
-                INSTALL_PYENV=1
-            fi
-            ;;
-        -a|--install-antibody)
-            INSTALL_ANTIBODY=1
-            ;;
-        -tpm|--install-tpm)
-            INSTALL_TPM=1
-            ;;
-        -vplug|--install-vplug)
-            INSTALL_VPLUG=1
-            ;;
-        -fzf|--install-fzf)
-            INSTALL_FZF=1
-            ;;
-        -pyenv|--install-pyenv)
-            INSTALL_PYENV=1
-            ;;
-        -plugins|--install-vim-plugins)
-            INSTALL_VIM_PLUGINS=1
-            ;;
-        -server|--server_mode)
-            SERVER_MODE=1
-            ;;
-        -min|--minimal)
-            SKIP_THIS=1
-            ;;
-        -f|--file-destination)
-            FILE_DD="$2"
-            shift
-            ;;
-        -d|--directory-destination)
-            XDG_CONFIG_HOME="$2"
-            shift
-            ;;
-        -s|--script-destination)
-            LOCALBIN_DD="$2"
-            shift
-            ;;
-        -ph|--pyenv-home)
-            PYENV_ROOT="$2"
-            shift
-            ;;
-        -pv|--pyenv_version)
-            PYENV_VER="$2"
-            shift
-            ;;
-        -pn|--pyenv_name)
-            PYENV_NAME="$2"
-            shift
-            ;;
-        -h|--help)
-            usage
-            ;;
-        *)
-            usage
-            ;;
-    esac
-    shift
-done
 
 # Confirm function
 confirm() {
@@ -165,66 +49,38 @@ confirm() {
 }
 
 create_symlinks() {
-    [ ! -d "$FOLDER_DD" ] && mkdir -p "$FOLDER_DD"
-    [ ! -d "$FILE_DD" ] && mkdir -p "$FILE_DD"
-    if [ -z "$SERVER_MODE" ]; then
-        if [ $(command -v readarray) ]; then
-            readarray -d '' FILES < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print0)
-        else
-            echo 'si'
-            declare -a FILES
-            let i=0
-            while IFS=$'\n' read -r line; do
-                FILES[i]="${line}"
-                echo "$line"
-                ((++i))
-            done < <(find "${CWD}" -maxdepth 1 -not -name "*.sh" -not -name "README*" -not -name ".git*" -not -path "$CWD" -print)
-        fi
-    else
-        # cherrypick when in server
-        FILES=( "${SYMLINK_ARRAY[@]/#/$CWD/}" )
-    fi
-
+    EXCLUDE="${1:-$EXCLUDE}"
+    pushd $CWD >/dev/null
+    echo -e "${green}Removing previous symlinks${reset}"
+    find * -maxdepth 0 -type d -exec $STOW -D {} \;
+    PATH_EXCLUDED=$(echo -n $EXCLUDE | tr ',' '\0' | xargs -L1 -0 -I{} printf '-path {} -o ' | sed 's/-o\s$//')
     echo -e "${green}Creating symlink for configuration files${reset}"
-    for file in "${FILES[@]}"; do
-        if [ -f "$file" ]; then
-            name="$FILE_DD/.$(basename $file)"
-        elif [ -d "$file" ]; then
-            name="$FOLDER_DD/$(basename $file)"
-        fi
+    echo -n "-not \( $PATH_EXCLUDED -prune \)" | xargs find * -maxdepth 0 -type d | xargs -L1 $STOW -S
+    popd >/dev/null
 
-        if [ ! -L "$name" ] && [ -e "$name" ]; then
-            echo -e "\t${red}Moving:${reset} ${name} to ${name}.bak"
-            mv -f "$name" "${name}.bak"
-        fi
-        [ -d "$name" ] && name="${name%/*}"
-
-        echo -e "\t${yellow}Creating symlink:${reset} ${name} -> ${file}"
-        ln -sf "${file}" "${name}"
-    done
-    if [ -d "${CWD}/alacritty" ]; then
-        if [ $(uname -s) == "Darwin" ]; then
-            echo -e "${green}Using Darwin Alacritty config file${reset}"
-            ln -sf "${CWD}/alacritty/alacritty_darwin.yml" "${CWD}/alacritty/alacritty.yml"
-        else
-            echo -e "${green}Using Linux Alacritty config file${reset}"
-            ln -sf "${CWD}/alacritty/alacritty_linux.yml" "${CWD}/alacritty/alacritty.yml"
-        fi
-    fi
-    if [ -f "${CWD}/gnupg/gpg-agent.conf" ] && [ $(uname -s) == "Darwin" ]; then
-        echo -e "${green}Replacing pinentry-qt with pinentry-mac${reset}"
-        perl -pi -e 's/^pinentry-program.*/pinentry-program \/usr\/local\/bin\/pinentry-mac/' "${CWD}/gnupg/gpg-agent.conf"
-    fi
+    case $(uname -s) in
+        Darwin)
+            echo -e "${green}Using gpg-agent.conf for Dawin${reset}"
+            ln -sf $GNUPGHOME/gpg-agent.darwin.conf $GNUPGHOME/gpg-agent.conf
+            ;;
+        Linux)
+            echo -e "${green}Using gpg-agent.conf for Linux${reset}"
+            ln -sf $GNUPGHOME/gpg-agent.linux.conf $GNUPGHOME/gpg-agent.conf
+            ;;
+        *)
+            echo -e "${yellow}Unknown system, skipping${reset}"
+            ;;
+    esac
 
     echo -e "${green}Changing permissions to gnupg folder${reset}"
-    find "${CWD}/gnupg/" -type d -exec chmod 700 {} \;
-    find "${CWD}/gnupg/" -type f -exec chmod 600 {} \;
+    find $GNUPGHOME -type d -exec chmod 700 {} \;
+    find $GNUPGHOME -type f -exec chmod 600 {} \;
     echo -e "\n"
 }
 
 # Install antibody
 install_antibody() {
-    INSTALL_PATH="$FOLDER_DD/zsh"
+    INSTALL_PATH="$HOME/.local/bin"
     if [ ! -f "$INSTALL_PATH/antibody" ]; then
         TMPDIR=$(mktemp -d)
         LINK=$(curl -s https://api.github.com/repos/getantibody/antibody/releases/latest | egrep browser_download_url.*$(uname -s)_$(uname -m) | perl -lne 'print $1 if /(http.*)"/i')
@@ -240,14 +96,13 @@ install_antibody() {
     echo -e "\n"
 }
 
-
 # Install fzf
 install_fzf() {
-    INSTALL_PATH="$FOLDER_DD/fzf"
+    INSTALL_PATH="$XDG_CONFIG_HOME/fzf"
     if [ ! -d "$INSTALL_PATH" ]; then
         echo -e "${yellow}Downloading fzf into:${reset} $INSTALL_PATH"
         git clone --depth 1 https://github.com/junegunn/fzf.git "$INSTALL_PATH"
-        bash "$INSTALL_PATH"/install --xdg --no-fish --no-bash --key-bindings --completion --64 --update-rc
+        bash "$INSTALL_PATH"/install --xdg --no-zsh --no-fish --no-bash --key-bindings --completion --no-update-rc
     else
         echo -e "${green}fzf already installed.${reset}"
     fi
@@ -256,7 +111,7 @@ install_fzf() {
 
 # Install tpm
 install_tpm() {
-    INSTALL_PATH="$FOLDER_DD/tmux/plugins/tpm"
+    INSTALL_PATH="$XDG_CONFIG_HOME/tmux/plugins/tpm"
     if [ ! -d "$INSTALL_PATH" ]; then
         [ ! -d "${INSTALL_PATH%/*}" ] && mkdir -p "${INSTALL_PATH%/*}"
         echo -e "${yellow}Downloading tpm into:${reset} $INSTALL_PATH"
@@ -267,132 +122,121 @@ install_tpm() {
     echo -e "\n"
 }
 
-# Install Vim-plug
-install_vplug() {
-    INSTALL_PATH="$XDG_DATA_HOME/nvim/site/autoload/plug.vim"
-    if [ ! -f "$INSTALL_PATH" ]; then
-        echo -e "${yellow}Downloading plug.vim into:${reset} $INSTALL_PATH"
-        curl -fLo "$INSTALL_PATH" --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim 2>/dev/null
+# Install paq-nvim
+install_paq() {
+    INSTALL_PATH="$XDG_DATA_HOME/nvim/site/pack/paqs/start/paq-nvim"
+    if [ ! -d "$INSTALL_PATH" ]; then
+        echo -e "${yellow}Downloading paq-nvim into:${reset} $INSTALL_PATH"
+        git clone --depth=1 https://github.com/savq/paq-nvim.git \
+        $INSTALL_PATH
     else
-        echo -e "${green}plug.vim already installed${reset}"
+        echo -e "${green}paq-nvim already installed${reset}"
     fi
     echo -e "\n"
 }
 
-# Installing plugins
-install_vim_plugins() {
-    if [ -f "$FOLDER_DD/nvim/config/plugins.vim" ]; then
+# Installing lua plugins
+install_lua_plugins() {
+    PLUGINS_FILE="$CWD/nvim/.config/nvim/lua/plugins.lua"
+    if [ -f "$PLUGINS_FILE" ]; then
         TMP=$(mktemp)
         echo -e "${yellow}Creating base configuration for installing Neovim's pluggins in:${reset} $TMP"
         cat<<EOF > "$TMP"
-set runtimepath^=$XDG_DATA_HOME/nvim/site
-let &packpath=&runtimepath
-set nocompatible
+lua <<EOL
+vim.cmd[[packadd paq-nvim]]
+local paq = require('paq-nvim').paq
 EOF
-        sed '/^\s*call\splug\#end\(\)/q' "$FOLDER_DD/nvim/config/plugins.vim" >> "$TMP"
+        sed -n '/^\s*paq.*/p' "$PLUGINS_FILE" >> "$TMP"
+        echo "EOL" >> "$TMP"
         echo -e "${yellow}Installing pluggins...${reset}"
-        "$VIM" -u "$TMP" -c 'PlugInstall! | qa!'
+        "$VIM" -u "$TMP" -c 'PaqInstall'
     fi
     echo -e "\n"
 }
 
 # Installing thesaur
-install_vim_thesaur() {
-    if [ ! -f "${FOLDER_DD}/nvim/thesaurus/mthesaur.txt" ]; then
-        echo -e "${yellow}Downloading mthesaur.txt into:${reset} ${FOLDER_DD}/nvim/thesaurus/mthesaur.txt"
-        curl -sfLo "${XDG_DATA_HOME}/nvim/site/thesaurus/mthesaur.txt" --create-dirs \
+install_vim_thesaurus() {
+    THESAURUS_FILE="$XDG_DATA_HOME/nvim/thesaurus/mthesaur.txt"
+    if [ ! -f "$THESAURUS_FILE" ]; then
+        echo -e "${yellow}Downloading mthesaur.txt into:${reset} $THESAURUS_FILE"
+        curl -sfLo "$THESAURUS_FILE" --create-dirs \
             http://www.gutenberg.org/files/3202/files/mthesaur.txt 2>/dev/null
     else
-        echo -e "${green}thesaur already installed.${reset}"
+        echo -e "${green}Thesaurus file already installed.${reset}"
     fi
     echo -e "\n"
 }
 
-install_pyenv() {
-    if [ ! -x "$PYTHON" ]; then
-        echo -e "${red}Python not installed, exiting${reset}"
-        exit 255
-    fi
-    command -v pyenv >/dev/null 2>&1
-    if [ ! -f "$PYENV_ROOT/bin/pyenv" ]; then
-        echo -e "${yellow}Installing pyenv${reset}"
-        curl -sL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash >/dev/null 2>&1
+# Installing asdf
+install_asdf() {
+    ASDF_VERSION="${ASDF_VERSION:-v0.8.1}"
+    ASDF_DIR="$HOME/.asdf"
+    if [ ! -d "$ASDF_DIR" ]; then
+        echo -e "${yellow}Downloading asdf ($ASDF_VERSION) into:${reset} $ASDF_DIR"
+        git clone https://github.com/asdf-vm/asdf.git $ASDF_DIR --branch $ASDF_VERSION
     else
-        echo -e "${green}Pyenv already installed${reset}"
+        echo -e "${green}Asdf already installed.${reset}"
     fi
-    export PATH="${PYENV_ROOT}/bin:$PATH"
-    echo -e "${yellow}Using python version:${reset} $PYENV_VER"
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-    pyenv virtualenvs | egrep -w "$PYENV_NAME" >/dev/null
-    if [ "$?" -ne 0 ]; then
-        echo -e "${yellow}Installing python virtualenv:${reset} $PYENV_NAME"
-        pyenv versions | egrep -w "$PYENV_VER" >/dev/null
-        if [ "$?" -ne 0 ]; then
-            echo -e "${yellow}Installing python version:${reset} $PYENV_VER"
-            pyenv install "$PYENV_VER" >/dev/null
-        else
-            echo -e "${green}Python version already installed:${reset} $PYENV_VER"
-        fi
-        pyenv virtualenv "$PYENV_VER" "$PYENV_NAME" >/dev/null
-    else
-        echo -e "${green}Pyenv virtualenv already exist:${reset} $PYENV_NAME"
-    fi
-    pyenv activate "$PYENV_NAME"
-    echo -e "\n${yellow}Updating pip${reset}"
-    pip install --user -q -U pip
-    echo -e "${yellow}Installing python packages.${reset}"
-    if [ -z "$SERVER_MODE" ]; then
-        pip install --user -U -r "${CWD}/nvim/requirements.txt" >/dev/null
-        echo -e "${yellow}Installing node.js.${reset}"
-        nodeenv -p > /dev/null
-        echo -e "${yellow}Installing node.js packages.${reset}"
-        NPM="$(pyenv which npm)"
-        cat "${CWD}/nvim/npm_requirements.txt" | cut -d ' ' -f2 | tail -n +2 | xargs npm install -g > /dev/null
-        npm update -g
-    else
-        echo -e "${yellow}Installing pynvim${reset}"
-        pip -q install --user -U pynvim
-        echo -e "${yellow}Installing neovim${reset}"
-        pip -q install --user -U neovim
-        echo -e "${yellow}Installing neovim-remote${reset}"
-        pip -q install --user -U neovim-remote
-    fi
-
-    echo -e "${yellow}Substituying python path in the configuration file: ${reset} ${PYTHON}"
-    PYTHON=$(pyenv which python 2>/dev/null)
-    sed -i -e "s!\(^\s*let\sg:python3_host_prog\s=\s\).*!\1'${PYTHON}'!" "${FOLDER_DD}/nvim/init.vim"
-    sed -i -e "s!\(^\s*let\s\$PATH\s=\s\).*!\1'${PYTHON%/*}/'\.\$PATH!" "${FOLDER_DD}/nvim/init.vim"
-
-    echo -e "${yellow}Updating Nvim'- remote plugins${reset}"
-    "$VIM" -c 'UpdateRemotePlugins | qa!'
-
-    echo -e "${yellow}Creating Symlink to NVR${reset}"
-    [ ! -d "$LOCALBIN_DD" ] && mkdir -p "$LOCALBIN_DD"
-    ln -sf "${PYTHON%/*}/nvr" "$LOCALBIN_DD/nvr"
     echo -e "\n"
 }
 
-main() {
-    red=`tput setaf 1`
-    green=`tput setaf 2`
-    yellow=`tput setaf 3`
-    blue=`tput setaf 4`
-    magenta=`tput setaf 5`
-    reset=`tput sgr0`
-    definitions
-    IFS=", " read -r -a SYMLINK_ARRAY <<< "$SYMLINK_STRING"
+red=`tput setaf 1`
+green=`tput setaf 2`
+yellow=`tput setaf 3`
+blue=`tput setaf 4`
+magenta=`tput setaf 5`
+reset=`tput sgr0`
 
-    [ -n "$CREATE_SYMLINK" ] && create_symlinks
-    [ -n "$SERVER_MODE" ] && echo -e "${yellow}Running in server mode: ${green}${SYMLINK_STRING}${reset}\n"
-    [ -n "$INSTALL_ANTIBODY" ] && install_antibody
-    [ -n "$INSTALL_TPM" ] && install_tpm
-    [ -n "$INSTALL_VPLUG" ] && install_vplug
-    [ -n "$INSTALL_FZF" ] && install_fzf
-    [ -n "$INSTALL_PYENV" ] && install_pyenv
-    [ -n "$INSTALL_VIM_PLUGINS" ] && install_vim_plugins
-    echo -e "${green}DONE!${reset}"
-}
-main
+# Get current working directory
+CWD="$(cd "$(dirname "$0")"; pwd -P)"
+source $CWD/zsh/.zshenv
+
+# Configuration variables
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case "$key" in
+        -c|--create-symlink)
+            create_symlinks
+            ;;
+        -a|--install-antibody)
+            install_antibody
+            ;;
+        -tpm|--install-tpm)
+            install_tpm
+            ;;
+        -paq|--install-paq)
+            install_paq
+            ;;
+        -lua-plugins|--install-lua-plugins)
+            install_lua_plugins
+            ;;
+        -fzf|--install-fzf)
+            install_fzf
+            ;;
+        -light|--light-version)
+            install_antibody
+            install_tpm
+            install_paq
+            install_fzf
+            install_lua_plugins
+            install_asdf
+            create_symlinks '"Microsoft Terminal\",sway,xkb'
+            ;;
+        -thesaurus|--install-vim-thesaurus)
+            install_vim_thesaurus
+            ;;
+        -asdf|--install-asdf)
+            install_asdf
+            ;;
+        -h|--help)
+            usage
+            ;;
+        *)
+            usage
+            ;;
+    esac
+    shift
+done
+
+echo -e "${green}DONE!${reset}"
 exit 0

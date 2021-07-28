@@ -1,0 +1,258 @@
+set $mod Mod4
+set $alt Mod1
+
+set  $left   h
+set  $down   j
+set  $up     k
+set  $right  l
+
+## Base16 Gruvbox dark, medium
+# Author: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
+
+set $base00 #282828
+set $base01 #3c3836
+set $base02 #504945
+set $base03 #665c54
+set $base04 #bdae93
+set $base05 #d5c4a1
+set $base06 #ebdbb2
+set $base07 #fbf1c7
+set $base08 #fb4934
+set $base09 #fe8019
+set $base0A #fabd2f
+set $base0B #b8bb26
+set $base0C #8ec07c
+set $base0D #83a598
+set $base0E #d3869b
+set $base0F #d65d0e
+
+# Setup of colors
+set $darkblack      $base00
+set $black          $base03
+set $darkred        $base08
+set $red            $base09
+set $darkgreen      $base0B
+set $green          $base01
+set $darkblue       $base0D
+set $blue           $base04
+set $darkmagenta    $base0E
+set $magenta        $base06
+set $darkcyan       $base0C
+set $cyan           $base0F
+set $darkwhite      $base05
+set $white          $base07
+set $transparent    #00000000
+
+set $term alacritty
+
+set $menuopts -b -f -i --tb "$darkblack" --tf "$darkwhite" --fb "$darkblack" --ff "$darkwhite" --nb "$darkblack" --nf "$darkwhite" --hb "$darkblack" --hf "$darkred" --scb "$darkblack" --scf "$darkwhite" --fn "MesloLGS NF-9"
+
+set $menudesk j4-dmenu-desktop --dmenu='bemenu -p "~" $menuopts'
+set $menurun bemenu-run -p "$" $menuopts | xargs swaymsg exec
+set $passmenu passmenu -p ">" $menuopts | xargs swaymsg exec
+
+#Colors                  Title_border    Background  Text        Indicator   Child_border
+client.focused           $transparent    $darkwhite  $darkblack  $darkwhite  $darkwhite
+client.unfocused         $transparent    $darkblack  $darkwhite  $red        $darkblack
+client.focused_inactive  $transparent    $darkblack  $darkwhite  $red        $transparent
+client.urgent            $darkred        $darkred    $darkwhite  $darkred    $darkred
+
+### Output configuration
+output * background ~/.wallpaper.jpg fill
+
+set $laptop LVDS-1
+output $laptop pos 0 0 res 1366x768
+output HDMI-A-1 pos 1366 0 res 1920x1080
+
+bindswitch --reload --locked lid:on output $laptop disable
+bindswitch --reload --locked lid:off output $laptop enable
+
+### Screensaver config
+exec swayidle -w \
+    timeout 600 'swaylock -f -c 282828' \
+    timeout 900 'swaymsg "output * dpms off"' \
+    resume 'swaymsg "output * dpms on"' \
+    before-sleep 'swaylock -f -c 282828'
+
+### Input configuration
+input type:touchpad {
+     accel_profile adaptive
+     pointer_accel 0.6
+     click_method clickfinger
+     scroll_method two_finger
+     middle_emulation enabled
+     tap_button_map lrm
+     tap enabled
+     natural_scroll enabled
+     dwt enabled
+}
+
+input type:keyboard {
+    xkb_numlock enable
+    xkb_file $HOME/.config/xkb/icyd.xkb
+    xkb_layout us
+    xkb_variant dvp
+    xkb_options "lv3:ralt_switch,compose:102,caps:swapescape"
+}
+
+### Key bindings
+bindsym $mod+Return exec $term
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# start your launcher
+bindsym $alt+d exec $menurun
+bindsym $alt+Shift+d exec $menudesk
+
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+
+# exit sway (logs you out of your Wayland session)
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
+# Move your focus around
+bindsym  $mod+$left   focus  left
+bindsym  $mod+$down   focus  down
+bindsym  $mod+$up     focus  up
+bindsym  $mod+$right  focus  right
+
+# _move_ the focused window with the same, but add Shift
+bindsym  $mod+Shift+$left   move  left
+bindsym  $mod+Shift+$down   move  down
+bindsym  $mod+Shift+$up     move  up
+bindsym  $mod+Shift+$right  move  right
+
+### Workspaces:
+set  $ws1   "1"
+set  $ws2   "2"
+set  $ws3   "3"
+set  $ws4   "4"
+set  $ws5   "5"
+set  $ws6   "6"
+set  $ws7   "7"
+set  $ws8   "8"
+set  $ws9   "9"
+set  $ws10  "10"
+
+# switch to workspace
+bindsym  $mod+ampersand     workspace  $ws1
+bindsym  $mod+bracketleft   workspace  $ws2
+bindsym  $mod+braceleft     workspace  $ws3
+bindsym  $mod+parenleft     workspace  $ws4
+bindsym  $mod+plus          workspace  $ws5
+bindsym  $mod+equal         workspace  $ws6
+bindsym  $mod+asterisk      workspace  $ws7
+bindsym  $mod+parenright    workspace  $ws8
+bindsym  $mod+braceright    workspace  $ws9
+bindsym  $mod+bracketright  workspace  $ws10
+
+bindsym  $alt+numbersign    workspace  back_and_forth
+bindsym  $alt+Tab           workspace  next
+bindsym  $alt+Shift+Tab     workspace  prev
+
+# move focused container to workspace
+bindsym  $mod+Shift+ampersand     move container to workspace $ws1
+bindsym  $mod+Shift+bracketleft   move container to workspace $ws2
+bindsym  $mod+Shift+braceleft     move container to workspace $ws3
+bindsym  $mod+Shift+parenleft     move container to workspace $ws4
+bindsym  $mod+Shift+plus          move container to workspace $ws5
+bindsym  $mod+Shift+equal         move container to workspace $ws6
+bindsym  $mod+Shift+asterisk      move container to workspace $ws7
+bindsym  $mod+Shift+parenright    move container to workspace $ws8
+bindsym  $mod+Shift+braceright    move container to workspace $ws9
+bindsym  $mod+Shift+bracketright  move container to workspace $ws10
+
+### Layout stuff:
+bindsym $mod+b splith
+bindsym $mod+v splitv
+
+# Switch the current container between different layout styles
+bindsym  $mod+s  layout  stacking
+bindsym  $mod+w  layout  tabbed
+bindsym  $mod+e  layout  toggle    split
+
+# Make the current focus fullscreen
+bindsym $mod+f fullscreen
+
+# Toggle the current focus between tiling and floating mode
+bindsym $mod+Shift+space floating toggle
+
+# Swap focus between the tiling area and the floating area
+bindsym $mod+space focus mode_toggle
+
+# move focus to the parent container
+bindsym $mod+a focus parent
+bindsym $mod+Shift+a focus child
+
+### Scratchpad:
+# Move the currently focused window to the scratchpad
+bindsym $mod+Shift+minus move scratchpad
+
+# Show the next scratchpad window or hide the focused scratchpad window.
+# If there are multiple scratchpad windows, this command cycles through them.
+bindsym $mod+minus scratchpad show
+
+### Resizing containers:
+mode "resize" {
+    bindsym  $left   resize  shrink  width   10px
+    bindsym  $down   resize  grow    height  10px
+    bindsym  $up     resize  shrink  height  10px
+    bindsym  $right  resize  grow    width   10px
+
+    # return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+### Gaps:
+gaps inner 6
+gaps outer 1
+default_border pixel
+
+### Windows assign
+assign [class="(?i)st" title="Nvim Server"] $ws1
+assign [app_id="(?i)firefox"] $ws2
+assign [app_id="qutebrowser"] $ws3
+assign [class="(?i)st" title="vifm"] $ws4
+assign [class="(?i)st" title="ncmpcpp"] $ws9
+assign [class="(?i)st" title="neomutt"] $ws10
+
+for_window [class="pinentry-*"] floating enable
+for_window [class="pinentry-*"] resize set 600 300
+
+### Binding
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') +5%  && pkill -RTMIN+1 i3blocks
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') -5%  && pkill -RTMIN+1 i3blocks
+bindsym XF86AudioMute exec pactl set-sink-mute $(pacmd list-sinks |awk '/* index:/{print $3}') toggle  && pkill -RTMIN+1 i3blocks
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+bindsym Print exec grim -o LVDS-1 /tmp/screenshot.png
+bindsym $mod+Shift+r exec $term -e "ncmpcpp"
+bindsym $mod+Shift+f exec $term -e "vifm"
+bindsym $mod+Shift+w exec "firefox"
+bindsym $mod+x exec $term -t "Nvim Server" -e nvim
+
+bindsym $mod+Shift+p exec echo -e "Exit\nLock\nSuspend\nReboot\nShutdown" | bemenu -p "Power: " $menuopts | "/home/beto/.config/dotfiles/sway/power.sh" | xargs swaymsg exec
+bindsym $mod+F11 exec $DOTFILES/scripts/qrgen
+bindsym $mod+F10 exec $DOTFILES/scripts/browsersearch
+bindsym $mod+Shift+F7 exec $term -title "RPNCalc" -e zsh -c rpncalc
+bindsym $mod+Shift+F6 exec $term -title "Dropdown"
+
+### Autostart:
+exec mako
+exec gammastep
+exec waybar
+exec udiskie
+exec_always /home/beto/.config/sway/clam.sh
+
+include /etc/sway/config.d/*

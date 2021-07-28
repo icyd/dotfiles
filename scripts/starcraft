@@ -1,3 +1,0 @@
-#!/bin/bash
-
-WINEPREFIX=/home/beto/.wineprefix/sc wine "C:/Program Files/Starcraft/StarCraft.exe"

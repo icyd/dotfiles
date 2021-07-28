@@ -19,6 +19,7 @@ mpd/state
 zsh/zsh_plugins.sh
 zsh/antibody
 zsh/local.zsh
+zsh/completions
 scripts/*
 tmux/plugins
 vifm/vifminfo
@@ -26,3 +27,4 @@ gnupg/*
 tags
 kitty/kitty-themes
 kitty/theme.conf
+.tags
