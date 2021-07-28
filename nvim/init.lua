@@ -1,6 +1,0 @@
-require('settings')
-require('keybindings')
-require('plugins')
-require('statusline')
--- require('galaxyline')
-require('lsp')
