@@ -682,7 +682,7 @@ assign [class="Google-chrome"] $ws1
 assign [class="Spotify"] $ws11
 assign [class="Slack"] $ws3
 assign [class="^Cisco"] $ws12
-exec --no-startup-id alacritty
+exec --no-startup-id alacritty -e tmux
 exec --no-startup-id google-chrome-stable --password-store=basic %U
 
 set $m_laptop "eDP-1"
