@@ -1,6 +1,14 @@
 # https://editorconfig.org/
 root = true
 
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+charset = utf-8
+
 # Docstrings and comments use max_line_length = 79
 [*.py]
 max_line_length = 79
@@ -15,7 +23,7 @@ indent_size = 2
 insert_final_newline = ignore
 
 # The yaml files contain newlines inconsistently
-[*.{yml, yaml}]
+[*.{yaml,yml}]
 indent_size = 2
 insert_final_newline = ignore
 
@@ -80,11 +88,3 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 indent_size = 2
-
-[*]
-indent_style = space
-indent_size = 4
-insert_final_newline = true
-trim_trailing_whitespace = true
-end_of_line = lf
-charset = utf-8
