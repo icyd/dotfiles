@@ -31,6 +31,7 @@ usage() {
     echo -e "\t-fzf|--install-fzf"
     echo -e "\t-light|--light-version"
     echo -e "\t-thesaurus|--install-vim-thesaurus"
+    echo -e "\t--remove-symlink"
     exit 1
 }
 
@@ -48,12 +49,18 @@ confirm() {
     esac
 }
 
-create_symlinks() {
-    EXCLUDE="${1:-$EXCLUDE}"
+remove_symlinks() {
     pushd $CWD >/dev/null
     echo -e "${green}Removing previous symlinks${reset}"
     find * -maxdepth 0 -type d -exec $STOW -D {} \;
-    PATH_EXCLUDED=$(echo -n $EXCLUDE | tr ',' '\0' | xargs -L1 -0 -I{} printf '-path {} -o ' | sed 's/-o\s$//')
+    popd >/dev/null
+}
+
+create_symlinks() {
+    EXCLUDE="${1:-$EXCLUDE}"
+    remove_symlinks
+    pushd $CWD >/dev/null
+    PATH_EXCLUDED=$(echo -n $EXCLUDE | tr ',' '\0' | xargs -0 -I{} printf '-path {} -o ' | sed 's/-o\s$//')
     echo -e "${green}Creating symlink for configuration files${reset}"
     echo -n "-not \( $PATH_EXCLUDED -prune \)" | xargs find * -maxdepth 0 -type d | xargs -L1 $STOW -S
     popd >/dev/null
@@ -214,19 +221,22 @@ while [[ $# -gt 0 ]]; do
             install_fzf
             ;;
         -light|--light-version)
-            install_antibody
             install_tpm
             install_paq
             install_fzf
             install_lua_plugins
             install_asdf
             create_symlinks '"Microsoft Terminal\",sway,xkb'
+            install_antibody
             ;;
         -thesaurus|--install-vim-thesaurus)
             install_vim_thesaurus
             ;;
         -asdf|--install-asdf)
             install_asdf
+            ;;
+        --remove-symlink)
+            remove_symlinks
             ;;
         -h|--help)
             usage

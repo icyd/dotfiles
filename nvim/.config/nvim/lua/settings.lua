@@ -152,4 +152,28 @@ endfunction
 command! -nargs=1 Vbuffer call VerticalSplitBuffer(<f-args>)
 command! ReloadConf call ReloadConfig()
 command! Trim call TrimTrailingSpaces()
+
+function! DScratch()
+  let scratch_dir  = '~/Nextcloud/scratch/buffers'
+  let scratch_date = strftime('%Y%m%d')
+  let scratch_file = 'scratch-'. scratch_date . '.md'
+  let scratch_buf  = bufnr(scratch_file)
+
+  if scratch_buf == -1
+    exe 'split ' . scratch_dir . '/' . scratch_file
+
+    if empty(glob(scratch_dir . '/' . scratch_file))
+      exe ':normal i# Scratch Buffer - ' . scratch_date
+      exe ':normal o'
+      " call CommentHeader()
+      exe ':normal o'
+      exe ':normal ^D'
+      exe ':w'
+    endif
+  else
+    exe 'split +buffer' . scratch_buf
+  endif
+endfunction
+
+command! Scratch call DScratch()
 ]], false)
