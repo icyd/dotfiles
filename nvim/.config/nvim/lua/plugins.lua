@@ -174,8 +174,6 @@ map('n', 'S', '<Plug>(vsnip-cut-text)')
 map('x', 'S', '<Plug>(vsnip-cut-text)')
 
 -- EditorConfig
-g.EditorConfig_core_mode = "external_command"
-g.EditorConfig_exec_path = "/usr/bin/editorconfig"
 g.EditorConfig_exclude_patterns = {
    'fugitive://.*',
    'scp://.*',
