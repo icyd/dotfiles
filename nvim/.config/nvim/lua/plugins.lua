@@ -62,8 +62,6 @@ paq 'tpope/vim-surround'
 paq 'tomtom/tcomment_vim'
 -- Tabularize
 paq 'godlygeek/tabular'
--- Thesaurus
-paq 'beloglazov/vim-online-thesaurus'
 -- Undo tree
 paq 'mbbill/undotree'
 -- Async make
@@ -86,11 +84,6 @@ paq {'nvim-telescope/telescope-fzf-native.nvim', run='make'}
 -- Completion
 paq 'hrsh7th/nvim-compe'
 paq 'andersevenrud/compe-tmux'
--- paq 'nvim-lua/completion-nvim'
--- paq 'steelsojka/completion-buffers'
--- paq 'albertoCaroM/completion-tmux'
--- paq 'kristijanhusak/completion-tags'
--- paq 'nvim-treesitter/completion-treesitter'
 -- Syntax
 paq 'hashivim/vim-terraform'
 paq 'ekalinin/Dockerfile.vim'
@@ -126,20 +119,14 @@ g.AutoPairsFlyMode = 0
 -- Enable selection with Tab
 map('i', '<Tab>', "pumvisible() ? '<C-n>' : vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<Tab>'", { noremap = false, expr = true })
 map('i', '<S-Tab>', "pumvisible() ? '<C-p>' : vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'", { noremap = false, expr = true })
--- cmd([[imap <expr> <Tab> pumvisible() ? '<C-n>' : vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<Tab>']])
--- cmd([[imap <expr> <S-Tab> pumvisible() ? '<C-p>' : vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>']])
 
 -- Expand or jump
 map('i', '<C-l>', "vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'", { noremap = false, expr = true })
 map('s', '<C-l>', "vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'", { noremap = false, expr = true })
--- cmd([[imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>']])
--- cmd([[smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>']])
 
 -- Jump forward or backward
 map('s', '<Tab>', "vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : '<Tab>'", { noremap = false, expr = true })
 map('s', '<S-Tab>', "vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'", { noremap = false, expr = true })
--- cmd([[smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>']])
--- cmd([[smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>']])
 
 require('compe').setup {
     enabled = true,
@@ -179,30 +166,12 @@ map('i', '<C-y>', "compe#confirm('<CR>')", { expr = true })
 map('i', '<C-e>', "compe#close('<C-e>')", { expr = true })
 map('i', '<C-f>', "compe#scroll({ 'delta': +4 })", { expr = true })
 map('i', '<C-d>', "compe#scroll({ 'delta': -4 })", { expr = true })
---
--- g.completion_confirm_key = '<C-y>'
--- g.completion_matching_strategy_list = {'exact', 'substring'}
--- g.completion_matching_smart_case = 1
--- g.completion_auto_change_source = 1
--- g.completion_trigger_keyword_length = 1
--- g.completion_trigger_keyword_length = 3
--- g.completion_enable_snippet = 'vim-vsnip'
--- g.completion_chain_complete_list = {
---    default = {
---        {complete_items = {'lsp', 'snippet', 'ts'}},
---        {complete_items = {'tags', 'buffers', 'tmux'}},
---        {mode = '<c-p>'},
---        {mode = '<c-n>'},
---     }
--- }
 
 -- Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
 map('n', 's', '<Plug>(vsnip-select-text)')
 map('x', 's', '<Plug>(vsnip-select-text)')
 map('n', 'S', '<Plug>(vsnip-cut-text)')
 map('x', 'S', '<Plug>(vsnip-cut-text)')
-
--- cmd[[autocmd BufEnter * if &buftype != "nofile" | lua require'completion'.on_attach()]]
 
 -- EditorConfig
 g.EditorConfig_core_mode = "external_command"
@@ -442,9 +411,9 @@ map('n', '<M-#>', ':TmuxNavigatePrevious<CR>')
 g.vimwiki_global_ext = 0
 g.vimwiki_list = {
     {
-        path = '~/vimwiki/',
+        path = '~/Nextcloud/vimwiki/',
         syntax = 'markdown',
-        ext = '.wiki',
+        ext = '.md',
     }
 }
 g.vimwiki_filetypes = {'markdown', 'pandoc'}

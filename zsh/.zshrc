@@ -192,10 +192,10 @@ cd_in() {
 
 # Defines editor
 if command -v nvim >/dev/null 2>&1; then
-	export EDITOR=nvim
-	alias vim=$EDITOR
+    export EDITOR=nvim
+    alias vim=$EDITOR
 else
-	export EDITOR=vim
+    export EDITOR=vim
 fi
 
 gen_completions() {

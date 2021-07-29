@@ -56,6 +56,7 @@
 
 /* Each module */
 #battery,
+#backlight,
 #clock,
 #cpu,
 #custom-keyboard-layout,
@@ -73,7 +74,6 @@
 /* -----------------------------------------------------------------------------
  * Module styles
  * -------------------------------------------------------------------------- */
-
 #battery {
     animation-timing-function: linear;
     animation-iteration-count: infinite;

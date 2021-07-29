@@ -1,4 +1,4 @@
-export skip_global_compinit=1
+skip_global_compinit=1
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export DOTFILES="$HOME/.dotfiles"
@@ -33,13 +33,13 @@ export ASDF_DIR="$HOME/.asdf"
 
 # Path definition
 idem_path_prepend() {
-	export PATH=$1:${PATH//"$1:"/}
+    export PATH=$1:${PATH//"$1:"/}
 }
 
 idem_path_prepend "$HOME/.local/bin/:$GOPATH/bin:$CARGO_HOME/bin:$XDG_CONFIG_HOME/fzf/bin:$KREW_ROOT/bin:$ASDF_DIR/bin:$ASDF_DIR/shims"
 
 idem_fpath_prepend() {
-	case ":${FPATH:=$1}:" in
+    case ":${FPATH:=$1}:" in
         *:"$1":*)  ;;
         *) export FPATH="$1:$FPATH"  ;;
     esac
