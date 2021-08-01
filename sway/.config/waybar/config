@@ -48,8 +48,8 @@
         "device": "intel_backlight",
         "format": "{percent}%  <span font='16'>{icon}</span>",
         "format-icons": ["", "", ""],
-        "on-scroll-up": "brightnessctl set 5%+",
-        "on-scroll-down": "brightnessctl set 5%-"
+        "on-scroll-up": "brightnessctl set 2%-",
+        "on-scroll-down": "brightnessctl set 2%+"
     },
     "battery": {
         "interval": 10,

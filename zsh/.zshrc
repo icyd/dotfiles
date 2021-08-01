@@ -14,6 +14,7 @@
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
 autoload -Uz +X compinit
+autoload -Uz +X edit-command-line
 autoload -Uz +X zcalc
 # autoload -Uz +X bashcompinit
 if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
@@ -121,6 +122,8 @@ bindkey '^Y' autosuggest-accept
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
 bindkey '^[[Z' reverse-menu-complete
+bindkey '^E' edit-command-line
+bindkey -M vicmd '!' edit-command-line
 bindkey -s jk '\e'
 
 # AUTOSUGGEST color, different to bg
@@ -135,6 +138,7 @@ rationalise-dot() {
     fi
 }
 zle -N rationalise-dot
+zle -N edit-command-line
 bindkey . rationalise-dot
 
 if command -v fzf >/dev/null 2>&1; then
@@ -196,6 +200,12 @@ if command -v nvim >/dev/null 2>&1; then
     alias vim=$EDITOR
 else
     export EDITOR=vim
+fi
+
+if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
+    if [ -x "$(command -v nvr)" ]; then
+        alias vim=nvr
+    fi
 fi
 
 gen_completions() {
