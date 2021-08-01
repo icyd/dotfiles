@@ -106,6 +106,11 @@ augroup('trim', {
 })
 
 api.nvim_exec([[
+let $NVR=$PY_VENV.'/nvr/bin/nvr'
+if has('nvim') && executable($NVR)
+    let $VISUAL=$NVR." -cc split --remote-wait +'set bufhidden=wipe'"
+endif
+
 function! ReloadConfig() abort
   if &filetype == 'vim'
     :silent! write

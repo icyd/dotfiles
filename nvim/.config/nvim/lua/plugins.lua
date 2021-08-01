@@ -19,10 +19,7 @@ paq 'kabouzeid/nvim-lspinstall'
 paq 'nvim-lua/plenary.nvim'
 -- Statusbar
 paq 'hoob3rt/lualine.nvim'
--- paq 'glepnir/galaxyline.nvim'
--- paq {'glepnir/galaxyline.nvim', branch='main'}
 paq {'kyazdani42/nvim-web-devicons', opt=true}
--- paq 'tjdevries/astronauta.nvim'
 -- Bracket mapping
 paq 'tpope/vim-unimpaired'
 -- Indentation by vim object
@@ -37,6 +34,8 @@ paq 'tpope/vim-speeddating'
 paq {'vim-scripts/loremipsum', opt=true}
 -- Tmux-vim navigation
 paq 'christoomey/vim-tmux-navigator'
+-- paq 'nikvdp/neomux'
+paq 'hkupty/nvimux'
 -- Session management
 paq 'tpope/vim-obsession'
 -- Polyglot
@@ -81,6 +80,7 @@ paq 'nvim-lua/plenary.nvim'
 paq 'nvim-telescope/telescope.nvim'
 paq {'nvim-telescope/telescope-fzy-native.nvim', run='git submodule update --init --recursive'}
 paq {'nvim-telescope/telescope-fzf-native.nvim', run='make'}
+paq {'nvim-telescope/telescope-project.nvim'}
 -- Completion
 paq 'hrsh7th/nvim-compe'
 paq 'andersevenrud/compe-tmux'
@@ -89,6 +89,7 @@ paq 'hashivim/vim-terraform'
 paq 'ekalinin/Dockerfile.vim'
 paq 'rust-lang/rust.vim'
 paq {'sirtaj/vim-openscad', opt=true}
+paq 'andrewstuart/vim-kubernetes'
 -- Markdown
 paq {'iamcco/markdown-preview.nvim', run='cd app && yarn install'}
 paq 'vim-pandoc/vim-pandoc-syntax'
@@ -102,8 +103,6 @@ paq 'jpalardy/vim-slime'
 paq 'mfussenegger/nvim-dap'
 -- Easy motion
 paq 'phaazon/hop.nvim'
--- Registers preview
--- paq 'gennaro-tedesco/nvim-peekup'
 
 --[[
 Configurations
@@ -280,10 +279,6 @@ map('v', '<leader>az', ':MaximizerToggle<CR>gv')
 g.neomake_place_signs = 0
 g.neomake_open_list = 2
 
--- Neovim-peekup
--- g.peekup_open = '<leader>"'
--- require('nvim-peekup.config').on_keystroke["delay"] = ''
-
 -- Pandoc
 g['pandoc#speel#enabled'] = 1
 g['pandoc#spell#default_langs'] = {'en_us', 'es'}
@@ -295,17 +290,17 @@ g['pandoc#filetypes#pandoc_markdown'] = 0
 g.rustfmt_autosave = 1
 
 -- Slime
-g.slime_target = "tmux"
+g.slime_target = "neovim"
 g.slime_paste_file = "/tmp/slime_paste"
 g.slime_default_config = {socket_name="default", target_pane="{last}"}
 g.slime_python_ipython = 1
 g.slime_dont_ask_default = 1
 g.slime_no_mappings = 1
-map('x', '<localleader>s', '<Plug>SlimeRegionSend')
-map('n', '<localleader>s', '<Plug>SlimeParagraphSend')
-map('n', '<localleader>l', ':SlimeSend0 "<C-l>"<CR>')
-map('n', '<localleader>c', ':SlimeSend0 "<C-c>"<CR>')
-map('n', '<localleader>q', ':SlimeSend0 "<C-d>"<CR>')
+map('x', '<localleader>ss', '<Plug>SlimeRegionSend')
+map('n', '<localleader>ss', '<Plug>SlimeParagraphSend')
+map('n', '<localleader>sl', ':SlimeSend0 "<C-l>"<CR>')
+map('n', '<localleader>sc', ':SlimeSend0 "<C-c>"<CR>')
+map('n', '<localleader>sq', ':SlimeSend0 "<C-d>"<CR>')
 
 -- Tabularize
 map('n', '<localleader>e', ':Tabularize /=<CR>')
@@ -346,13 +341,17 @@ require('telescope').setup {
             override_file_sorter = true,
             case_mode = 'smart_case',
         },
+        project = {
+            hidden_files = true,
+        },
     }
 }
 require('telescope').load_extension('fzf')
+require('telescope').load_extension('project')
 map('n', '<leader>ff', ":Telescope find_files<CR>")
 map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
-map('n', '<leader>vh', ":Telescope help_tags<CR>")
+map('n', '<leader>fh', ":Telescope help_tags<CR>")
 map('n', '<leader>fr', ":Telescope oldfiles<CR>")
 map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buffers = true, sort_lastused = true })<CR>")
 map('n', '<leader>fv', ":lua require('my.telescope').search_dotfiles()<CR>")
@@ -362,11 +361,12 @@ map('n', '<leader>f:', ':Telescope command_history<CR>')
 map('n', '<leader>ft', ":lua require('telescope.builtin').tags({ ctags_file = \".tags\" })<CR>")
 map('n', '<leader>fs', ":lua require('telescope.builtin').grep_string({ search = vim.fn.input(\"Grep for: \") })<CR>")
 map('n', '<leader>fw', ":lua require('telescope.builtin').grep_string({ search = vim.fn.expand(\"<cword>\") })<CR>")
+map('n', '<leader>fp', ":lua require('telescope').extensions.project.project{ display_type = 'full' }<CR>")
 
-map('n', '<localleader>r', ':Telescope registers<CR>')
-map('n', '<localleader>m', ':Telescope marks<CR>')
-map('n', '<localleader>x', ':Telescope commands<CR>')
-map('n', '<localleader>n', ":lua require('my.telescope').find_notes()<CR>")
+map('n', '<localleader>fR', ':Telescope registers<CR>')
+map('n', '<localleader>fm', ':Telescope marks<CR>')
+map('n', '<localleader>fx', ':Telescope commands<CR>')
+map('n', '<localleader>fn', ":lua require('my.telescope').find_notes()<CR>")
 
 map('n', '<leader>gb', ':Telescope git_branches<CR>')
 map('n', '<leader>gc', ':Telescope git_commits<CR>')
@@ -404,6 +404,24 @@ map('n', '<M-j>', ':TmuxNavigateDown<CR>')
 map('n', '<M-h>', ':TmuxNavigateLeft<CR>')
 map('n', '<M-l>', ':TmuxNavigateRight<CR>')
 map('n', '<M-#>', ':TmuxNavigatePrevious<CR>')
+
+-- Nvimux
+local nvimux = require('nvimux')
+nvimux.config.set_all{
+  prefix = '<C-a>',
+  new_window = 'enew', -- Use 'term' if you want to open a new term for every new window
+  new_tab = nil, -- Defaults to new_window. Set to 'term' if you want a new term for every new tab
+  new_window_buffer = 'single',
+  quickterm_direction = 'botright',
+  quickterm_orientation = '',
+  quickterm_scope = 't', -- Use 'g' for global quickterm
+  quickterm_size = '15',
+}
+nvimux.bindings.bind_all{
+  {'s', ':NvimuxHorizontalSplit', {'n', 'v', 'i', 't'}},
+  {'v', ':NvimuxVerticalSplit', {'n', 'v', 'i', 't'}},
+}
+nvimux.bootstrap()
 
 -- VimWiki
 g.vimwiki_global_ext = 0
