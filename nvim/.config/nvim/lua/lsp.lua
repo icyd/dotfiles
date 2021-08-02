@@ -1,4 +1,5 @@
 local map = require('utils').map
+require('diagnostics')
 
 -- Bindings
 map('n', '<leader>ld', '<cmd>lua vim.lsp.buf.definition()<CR>')
