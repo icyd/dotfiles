@@ -679,7 +679,7 @@ bindsym $mod+Ctrl+b exec ~/.config/regolith/scripts/rofipass.sh
 
 assign [class="Alacritty"] $ws2
 assign [class="Google-chrome"] $ws1
-assign [class="Spotify"] $ws11
+assign [class="^spotify"] $ws12
 assign [class="Slack"] $ws3
 assign [class="^Cisco"] $ws12
 exec --no-startup-id alacritty -e tmux
