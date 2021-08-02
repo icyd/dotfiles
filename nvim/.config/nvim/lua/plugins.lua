@@ -103,6 +103,8 @@ paq 'jpalardy/vim-slime'
 paq 'mfussenegger/nvim-dap'
 -- Easy motion
 paq 'phaazon/hop.nvim'
+-- Quickfix
+paq 'kevinhwang91/nvim-bqf'
 
 --[[
 Configurations
