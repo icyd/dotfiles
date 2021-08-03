@@ -105,6 +105,8 @@ paq 'mfussenegger/nvim-dap'
 paq 'phaazon/hop.nvim'
 -- Quickfix
 paq 'kevinhwang91/nvim-bqf'
+-- Other
+paq 'moll/vim-bbye'
 
 --[[
 Configurations
@@ -411,7 +413,7 @@ map('n', '<M-#>', ':TmuxNavigatePrevious<CR>')
 local nvimux = require('nvimux')
 nvimux.config.set_all{
   prefix = '<C-a>',
-  new_window = 'enew', -- Use 'term' if you want to open a new term for every new window
+  new_window = 'term', -- Use 'term' if you want to open a new term for every new window
   new_tab = nil, -- Defaults to new_window. Set to 'term' if you want a new term for every new tab
   new_window_buffer = 'single',
   quickterm_direction = 'botright',
@@ -441,3 +443,5 @@ augroup('typescript_tsx', {
     'BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx',
 })
 g.tex_flavor = "latex"
+map('n', '<localleader>q', ':Bdelete<CR>')
+map('n', '<localleader>Q', ':Bdelete!<CR>')
