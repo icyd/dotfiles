@@ -4,9 +4,11 @@ local cmd, g = vim.cmd, vim.g
 g.mapleader = ' '
 g.maplocalleader = '\\'
 
+-- Delete and paste
 map('v', '<localleader>P', '"_dP')
 map('n', '<localleader>P', '"_ddP')
 map('i', '<C-c>', '<ESC>')
+-- Disable arrows
 map('n', '<Up>', '<Nop>')
 map('n', '<Down>', '<Nop>')
 map('n', '<Left>', '<Nop>')
@@ -26,6 +28,20 @@ map('n', '$', 'g$')
 map('n', '^', 'g^')
 map('n', 'j', 'gj')
 map('n', 'k', 'gk')
+-- Make Y behave like D,C...
+map('n', 'Y', 'y$')
+-- keep cursor centered
+map('n', 'n', 'nzzzv')
+map('n', 'N', 'Nzzzv')
+map('n', 'J', 'mzJ`z')
+-- Undo break points
+map('i', ',', ',<C-g>u')
+map('i', '.', '.<C-g>u')
+map('i', '!', '!<C-g>u')
+map('i', '?', '?<C-g>u')
+-- Jumplist mutations (more than 5 lines)
+map('n', 'k', [[(v:count > 5 ? "m'" . v:count : "") . 'k']], { noremap = true, silent = true, expr = true })
+map('n', 'j', [[(v:count > 5 ? "m'" . v:count : "") . 'j']], { noremap = true, silent = true, expr = true })
 map('n', '<leader>x', ':make<CR>')
 map('n', '<leader>s', ':mksession<CR>')
 map('i', '<C-v>', '<ESC>"+pa')
@@ -43,9 +59,16 @@ map('n', '<leader>-', ':split<CR>')
 map('n', '<leader>\\', ':vsplit<CR>')
 map('n', '<M-a>', '<C-a>')
 map('n', '<M-x>', '<C-x>')
+-- Moving text
 map('v', '<C-j>', ':move \'>+1<CR>gv=gv')
 map('v', '<C-k>', ':move \'<-2<CR>gv=gv')
+map('n', '<C-j>', ':move .+1<CR>==')
+map('n', '<C-k>', ':move .-2<CR>==')
+map('i', '<C-j>', '<ESC>:move .+1<CR>==')
+map('i', '<C-k>', '<ESC>:move .-2<CR>==')
+-- Open terminal
 map('n', '<leader>\'', ':terminal<CR>', {noremap=false})
+-- Escape terminal
 map('t', '<ESC>', '<C-\\><C-N>')
 map('t', '<C-q><ESC>', '<ESC>')
 map('t', '<M-h>', '<C-\\><C-N><C-w>h')
