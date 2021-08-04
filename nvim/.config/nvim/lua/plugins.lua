@@ -42,6 +42,9 @@ paq 'tpope/vim-obsession'
 paq 'sheerun/vim-polyglot'
 -- Git
 paq 'tpope/vim-fugitive'
+paq 'lambdalisue/gina.vim'
+paq 'TimUntersberger/neogit'
+paq 'jreybert/vimagit'
 -- paq 'idanarye/vim-merginal'
 -- Window maximizer
 paq 'szw/vim-maximizer'
@@ -346,6 +349,11 @@ require('telescope').setup {
             case_mode = 'smart_case',
         },
         project = {
+            base_dirs = {
+                {path = '~/.dotfiles'},
+                {path = '~/Projects', max_depth = 2},
+                {path = '~/ea', max_depth = 4},
+            },
             hidden_files = true,
         },
     }
@@ -353,6 +361,7 @@ require('telescope').setup {
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('project')
 map('n', '<leader>ff', ":Telescope find_files<CR>")
+map('n', '<leader>fb', ":Telescope file_browser<CR>")
 map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
 map('n', '<leader>fh', ":Telescope help_tags<CR>")
@@ -360,6 +369,7 @@ map('n', '<leader>fr', ":Telescope oldfiles<CR>")
 map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buffers = true, sort_lastused = true })<CR>")
 map('n', '<leader>fv', ":lua require('my.telescope').search_dotfiles()<CR>")
 map('n', '<leader>fF', ":lua require('my.telescope').search_home()<CR>")
+map('n', '<leader>fB', ":lua require('my.telescope').browse_home()<CR>")
 map('n', '<leader>f/', ':Telescope search_history<CR>')
 map('n', '<leader>f:', ':Telescope command_history<CR>')
 map('n', '<leader>ft', ":lua require('telescope.builtin').tags({ ctags_file = \".tags\" })<CR>")
