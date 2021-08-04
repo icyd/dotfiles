@@ -204,7 +204,7 @@ fi
 
 if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
     if [ -x "$(command -v nvr)" ]; then
-        alias vim=nvr
+        alias vim="nvr -s"
     fi
 fi
 

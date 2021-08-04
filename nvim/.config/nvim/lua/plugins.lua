@@ -43,8 +43,8 @@ paq 'sheerun/vim-polyglot'
 -- Git
 paq 'tpope/vim-fugitive'
 paq 'lambdalisue/gina.vim'
-paq 'TimUntersberger/neogit'
-paq 'jreybert/vimagit'
+-- paq 'TimUntersberger/neogit'
+-- paq 'jreybert/vimagit'
 -- paq 'idanarye/vim-merginal'
 -- Window maximizer
 paq 'szw/vim-maximizer'
@@ -187,26 +187,13 @@ g.EditorConfig_exclude_patterns = {
 }
 
 -- Fugitive
-map('n', '<leader>gs', ':Gstatus<CR>')
+cmd[[command! -bang -nargs=* -complete=file Make NeomakeProject <args>]]
+map('n', '<leader>gs', ':Git<CR>')
 map('n', '<leader>gd', ':Gvdiffsplit!<CR>')
-map('n', '<leader>gph', ':call GitPushUpstream()<CR>')
-map('n', '<leader>gpl', ':call GitPullUpstream()<CR>')
+map('n', '<leader>gph', ':Git push<CR>')
+map('n', '<leader>gpl', ':Git pull<CR>')
 map('n', '<leader>gh', ':diffget //2<CR>')
 map('n', '<leader>gl', ':diffget //3<CR>')
-
-api.nvim_exec([[
-function! GitPushUpstream() abort
-   echo "Pushing..."
-   exec 'Git push -u origin ' . FugitiveHead()
-   echo 'Pushed!'
-endfunction
-
-function! GitPullUpstream() abort
-   echo "Pulling..."
-   exec 'Git pull --set-upstream origin ' . FugitiveHead()
-   echo 'Pulled!'
-endfunction
-]], false)
 
 local fugitive_autocmd =  [[User fugitive if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' ]]..
     [[nnoremap <buffer> .. :edit %:h<CR> | endif]]
@@ -215,30 +202,6 @@ augroup('fugitive', {
     'BufReadPost fugitive://* set bufhidden=delete',
 })
 
--- FZF
--- g.fzf_tags_command = 'GenGTAGS'
--- g.fzf_preview_window = {'right:50%', 'ctrl-/'}
--- augroup('fzf', {
---     'FileType fzf tnoremap <buffer> <Esc> <Esc>',
---  })
--- map('n', '<leader>ff', ':<C-u>Files<CR>')
--- map('n', '<leader>fF', ':<C-u>Files $HOME<CR>')
--- map('n', '<leader>fv', ':<C-u>Files $XDG_CONFIG_HOME/nvim<CR>')
--- map('n', '<leader>pr', ':<C-u>ProjectMru<CR>')
--- map('n', '<leader>fr', ':<C-u>History<CR>')
--- map('n', '<leader>hs', ':<C-u>History/<CR>')
--- map('n', '<leader>hc', ':<C-u>History:<CR>')
--- map('n', '<leader>fg', ':<C-u>Rg<CR>')
--- map('n', '<leader>ft', ':<C-u>Tags<CR>')
--- map('n', '<leader>fh', ':<C-u>Helptags<CR>')
--- map('n', '<leader>b',  ':<C-u>Buffers<CR>')
--- map('n', '<leader>fc', ':<C-u>Commits<CR>')
--- map('n', '<leader>fx', ':<C-u>Commands<CR>')
--- map('n', '<leader>fs', ':<C-u>Snippets<CR>')
--- map('n', '<leader>f/', ':<C-u>History/<CR>')
--- map('n', '<leader>f:', ':<C-u>History:<CR>')
--- map('n', '<leader>fl', ':<C-u>Lines<CR>')
--- map('n', '<leader>fo', ':<C-u>BLines<CR>')
 require('lspfuzzy').setup {}
 
 cmd([[command! -bang -nargs=* Rg call ]]..
@@ -248,7 +211,6 @@ cmd([[command! -bang -nargs=* Rg call ]]..
 -- Gutentags
 local home = os.getenv('HOME')
 g.gutentags_cache_dir = home..'/.cache/guten_tags'
---g.gutentags_ctags_tagfile = ".tags"
 g.gutentags_add_ctrlp_root_markers = 0
 g.gutentags_ctags_exclude={'*.css', '*.html', '*.js', '*.json', '*.xml',
     '*.phar', '*.ini', '*.rst', '*.md', '*/vendor/*', '*vendor/*/test*',
@@ -352,7 +314,6 @@ require('telescope').setup {
             base_dirs = {
                 {path = '~/.dotfiles'},
                 {path = '~/Projects', max_depth = 2},
-                {path = '~/ea', max_depth = 4},
             },
             hidden_files = true,
         },
