@@ -70,7 +70,7 @@ map('i', '<C-k>', '<ESC>:move .-2<CR>==')
 map('n', '<leader>\'', ':terminal<CR>', {noremap=false})
 -- Escape terminal
 map('t', '<ESC>', '<C-\\><C-N>')
-map('t', '<C-q><ESC>', '<ESC>')
+map('t', '<localleader>q', '<ESC>')
 map('t', '<M-h>', '<C-\\><C-N><C-w>h')
 map('t', '<M-j>', '<C-\\><C-N><C-w>j')
 map('t', '<M-k>', '<C-\\><C-N><C-w>k')
