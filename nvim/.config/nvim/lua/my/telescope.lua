@@ -13,7 +13,14 @@ local home = os.getenv("HOME")
 M.search_home = function()
     require('telescope.builtin').find_files({
             prompt_title = "< HOME >",
-            cwd = home
+            cwd = home,
+        })
+end
+
+M.browse_home = function()
+    require('telescope.builtin').file_browser({
+            prompt_title = "< HOME >",
+            cwd = home,
         })
 end
 

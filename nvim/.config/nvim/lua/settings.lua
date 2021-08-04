@@ -18,6 +18,7 @@ opt('b', 'infercase', true)
 opt('b', 'shiftwidth', indent)
 opt('b', 'softtabstop', indent)
 
+opt('o', 'autochdir', true)
 opt('o', 'autoread', true)
 opt('o', 'background', 'dark')
 opt('o', 'clipboard', 'unnamedplus')
@@ -93,9 +94,9 @@ augroup('auto_spell', {
     'FileType gitcommit setlocal spell spelllang=en_us',
 })
 
-augroup('cd_on_tab', {
-    'TabNewEntered * call OnTabEnter(expand("<amatch>"))',
-})
+-- augroup('cd_on_tab', {
+--     'TabNewEntered * call OnTabEnter(expand("<amatch>"))',
+-- })
 
 augroup('term_start_insert', {
     'TermOpen * setlocal nonumber norelativenumber',
@@ -109,7 +110,7 @@ augroup('trim', {
 api.nvim_exec([[
 let $NVR=$PY_VENV.'/nvr/bin/nvr'
 if has('nvim') && executable($NVR)
-    let $VISUAL=$NVR." -cc split --remote-wait +'set bufhidden=wipe'"
+    let $VISUAL=$NVR." -cc split --remote-wait-silent"
 endif
 
 function! ReloadConfig() abort

@@ -1,6 +1,8 @@
 # Aliases
 command -v bat >/dev/null 2>&1 && alias cat="bat"
-alias n='nvr --servername $(cat $NVR_GRAB_FILE)'
+alias n='nvr -s'
+alias s='nvr -so'
+alias v='nvr -sO'
 alias svim='sudo -E $EDITOR'
 alias dw="cd $HOME/Downloads"
 alias pj="cd $HOME/Projects"

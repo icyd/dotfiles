@@ -20,7 +20,6 @@ export PY_VENV=$HOME/.venv
 
 # Neovim socket, for Neovim-remote
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
-export NVR_GRAB_FILE=/tmp/nvim-server
 
 # Golang
 export GOPATH="$HOME/go"
