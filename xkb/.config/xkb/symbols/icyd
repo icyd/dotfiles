@@ -21,7 +21,7 @@ xkb_symbols "icyd" {
 
     // symbols row, right side
     key <AE07> { [ parenright,      7                                           ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
-    key <AE08> { [ bracerenright,   8,              onehalf                     ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
+    key <AE08> { [ braceright,      8,              onehalf                     ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
     key <AE09> { [ bracketright,    9                                           ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
     key <AE10> { [ equal,           0                                           ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
     key <AE11> { [ exclam,          percent,        exclamdown                  ], type[Group1] = "FOUR_LEVEL_ALPHABETIC" };
