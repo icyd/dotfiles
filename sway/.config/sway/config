@@ -136,7 +136,8 @@ bindsym $mod+Shift+q kill
 # Start your launcher
 bindsym $mod+Space exec $menu
 bindsym $alt+d exec $dmenu
-bindsym $mod+Ctrl+Space exec $XDG_CONFIG_HOME/sway/scripts/win-switch.sh
+bindsym $mod+Ctrl+Space exec ~/.config/sway/scripts/win-switch.sh
+bindsym $mod+Ctrl+b exec ~/.config/sway/scripts/wofipass.sh
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
@@ -279,6 +280,6 @@ exec nextcloud
 exec wl-paste -t text --watch clipman store
 exec $term -e abduco -c nvim nvim
 exec $browser
-exec_always $XDG_CONFIG_HOME/sway/scripts/clam.sh
+exec_always ~/.config/sway/scripts/clam.sh
 
 include /etc/sway/config.d/*
