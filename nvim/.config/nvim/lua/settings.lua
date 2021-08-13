@@ -69,6 +69,8 @@ g.loaded_python3_provider = 0
 
 g.netrw_banner = 0
 g.netrw_liststyle = 3
+g.netrw_browse_split = 4
+g.netrw_winsize = 20
 
 api.nvim_exec([[
 exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~,eol:\uAC"

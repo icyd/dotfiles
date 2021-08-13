@@ -278,7 +278,7 @@ exec udiskie
 exec gnome-keyring-daemon --start
 exec nextcloud
 exec wl-paste -t text --watch clipman store
-exec $term -e abduco -c nvim nvim
+exec $term
 exec $browser
 exec_always ~/.config/sway/scripts/clam.sh
 

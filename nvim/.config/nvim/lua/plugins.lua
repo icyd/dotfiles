@@ -33,7 +33,7 @@ paq 'tpope/vim-speeddating'
 -- Lorem ipsum
 paq {'vim-scripts/loremipsum', opt=true}
 -- Tmux-vim navigation
-paq 'christoomey/vim-tmux-navigator'
+-- paq 'christoomey/vim-tmux-navigator'
 -- paq 'nikvdp/neomux'
 paq 'hkupty/nvimux'
 -- Session management
@@ -42,10 +42,6 @@ paq 'tpope/vim-obsession'
 paq 'sheerun/vim-polyglot'
 -- Git
 paq 'tpope/vim-fugitive'
-paq 'lambdalisue/gina.vim'
--- paq 'TimUntersberger/neogit'
--- paq 'jreybert/vimagit'
--- paq 'idanarye/vim-merginal'
 -- Window maximizer
 paq 'szw/vim-maximizer'
 -- Treesitter
@@ -53,13 +49,15 @@ paq {'nvim-treesitter/nvim-treesitter', run=':TSUpdate'}
 -- Mark indentation column
 paq 'Yggdroot/indentLine'
 -- Autopairing by brackets
-paq 'jiangmiao/auto-pairs'
+-- paq 'jiangmiao/auto-pairs'
+paq 'windwp/nvim-autopairs'
 -- Substitution, coersion, abbreviation
 paq 'tpope/vim-abolish'
 -- Star search in visual mode
 paq 'bronson/vim-visual-star-search'
 -- Surrond brackets
-paq 'tpope/vim-surround'
+-- paq 'tpope/vim-surround'
+paq 'blackCauldron7/surround.nvim'
 -- Comment plugin
 paq 'tomtom/tcomment_vim'
 -- Tabularize
@@ -86,7 +84,7 @@ paq {'nvim-telescope/telescope-fzf-native.nvim', run='make'}
 paq {'nvim-telescope/telescope-project.nvim'}
 -- Completion
 paq 'hrsh7th/nvim-compe'
-paq 'andersevenrud/compe-tmux'
+--paq 'andersevenrud/compe-tmux'
 -- Syntax
 paq 'hashivim/vim-terraform'
 paq 'ekalinin/Dockerfile.vim'
@@ -120,6 +118,7 @@ cmd [[autocmd Filetype openscad packadd! vim-openscad]]
 
 -- Autopair
 g.AutoPairsFlyMode = 0
+require('nvim-autopairs').setup{}
 
 -- Completion-nvim
 -- Enable selection with Tab
@@ -163,9 +162,15 @@ require('compe').setup {
         nvim_lua = true,
         vsnip = true,
         tags = true,
-        tmux = true,
+        -- tmux = true,
     }
 }
+
+require('nvim-autopairs.completion.compe').setup({
+  map_cr = true, --  map <CR> on insert mode
+  map_complete = true, -- it will auto insert `(` after select function or method item
+  auto_select = false,  -- auto select first item
+})
 
 map('i', '<C-Space>', 'compe#complete()', { expr = true })
 map('i', '<C-y>', "compe#confirm('<CR>')", { expr = true })
@@ -241,8 +246,8 @@ g.mkdp_filetypes = {'markdown', 'pandoc'}
 
 -- Maximize
 g.maximizer_set_default_mapping = 0
-map('n', '<leader>az', ':MaximizerToggle<CR>')
-map('v', '<leader>az', ':MaximizerToggle<CR>gv')
+map('n', '<C-a>z', ':MaximizerToggle<CR>')
+map('v', '<C-a>z', ':MaximizerToggle<CR>gv')
 
 -- Neomake
 g.neomake_place_signs = 0
@@ -270,6 +275,11 @@ map('n', '<localleader>ss', '<Plug>SlimeParagraphSend')
 map('n', '<localleader>sl', ':SlimeSend0 "<C-l>"<CR>')
 map('n', '<localleader>sc', ':SlimeSend0 "<C-c>"<CR>')
 map('n', '<localleader>sq', ':SlimeSend0 "<C-d>"<CR>')
+
+-- Surround
+require('surround').setup{
+    mappings_style = 'surround',
+}
 
 -- Tabularize
 map('n', '<localleader>e', ':Tabularize /=<CR>')
@@ -327,7 +337,7 @@ map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
 map('n', '<leader>fh', ":Telescope help_tags<CR>")
 map('n', '<leader>fr', ":Telescope oldfiles<CR>")
-map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buffers = true, sort_lastused = true })<CR>")
+map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buffers = true, sort_lastused = true, ignore_current_buffer = true })<CR>")
 map('n', '<leader>fv', ":lua require('my.telescope').search_dotfiles()<CR>")
 map('n', '<leader>fF', ":lua require('my.telescope').search_home()<CR>")
 map('n', '<leader>fB', ":lua require('my.telescope').browse_home()<CR>")
@@ -340,6 +350,7 @@ map('n', '<leader>fp', ":lua require('telescope').extensions.project.project{ di
 
 map('n', '<localleader>fR', ':Telescope registers<CR>')
 map('n', '<localleader>fm', ':Telescope marks<CR>')
+map('n', '<localleader>fj', ':Telescope jumplist<CR>')
 map('n', '<localleader>fx', ':Telescope commands<CR>')
 map('n', '<localleader>fn', ":lua require('my.telescope').find_notes()<CR>")
 
@@ -372,13 +383,13 @@ g.undotree_WindowLayout=3
 map('n', '<leader>U', ':UndotreeToggle<CR>')
 
 -- Vim-tmux-navigator
-g.tmux_navigator_no_mapping = 1
-g.tmux_navigator_save_no_switch = 1
-map('n', '<M-k>', ':TmuxNavigateUp<CR>')
-map('n', '<M-j>', ':TmuxNavigateDown<CR>')
-map('n', '<M-h>', ':TmuxNavigateLeft<CR>')
-map('n', '<M-l>', ':TmuxNavigateRight<CR>')
-map('n', '<M-#>', ':TmuxNavigatePrevious<CR>')
+-- g.tmux_navigator_no_mapping = 1
+-- g.tmux_navigator_save_no_switch = 1
+-- map('n', '<M-k>', ':TmuxNavigateUp<CR>')
+-- map('n', '<M-j>', ':TmuxNavigateDown<CR>')
+-- map('n', '<M-h>', ':TmuxNavigateLeft<CR>')
+-- map('n', '<M-l>', ':TmuxNavigateRight<CR>')
+-- map('n', '<M-#>', ':TmuxNavigatePrevious<CR>')
 
 -- Nvimux
 local nvimux = require('nvimux')
