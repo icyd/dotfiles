@@ -56,6 +56,10 @@ indent_size = 4
 indent_style = tab
 indent_size = 8
 
+# Ruby
+[*.{rb,gemspec}]
+indent_size = 2
+
 # Rust
 [*.rs]
 indent_style = space
