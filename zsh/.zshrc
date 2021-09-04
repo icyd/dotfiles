@@ -36,6 +36,22 @@ gen_plugins_file(){
 [ ! -f "${ZSH_CONFIG}/zsh_plugins.sh" ] && gen_plugins_file; source "${ZSH_CONFIG}/zsh_plugins.sh"
 [ -f "${ZSH_CONFIG}/p10k.zsh" ] && source "${ZSH_CONFIG}/p10k.zsh"
 
+# Defines editor
+if command -v nvim >/dev/null 2>&1; then
+    export EDITOR=nvim
+    alias vim=$EDITOR
+else
+    export EDITOR=vim
+fi
+
+if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
+    if [ -x "$(command -v nvr)" ]; then
+        alias vim="nvr -s"
+        export EDITOR="nvr --remote-wait-silent"
+        export VISUAL=$EDITOR
+    fi
+fi
+
 #zsh's history
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000
@@ -193,20 +209,6 @@ cd_in() {
     dir="$1"
     cd "$1" && l
 }
-
-# Defines editor
-if command -v nvim >/dev/null 2>&1; then
-    export EDITOR=nvim
-    alias vim=$EDITOR
-else
-    export EDITOR=vim
-fi
-
-if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
-    if [ -x "$(command -v nvr)" ]; then
-        alias vim="nvr -s"
-    fi
-fi
 
 gen_completions() {
     mkdir -p $ZSH_COMPLETIONS

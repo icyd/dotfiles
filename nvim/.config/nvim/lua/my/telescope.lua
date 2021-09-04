@@ -34,7 +34,7 @@ M.find_notes = function()
     require('telescope.builtin').file_browser({
             prompt_title = "< Notes >",
             shorten_path = false,
-            cwd = home .. "/vimwiki",
+            cwd = home .. "/Nextcloud/vimwiki",
         })
 end
 
