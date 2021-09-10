@@ -46,8 +46,9 @@ fi
 
 if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
     if [ -x "$(command -v nvr)" ]; then
-        alias vim="nvr -s"
-        export EDITOR="nvr --remote-wait-silent"
+        NVR=$(which nvr)
+        alias vim="$NVR -s"
+        export EDITOR="$NVR --remote-wait-silent"
         export VISUAL=$EDITOR
     fi
 fi
@@ -165,7 +166,7 @@ if command -v fzf >/dev/null 2>&1; then
     export FZF_DEFAULT_OPTS="--ansi --multi --reverse --height=40% \
          --preview-window='right:66%' \
          --preview='bat --color=always --style=full {}' \
-         --bind='ctrl-d:page-down,ctrl-u:page-up,alt-u:preview-page-up,alt-d:preview-page-down,alt-o:execute('$EDITOR' {})+abort'"
+         --bind='ctrl-d:page-down,ctrl-u:page-up,alt-u:preview-page-up,alt-d:preview-page-down,alt-o:execute('$NVR' {})+abort'"
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND --type d"
     export FZF_CTRL_R_OPTS="--preview={} --preview-window=:hidden \
          --height=20%"
@@ -240,6 +241,7 @@ pyenv() {
 
 # Source not hardcoded sys env definition
 [ -f "$XDG_CONFIG_HOME/zsh/local.zsh" ] && source "$XDG_CONFIG_HOME/zsh/local.zsh"
+[ -f "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh" ] && source "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh"
 
 
 # Enable To debug loading times
