@@ -102,6 +102,10 @@ paq 'ludovicchabant/vim-gutentags'
 paq 'jpalardy/vim-slime'
 -- Debugger
 paq 'mfussenegger/nvim-dap'
+paq 'nvim-telescope/telescope-dap.nvim'
+paq 'Pocco81/DAPInstall.nvim'
+paq 'theHamsta/nvim-dap-virtual-text'
+paq 'rcarriga/nvim-dap-ui'
 -- Easy motion
 paq 'phaazon/hop.nvim'
 -- Quickfix
@@ -329,8 +333,16 @@ require('telescope').setup {
         },
     }
 }
+
+require('dap-install').setup({
+	installation_path = vim.fn.stdpath("data") .. "/dapinstall/",
+	verbosely_call_debuggers = false,
+})
+g.dap_virtual_text = true
+require("dapui").setup()
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('project')
+require('telescope').load_extension('dap')
 map('n', '<leader>ff', ":Telescope find_files<CR>")
 map('n', '<leader>fb', ":Telescope file_browser<CR>")
 map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
@@ -360,6 +372,42 @@ map('n', '<leader>gC', ':Telescope git_bcommits<CR>')
 map('n', '<leader>fz', ':Telescope current_buffer_fuzzy_find<CR>')
 map('n', '<leader>fi', ':Telescope treesitter<CR>')
 -- map('n', '<leader>fs', ':<C-u>Snippets<CR>')
+
+-- dap
+map('n', '<leader>dct', '<cmd>lua require"dap".continue()<CR>')
+map('n', '<leader>dsv', '<cmd>lua require"dap".step_over()<CR>')
+map('n', '<leader>dsi', '<cmd>lua require"dap".step_into()<CR>')
+map('n', '<leader>dso', '<cmd>lua require"dap".step_out()<CR>')
+map('n', '<leader>dtb', '<cmd>lua require"dap".toggle_breakpoint()<CR>')
+
+map('n', '<leader>dsc', '<cmd>lua require"dap.ui.variables".scopes()<CR>')
+map('n', '<leader>dhh', '<cmd>lua require"dap.ui.variables".hover()<CR>')
+map('v', '<leader>dhv',
+    '<cmd>lua require"dap.ui.variables".visual_hover()<CR>')
+
+map('n', '<leader>duh', '<cmd>lua require"dap.ui.widgets".hover()<CR>')
+map('n', '<leader>duf',
+    "<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>")
+
+map('n', '<leader>dsbr',
+    '<cmd>lua require"dap".set_breakpoint(vim.fn.input("Breakpoint condition: "))<CR>')
+map('n', '<leader>dsbm',
+    '<cmd>lua require"dap".set_breakpoint(nil, nil, vim.fn.input("Log point message: "))<CR>')
+map('n', '<leader>dro', '<cmd>lua require"dap".repl.open()<CR>')
+map('n', '<leader>drl', '<cmd>lua require"dap".repl.run_last()<CR>')
+
+-- telescope-dap
+map('n', '<leader>dcc',
+    '<cmd>lua require"telescope".extensions.dap.commands{}<CR>')
+map('n', '<leader>dco',
+    '<cmd>lua require"telescope".extensions.dap.configurations{}<CR>')
+map('n', '<leader>dlb',
+    '<cmd>lua require"telescope".extensions.dap.list_breakpoints{}<CR>')
+map('n', '<leader>dv',
+    '<cmd>lua require"telescope".extensions.dap.variables{}<CR>')
+map('n', '<leader>df',
+          '<cmd>lua require"telescope".extensions.dap.frames{}<CR>')
+map('n', '<leader>dui', '<cmd>lua require"dapui".toggle()<CR>')
 
 -- Terraform
 g.terraform_align = 1

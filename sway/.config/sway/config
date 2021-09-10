@@ -110,6 +110,12 @@ input 9610:4102:SINO_WEALTH_USB_KEYBOARD {
     xkb_options "lv3:ralt_switch,compose:102,caps:swapescape,shift:breaks_caps,grp:alt_space_toggle"
 }
 
+input 65261:18755:QMK_Icydox_keyboard_Keyboard {
+    xkb_layout es,us
+    xkb_variant icyd,
+    xkb_options "lv3:ralt_switch,compose:102,shift:breaks_caps,grp:alt_space_toggle"
+}
+
 set $TRACKBALL 1149:32792:Kensington_Expert_Wireless_TB_Mouse
 input $TRACKBALL {
     accel_profile adaptive
