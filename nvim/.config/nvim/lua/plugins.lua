@@ -112,6 +112,7 @@ paq 'phaazon/hop.nvim'
 paq 'kevinhwang91/nvim-bqf'
 -- Other
 paq 'moll/vim-bbye'
+paq 'rhysd/vim-grammarous'
 
 --[[
 Configurations
@@ -238,6 +239,8 @@ map('n', '<localleader>n', "<CMD>lua require'hop'.hint_patterns()<CR>")
 -- IndentLine
 g.indentLine_char_list = {'|', '¦', '┆', '┊'}
 g.indentLine_fileTypeExclude = {"fzf"}
+
+-- LanguageTool
 
 -- Markdown (mkdp)
 g.mkdp_echo_preview_url = 1
