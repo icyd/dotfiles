@@ -11,6 +11,7 @@ map('n', '<leader>ls', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
 map('n', '<leader>lh', '<cmd>lua vim.lsp.buf.hover()<CR>')
 map('n', '<leader>lW', '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>')
 map('n', '<leader>lD', '<cmd>lua vim.lsp.buf.document_symbol()<CR>')
+map('n', '<leader>lg', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
 
 local lspinstall = require('lspinstall')
 local nvim_lsp = require('lspconfig')

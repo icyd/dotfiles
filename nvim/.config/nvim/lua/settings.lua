@@ -18,7 +18,7 @@ opt('b', 'infercase', true)
 opt('b', 'shiftwidth', indent)
 opt('b', 'softtabstop', indent)
 
-opt('o', 'autochdir', true)
+opt('o', 'autochdir', false)
 opt('o', 'autoread', true)
 opt('o', 'background', 'dark')
 opt('o', 'clipboard', 'unnamedplus')

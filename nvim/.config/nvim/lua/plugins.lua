@@ -113,6 +113,7 @@ paq 'kevinhwang91/nvim-bqf'
 -- Other
 paq 'moll/vim-bbye'
 paq 'rhysd/vim-grammarous'
+paq 'airblade/vim-rooter'
 
 --[[
 Configurations
@@ -377,6 +378,7 @@ map('n', '<leader>fi', ':Telescope treesitter<CR>')
 -- map('n', '<leader>fs', ':<C-u>Snippets<CR>')
 
 -- dap
+map('n', '<leader>dq', '<cmd>lua require"dap".quit()<CR>')
 map('n', '<leader>dct', '<cmd>lua require"dap".continue()<CR>')
 map('n', '<leader>dsv', '<cmd>lua require"dap".step_over()<CR>')
 map('n', '<leader>dsi', '<cmd>lua require"dap".step_into()<CR>')
@@ -478,3 +480,6 @@ augroup('typescript_tsx', {
 g.tex_flavor = "latex"
 map('n', '<localleader>q', ':Bdelete<CR>')
 map('n', '<localleader>Q', ':Bdelete!<CR>')
+
+g.rooter_cd_cmd = 'lcd'
+g.rooter_resolve_links = 1
