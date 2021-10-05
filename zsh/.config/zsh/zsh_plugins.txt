@@ -3,7 +3,6 @@ zsh-users/zsh-history-substring-search
 zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-autosuggestions
 DarrinTisdale/zsh-aliases-exa
-ohmyzsh/ohmyzsh path:plugins/golang
 ohmyzsh/ohmyzsh path:lib/git.zsh
 ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/gitignore
