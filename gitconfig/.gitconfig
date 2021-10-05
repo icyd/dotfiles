@@ -1,8 +1,6 @@
 [user]
     name = Alberto Vázquez
-    email = beto.v25@gmail.com
-[core]
-    editor = nvim
+    email = avazquez@contractor.ea.com
 [diff]
     tool = nvr
 [difftool "nvim"]

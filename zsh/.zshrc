@@ -240,10 +240,10 @@ pyenv() {
 [ -f $XDG_CONFIG_HOME/broot/launcher/bash/br ] && source $XDG_CONFIG_HOME/broot/launcher/bash/br
 
 # Source not hardcoded sys env definition
+[ -f "$XDG_CONFIG_HOME/zsh/bookmarks.zsh" ] && source "$XDG_CONFIG_HOME/zsh/bookmarks.zsh"
 [ -f "$XDG_CONFIG_HOME/zsh/local.zsh" ] && source "$XDG_CONFIG_HOME/zsh/local.zsh"
 [ -f "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh" ] && source "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh"
 
 
 # Enable To debug loading times
 # zprof
-
