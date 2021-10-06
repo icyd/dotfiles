@@ -7,6 +7,12 @@ dap.adapters.cppdbg = {
   command = dap_dir .. 'extension/debugAdapters/OpenDebugAD7',
 }
 
+dap.adapters.lldb = {
+    type = 'executable',
+    name = 'lldb',
+    command = '/bin/lldb-vscode',
+}
+
 dap.adapters.go = function(callback, config)
 local stdout = vim.loop.new_pipe(false)
 local handle
@@ -59,7 +65,19 @@ dap.configurations.cpp = {
     stopOnEntry = true,
   },
   {
-    name = 'Attach to gdbserver :3333',
+    name = "Attach to gdbserver :1234",
+    type = 'cppdbg',
+    request = 'launch',
+    MIMode = 'gdb',
+    miDebuggerServerAddress = 'localhost:1234',
+    miDebuggerPath = "/bin/gdb",
+    cwd = '${workspaceFolder}',
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+  },
+  {
+    name = 'Attach to gdbserver :3333 (ARM)',
     type = 'cppdbg',
     request = 'launch',
     MIMode = 'gdb',
@@ -69,6 +87,29 @@ dap.configurations.cpp = {
     program = function()
       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
     end,
+  },
+  {
+    name = "Launch LLDB",
+    type = "lldb",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = true,
+    args = {},
+
+    -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
+    --
+    --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+    --
+    -- Otherwise you might get the following error:
+    --
+    --    Error on launch: Failed to attach to the target process
+    --
+    -- But you should be aware of the implications:
+    -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
+    runInTerminal = false,
   },
 }
 dap.configurations.c = dap.configurations.cpp

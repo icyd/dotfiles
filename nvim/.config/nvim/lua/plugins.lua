@@ -66,6 +66,8 @@ paq 'godlygeek/tabular'
 paq 'mbbill/undotree'
 -- Async make
 paq 'neomake/neomake'
+paq 'tpope/vim-dispatch'
+paq 'vim-test/vim-test'
 --- Rainbow parenthesis
 paq 'p00f/nvim-ts-rainbow'
 -- Snips
@@ -220,8 +222,8 @@ cmd([[command! -bang -nargs=* Rg call ]]..
     [[--smart-case -- '.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
 
 -- Gutentags
-local home = os.getenv('HOME')
-g.gutentags_cache_dir = home..'/.cache/guten_tags'
+g.gutentags_cache_dir = os.getenv('HOME') .. '/.cache/guten_tags/'
+g.gutentags_file_list_command = 'rg --files'
 g.gutentags_add_ctrlp_root_markers = 0
 g.gutentags_ctags_exclude={'*.css', '*.html', '*.js', '*.json', '*.xml',
     '*.phar', '*.ini', '*.rst', '*.md', '*/vendor/*', '*vendor/*/test*',
@@ -353,13 +355,13 @@ map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
 map('n', '<leader>fh', ":Telescope help_tags<CR>")
 map('n', '<leader>fr', ":Telescope oldfiles<CR>")
+map('n', '<leader>ft', ":lua require('telescope.builtin').tags()<CR>")
 map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buffers = true, sort_lastused = true, ignore_current_buffer = true })<CR>")
 map('n', '<leader>fv', ":lua require('my.telescope').search_dotfiles()<CR>")
 map('n', '<leader>fF', ":lua require('my.telescope').search_home()<CR>")
 map('n', '<leader>fB', ":lua require('my.telescope').browse_home()<CR>")
 map('n', '<leader>f/', ':Telescope search_history<CR>')
 map('n', '<leader>f:', ':Telescope command_history<CR>')
-map('n', '<leader>ft', ":lua require('telescope.builtin').tags({ ctags_file = \".tags\" })<CR>")
 map('n', '<leader>fs', ":lua require('telescope.builtin').grep_string({ search = vim.fn.input(\"Grep for: \") })<CR>")
 map('n', '<leader>fw', ":lua require('telescope.builtin').grep_string({ search = vim.fn.expand(\"<cword>\") })<CR>")
 map('n', '<leader>fp', ":lua require('telescope').extensions.project.project{ display_type = 'full' }<CR>")
@@ -461,6 +463,15 @@ nvimux.bindings.bind_all{
   {'v', ':NvimuxVerticalSplit', {'n', 'v', 'i', 't'}},
 }
 nvimux.bootstrap()
+
+-- VimTest
+g["test#strategy"] = "neomake"
+-- g.neomake_open_list = 0
+map('n', '<localleader>tn', ':TestNearest<CR>')
+map('n', '<localleader>tf', ':TestFile<CR>')
+map('n', '<localleader>ts', ':TestSuite<CR>')
+map('n', '<localleader>tl', ':TestLast<CR>')
+map('n', '<localleader>tv', ':TestVisit<CR>')
 
 -- VimWiki
 g.vimwiki_global_ext = 0
