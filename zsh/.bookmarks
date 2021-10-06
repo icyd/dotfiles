@@ -1,0 +1,5 @@
+hash -d ea=$HOME/ea
+hash -d dw=$HOME/Downloads
+hash -d pj=$HOME/Projects
+hash -d dot=$HOME/.dotfiles
+
