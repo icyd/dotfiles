@@ -29,9 +29,9 @@ paq 'editorconfig/editorconfig-vim'
 -- Repeat plugins commands
 paq 'tpope/vim-repeat'
 -- Increment dates, times, etc
-paq 'tpope/vim-speeddating'
+-- paq 'tpope/vim-speeddating'
 -- Lorem ipsum
-paq {'vim-scripts/loremipsum', opt=true}
+-- paq {'vim-scripts/loremipsum', opt=true}
 -- Tmux-vim navigation
 -- paq 'christoomey/vim-tmux-navigator'
 -- paq 'nikvdp/neomux'
@@ -56,8 +56,7 @@ paq 'tpope/vim-abolish'
 -- Star search in visual mode
 paq 'bronson/vim-visual-star-search'
 -- Surrond brackets
--- paq 'tpope/vim-surround'
-paq 'blackCauldron7/surround.nvim'
+paq 'tpope/vim-surround'
 -- Comment plugin
 paq 'tomtom/tcomment_vim'
 -- Tabularize
@@ -65,9 +64,9 @@ paq 'godlygeek/tabular'
 -- Undo tree
 paq 'mbbill/undotree'
 -- Async make
-paq 'neomake/neomake'
-paq 'tpope/vim-dispatch'
+-- paq 'neomake/neomake'
 paq 'vim-test/vim-test'
+paq 'tpope/vim-dispatch'
 --- Rainbow parenthesis
 paq 'p00f/nvim-ts-rainbow'
 -- Snips
@@ -81,18 +80,20 @@ paq 'ojroques/nvim-lspfuzzy'
 paq 'nvim-lua/popup.nvim'
 paq 'nvim-lua/plenary.nvim'
 paq 'nvim-telescope/telescope.nvim'
-paq {'nvim-telescope/telescope-fzy-native.nvim', run='git submodule update --init --recursive'}
 paq {'nvim-telescope/telescope-fzf-native.nvim', run='make'}
 paq {'nvim-telescope/telescope-project.nvim'}
 -- Completion
-paq 'hrsh7th/nvim-compe'
---paq 'andersevenrud/compe-tmux'
+paq 'hrsh7th/nvim-cmp'
+paq 'hrsh7th/cmp-vsnip'
+paq 'hrsh7th/cmp-buffer'
+paq 'hrsh7th/cmp-nvim-lsp'
+paq 'quangnguyen30192/cmp-nvim-tags'
 -- Syntax
-paq 'hashivim/vim-terraform'
-paq 'ekalinin/Dockerfile.vim'
-paq 'rust-lang/rust.vim'
-paq {'sirtaj/vim-openscad', opt=true}
-paq 'andrewstuart/vim-kubernetes'
+-- paq 'hashivim/vim-terraform'
+-- paq 'ekalinin/Dockerfile.vim'
+-- paq 'rust-lang/rust.vim'
+-- paq {'sirtaj/vim-openscad', opt=true}
+-- paq 'andrewstuart/vim-kubernetes'
 -- Markdown
 paq {'iamcco/markdown-preview.nvim', run='cd app && yarn install'}
 paq 'vim-pandoc/vim-pandoc-syntax'
@@ -125,7 +126,6 @@ cmd [[colorscheme gruvbox]]
 cmd [[autocmd Filetype openscad packadd! vim-openscad]]
 
 -- Autopair
-g.AutoPairsFlyMode = 0
 require('nvim-autopairs').setup{}
 
 -- Completion-nvim
@@ -141,50 +141,38 @@ map('s', '<C-l>', "vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>
 map('s', '<Tab>', "vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : '<Tab>'", { noremap = false, expr = true })
 map('s', '<S-Tab>', "vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'", { noremap = false, expr = true })
 
-require('compe').setup {
-    enabled = true,
-    autocomplete = true,
-    debug = false,
-    min_length = 1,
-    preselect = 'enable',
-    throttle_time = 80,
-    source_timeout = 200,
-    resolve_timeout = 800,
-    incomplete_delay = 400,
-    max_abbr_width = 1000,
-    max_kind_width = 1000,
-    max_menu_width = 1000000,
-    documentation = {
-        border = { '', '' ,'', ' ', '', '', '', ' ' },
-        winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-        max_width = 120,
-        min_width = 60,
-        max_height = math.floor(vim.o.lines * 0.3),
-        min_height = 1,
+local cmp = require('cmp')
+cmp.setup({
+    snippet = {
+        expand = function(args)
+            vim.fn["vsnip#anonymous"](args.body)
+        end,
     },
-    source = {
-        path = true,
-        buffer = true,
-        calc = true,
-        nvim_lsp = true,
-        nvim_lua = true,
-        vsnip = true,
-        tags = true,
-        -- tmux = true,
+    mapping = {
+        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-e>'] = cmp.mapping.close(),
+        ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+    },
+    sources = {
+        { name = 'nvim_lsp' },
+        { name = 'vsnip' },
+        { name = 'buffer' },
+        { name = 'tags' },
     }
-}
-
-require('nvim-autopairs.completion.compe').setup({
-  map_cr = true, --  map <CR> on insert mode
-  map_complete = true, -- it will auto insert `(` after select function or method item
-  auto_select = false,  -- auto select first item
 })
 
-map('i', '<C-Space>', 'compe#complete()', { expr = true })
-map('i', '<C-y>', "compe#confirm('<CR>')", { expr = true })
-map('i', '<C-e>', "compe#close('<C-e>')", { expr = true })
-map('i', '<C-f>', "compe#scroll({ 'delta': +4 })", { expr = true })
-map('i', '<C-d>', "compe#scroll({ 'delta': -4 })", { expr = true })
+require("nvim-autopairs.completion.cmp").setup({
+  map_cr = true, --  map <CR> on insert mode
+  map_complete = true, -- it will auto insert `(` (map_char) after select function or method item
+  auto_select = true, -- automatically select the first item
+  insert = false, -- use insert confirm behavior instead of replace
+  map_char = { -- modifies the function or method delimiter by filetypes
+    all = '(',
+    tex = '{'
+  }
+})
 
 -- Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
 map('n', 's', '<Plug>(vsnip-select-text)')
@@ -286,11 +274,6 @@ map('n', '<localleader>sl', ':SlimeSend0 "<C-l>"<CR>')
 map('n', '<localleader>sc', ':SlimeSend0 "<C-c>"<CR>')
 map('n', '<localleader>sq', ':SlimeSend0 "<C-d>"<CR>')
 
--- Surround
-require('surround').setup{
-    mappings_style = 'surround',
-}
-
 -- Tabularize
 map('n', '<localleader>e', ':Tabularize /=<CR>')
 map('v', '<localleader>e' ,':Tabularize /=<CR>')
@@ -355,8 +338,10 @@ map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
 map('n', '<leader>fh', ":Telescope help_tags<CR>")
 map('n', '<leader>fr', ":Telescope oldfiles<CR>")
+map('n', '<leader>lA', ":Telescope lsp_code_actions<CR>")
+map('n', '<leader>lG', ":Telescope lsp_document_diagnostics<CR>")
 map('n', '<leader>ft', ":lua require('telescope.builtin').tags()<CR>")
-map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buffers = true, sort_lastused = true, ignore_current_buffer = true })<CR>")
+map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buffers = true, sort_lastused = true, ignore_current_buffer = true, sort_mru = true })<CR>")
 map('n', '<leader>fv', ":lua require('my.telescope').search_dotfiles()<CR>")
 map('n', '<leader>fF', ":lua require('my.telescope').search_home()<CR>")
 map('n', '<leader>fB', ":lua require('my.telescope').browse_home()<CR>")
@@ -465,7 +450,7 @@ nvimux.bindings.bind_all{
 nvimux.bootstrap()
 
 -- VimTest
-g["test#strategy"] = "neomake"
+g["test#strategy"] = "dispatch"
 -- g.neomake_open_list = 0
 map('n', '<localleader>tn', ':TestNearest<CR>')
 map('n', '<localleader>tf', ':TestFile<CR>')
