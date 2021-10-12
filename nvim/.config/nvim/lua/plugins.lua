@@ -126,7 +126,56 @@ cmd [[colorscheme gruvbox]]
 cmd [[autocmd Filetype openscad packadd! vim-openscad]]
 
 -- Autopair
-require('nvim-autopairs').setup{}
+local npairs = require('nvim-autopairs')
+local Rule = require('nvim-autopairs.rule')
+
+npairs.setup({
+    check_ts = true,
+    ts_config = {
+        lua = {'string'},-- it will not add a pair on that treesitter node
+        javascript = {'template_string'},
+        java = false,-- don't check treesitter on java
+    },
+})
+
+npairs.add_rules({
+    Rule('', '')
+        :use_regex(true, '})]')
+        :with_pair(function(opts)
+            local start = vim.fn.line('.')
+            local line = vim.fn.getline(start + 1)
+            if (line == '}' or line == ')' or line == ']') and line == opts.char then
+                return true
+            end
+            return false
+        end)
+        :replace_endpair(function(opts)
+            return '<esc>jA'
+        end),
+  Rule(' ', ' ')
+    :with_pair(function (opts)
+      local pair = opts.line:sub(opts.col - 1, opts.col)
+      return vim.tbl_contains({ '()', '[]', '{}' }, pair)
+    end),
+  Rule('( ', ' )')
+      :with_pair(function() return false end)
+      :with_move(function(opts)
+          return opts.prev_char:match('.%)') ~= nil
+      end)
+      :use_key(')'),
+  Rule('{ ', ' }')
+      :with_pair(function() return false end)
+      :with_move(function(opts)
+          return opts.prev_char:match('.%}') ~= nil
+      end)
+      :use_key('}'),
+  Rule('[ ', ' ]')
+      :with_pair(function() return false end)
+      :with_move(function(opts)
+          return opts.prev_char:match('.%]') ~= nil
+      end)
+      :use_key(']')
+})
 
 -- Completion-nvim
 -- Enable selection with Tab
@@ -148,6 +197,9 @@ cmp.setup({
             vim.fn["vsnip#anonymous"](args.body)
         end,
     },
+    -- completion = {
+    --     completeopt = 'menu,menuone,noinsert',
+    -- },
     mapping = {
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -158,8 +210,8 @@ cmp.setup({
     sources = {
         { name = 'nvim_lsp' },
         { name = 'vsnip' },
-        { name = 'buffer' },
         { name = 'tags' },
+        -- { name = 'buffer' },
     }
 })
 
