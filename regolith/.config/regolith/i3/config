@@ -678,13 +678,13 @@ exec --no-startup-id $i3-wm.program.3
 bindsym $mod+Ctrl+b exec ~/.config/regolith/scripts/rofipass.sh
 
 assign [class="Alacritty"] $ws2
-assign [class="Google-chrome"] $ws1
+assign [class="Firefox"] $ws1
 assign [class="^spotify"] $ws12
 assign [class="Slack"] $ws3
 assign [class="^Cisco"] $ws12
 exec --no-startup-id alacritty
 exec --no-startup-id caffeine-indicator
-exec --no-startup-id google-chrome-stable --password-store=basic %U
+exec --no-startup-id firefox --password-store=basic %U
 
 set $m_laptop "eDP-1"
 set $m_external "DP-2-1"
