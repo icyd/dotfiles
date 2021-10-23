@@ -117,6 +117,9 @@ paq 'kevinhwang91/nvim-bqf'
 paq 'moll/vim-bbye'
 paq 'rhysd/vim-grammarous'
 paq 'airblade/vim-rooter'
+paq 'ThePrimeagen/git-worktree.nvim'
+paq 'ThePrimeagen/harpoon'
+paq 'kassio/neoterm'
 
 --[[
 Configurations
@@ -243,10 +246,19 @@ g.EditorConfig_exclude_patterns = {
 cmd[[command! -bang -nargs=* -complete=file Make NeomakeProject <args>]]
 map('n', '<leader>gs', ':Git<CR>')
 map('n', '<leader>gd', ':Gvdiffsplit!<CR>')
-map('n', '<leader>gph', ':Git push<CR>')
+map('n', '<leader>gph', ':Git -c push.default=current push <CR>')
 map('n', '<leader>gpl', ':Git pull<CR>')
 map('n', '<leader>gh', ':diffget //2<CR>')
 map('n', '<leader>gl', ':diffget //3<CR>')
+
+-- git-worktree
+require("git-worktree").setup({
+    change_directory_command = "tcd",
+    update_on_change = true,
+    update_on_change_command = "e .",
+    clearjumps_on_change = true,
+    autopush = false,
+})
 
 local fugitive_autocmd =  [[User fugitive if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' ]]..
     [[nnoremap <buffer> .. :edit %:h<CR> | endif]]
@@ -369,6 +381,7 @@ require('telescope').setup {
             base_dirs = {
                 {path = '~/.dotfiles'},
                 {path = '~/Projects', max_depth = 2},
+                {path = '~/ea'},
             },
             hidden_files = true,
         },
@@ -384,6 +397,8 @@ require("dapui").setup()
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('project')
 require('telescope').load_extension('dap')
+require('telescope').load_extension('git_worktree')
+
 map('n', '<leader>ff', ":Telescope find_files<CR>")
 map('n', '<leader>fb', ":Telescope file_browser<CR>")
 map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
@@ -399,8 +414,10 @@ map('n', '<leader>fF', ":lua require('my.telescope').search_home()<CR>")
 map('n', '<leader>fB', ":lua require('my.telescope').browse_home()<CR>")
 map('n', '<leader>f/', ':Telescope search_history<CR>')
 map('n', '<leader>f:', ':Telescope command_history<CR>')
-map('n', '<leader>fs', ":lua require('telescope.builtin').grep_string({ search = vim.fn.input(\"Grep for: \") })<CR>")
-map('n', '<leader>fw', ":lua require('telescope.builtin').grep_string({ search = vim.fn.expand(\"<cword>\") })<CR>")
+map('n', '<leader>fs', ":lua require('telescope.builtin').grep_string({ search = vim.fn.expand(\"<cword>\") })<CR>")
+map('n', '<leader>fS', ":lua require('telescope.builtin').grep_string({ search = vim.fn.input(\"Grep for: \") })<CR>")
+map('n', '<leader>fw', ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>")
+map('n', '<leader>fW', ":lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>")
 map('n', '<leader>fp', ":lua require('telescope').extensions.project.project{ display_type = 'full' }<CR>")
 
 map('n', '<localleader>fR', ':Telescope registers<CR>')
