@@ -247,3 +247,5 @@ pyenv() {
 
 # Enable To debug loading times
 # zprof
+
+source /home/beto/.config/broot/launcher/bash/br

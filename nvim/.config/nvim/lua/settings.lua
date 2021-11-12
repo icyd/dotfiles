@@ -29,11 +29,11 @@ opt('o', 'grepprg', 'rg --vimgrep --smart-case --follow')
 opt('o', 'hidden', true)
 opt('o', 'history', 200)
 opt('o', 'hlsearch', true)
-opt('o', 'icm', 'split')
+opt('o', 'icm', 'nosplit')
 opt('o', 'ignorecase', true)
 opt('o', 'incsearch', true)
 opt('o', 'mouse', 'n')
-opt('o', 'scrolloff', 2)
+opt('o', 'scrolloff', 4)
 opt('o', 'shell', 'zsh')
 opt('o', 'shortmess', vim.o.shortmess..'atTAIc')
 opt('o', 'showmatch', true)
@@ -90,6 +90,10 @@ augroup('undo_temp', {
     'BufWritePre /tmp/* setlocal noundofile',
 })
 
+augroup('CursorLine', {
+        'VimEnter,WinEnter,BufWinEnter * setlocal cursorline',
+        ' WinLeave * setlocal nocursorline',
+})
 
 augroup('auto_spell', {
     'BufRead,BufNewFile *.md,*.txt,*.pandoc setlocal spell spelllang=en_us',
@@ -101,7 +105,7 @@ augroup('auto_spell', {
 -- })
 
 augroup('term_start_insert', {
-    'TermOpen * setlocal nonumber norelativenumber',
+    'TermOpen,TermEnter * setlocal nonumber norelativenumber nocursorline signcolumn=no',
     'TermOpen * startinsert',
 })
 

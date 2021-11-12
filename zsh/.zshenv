@@ -28,14 +28,22 @@ export GOPATH="$HOME/go"
 export KREW_ROOT=$HOME/.krew
 
 # Asdf
-export ASDF_DIR="$HOME/.asdf"
+if [ -f /opt/asdf-vm/asdf.sh ]; then
+    export ASDF_DIR=/opt/asdf-vm
+else
+    export ASDF_DIR="$HOME/.asdf"
+fi
+
+export ASDF_CONFIG_FILE=$XDG_CONFIG_HOME/asdf/asdfrc
+export ASDF_DATA_DIR=$XDG_DATA_HOME/asdf
+
 
 # Path definition
 idem_path_prepend() {
     export PATH=$1:${PATH//"$1:"/}
 }
 
-idem_path_prepend "$HOME/.local/bin/:$GOPATH/bin:$CARGO_HOME/bin:$XDG_CONFIG_HOME/fzf/bin:$KREW_ROOT/bin:$ASDF_DIR/bin:$ASDF_DIR/shims"
+idem_path_prepend "$HOME/.local/bin/:$GOPATH/bin:$CARGO_HOME/bin:$XDG_CONFIG_HOME/fzf/bin:$KREW_ROOT/bin:$ASDF_DIR/bin:$ASDF_DATA_DIR/shims"
 
 idem_fpath_prepend() {
     case ":${FPATH:=$1}:" in
