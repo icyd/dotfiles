@@ -2308,5 +2308,8 @@ alias kgdepwslowiden='watch kubectl get deployment --show-labels -o=wide --names
 
 alias -g KN='-oyaml | kubectl neat | yh '
 alias -g YN='-oyaml | kubectl neat'
+alias krrdep='kubectl rollout restart deployment'
+alias krrsts='kubectl rollout restart statefulset'
+alias krrds='kubectl rollout restart daemonset'
 kcx(){ [ $# -ge 1 ] && kubectl ctx $1 || kubectl ctx $(kubectl ctx | fzf --preview={} --preview-window=:hidden)  }
 kns(){ [ $# -ge 1 ] && kubectl ns $1 || kubectl ns $(kubectl ns | fzf --preview={} --preview-window=:hidden)  }
