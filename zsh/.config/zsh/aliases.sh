@@ -13,6 +13,7 @@ alias pd='own_push +'
 alias ou='own_pop -'
 alias od='own_pop +'
 alias cdC="cd $HOME/.dotfiles"
+alias cdr='cd-gitroot'
 alias eZC="$EDITOR $HOME/.zshrc"
 alias eZE="$EDITOR $HOME/.zshenv"
 alias eVC="$EDITOR $XDG_CONFIG_HOME/nvim/init.vim"

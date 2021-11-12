@@ -120,65 +120,67 @@ paq 'airblade/vim-rooter'
 paq 'ThePrimeagen/git-worktree.nvim'
 paq 'ThePrimeagen/harpoon'
 paq 'kassio/neoterm'
+paq 'lewis6991/impatient.nvim'
 
 --[[
 Configurations
 --]]
 -- cmd [[colorscheme gruvbox8_soft]]
+require('impatient')
 cmd [[colorscheme gruvbox]]
 cmd [[autocmd Filetype openscad packadd! vim-openscad]]
 
 -- Autopair
 local npairs = require('nvim-autopairs')
-local Rule = require('nvim-autopairs.rule')
+-- local Rule = require('nvim-autopairs.rule')
 
 npairs.setup({
     check_ts = true,
-    ts_config = {
-        lua = {'string'},-- it will not add a pair on that treesitter node
-        javascript = {'template_string'},
-        java = false,-- don't check treesitter on java
-    },
+    -- ts_config = {
+    --     lua = {'string'},-- it will not add a pair on that treesitter node
+    --     javascript = {'template_string'},
+    --     java = false,-- don't check treesitter on java
+    -- },
 })
 
-npairs.add_rules({
-    Rule('', '')
-        :use_regex(true, '})]')
-        :with_pair(function(opts)
-            local start = vim.fn.line('.')
-            local line = vim.fn.getline(start + 1)
-            if (line == '}' or line == ')' or line == ']') and line == opts.char then
-                return true
-            end
-            return false
-        end)
-        :replace_endpair(function(opts)
-            return '<esc>jA'
-        end),
-  Rule(' ', ' ')
-    :with_pair(function (opts)
-      local pair = opts.line:sub(opts.col - 1, opts.col)
-      return vim.tbl_contains({ '()', '[]', '{}' }, pair)
-    end),
-  Rule('( ', ' )')
-      :with_pair(function() return false end)
-      :with_move(function(opts)
-          return opts.prev_char:match('.%)') ~= nil
-      end)
-      :use_key(')'),
-  Rule('{ ', ' }')
-      :with_pair(function() return false end)
-      :with_move(function(opts)
-          return opts.prev_char:match('.%}') ~= nil
-      end)
-      :use_key('}'),
-  Rule('[ ', ' ]')
-      :with_pair(function() return false end)
-      :with_move(function(opts)
-          return opts.prev_char:match('.%]') ~= nil
-      end)
-      :use_key(']')
-})
+-- npairs.add_rules({
+--     Rule('', '')
+--         :use_regex(true, '})]')
+--         :with_pair(function(opts)
+--             local start = vim.fn.line('.')
+--             local line = vim.fn.getline(start + 1)
+--             if (line == '}' or line == ')' or line == ']') and line == opts.char then
+--                 return true
+--             end
+--             return false
+--         end)
+--         :replace_endpair(function(opts)
+--             return '<esc>jA'
+--         end),
+--   Rule(' ', ' ')
+--     :with_pair(function (opts)
+--       local pair = opts.line:sub(opts.col - 1, opts.col)
+--       return vim.tbl_contains({ '()', '[]', '{}' }, pair)
+--     end),
+--   Rule('( ', ' )')
+--       :with_pair(function() return false end)
+--       :with_move(function(opts)
+--           return opts.prev_char:match('.%)') ~= nil
+--       end)
+--       :use_key(')'),
+--   Rule('{ ', ' }')
+--       :with_pair(function() return false end)
+--       :with_move(function(opts)
+--           return opts.prev_char:match('.%}') ~= nil
+--       end)
+--       :use_key('}'),
+--   Rule('[ ', ' ]')
+--       :with_pair(function() return false end)
+--       :with_move(function(opts)
+--           return opts.prev_char:match('.%]') ~= nil
+--       end)
+--       :use_key(']')
+-- })
 
 -- Completion-nvim
 -- Enable selection with Tab
@@ -209,6 +211,7 @@ cmp.setup({
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<C-e>'] = cmp.mapping.close(),
         ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
     },
     sources = {
         { name = 'nvim_lsp' },
@@ -218,16 +221,18 @@ cmp.setup({
     }
 })
 
-require("nvim-autopairs.completion.cmp").setup({
-  map_cr = true, --  map <CR> on insert mode
-  map_complete = true, -- it will auto insert `(` (map_char) after select function or method item
-  auto_select = true, -- automatically select the first item
-  insert = false, -- use insert confirm behavior instead of replace
-  map_char = { -- modifies the function or method delimiter by filetypes
-    all = '(',
-    tex = '{'
-  }
-})
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
+-- require("nvim-autopairs.completion.cmp").setup({
+--   map_cr = true, --  map <CR> on insert mode
+--   map_complete = true, -- it will auto insert `(` (map_char) after select function or method item
+--   auto_select = true, -- automatically select the first item
+--   insert = false, -- use insert confirm behavior instead of replace
+--   map_char = { -- modifies the function or method delimiter by filetypes
+--     all = '(',
+--     tex = '{'
+--   }
+-- })
 
 -- Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
 map('n', 's', '<Plug>(vsnip-select-text)')
@@ -392,7 +397,7 @@ require('dap-install').setup({
 	installation_path = vim.fn.stdpath("data") .. "/dapinstall/",
 	verbosely_call_debuggers = false,
 })
-g.dap_virtual_text = true
+require('nvim-dap-virtual-text').setup()
 require("dapui").setup()
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('project')
@@ -400,6 +405,7 @@ require('telescope').load_extension('dap')
 require('telescope').load_extension('git_worktree')
 
 map('n', '<leader>ff', ":Telescope find_files<CR>")
+map('n', '<leader>fl', ":lua require('telescope.builtin').find_files( { cwd = vim.fn.expand('%:p:h') })<CR>")
 map('n', '<leader>fb', ":Telescope file_browser<CR>")
 map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
