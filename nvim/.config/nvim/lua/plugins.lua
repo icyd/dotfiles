@@ -8,7 +8,6 @@ local paq = require('paq-nvim').paq
 paq{'savq/paq-nvim', opt=true}
 
 -- Colorscheme & themes
--- paq 'lifepillar/vim-gruvbox8'
 paq 'rktjmp/lush.nvim'
 paq 'npxbr/gruvbox.nvim'
 -- Neovim lsp
@@ -29,28 +28,21 @@ paq 'editorconfig/editorconfig-vim'
 -- Repeat plugins commands
 paq 'tpope/vim-repeat'
 -- Increment dates, times, etc
--- paq 'tpope/vim-speeddating'
--- Lorem ipsum
--- paq {'vim-scripts/loremipsum', opt=true}
--- Tmux-vim navigation
--- paq 'christoomey/vim-tmux-navigator'
--- paq 'nikvdp/neomux'
-paq 'hkupty/nvimux'
+paq 'tpope/vim-speeddating'
+-- Quickterm
+paq 'akinsho/toggleterm.nvim'
 -- Session management
-paq 'tpope/vim-obsession'
--- Polyglot
-paq 'sheerun/vim-polyglot'
+--
 -- Git
 paq 'tpope/vim-fugitive'
 -- Window maximizer
-paq 'szw/vim-maximizer'
+paq 'beauwilliams/focus.nvim'
 -- Treesitter
 paq {'nvim-treesitter/nvim-treesitter', run=':TSUpdate'}
 -- Mark indentation column
 paq 'Yggdroot/indentLine'
 -- Autopairing by brackets
--- paq 'jiangmiao/auto-pairs'
-paq 'windwp/nvim-autopairs'
+paq 'jiangmiao/auto-pairs'
 -- Substitution, coersion, abbreviation
 paq 'tpope/vim-abolish'
 -- Star search in visual mode
@@ -64,7 +56,6 @@ paq 'godlygeek/tabular'
 -- Undo tree
 paq 'mbbill/undotree'
 -- Async make
--- paq 'neomake/neomake'
 paq 'vim-test/vim-test'
 paq 'tpope/vim-dispatch'
 --- Rainbow parenthesis
@@ -81,25 +72,25 @@ paq 'nvim-lua/popup.nvim'
 paq 'nvim-lua/plenary.nvim'
 paq 'nvim-telescope/telescope.nvim'
 paq {'nvim-telescope/telescope-fzf-native.nvim', run='make'}
-paq {'nvim-telescope/telescope-project.nvim'}
+paq 'tami5/sqlite.lua'
+paq 'nvim-telescope/telescope-frecency.nvim'
 -- Completion
 paq 'hrsh7th/nvim-cmp'
 paq 'hrsh7th/cmp-vsnip'
 paq 'hrsh7th/cmp-buffer'
+paq 'hrsh7th/cmp-path'
+paq 'hrsh7th/cmp-cmdline'
 paq 'hrsh7th/cmp-nvim-lsp'
 paq 'quangnguyen30192/cmp-nvim-tags'
 -- Syntax
--- paq 'hashivim/vim-terraform'
--- paq 'ekalinin/Dockerfile.vim'
--- paq 'rust-lang/rust.vim'
--- paq {'sirtaj/vim-openscad', opt=true}
--- paq 'andrewstuart/vim-kubernetes'
+paq 'sheerun/vim-polyglot'
 -- Markdown
 paq {'iamcco/markdown-preview.nvim', run='cd app && yarn install'}
 paq 'vim-pandoc/vim-pandoc-syntax'
 paq 'vim-pandoc/vim-pandoc'
 paq 'vimwiki/vimwiki'
 -- Async ctags & gtags management
+paq 'preservim/tagbar'
 paq 'ludovicchabant/vim-gutentags'
 -- REPL
 paq 'jpalardy/vim-slime'
@@ -111,8 +102,6 @@ paq 'theHamsta/nvim-dap-virtual-text'
 paq 'rcarriga/nvim-dap-ui'
 -- Easy motion
 paq 'phaazon/hop.nvim'
--- Quickfix
-paq 'kevinhwang91/nvim-bqf'
 -- Other
 paq 'moll/vim-bbye'
 paq 'rhysd/vim-grammarous'
@@ -125,62 +114,13 @@ paq 'lewis6991/impatient.nvim'
 --[[
 Configurations
 --]]
--- cmd [[colorscheme gruvbox8_soft]]
 require('impatient')
+
 cmd [[colorscheme gruvbox]]
 cmd [[autocmd Filetype openscad packadd! vim-openscad]]
 
 -- Autopair
-local npairs = require('nvim-autopairs')
--- local Rule = require('nvim-autopairs.rule')
-
-npairs.setup({
-    check_ts = true,
-    -- ts_config = {
-    --     lua = {'string'},-- it will not add a pair on that treesitter node
-    --     javascript = {'template_string'},
-    --     java = false,-- don't check treesitter on java
-    -- },
-})
-
--- npairs.add_rules({
---     Rule('', '')
---         :use_regex(true, '})]')
---         :with_pair(function(opts)
---             local start = vim.fn.line('.')
---             local line = vim.fn.getline(start + 1)
---             if (line == '}' or line == ')' or line == ']') and line == opts.char then
---                 return true
---             end
---             return false
---         end)
---         :replace_endpair(function(opts)
---             return '<esc>jA'
---         end),
---   Rule(' ', ' ')
---     :with_pair(function (opts)
---       local pair = opts.line:sub(opts.col - 1, opts.col)
---       return vim.tbl_contains({ '()', '[]', '{}' }, pair)
---     end),
---   Rule('( ', ' )')
---       :with_pair(function() return false end)
---       :with_move(function(opts)
---           return opts.prev_char:match('.%)') ~= nil
---       end)
---       :use_key(')'),
---   Rule('{ ', ' }')
---       :with_pair(function() return false end)
---       :with_move(function(opts)
---           return opts.prev_char:match('.%}') ~= nil
---       end)
---       :use_key('}'),
---   Rule('[ ', ' ]')
---       :with_pair(function() return false end)
---       :with_move(function(opts)
---           return opts.prev_char:match('.%]') ~= nil
---       end)
---       :use_key(']')
--- })
+g.AutoPairsFlyMode = 1
 
 -- Completion-nvim
 -- Enable selection with Tab
@@ -213,26 +153,32 @@ cmp.setup({
         ['<C-y>'] = cmp.mapping.confirm({ select = true }),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
     },
-    sources = {
+    sources = cmp.config.sources({
         { name = 'nvim_lsp' },
         { name = 'vsnip' },
+    }, {
         { name = 'tags' },
-        -- { name = 'buffer' },
+        { name = 'buffer' },
+        { name = 'path' },
+    }),
+    experimental = {
+        ghost_text = true,
+    },
+})
+
+cmp.setup.cmdline('/', {
+    sources = {
+      { name = 'buffer' }
     }
 })
 
-local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
--- require("nvim-autopairs.completion.cmp").setup({
---   map_cr = true, --  map <CR> on insert mode
---   map_complete = true, -- it will auto insert `(` (map_char) after select function or method item
---   auto_select = true, -- automatically select the first item
---   insert = false, -- use insert confirm behavior instead of replace
---   map_char = { -- modifies the function or method delimiter by filetypes
---     all = '(',
---     tex = '{'
---   }
--- })
+cmp.setup.cmdline(':', {
+    sources = cmp.config.sources({
+      { name = 'cmdline' }
+    }, {
+      { name = 'path' }
+    })
+})
 
 -- Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
 map('n', 's', '<Plug>(vsnip-select-text)')
@@ -312,13 +258,16 @@ g.mkdp_filetypes = {'markdown', 'pandoc'}
 -- ]]
 
 -- Maximize
-g.maximizer_set_default_mapping = 0
-map('n', '<C-a>z', ':MaximizerToggle<CR>')
-map('v', '<C-a>z', ':MaximizerToggle<CR>gv')
+require('focus').setup({
+    cursorline = false,
+    excluded_filetypes = {"term", "toggleterm", "TelescopePrompt"},
+    excluded_buftypes = {"help", "terminal", "prompt"},
+})
 
--- Neomake
-g.neomake_place_signs = 0
-g.neomake_open_list = 2
+map('n', '<leader>h', ':FocusSplitLeft<CR>')
+map('n', '<leader>j', ':FocusSplitDown<CR>')
+map('n', '<leader>k', ':FocusSplitUp<CR>')
+map('n', '<leader>l', ':FocusSplitRight<CR>')
 
 -- Pandoc
 g['pandoc#speel#enabled'] = 1
@@ -330,18 +279,6 @@ g['pandoc#filetypes#pandoc_markdown'] = 0
 -- Rust
 g.rustfmt_autosave = 1
 
--- Slime
-g.slime_target = "neovim"
-g.slime_paste_file = "/tmp/slime_paste"
-g.slime_default_config = {socket_name="default", target_pane="{last}"}
-g.slime_python_ipython = 1
-g.slime_dont_ask_default = 1
-g.slime_no_mappings = 1
-map('x', '<localleader>ss', '<Plug>SlimeRegionSend')
-map('n', '<localleader>ss', '<Plug>SlimeParagraphSend')
-map('n', '<localleader>sl', ':SlimeSend0 "<C-l>"<CR>')
-map('n', '<localleader>sc', ':SlimeSend0 "<C-c>"<CR>')
-map('n', '<localleader>sq', ':SlimeSend0 "<C-d>"<CR>')
 
 -- Tabularize
 map('n', '<localleader>e', ':Tabularize /=<CR>')
@@ -382,35 +319,28 @@ require('telescope').setup {
             override_file_sorter = true,
             case_mode = 'smart_case',
         },
-        project = {
-            base_dirs = {
-                {path = '~/.dotfiles'},
-                {path = '~/Projects', max_depth = 2},
-                {path = '~/ea'},
-            },
-            hidden_files = true,
-        },
     }
 }
 
 require('dap-install').setup({
-	installation_path = vim.fn.stdpath("data") .. "/dapinstall/",
-	verbosely_call_debuggers = false,
+    installation_path = vim.fn.stdpath("data") .. "/dapinstall/",
+    verbosely_call_debuggers = false,
 })
+
 require('nvim-dap-virtual-text').setup()
 require("dapui").setup()
 require('telescope').load_extension('fzf')
-require('telescope').load_extension('project')
 require('telescope').load_extension('dap')
 require('telescope').load_extension('git_worktree')
+require('telescope').load_extension('frecency')
 
 map('n', '<leader>ff', ":Telescope find_files<CR>")
 map('n', '<leader>fl', ":lua require('telescope.builtin').find_files( { cwd = vim.fn.expand('%:p:h') })<CR>")
 map('n', '<leader>fb', ":Telescope file_browser<CR>")
-map('n', '<leader>fg', ":lua require('my.telescope').project_files()<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
 map('n', '<leader>fh', ":Telescope help_tags<CR>")
-map('n', '<leader>fr', ":Telescope oldfiles<CR>")
+map('n', '<leader>fr', ":Telescope frecency<CR>")
+map('n', '<leader>fR', ":Telescope oldfiles<CR>")
 map('n', '<leader>lA', ":Telescope lsp_code_actions<CR>")
 map('n', '<leader>lG', ":Telescope lsp_document_diagnostics<CR>")
 map('n', '<leader>ft', ":lua require('telescope.builtin').tags()<CR>")
@@ -437,7 +367,6 @@ map('n', '<leader>gc', ':Telescope git_commits<CR>')
 map('n', '<leader>gC', ':Telescope git_bcommits<CR>')
 map('n', '<leader>fz', ':Telescope current_buffer_fuzzy_find<CR>')
 map('n', '<leader>fi', ':Telescope treesitter<CR>')
--- map('n', '<leader>fs', ':<C-u>Snippets<CR>')
 
 -- dap
 map('n', '<leader>dq', '<cmd>lua require"dap".quit()<CR>')
@@ -476,6 +405,10 @@ map('n', '<leader>df',
           '<cmd>lua require"telescope".extensions.dap.frames{}<CR>')
 map('n', '<leader>dui', '<cmd>lua require"dapui".toggle()<CR>')
 
+augroup('Telescope', {
+    'FileType TelescopePrompt setlocal nocursorline nonumber norelativenumber signcolumn=no'
+})
+
 -- Terraform
 g.terraform_align = 1
 g.terraform_fold_sections = 1
@@ -493,40 +426,18 @@ require'nvim-treesitter.configs'.setup {
     }
 }
 
+-- Toggleterm
+require('toggleterm').setup{
+    open_mapping = [[<c-\>]],
+    hide_numbers = true,
+}
+
 -- Undotree
 g.undotree_WindowLayout=3
 map('n', '<leader>U', ':UndotreeToggle<CR>')
 
--- Vim-tmux-navigator
--- g.tmux_navigator_no_mapping = 1
--- g.tmux_navigator_save_no_switch = 1
--- map('n', '<M-k>', ':TmuxNavigateUp<CR>')
--- map('n', '<M-j>', ':TmuxNavigateDown<CR>')
--- map('n', '<M-h>', ':TmuxNavigateLeft<CR>')
--- map('n', '<M-l>', ':TmuxNavigateRight<CR>')
--- map('n', '<M-#>', ':TmuxNavigatePrevious<CR>')
-
--- Nvimux
-local nvimux = require('nvimux')
-nvimux.config.set_all{
-  prefix = '<C-a>',
-  new_window = 'term', -- Use 'term' if you want to open a new term for every new window
-  new_tab = nil, -- Defaults to new_window. Set to 'term' if you want a new term for every new tab
-  new_window_buffer = 'single',
-  quickterm_direction = 'botright',
-  quickterm_orientation = '',
-  quickterm_scope = 't', -- Use 'g' for global quickterm
-  quickterm_size = '15',
-}
-nvimux.bindings.bind_all{
-  {'s', ':NvimuxHorizontalSplit', {'n', 'v', 'i', 't'}},
-  {'v', ':NvimuxVerticalSplit', {'n', 'v', 'i', 't'}},
-}
-nvimux.bootstrap()
-
 -- VimTest
 g["test#strategy"] = "dispatch"
--- g.neomake_open_list = 0
 map('n', '<localleader>tn', ':TestNearest<CR>')
 map('n', '<localleader>tf', ':TestFile<CR>')
 map('n', '<localleader>ts', ':TestSuite<CR>')
@@ -543,6 +454,7 @@ g.vimwiki_list = {
     }
 }
 g.vimwiki_filetypes = {'markdown', 'pandoc'}
+g.vimwiki_map_prefix = '<leader>W'
 
 -- Other
 augroup('typescript_tsx', {

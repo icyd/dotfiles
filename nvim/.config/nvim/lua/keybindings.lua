@@ -68,6 +68,8 @@ map('i', '<C-j>', '<ESC>:move .+1<CR>==')
 map('i', '<C-k>', '<ESC>:move .-2<CR>==')
 -- Open terminal
 map('n', '<leader>\'', ':terminal<CR>', {noremap=false})
+-- Save with leader
+map('n', '<leader>w', ':w<CR>')
 -- Escape terminal
 map('t', '<ESC>', '<C-\\><C-N>')
 map('t', '<localleader>q', '<ESC>')

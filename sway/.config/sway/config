@@ -93,28 +93,16 @@ input type:touchpad {
 
 input 1165:49408:ITE_Tech._Inc._ITE_Device(8910)_Keyboard {
     xkb_numlock enable
-    xkb_layout es,us
+    xkb_layout icyd,us
     xkb_variant icyd,
     xkb_options "lv3:ralt_switch,compose:102,caps:swapescape,shift:breaks_caps,grp:alt_space_toggle"
 }
 
-input 13027:247:GK61_Gaming_Keyboard {
-    xkb_layout es,us
-    xkb_variant icyd,
-    xkb_options "lv3:ralt_switch,compose:102,shift:breaks_caps,grp:alt_space_toggle"
-}
-
-input 9610:4102:SINO_WEALTH_USB_KEYBOARD {
-    xkb_layout es,us
-    xkb_variant icyd,
-    xkb_options "lv3:ralt_switch,compose:102,caps:swapescape,shift:breaks_caps,grp:alt_space_toggle"
-}
-
-input 65261:18755:QMK_Icydox_keyboard_Keyboard {
-    xkb_layout es,us
-    xkb_variant icyd,
-    xkb_options "lv3:ralt_switch,compose:102,shift:breaks_caps,grp:alt_space_toggle"
-}
+# input 65261:18755:QMK_Icydox_keyboard_Keyboard {
+#     xkb_layout es,us
+#     xkb_variant icyd,
+#     xkb_options "lv3:ralt_switch,compose:102,shift:breaks_caps,grp:alt_space_toggle"
+# }
 
 set $TRACKBALL 1149:32792:Kensington_Expert_Wireless_TB_Mouse
 input $TRACKBALL {
@@ -268,7 +256,13 @@ for_window [class="pinentry-*"] resize set 600 300
 focus_follows_mouse yes
 
 ### Theme
-seat seat0 xcursor_theme "Breeze_Snow"
+seat seat0 xcursor_theme "capitaine-cursors"
+set $gnome-schema org.gnome.desktop.interface
+exec_always {
+    gsettings set $gnome-schema cursor-theme "capitaine-cursors"
+    gsettings set $gnome-schema icon-theme "Papirus-Dark"
+    gsettings set $gnome-schema gtk-theme "Arc-Dark"
+}
 font pango:SourceCodePro Medium 11
 #Colors                  Title_border    Background  Text        Indicator   Child_border
 client.focused           $transparent    $darkwhite  $darkblack  $darkwhite  $darkwhite
@@ -281,9 +275,9 @@ exec mako
 exec gammastep-indicator
 exec waybar
 exec udiskie
-exec gnome-keyring-daemon --start
+# exec gnome-keyring-daemon --start
 exec nextcloud
-exec wl-paste -t text --watch clipman store
+# exec wl-paste -t text --watch clipman store
 exec $term
 exec $browser
 exec_always ~/.config/sway/scripts/clam.sh
