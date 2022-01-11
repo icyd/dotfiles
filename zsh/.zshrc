@@ -132,12 +132,19 @@ bindkey -v
 # Lower vi key lag
 export KEYTIMEOUT="12"
 
+clear-scrollback-and-screen () {
+  zle clear-screen
+  tmux clear-history
+}
+zle -N clear-scrollback-and-screen
+
 # Vi additional bindings
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 bindkey '^Y' autosuggest-accept
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
+bindkey -v '^L' clear-scrollback-and-screen
 bindkey '^[[Z' reverse-menu-complete
 bindkey '^E' edit-command-line
 bindkey -M vicmd '!' edit-command-line
@@ -224,7 +231,7 @@ if (( ${+_comps[gopass]} )); then
 fi
 
 pyenv() {
-    PYTHON=$(asdf which python)
+    PYTHON=$(which python)
     if [ -d "$PY_VENV/$1" ] && [ -f "$PY_VENV/$1/bin/activate" ]; then
         echo "Activating venv $1"
         source "$PY_VENV/$1/bin/activate"
@@ -247,5 +254,3 @@ pyenv() {
 
 # Enable To debug loading times
 # zprof
-
-source /home/beto/.config/broot/launcher/bash/br

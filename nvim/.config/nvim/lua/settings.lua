@@ -1,13 +1,23 @@
 local utils = require('utils')
-
 local api, cmd, g = vim.api, vim.cmd, vim.g
 local opt, augroup = utils.opt, utils.augroup
 
-cmd 'filetype indent on'
-cmd 'filetype plugin on'
-cmd 'syntax on'
-cmd 'syntax enable'
-cmd 'colorscheme desert'
+local disabled_built_ins = {
+  'gzip',
+  'man',
+  'matchit',
+  'matchparen',
+  'shada_plugin',
+  'tarPlugin',
+  'tar',
+  'zipPlugin',
+  'zip',
+  'netrwPlugin',
+}
+
+for i, name in ipairs(disabled_built_ins) do
+  vim.g['loaded_' .. name] = 1
+end
 
 local indent = 4
 opt('b', 'autoindent', true)
@@ -42,12 +52,31 @@ opt('o', 'smartcase', true)
 opt('o', 'splitbelow', true)
 opt('o', 'splitright', true)
 opt('o', 'termguicolors', true)
-opt('o', 'undofile', true)
+opt('o', 'lazyredraw', true)
+opt('o', 'splitbelow', true)
 opt('o', 'wildignorecase', true)
+opt('o', 'undofile', true)
+opt('o', 'writebackup', true)
 opt('o', 'wildmenu', true)
 opt('o', 'wildmode', 'longest,full')
-
-opt('w', 'colorcolumn', '81')
+vim.opt.wildignore = {
+    '*.pyc',
+    '*_build/*',
+    '**/coverage/*',
+    '**/node_modules/*',
+    '**/android/*',
+    '**/ios/*',
+    '**/.git/*'
+}
+vim.opt.listchars = {
+    nbsp = '~',
+    extends = '»',
+    precedes = '«',
+    tab = '▷─',
+    trail = '•',
+    eol = '¬',
+}
+opt('w', 'colorcolumn', '79')
 opt('w', 'cursorcolumn', false)
 opt('w', 'cursorline', false)
 opt('w', 'foldlevel', 99)
@@ -72,20 +101,6 @@ g.netrw_liststyle = 3
 g.netrw_browse_split = 4
 g.netrw_winsize = 20
 
-api.nvim_exec([[
-exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~,eol:\uAC"
-]], false)
-
-cmd([[
-set wildignore+=*.pyc
-set wildignore+=*_build/*
-set wildignore+=**/coverage/*
-set wildignore+=**/node_modules/*
-set wildignore+=**/android/*
-set wildignore+=**/ios/*
-set wildignore+=**/.git/*
-]])
-
 augroup('undo_temp', {
     'BufWritePre /tmp/* setlocal noundofile',
 })
@@ -100,92 +115,35 @@ augroup('auto_spell', {
     'FileType gitcommit setlocal spell spelllang=en_us',
 })
 
--- augroup('cd_on_tab', {
---     'TabNewEntered * call OnTabEnter(expand("<amatch>"))',
--- })
-
 augroup('term_start_insert', {
     'TermOpen,TermEnter * setlocal nonumber norelativenumber nocursorline signcolumn=no',
     'TermOpen * startinsert',
 })
 
-augroup('trim', {
-    'BufWritePost * call TrimTrailingSpaces()',
+-- Packer
+augroup('packer_compile_on_save', {
+    'BufWritePost init.lua source <afile> | lua require("plugins").compile()',
 })
 
-api.nvim_exec([[
-let $NVR=$PY_VENV.'/nvr/bin/nvr'
-if has('nvim') && executable($NVR)
-    let $VISUAL=$NVR." -cc split --remote-wait-silent"
-endif
+cmd [[silent! command! PackerClean lua require("plugins").clean()]]
+cmd [[silent! command! PackerCompile lua require("plugins").compile()]]
+cmd [[silent! command! PackerInstall lua require("plugins").install()]]
+cmd [[silent! command! PackerStatus lua require("plugins").status()]]
+cmd [[silent! command! PackerSync lua require("plugins").sync()]]
+cmd [[silent! command! PackerUpdate lua require("plugins").update()]]
 
-function! ReloadConfig() abort
-  if &filetype == 'vim'
-    :silent! write
-    :source %
-  elseif &filetype == 'lua'
-    :silent! write
-    :lua require("plenary.reload").reload_module'%'
-    :luafile %
-  endif
+cmd [[command! GrabServer lua require("utils").grab_server()]]
 
-  return
-endfunction
-
-function! GrabServerName()
-  if ! empty(v:servername)
-    lua << EOF
-      local server = io.open('/tmp/nvim-server', 'w')
-      server:write(vim.api.nvim_get_vvar('servername'))
-      server:close()
-EOF
-  endif
-  echo "Setting servername to this nvim"
-endfunction
-
+cmd [[
 function! VerticalSplitBuffer(buffer)
     execute "vert belowright sb" a:buffer
 endfunction
 
-function! TrimTrailingSpaces()
-        %s/\s*$//
-        ''
-endfunction
-
-function! OnTabEnter(path)
-  if isdirectory(a:path)
-    let dirname = a:path
-  else
-    let dirname = fnamemodify(a:path, ":h")
-  endif
-  execute "tcd ". dirname
-endfunction
-
 command! -nargs=1 Vbuffer call VerticalSplitBuffer(<f-args>)
-command! ReloadConf call ReloadConfig()
-command! Trim call TrimTrailingSpaces()
+]]
 
-function! DScratch()
-  let scratch_dir  = '~/Nextcloud/scratch/buffers'
-  let scratch_date = strftime('%Y%m%d')
-  let scratch_file = 'scratch-'. scratch_date . '.md'
-  let scratch_buf  = bufnr(scratch_file)
-
-  if scratch_buf == -1
-    exe 'split ' . scratch_dir . '/' . scratch_file
-
-    if empty(glob(scratch_dir . '/' . scratch_file))
-      exe ':normal i# Scratch Buffer - ' . scratch_date
-      exe ':normal o'
-      " call CommentHeader()
-      exe ':normal o'
-      exe ':normal ^D'
-      exe ':w'
-    endif
-  else
-    exe 'split +buffer' . scratch_buf
-  endif
-endfunction
-
-command! Scratch call DScratch()
-]], false)
+local pyenv = os.getenv("PY_ENV")
+local nvr =  pyenv and pyenv .. "/nvr/bin/nvr" or nil
+if nvr and vim.fn.has('nvim') and vim.fn.executable(nvr) then
+    vim.env.VISUAL = nvr .. " -cc split --remote-wait-silent"
+end
