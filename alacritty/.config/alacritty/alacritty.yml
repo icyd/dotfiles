@@ -111,7 +111,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    family: MesloLGS NF
+    family: MesloLGS Nerd Font
 
     # The `style` can be specified to pick a specific face.
     #style: Regular
@@ -730,15 +730,15 @@ key_bindings:
   - { key: Copy,                                        action: Copy           }
   - { key: L,        mods: Command, chars: "\x1b\x6c"                          }
   - { key: H,        mods: Command, chars: "\x1b\x68"                          }
-  - { key: K,        mods: Command, chars: "\x1b\x6a"                          }
-  - { key: J,        mods: Command, chars: "\x1b\x6b"                          }
+  - { key: K,        mods: Command, chars: "\x1b\x6b"                          }
+  - { key: J,        mods: Command, chars: "\x1b\x6a"                          }
   - { key: B,        mods: Command, chars: "\x1b\x62"                          }
   - { key: A,        mods: Command, chars: "\x1b\x61"                          }
   - { key: X,        mods: Command, chars: "\x1b\x78"                          }
   - { key: Q,        mods: Control, chars: "\x1b\x71"                          }
   - { key: Q,        mods: Control, chars: "\x1b\x76"                          }
-  - { key: C,        mods: Alt,     chars: "\x1bc"                             }
-  - { key: L,        mods: Control, chars: "\x0c"                              }
+  # - { key: C,        mods: Alt,     chars: "\x1bc"                             }
+  # - { key: L,        mods: Control, chars: "\x0c"                              }
   #- { key: L,         mods: Control,                    action: ClearLogNotice }
   #- { key: L,         mods: Control, mode: ~Vi|~Search, chars: "\x0c"          }
   #- { key: PageUp,    mods: Shift,   mode: ~Alt,        action: ScrollPageUp,  }

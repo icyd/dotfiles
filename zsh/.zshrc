@@ -224,14 +224,16 @@ gen_completions() {
     gopass completion zsh  > $ZSH_COMPLETIONS/_gopass
 }
 
-[ -f $ZSH_CONFIG/aliases.sh ] && source $ZSH_CONFIG/aliases.sh
-
 if (( ${+_comps[gopass]} )); then
  compdef gpw=gopass
 fi
 
 pyenv() {
-    PYTHON=$(which python)
+    if command -v asdf >/dev/null 2>&1; then
+        PYTHON=$(asdf which python)
+    else
+        PYTHON=$(which python)
+    fi
     if [ -d "$PY_VENV/$1" ] && [ -f "$PY_VENV/$1/bin/activate" ]; then
         echo "Activating venv $1"
         source "$PY_VENV/$1/bin/activate"
@@ -243,14 +245,25 @@ pyenv() {
     fi
 }
 
+pw(){
+  QUERY=$1
+  if [ -z "$QUERY" ]; then
+    QUERY=''
+  fi
+  gopass show -C \
+    $(gopass ls --flat \
+      | fzf -q "$QUERY" --preview "gopass show {}" \
+    )
+}
+
 [ -f ~/.config/fzf/fzf.zsh ] && source ~/.config/fzf/fzf.zsh
 [ -f $XDG_CONFIG_HOME/broot/launcher/bash/br ] && source $XDG_CONFIG_HOME/broot/launcher/bash/br
 
 # Source not hardcoded sys env definition
 [ -f "$XDG_CONFIG_HOME/zsh/bookmarks.zsh" ] && source "$XDG_CONFIG_HOME/zsh/bookmarks.zsh"
 [ -f "$XDG_CONFIG_HOME/zsh/local.zsh" ] && source "$XDG_CONFIG_HOME/zsh/local.zsh"
+[ -f $ZSH_CONFIG/aliases.sh ] && source $ZSH_CONFIG/aliases.sh
 [ -f "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh" ] && source "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh"
-
 
 # Enable To debug loading times
 # zprof

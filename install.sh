@@ -161,6 +161,10 @@ echo -e "${yellow}Installing pluggins...${reset}"
 	echo -e "\n"
 }
 
+install_packer_plugins() {
+	"$VIM" --headless -u nvim/.config/nvim/my.lua -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+}
+
 # Installing thesaur
 install_vim_thesaurus() {
 	THESAURUS_FILE="$XDG_DATA_HOME/nvim/thesaurus/mthesaur.txt"
@@ -191,7 +195,11 @@ install_asdf() {
 install_nvr() {
 	NVR_BIN="$PY_VENV/nvr/bin"
 	TARGET_SYM="$HOME/.local/bin/nvr"
-	PYTHON=$(asdf which python)
+	if command -v asdf &> /dev/null; then
+		PYTHON=$(asdf which python)
+	else
+		PYTHON=$(which python)
+	fi
 	if [ ! "$PYTHON" ]; then
 		echo -e "${yellow}Python not installed.${reset}"
 		return 1
@@ -237,8 +245,14 @@ while [[ $# -gt 0 ]]; do
 		-paq|--install-paq)
 			install_paq
 			;;
+		--install-packer-plugins)
+			install_packer_plugins
+			;;
 		-lua-plugins|--install-lua-plugins)
 			install_lua_plugins
+			;;
+		-packer-plugins)
+			install_packer_plugins
 			;;
 		-fzf|--install-fzf)
 			install_fzf
