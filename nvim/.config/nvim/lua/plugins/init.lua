@@ -13,7 +13,7 @@ return packer.startup({
         }
         -- Optimizations
         use 'nathom/filetype.nvim'
-        -- use 'lewis6991/impatient.nvim'
+        use 'lewis6991/impatient.nvim'
         use {
             'dstein64/vim-startuptime',
             cmd = "StartupTime"
@@ -22,6 +22,12 @@ return packer.startup({
         use {
             'rebelot/kanagawa.nvim',
             config = function()
+                local default_colors = require('kanagawa.colors').setup()
+                require('kanagawa').setup({
+                        colors = {
+                            bg_visual = default_colors.waveBlue2
+                        }
+                })
                 vim.opt.background = "dark"
                 vim.cmd([[colorscheme kanagawa]])
             end,
@@ -274,6 +280,15 @@ return packer.startup({
             'tpope/vim-surround',
             event = 'InsertEnter'
         }
+        -- Session management
+        -- use {
+        --     'dhruvasagar/vim-prosession',
+        --     disable = true,
+        --     requires = { 'tpope/vim-obsession', disable = true },
+        --     config = function()
+        --         vim.g.prosession_dir = os.getenv("XDG_DATA_HOME") .. "/nvim/sessions/"
+        --     end
+        -- }
         -- Comment plugin
         use {
             'tomtom/tcomment_vim',
@@ -290,7 +305,7 @@ return packer.startup({
             'mbbill/undotree',
             cmd = 'UndotreeToggle',
             config = function()
-                g.undotree_WindowLayout=3
+                vim.g.undotree_WindowLayout=3
                 require('utils').map('n', '<leader>U', ':UndotreeToggle<CR>')
             end
         }
@@ -301,15 +316,14 @@ return packer.startup({
             ft = 'markdown',
             run='cd app && yarn install'
         }
-        use {
-            'vim-pandoc/vim-pandoc',
-            ft = { 'markdown', 'pandoc' },
-            requires = { { 'vim-pandoc/vim-pandoc-syntax', opt = true } },
-            config = [[ require('plugins.config.pandoc') ]]
-        }
+        -- use {
+        --     'vim-pandoc/vim-pandoc',
+        --     ft = { 'markdown', 'pandoc' },
+        --     requires = { { 'vim-pandoc/vim-pandoc-syntax', opt = true } },
+        --     config = [[ require('plugins.config.pandoc') ]]
+        -- }
         use {
             'vimwiki/vimwiki',
-            keys = '<leader>',
             config = [[ require('plugins.config.vimwiki') ]]
         }
         -- Rooter

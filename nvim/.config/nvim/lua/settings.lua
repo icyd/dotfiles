@@ -5,8 +5,8 @@ local opt, augroup = utils.opt, utils.augroup
 local disabled_built_ins = {
   'gzip',
   'man',
-  'matchit',
-  'matchparen',
+  -- 'matchit',
+  -- 'matchparen',
   'shada_plugin',
   'tarPlugin',
   'tar',

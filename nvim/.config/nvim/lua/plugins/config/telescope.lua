@@ -25,7 +25,7 @@ telescope.setup {
         },
         project = {
            base_dirs = {
-               {path = '~/Projects', max_depth = 4},
+               {path = '~/Projects', max_depth = 5},
            },
            hidden_files = false
         },
@@ -52,7 +52,7 @@ map('n', '<leader>fs', ":lua require('telescope.builtin').grep_string({ search =
 map('n', '<leader>fS', ":lua require('telescope.builtin').grep_string({ search = vim.fn.input(\"Grep for: \") })<CR>")
 -- map('n', '<leader>fw', ":lua telescope.extensions.git_worktree.git_worktrees()<CR>")
 -- map('n', '<leader>fW', ":lua telescope.extensions.git_worktree.create_git_worktree()<CR>")
-map('n', '<leader>fp', ":lua telescope.extensions.project.project{ display_type = 'full' }<CR>")
+map('n', '<leader>fp', ":lua require('telescope').extensions.project.project{ display_type = 'full' }<CR>")
 
 map('n', '<localleader>fR', ':Telescope registers<CR>')
 map('n', '<localleader>fm', ':Telescope marks<CR>')
