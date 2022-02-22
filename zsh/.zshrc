@@ -265,5 +265,8 @@ pw(){
 [ -f $ZSH_CONFIG/aliases.sh ] && source $ZSH_CONFIG/aliases.sh
 [ -f "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh" ] && source "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh"
 
+if command -v tmux >/dev/null 2>&1; then
+    [[ ! $TERM =~ screen ]] && [ -z $TMUX ] && (tmux attach -t default || tmux new -s default)
+fi
 # Enable To debug loading times
 # zprof

@@ -313,18 +313,19 @@ return packer.startup({
         use {
             'iamcco/markdown-preview.nvim',
             config = [[ require('plugins.config.markdown') ]],
-            ft = 'markdown',
+            ft = { 'markdown', 'vimwiki', 'pandoc' },
             run='cd app && yarn install'
         }
-        -- use {
-        --     'vim-pandoc/vim-pandoc',
-        --     ft = { 'markdown', 'pandoc' },
-        --     requires = { { 'vim-pandoc/vim-pandoc-syntax', opt = true } },
-        --     config = [[ require('plugins.config.pandoc') ]]
-        -- }
+        use {
+            'vim-pandoc/vim-pandoc',
+            ft = { 'markdown', 'pandoc' },
+            requires = { { 'vim-pandoc/vim-pandoc-syntax' } },
+            config = [[ require('plugins.config.pandoc') ]]
+        }
         use {
             'vimwiki/vimwiki',
-            config = [[ require('plugins.config.vimwiki') ]]
+            config = [[ require('plugins.config.vimwiki') ]],
+            requires = { { 'mattn/calendar-vim' }, cmd = "Calendar" }
         }
         -- Rooter
         use {
@@ -365,7 +366,7 @@ return packer.startup({
         }
         use {
             'tsandall/vim-rego',
-            requires = { { 'sbdchd/neoformat', opt = true } },
+            requires = { { 'sbdchd/neoformat', ft = 'rego' } },
             ft = 'rego',
             config = [[ require('plugins.config.rego') ]]
         }
