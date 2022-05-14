@@ -18,7 +18,7 @@ if not ok then
 end
 
 packer.init {
-    compile_path = vim.fn.stdpath('data')..'/packer_compiled.lua',
+    compile_path = vim.fn.stdpath('data')..'/site/pack/loader/start/packer.nvim/plugin/packer_compiled.lua',
     compile_on_sync = true,
     profile = {
         enable = false,

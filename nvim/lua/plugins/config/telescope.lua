@@ -37,7 +37,7 @@ map('n', '<leader>fl', ":lua require('telescope.builtin').find_files( { cwd = vi
 map('n', '<leader>fb', ":Telescope file_browser<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
 map('n', '<leader>fh', ":Telescope help_tags<CR>")
-map('n', '<leader>fr', ":Telescope oldfiles<CR>")
+map('n', '<leader>fR', ":Telescope oldfiles<CR>")
 map('n', '<leader>lA', ":Telescope lsp_code_actions<CR>")
 map('n', '<leader>lG', ":Telescope lsp_document_diagnostics<CR>")
 map('n', '<leader>ft', ":lua require('telescope.builtin').tags()<CR>")
