@@ -3,7 +3,7 @@ local lsp_installer = require("nvim-lsp-installer")
 local servers = {
   "bashls",
   "ccls",
-  "dotls",
+  -- "dotls",
   "dockerls",
   "gopls",
   -- "graphql",
@@ -17,33 +17,32 @@ local servers = {
   "yamlls",
 }
 
--- for _, name in pairs(servers) do
---   local server_is_found, server = lsp_installer.get_server(name)
---   if server_is_found then
---     if not server:is_installed() then
---       print("Installing " .. name)
---       server:install()
+lsp_installer.setup({
+    automatic_installation = true,
+    ensure_installed = servers
+})
+
+for _, name in pairs(servers) do
+    require('lspconfig')[name].setup({})
+end
+
+-- lsp_installer.on_server_ready(function(server)
+--     local opts = {}
+--
+--     if server.name == "rust_analyzer" then
+--         -- Initialize the LSP via rust-tools instead
+--         require("rust-tools").setup {
+--             -- The "server" property provided in rust-tools setup function are the
+--             -- settings rust-tools will provide to lspconfig during init.            --
+--             -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
+--             -- with the user's own settings (opts).
+--             server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
+--         }
+--         server:attach_buffers()
+--     else
+--         server:setup(opts)
 --     end
---   end
--- end
-
-lsp_installer.on_server_ready(function(server)
-    local opts = {}
-
-    if server.name == "rust_analyzer" then
-        -- Initialize the LSP via rust-tools instead
-        require("rust-tools").setup {
-            -- The "server" property provided in rust-tools setup function are the
-            -- settings rust-tools will provide to lspconfig during init.            --
-            -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
-            -- with the user's own settings (opts).
-            server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
-        }
-        server:attach_buffers()
-    else
-        server:setup(opts)
-    end
-end)
+-- end)
 
 local nvim_lsp = require('lspconfig')
 local map = require('utils').map

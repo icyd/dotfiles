@@ -369,7 +369,6 @@ return packer.startup({
         }
         use {
             'glepnir/dashboard-nvim',
-            disable = true,
             config = [[ require('plugins.config.dashboard') ]]
         }
     end,
