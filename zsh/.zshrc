@@ -265,8 +265,14 @@ pw(){
 [ -f $ZSH_CONFIG/aliases.sh ] && source $ZSH_CONFIG/aliases.sh
 [ -f "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh" ] && source "$XDG_CONFIG_HOME/zsh/kubectl_aliases.zsh"
 
+[ -f $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh ] && source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
+
 if command -v tmux >/dev/null 2>&1; then
     [[ ! $TERM =~ screen ]] && [ -z $TMUX ] && [ ! -z $TMUX_AUTOSTART ] && (tmux attach -t default || tmux new -s default)
+fi
+
+if command -v direnv >/dev/null 2>&1; then
+    eval "$(direnv hook zsh)"
 fi
 # Enable To debug loading times
 # zprof

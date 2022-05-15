@@ -34,3 +34,22 @@ alias li='cd_in'
 alias gpgupd='gpg-connect-agent updatestartuptty /bye'
 alias ssh="TERM=xterm ssh"
 alias gpw='gopass'
+alias tx=tmuxp_fzf
+
+tls_cert_key_verify() {
+	CERT_MD5=$(openssl x509 -noout -modulus -in "$1" | openssl md5)
+	KEY_MD5=$(openssl rsa -noout -modulus -in "$2" | openssl md5)
+	[ "$CERT_MD5" = "$KEY_MD5" ] && echo "OK" || echo "ERROR"
+}
+
+tls_cert_text() {
+	openssl x509 -noout -text -in "$@"
+}
+
+tls_key_text() {
+	openssl rsa -noout -text -in "$@"
+}
+
+tmuxp_fzf() {
+	tmuxp load $(tmuxp ls | fzf --reverse --border --no-preview --height=10%)
+}

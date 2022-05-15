@@ -12,7 +12,7 @@ local disabled_built_ins = {
   'tar',
   'zipPlugin',
   'zip',
-  'netrwPlugin',
+  -- 'netrwPlugin',
 }
 
 for i, name in ipairs(disabled_built_ins) do

@@ -1,9 +1,11 @@
 skip_global_compinit=1
 
+[ -f $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh ] && source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
 set -a
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 DOTFILES="$HOME/.dotfiles"
+DIRENV_LOG_FORMAT=""
 
 # System's definitions
 PAGER="less"

@@ -281,14 +281,14 @@ return packer.startup({
             event = 'InsertEnter'
         }
         -- Session management
-        -- use {
-        --     'dhruvasagar/vim-prosession',
-        --     disable = true,
-        --     requires = { 'tpope/vim-obsession', disable = true },
-        --     config = function()
-        --         vim.g.prosession_dir = os.getenv("XDG_DATA_HOME") .. "/nvim/sessions/"
-        --     end
-        -- }
+        use 'Shatur/neovim-session-manager'
+        use {
+            'dhruvasagar/vim-prosession',
+            requires = { 'tpope/vim-obsession' },
+            config = function()
+                vim.g.prosession_dir = os.getenv("XDG_DATA_HOME") .. "/nvim/sessions/"
+            end
+        }
         -- Comment plugin
         use {
             'tomtom/tcomment_vim',

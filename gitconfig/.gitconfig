@@ -15,3 +15,5 @@
 
 [alias]
     p4 = /usr/local/bin/git-p4
+[pull]
+	rebase = false
