@@ -18,11 +18,17 @@
         unstable = import nixpkgs-unstable {
             inherit system;
         };
+        pkgs = import nixpkgs {
+            inherit system;
+        };
         nixpkgs-config = {
             overlays = [
                 (self: super: {
                     neovim = unstable.neovim;
                     neovim-unwrapped = unstable.neovim-unwrapped;
+                    tmuxPlugins = pkgs.tmuxPlugins // {
+                        tmux-thumbs = unstable.tmuxPlugins.tmux-thumbs;
+                    };
                 })
                 nur.overlay
             ];
@@ -38,11 +44,13 @@
                     })
                     ./nix/system/configuration.nix
                 ];
+                specialArgs = { inherit username; };
             };
         };
         homeManagerConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
             inherit system username homeDirectory;
             stateVersion = "21.11";
+            extraSpecialArgs = { inherit email; };
             configuration = {
                 nixpkgs = nixpkgs-config;
                 imports = [

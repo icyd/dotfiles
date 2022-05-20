@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, email, ... }:
 let
     HOME = config.home.homeDirectory;
     DOTFILES = "${HOME}/.dotfiles";
@@ -25,7 +25,8 @@ in {
         ];
     };
     programs.fzf = import ../../modules/fzf.nix { inherit lib; };
-    programs.git = import ../../modules/git.nix { email = "beto.v25@gmail.com"; };
+    programs.git = import ../../modules/git.nix { inherit email; };
+    programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
     programs.gpg.enable = true;
     programs.home-manager.enable = true;
     programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs; };

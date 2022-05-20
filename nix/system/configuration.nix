@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, username, ... }: {
   imports = [
     ./hardware-configuration.nix
   ];
@@ -144,19 +144,29 @@
     xserver = {
       enable = true;
       videoDrivers = [ "amdgpu" ];
-      displayManager.lightdm.enable = false;
+      displayManager = {
+        autoLogin = {
+          enable = true;
+          user = username;
+        };
+        lightdm = {
+          enable = true;
+          greeter.enable = false;
+          autoLogin.timeout = 0;
+        };
+      };
       libinput.enable = true;
     };
   };
   sound.enable = true;
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   users = {
-    groups.beto.gid = 1000;
-    users.beto = {
+    groups.${username}.gid = 1000;
+    users.${username} = {
       isNormalUser = true;
       uid = 1000;
       shell = pkgs.zsh;
-      extraGroups = [ "wheel" "beto" "networkmanager" "video" ]; # Enable ‘sudo’ for the user.
+      extraGroups = [ "wheel" username "networkmanager" "video" ]; # Enable ‘sudo’ for the user.
     };
   };
   time.timeZone = "Europe/Madrid";
@@ -169,6 +179,7 @@
     enable = true;
     wrapperFeatures.gtk = true;
     extraPackages = with pkgs; [
+      acpi
       alacritty
       brightnessctl
       swaylock
@@ -210,39 +221,4 @@
     "L /var/lib/NetworkManager/seen-bssids - - - - /persist/var/lib/NetworkManager/seen-bssids"
     "L /var/lib/NetworkManager/timestamps - - - - /persist/var/lib/NetworkManager/timestamps"
   ];
-  systemd = {
-    services = {
-      "autovt@tty1" = {
-        description = "Autologin on TTY1";
-        after = [ "supress-kernel-logging.service" ];
-        wantedBy = [ "autologin-tty1.target" ];
-        restartIfChanged = false;
-        serviceConfig = {
-          ExecStart = [
-              ""  # override upstream default with an empty ExecStart
-              "-${pkgs.utillinux}/sbin/agetty -o '-p -f -- \\\\u' --noclear --autologin beto - $TERM"
-          ];
-          Restart = "always";
-          Type = "idle";
-        };
-      };
-      "supress-kernel-logging" = {
-        description = "Suppress kernel logging to the console";
-        after = [ "multi-user.target" ];
-        wantedBy = [ "autologin-tty1.target" ];
-        serviceConfig = {
-          ExecStart = [
-              "${pkgs.utillinux}/sbin/dmesg -n 1"
-            ];
-          Type = "oneshot";
-        };
-      };
-    };
-    targets."autologin-tty1" = {
-      after = [ "multi-user.target" ];
-      description = "Final";
-      requires = [ "multi-user.target" ];
-      unitConfig = { AllowIsolate="yes"; };
-    };
-  };
 }

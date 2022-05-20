@@ -58,7 +58,7 @@
           multiplier = 3;
       };
       window = {
-          decoration = "none";
+          decorations = "none";
           startup_mode = "Maximized";
           padding = { x = 5; y = 5; };
       };

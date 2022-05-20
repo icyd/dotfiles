@@ -5,6 +5,8 @@ in {
     file = {
         ".editorconfig".source = ../../editorconfig/.editorconfig;
         ".p10k.zsh".source = ../../zsh/p10k.zsh;
+        ".k8s_aliases.zsh".source = ../../zsh/kubectl_aliases.zsh;
+        ".gitalias".source = ../../git/gitalias.txt;
     };
     packages = with pkgs; [
         asdf-vm
@@ -21,6 +23,7 @@ in {
         gdb
         go_1_17
         gopass
+        krew
         kubectl
         kubernetes-helm
         hyperfine
@@ -39,7 +42,7 @@ in {
         tree-sitter
         universal-ctags
         vifm
-        yq
+        yq-go
     ];
     sessionPath = [
         "/usr/local/bin"

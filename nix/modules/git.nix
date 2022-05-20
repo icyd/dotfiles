@@ -6,6 +6,10 @@
     aliases = {
         p4 = "/usr/local/bin/git-p4";
     };
+    includes = [
+        { path = "~/.gitalias"; }
+    ];
+    delta.enable = true;
     extraConfig = {
         diff = {
             tool = "nvr";
