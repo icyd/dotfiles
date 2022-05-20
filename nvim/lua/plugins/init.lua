@@ -46,11 +46,11 @@ return packer.startup({
         }
         -- LSP
         use {
-            'neovim/nvim-lspconfig',
-            event = 'BufReadPre',
-            after = 'nvim-lspfuzzy',
-            requires = { { 'williamboman/nvim-lsp-installer', module = 'nvim-lsp-installer' } },
-            config = [[ require('plugins.config.lsp') ]]
+            'williamboman/nvim-lsp-installer',
+            {
+                'neovim/nvim-lspconfig',
+                config = [[ require('plugins.config.lsp') ]]
+            }
         }
         -- -- Fuzzy finder LSP client
         use {

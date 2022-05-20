@@ -89,55 +89,65 @@
           )
       }
 
+      kcx(){ [ $# -ge 1 ] && kubectl ctx $1 || kubectl ctx $(kubectl ctx | fzf --preview={} --preview-window=:hidden)  }
+
+      kns(){ [ $# -ge 1 ] && kubectl ns $1 || kubectl ns $(kubectl ns | fzf --preview={} --preview-window=:hidden)  }
+
+      tmuxp_fzf() {
+          tmuxp load $(tmuxp ls | fzf --reverse --border --no-preview --height=10%)
+      }
+
+      tls_cert_key_verify() {
+          CERT_MD5=$(openssl x509 -noout -modulus -in "$1" | openssl md5)
+          KEY_MD5=$(openssl rsa -noout -modulus -in "$2" | openssl md5)
+          [ "$CERT_MD5" = "$KEY_MD5" ] && echo "OK" || echo "ERROR"
+      }
+
+      tls_cert_text() {
+          openssl x509 -noout -text -in "$@"
+      }
+
+      tls_key_text() {
+          openssl rsa -noout -text -in "$@"
+      }
+
       [ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
-      zinit ice depth"1";
-      zinit light romkatv/powerlevel10k
+      zpcompdef g='git'
+
+      zinit light-mode for \
+        depth"1" \
+          romkatv/powerlevel10k \
+        pick"zsh-lazyload.zsh" \
+            qoomon/zsh-lazyload
 
       zinit wait lucid light-mode for \
-            OMZL::git.zsh \
-            OMZP::git \
             mollifier/cd-gitroot \
             chisui/zsh-nix-shell \
-            hlissner/zsh-autopair
-
-      zinit as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
-        atpull'%atclone' pick"direnv" src"zhook.zsh" for \
-            direnv/direnv
-
-      zinit wait lucid light-mode for \
+            hlissner/zsh-autopair \
+        as"completion" \
+            OMZP::docker/_docker \
+        as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
+          atpull'%atclone' pick"direnv" src"zhook.zsh" \
+            direnv/direnv \
+        atload'bindkey "^P" history-substring-search-up;
+            bindkey "^N" history-substring-search-down' \
+            zsh-users/zsh-history-substring-search \
+        atinit"zicompinit; zicdreplay" \
+            zsh-users/zsh-syntax-highlighting \
+        atload'_zsh_autosuggest_start;
+            bindkey "^Y" autosuggest-accept' \
+            zsh-users/zsh-autosuggestions \
         blockf atpull'zinit creinstall -q .' \
             zsh-users/zsh-completions
 
-      zinit wait lucid light-mode for \
-        atinit"zicompinit; zicdreplay" \
-            zdharma-continuum/fast-syntax-highlighting \
-        atload"_zsh_autosuggest_start" \
-            zsh-users/zsh-autosuggestions
-
-      # zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
-      #   atpull'%atclone' pick"clrs.zsh" nocompile'!' \
-      #   atload'zstyle ":completion:*" list-colors “''${(s.:.)LS_COLORS}”'
-      # zinit light trapd00r/LS_COLORS
-      # zinit snippet OMZP::colored-man-pages
-
-      zinit wait lucid light-mode for \
-        atload'bindkey "^P" history-substring-search-up;
-            bindkey "^N" history-substring-search-down;
-            bindkey "^Y" autosuggest-accept' \
-            zsh-users/zsh-history-substring-search \
-        as"completion" \
-            OMZP::docker/_docker
-
-      zinit light-mode for \
-          pick"zsh-lazyload.zsh" \
-              qoomon/zsh-lazyload
-
       lazyload helm -- 'source <(helm completion zsh)'
-      lazyload k -- 'source <(kubectl completion zsh | sed "s/kubectl/k/")'
       lazyload stern -- 'source <(stern --completion=zsh)'
-    '' + lib.strings.fileContents ../../zsh/kubectl_aliases.zsh;
+      lazyload k -- 'source <(kubectl completion zsh | sed "s/kubectl/k/")'
+
+      [ -f "$HOME/.k8s_aliases.zsh" ] && source "$HOME/.k8s_aliases.zsh"
+    '';
     plugins = with pkgs; [
         {
             name = "zinit";
@@ -158,34 +168,43 @@
         cat = "bat";
         cdr = "cd-gitroot";
         cl = "clear";
-        gpw = "gopass";
         d = "dirs -v";
         dc = "dirs -c";
-        p = "own_push";
-        o = "own_pop";
-        n = "nvr -s";
-        s = "nvr -so";
-        v = "nvr -sO";
-        svim = "sudo -E $EDITOR";
-        li = "cd_in";
-        lo = "cd .. && l";
-        ls = "exa";
+        gpw = "gopass";
+        k = "kubectl";
+        krrdep = "kubectl rollout restart deployment";
+        krrds = "kubectl rollout restart daemonset";
+        krrsts = "kubectl rollout restart statefulset";
         l = "ls -lbF";
+        la = "ls -lbhHigUmuSa";
+        li = "cd_in";
         ll = "ls -la";
         llm = "ll --sort=modified";
-        la = "ls -lbhHigUmuSa";
-        lx = "ls -lbhHigUmuSa@";
+        lo = "cd .. && l";
+        ls = "exa";
         lS = "exa -1";
-        k = "kubectl";
+        lx = "ls -lbhHigUmuSa@";
+        g = "git";
+        n = "nvr -s";
+        o = "own_pop";
+        p = "own_push";
+        s = "nvr -so";
+        svim = "sudo -E $EDITOR";
         tree = "exa --tree";
+        tx = "tmuxp_fzf";
+        v = "nvr -sO";
     };
     shellGlobalAliases = {
-        WC = "| wc -l";
-        G = "| grep -i";
-        RG = "| rg ";
-        X = "| xargs ";
-        SED = "| sed -E";
         AWK = "| awk ";
         B64D = "| base64 -d";
+        G = "| grep -i";
+        J = " | jq";
+        KN = " -oyaml | kubectl neat";
+        RG = "| rg ";
+        SED = "| sed -E";
+        WC = "| wc -l";
+        X = "| xargs ";
+        Y = " | yq";
+        YN = " -oyaml | kubectl neat | yq";
     };
 }

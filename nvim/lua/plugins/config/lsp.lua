@@ -1,8 +1,6 @@
-local lsp_installer = require("nvim-lsp-installer")
-
 local servers = {
   "bashls",
-  "ccls",
+  "clang",
   -- "dotls",
   "dockerls",
   "gopls",
@@ -17,9 +15,8 @@ local servers = {
   "yamlls",
 }
 
-lsp_installer.setup({
-    automatic_installation = true,
-    ensure_installed = servers
+require('nvim-lsp-installer').setup({
+    automatic_installation = false,
 })
 
 for _, name in pairs(servers) do
