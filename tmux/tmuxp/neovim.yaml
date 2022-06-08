@@ -1,0 +1,12 @@
+---
+session_name: neovim
+windows:
+- focus: 'true'
+  layout: 83b5,221x63,0,0{110x63,0,0,0,110x63,111,0,1}
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: nvr -s
+  - blank
+  start_directory: '~/Projects/ea'
+  window_name: zsh

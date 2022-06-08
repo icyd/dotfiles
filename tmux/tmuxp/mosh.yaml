@@ -1,0 +1,21 @@
+---
+session_name: mosh
+environment:
+  LANG: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+windows:
+- focus: 'true'
+  layout: c562,272x65,0,0,5
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: mosh --family=inet --predict=never avazquez
+  start_directory: /Users/aj.vazquez
+  window_name: mosh
+- layout: c563,272x65,0,0,6
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: ssh -vND 18888 avazquez
+  start_directory: '~'
+  window_name: ssh-rev-pf

@@ -1,62 +1,119 @@
 {
-    description = "IcyD NixOS configuration";
-    inputs = {
-        home-manager = {
-            url = "github:nix-community/home-manager/release-21.11";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
-        nixpkgs.url = "nixpkgs/nixos-21.11";
-        nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-        nur.url = "github:nix-community/NUR";
+  description = "IcyD NixOS configuration";
+  inputs = {
+    nixpkgs.url = "github:NixOs/nixpkgs/nixos-21.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-21.11";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nur, ... }:
+    nur.url = "github:nix-community/NUR";
+    nixpkgs-darwin.url = "github:NixOs/nixpkgs/nixpkgs-21.11-darwin";
+    darwin = {
+      url = "github:lnl7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+    home-manager-darwin = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+    nix-colors.url = "github:misterio77/nix-colors";
+  };
+
+  outputs = {
+    self,
+    nixpkgs,
+    nixpkgs-unstable,
+    home-manager,
+    nur,
+    nixpkgs-darwin,
+    darwin,
+    home-manager-darwin,
+    nix-colors,
+    ...
+  }: let
+    stateVersion = "21.11";
+
+    nixpkgsConfig = { system }:
     let
+      stable = import nixpkgs { inherit system; };
+      unstable = import nixpkgs-unstable { inherit system; };
+    in {
+      config.allowUnfree = true;
+      overlays = [
+        (self: super: {
+          alacritty = unstable.alacritty;
+          neovim = unstable.neovim;
+          neovim-unwrapped = unstable.neovim-unwrapped;
+          tmuxPlugins = stable.tmuxPlugins // {
+            tmux-fzf = unstable.tmuxPlugins.tmux-fzf;
+            tmux-thumbs = unstable.tmuxPlugins.tmux-thumbs;
+          };
+          yq-go = unstable.yq-go;
+        })
+        nur.overlay
+      ];
+    };
+  in {
+    nixosConfigurations = let
+      host = "legionix5";
+      username = "beto";
+      system = "x86_64-linux";
+    in {
+      host = nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [
+          ({
+            nixpkgs = nixpkgsConfig { inherit system; };
+          })
+          ./nix/system/${host}/configuration.nix
+        ];
+        specialArgs = { inherit username; };
+      };
+    };
+
+    darwinConfigurations = let
+      host = "ES-IT00385";
+    in {
+      "${host}" = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        modules = [
+          ./nix/system/${host}/darwin-configuration.nix
+        ];
+      };
+    };
+
+    homeConfigurations = {
+      "beto" = let
         system = "x86_64-linux";
         username = "beto";
-        homeDirectory = "/home/${username}";
         email = "beto.v25@gmail.com";
-        unstable = import nixpkgs-unstable {
-            inherit system;
+      in home-manager.lib.homeManagerConfiguration {
+        inherit stateVersion system username;
+        homeDirectory = "/home/${username}";
+        extraSpecialArgs = { inherit email nix-colors; };
+        configuration = {
+          imports = [
+            ./nix/users/${username}/home.nix {}
+          ];
+          nixpkgs = nixpkgsConfig { inherit system; };
         };
-        pkgs = import nixpkgs {
-            inherit system;
+      };
+      "aj.vazquez" = let
+        system = "aarch64-darwin";
+        username = "aj.vazquez";
+        email = "avazquez@contractor.ea.com";
+      in home-manager-darwin.lib.homeManagerConfiguration {
+        inherit stateVersion system username;
+        homeDirectory = "/Users/${username}";
+        extraSpecialArgs = { inherit email nix-colors; };
+        configuration = {
+          imports = [
+            ./nix/users/${username}/home.nix {}
+          ];
+          nixpkgs = nixpkgsConfig { inherit system; };
         };
-        nixpkgs-config = {
-            overlays = [
-                (self: super: {
-                    neovim = unstable.neovim;
-                    neovim-unwrapped = unstable.neovim-unwrapped;
-                    tmuxPlugins = pkgs.tmuxPlugins // {
-                        tmux-thumbs = unstable.tmuxPlugins.tmux-thumbs;
-                    };
-                })
-                nur.overlay
-            ];
-            config.allowUnfree = true;
-        };
-    in {
-        nixosConfigurations = {
-            legionix5 = nixpkgs.lib.nixosSystem {
-                inherit system;
-                modules = [
-                    ({
-                        nixpkgs = nixpkgs-config;
-                    })
-                    ./nix/system/configuration.nix
-                ];
-                specialArgs = { inherit username; };
-            };
-        };
-        homeManagerConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-            inherit system username homeDirectory;
-            stateVersion = "21.11";
-            extraSpecialArgs = { inherit email; };
-            configuration = {
-                nixpkgs = nixpkgs-config;
-                imports = [
-                    ./nix/users/${username}/home.nix {}
-                ];
-            };
-        };
+      };
     };
+  };
 }

@@ -12,7 +12,7 @@ local disabled_built_ins = {
   'tar',
   'zipPlugin',
   'zip',
-  'netrwPlugin',
+  -- 'netrwPlugin',
 }
 
 for i, name in ipairs(disabled_built_ins) do
@@ -34,6 +34,8 @@ opt('o', 'background', 'dark')
 opt('o', 'clipboard', 'unnamedplus')
 opt('o', 'cmdheight', 2)
 opt('o', 'completeopt', 'menu,menuone,noselect')
+opt('o', 'conceallevel', 2)
+opt('o', 'concealcursor', 'nc')
 opt('o', 'diffopt', vim.o.diffopt..',vertical')
 opt('o', 'grepprg', 'rg --vimgrep --smart-case --follow')
 opt('o', 'hidden', true)
@@ -79,9 +81,9 @@ vim.opt.listchars = {
 opt('w', 'colorcolumn', '79')
 opt('w', 'cursorcolumn', false)
 opt('w', 'cursorline', false)
-opt('w', 'foldlevel', 99)
-opt('w', 'foldmethod', 'indent')
-opt('w', 'foldnestmax', 8)
+-- opt('w', 'foldlevel', 99)
+-- opt('w', 'foldmethod', 'expr')
+-- opt('w', 'foldnestmax', 8)
 opt('w', 'linebreak', true)
 opt('w', 'list', true)
 opt('w', 'number', true)

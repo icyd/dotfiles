@@ -18,6 +18,12 @@
         setopt no_global_rcs
         skip_global_compinit=1
         ZSH_DISABLE_COMPFIX="true"
+        # Bind gpg-agent to this TTY if gpg commands are used.
+        export GPG_TTY=$(tty)
+        # SSH agent protocol doesn't support changing TTYs, so bind the agent
+        # to every new TTY.
+        ${pkgs.gnupg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null
+        export SSH_AUTH_SOCK=$(${pkgs.gnupg}/bin/gpgconf --list-dirs agent-ssh-socket)
     '';
     history = {
         size = 10000;
@@ -115,6 +121,8 @@
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
       zpcompdef g='git'
+      autoload -Uz _zinit
+      (( ''${+_comps} )) && _comps[zinit]=_zinit
 
       zinit light-mode for \
         depth"1" \
@@ -134,8 +142,8 @@
         atload'bindkey "^P" history-substring-search-up;
             bindkey "^N" history-substring-search-down' \
             zsh-users/zsh-history-substring-search \
-        atinit"zicompinit; zicdreplay" \
-            zsh-users/zsh-syntax-highlighting \
+        atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+            zdharma-continuum/fast-syntax-highlighting \
         atload'_zsh_autosuggest_start;
             bindkey "^Y" autosuggest-accept' \
             zsh-users/zsh-autosuggestions \

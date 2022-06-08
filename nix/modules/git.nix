@@ -29,5 +29,8 @@
         pull = {
             rebase = false;
         };
+        include = {
+            path = "~/.gitalias";
+        };
     };
 }

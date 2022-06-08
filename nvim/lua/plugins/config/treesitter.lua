@@ -11,6 +11,7 @@ require'nvim-treesitter.configs'.setup {
         'lua',
         'make',
         'markdown',
+        'org',
         'python',
         'regex',
         'ruby',
@@ -18,9 +19,13 @@ require'nvim-treesitter.configs'.setup {
         'toml',
         'yaml',
     },
+    indent = {
+        enable = true
+    },
     highlight = {
         enable = true
     },
+    additional_vim_regex_highlighting = { 'org' },
     rainbow = {
         enable = true,
         extended_mode = true,

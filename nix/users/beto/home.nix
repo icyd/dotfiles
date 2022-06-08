@@ -1,18 +1,20 @@
-{ config, pkgs, lib, email, ... }:
+{ config, pkgs, lib, nix-colors, email, ... }:
 let
-    HOME = config.home.homeDirectory;
-    DOTFILES = "${HOME}/.dotfiles";
-in {
-    fonts.fontconfig.enable = true;
-    home = import ../../modules/home.nix { inherit config pkgs; };
-    programs.alacritty = import ../../modules/alacritty.nix {};
-    programs.bat = {
-        enable = true;
-        config = {
-            theme = "base16";
-        };
-    };
-    programs.broot.enable = true;
+    DOTFILES = "${conifg.home.homeDirectory}/.dotfiles";
+    mypkgs = with pkgs; [
+      binutils
+      cmake
+      ccls
+      docker
+      gcc
+      gcc-arm-embedded
+      gdb
+      sshfs
+      sumneko-lua-language-server
+      vifm
+    ];
+in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email; }) //
+{
     programs.firefox = {
         enable = true;
         profiles.default = {
@@ -24,11 +26,17 @@ in {
             nur.repos.rycee.firefox-addons.vimium
         ];
     };
+    programs.alacritty = import ../../modules/alacritty.nix { inherit config; };
+    programs.bat = {
+        enable = true;
+        config = { theme = "base16"; };
+    };
+    programs.broot.enable = true;
     programs.fzf = import ../../modules/fzf.nix { inherit lib; };
     programs.git = import ../../modules/git.nix { inherit email; };
-    programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
     programs.gpg.enable = true;
     programs.home-manager.enable = true;
+    programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
     programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs; };
     services = {
         gpg-agent = import ../../modules/services/gpg.nix { pinentryFlavor = "gtk2"; };
@@ -43,6 +51,7 @@ in {
         waybar.source = ../../../sway/waybar;
         wlogout.source = ../../../sway/wlogout;
         wofi.source = ../../../sway/wofi;
+        tmuxp.source = ../../../tmux/tmuxp;
         xkb.source = ../../../xkb;
     };
 }
