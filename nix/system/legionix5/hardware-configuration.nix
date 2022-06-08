@@ -25,6 +25,7 @@
         useOSProber = true;
       };
     };
+    supportedFilesystems = [ "ntfs" ];
   };
 
   fileSystems."/" =
@@ -63,6 +64,40 @@
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/52A4-44E6";
     fsType = "vfat";
+  };
+
+  fileSystems."/mnt/btrfs-pool" =
+    { device = "/dev/disk/by-uuid/62abb064-54c0-4c02-b5f0-5ca57ee8004a";
+    fsType = "btrfs";
+    options = [ "ssd" "noatime" "compress=zstd" ];
+    neededForBoot = false;
+  };
+
+  fileSystems."/mnt/win10" =
+    { device = "/dev/disk/by-uuid/D096A4B796A49F88";
+    fsType = "ntfs";
+    options = [ "defaults" "users" "uid=1000" "gid=1000" "fmast=0022" "dmask=0022"];
+    neededForBoot = false;
+  };
+
+  fileSystems."/home/beto/Downloads" =
+    { device = "/mnt/win10/Users/beto/Downloads";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/beto/Documents" =
+    { device = "/mnt/win10/Users/beto/Documents";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/beto/Pictures" =
+    { device = "/mnt/win10/Users/beto/Pictures";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/beto/Videos" =
+    { device = "/mnt/win10/Users/beto/Videos";
+    options = [ "bind" ];
   };
 
   swapDevices = [ ];

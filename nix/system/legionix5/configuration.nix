@@ -99,7 +99,9 @@
     papirus-icon-theme
     capitaine-cursors
     breeze-icons
+    nextcloud-client
     pavucontrol
+    okular
     unzip
     wget
     vim
