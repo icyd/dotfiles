@@ -1,19 +1,29 @@
-user ?= beto
+user ?= $(shell whoami)
 host ?= .\#
 standalone-channel ?= master
+uname_s := $(shell uname -s)
+uname_m := $(shell uname -m)
 all: hm nixos
 
 nixos:
+ifeq ($(uname_s), Darwin)
+	darwin-rebuild switch --flake $(host)
+else
 	sudo nixos-rebuild switch --flake $(host)
+endif
 
 nixos-build:
+ifeq ($(uname_s), Darwin)
+	darwin-rebuild build --flake $(host)
+else
 	nixos-rebuild build --flake $(host)
+endif
 
 hm: hm-build
 	./result/activate
 
 hm-build:
-	nix build .#homeManagerConfigurations.$(user).activationPackage
+	nix build .#homeConfigurations.\"$(user)\".activationPackage
 
 hm-standalone-install:
 	nix-channel --add https://github.com/nix-community/home-manager/archive/$(standalone-channel).tar.gz home-manager

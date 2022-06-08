@@ -127,7 +127,7 @@ return packer.startup({
                 { 'rafamadriz/friendly-snippets', after = 'nvim-cmp' },
                 { 'hrsh7th/cmp-vsnip', after = { 'nvim-cmp', 'vim-vsnip-integ' } },
             },
-            event = { 'BufReadPre', 'CmdwinEnter' },
+            -- event = { 'BufReadPre', 'CmdwinEnter' },
             config = [[ require('plugins.config.completion') ]]
         }
         -- DAP
@@ -190,12 +190,10 @@ return packer.startup({
         -- -- Syntax
         use {
             'sheerun/vim-polyglot',
-            event = 'BufRead',
         }
         -- Treesitter
         use {
             'nvim-treesitter/nvim-treesitter',
-            event = 'BufRead',
             run = ':TSUpdate',
             config = [[ require('plugins.config.treesitter') ]]
         }
@@ -314,6 +312,11 @@ return packer.startup({
             'vimwiki/vimwiki',
             config = [[ require('plugins.config.vimwiki') ]],
             requires = { { 'mattn/calendar-vim' }, cmd = "Calendar" }
+        }
+        -- Org-mode
+        use {
+            'nvim-orgmode/orgmode',
+            config = [[ require('plugins.config.orgmode') ]],
         }
         -- Rooter
         use {

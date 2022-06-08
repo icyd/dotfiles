@@ -84,6 +84,7 @@
   o = checkout
   p = pull
   s = status
+  t = tag
   w = whatchanged
 
   ##
@@ -147,6 +148,9 @@
 
   # checkout - update the working tree to match a branch or paths. [same as "o" for "out"]
   co = checkout
+  om = checkout master
+  ob = checkout -b
+  omiw = checkout master --ignore-other-worktrees
   cong = checkout --no-guess
 
   ### cherry-pick aliases ###
@@ -187,6 +191,8 @@
 
   # Fetch all remotes and use verbose output
   fav = fetch --all --verbose
+
+  fat = fetch --all --tags
 
   ### grep aliases ###
 
@@ -509,6 +515,11 @@
 
   # Last annotated tag in all branches
   last-tagged = !git describe --tags `git rev-list --tags --max-count=1`
+
+  # Push given tag to origin
+  pt = !git push `git remote`
+  # Push last tag to origin
+  plt = !git push `git remote` `git describe --tags --abbrev=0`
 
   # From https://gist.github.com/492227
   heads = !"git log origin/main.. --format='%Cred%h%Creset;%C(yellow)%an%Creset;%H;%Cblue%f%Creset' | git name-rev --stdin --always --name-only | column -t -s';'"
@@ -1148,7 +1159,9 @@
 
   # Do a push/pull for just one branch
   push1 = "!git push origin $(git current-branch)"
+  pushf = "!git push origin $(git current-branch) --force"
   pull1 = "!git pull origin $(git current-branch)"
+  pullf = "!git pull origin $(git current-branch) --force"
 
   # Track and untrack, with default parameters, and with printing the command
   track = "!f(){ branch=$(git rev-parse --abbrev-ref HEAD); cmd=\"git branch $branch -u ${1:-origin}/${2:-$branch}\"; echo $cmd; $cmd; }; f"
@@ -1368,6 +1381,13 @@
   branches = branch -a
   tags = tag -n1 --list
   stashes = stash list
+  sta = stash push
+  staa = stash apply
+  stc = stash clear
+  std = stash drop
+  stp = stash pop
+  stl = stash list
+  sts = stash show --text
 
 
   ### Shell scripting aliases ###

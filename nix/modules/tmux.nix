@@ -6,6 +6,7 @@ in {
     aggressiveResize = true;
     baseIndex = 1;
     clock24 = true;
+    terminal = "tmux-256color";
     escapeTime = 0;
     keyMode = "vi";
     historyLimit = 10000;
@@ -14,12 +15,6 @@ in {
     tmuxp.enable = true;
     extraConfig = lib.strings.fileContents ../../tmux/tmux.conf;
     plugins = with pkgs.tmuxPlugins; [
-        logging
-        sessionist
-        tmux-fzf
-        fzf-tmux-url
-        jump
-        better-mouse-mode
         {
             plugin = prefix-highlight;
             extraConfig = ''
@@ -47,6 +42,11 @@ in {
         {
             plugin = battery;
             extraConfig = ''
+                set -g @batt_icon_status_charged ''
+                set -g @batt_icon_status_charging ''
+                set -g @batt_icon_status_discharging ''
+                set -g @batt_icon_status_attached ''
+                set -g @batt_icon_status_unknown ''
                 set -g @batt_color_full_charge "#[fg=green]"
                 set -g @batt_color_high_charge "#[fg=green]"
                 set -g @batt_color_medium_charge "#[fg=orange]"
@@ -84,6 +84,7 @@ in {
         {
             plugin = tmux-thumbs;
             extraConfig = ''
+                set -g @thumbs-key F
                 set -g @thumbs-alphabet dvorak-homerow
             '';
         }
@@ -94,5 +95,18 @@ in {
                 set -g @gopass-pane-percentage 20
             '';
         })
+        better-mouse-mode
+        jump
+        fzf-tmux-url
+        {
+         plugin = tmux-fzf;
+         extraConfig = ''
+             TMUX_FZF_PREVIEW=0
+             TMUX_FZF_LAUNCH_KEY="C-f"
+         '';
+        }
+        logging
+        sessionist
+        yank
     ];
 }

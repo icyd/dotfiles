@@ -1,6 +1,6 @@
 local servers = {
   "bashls",
-  "clang",
+  "clangd",
   -- "dotls",
   "dockerls",
   "gopls",

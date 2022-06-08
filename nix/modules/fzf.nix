@@ -24,7 +24,7 @@ in {
     enable = true;
     enableBashIntegration = false;
     enableFishIntegration = false;
-    enableZshIntegration = false;
+    enableZshIntegration = true;
     defaultCommand = fzfDefaultCmd;
     defaultOptions = fzfDefaultOpts;
     fileWidgetCommand = "${fzfDefaultCmd} --type d";
