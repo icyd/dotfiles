@@ -60,7 +60,7 @@
       username = "beto";
       system = "x86_64-linux";
     in {
-      host = nixpkgs.lib.nixosSystem {
+      ${host} = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
           ({

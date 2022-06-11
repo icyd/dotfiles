@@ -1,6 +1,6 @@
 { config, pkgs, lib, nix-colors, email, ... }:
 let
-    DOTFILES = "${conifg.home.homeDirectory}/.dotfiles";
+    DOTFILES = "${config.home.homeDirectory}/.dotfiles";
     mypkgs = with pkgs; [
       binutils
       cmake
