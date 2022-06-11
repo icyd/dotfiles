@@ -12,7 +12,6 @@ return packer.startup({
             opt = true
         }
         -- Optimizations
-        use 'nathom/filetype.nvim'
         use 'lewis6991/impatient.nvim'
         use {
             'dstein64/vim-startuptime',
@@ -24,9 +23,9 @@ return packer.startup({
             config = function()
                 local default_colors = require('kanagawa.colors').setup()
                 require('kanagawa').setup({
-                        colors = {
-                            bg_visual = default_colors.waveBlue2
-                        }
+                    colors = {
+                        bg_visual = default_colors.waveBlue2
+                    }
                 })
                 vim.opt.background = "dark"
                 vim.cmd([[colorscheme kanagawa]])
@@ -52,24 +51,23 @@ return packer.startup({
                 config = [[ require('plugins.config.lsp') ]]
             }
         }
-        -- -- Fuzzy finder LSP client
+        -- Fuzzy finder LSP client
         use {
             'junegunn/fzf.vim',
             requires = {
                 'junegunn/fzf',
+                {
+                    'ojroques/nvim-lspfuzzy',
+                    event = 'BufReadPre',
+                    config = function()
+                        require('lspfuzzy').setup {}
+                    end
+                }
             },
             config = function()
                 vim.cmd([[command! -bang -nargs=* Rg call ]]..
-                [[fzf#vim#grep('rg --column --line-number --no-heading --color=always ]]..
-                [[--smart-case -- '.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
-            end
-        }
-        use {
-            'ojroques/nvim-lspfuzzy',
-            event = 'BufReadPre',
-            after = 'fzf.vim',
-            config = function()
-                require('lspfuzzy').setup {}
+                    [[fzf#vim#grep('rg --column --line-number --no-heading --color=always ]]..
+                    [[--smart-case -- '.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
             end
         }
         -- Telescope
@@ -86,13 +84,13 @@ return packer.startup({
                         require('telescope').load_extension('fzf')
                     end
                 },
-                {
-                    'nvim-telescope/telescope-ui-select.nvim',
-                    after = 'telescope.nvim',
-                    config = function()
-                        require('telescope').load_extension('ui-select')
-                    end
-                },
+                        {
+                            'nvim-telescope/telescope-ui-select.nvim',
+                            after = 'telescope.nvim',
+                            config = function()
+                                require('telescope').load_extension('ui-select')
+                            end
+                        },
                 {
                     'nvim-telescope/telescope-project.nvim',
                     after = 'telescope.nvim',
@@ -100,34 +98,40 @@ return packer.startup({
                         require('telescope').load_extension('project')
                     end
                 },
-                {
-                    'nvim-telescope/telescope-dap.nvim',
-                    after = { 'telescope.nvim', 'nvim-dap' },
-                    config = function()
-                        require('telescope').load_extension('dap')
-                    end
-                },
+                        {
+                            'nvim-telescope/telescope-dap.nvim',
+                            after = { 'telescope.nvim', 'nvim-dap' },
+                            config = function()
+                                require('telescope').load_extension('dap')
+                            end
+                        },
             },
-            cmd = 'Telescope',
-            module = 'telescope',
-            keys = { '<leader>f', '<leader>g', '<localleader>f', '<leader>b'},
+                cmd = 'Telescope',
+                module = 'telescope',
+                keys = { '<leader>f', '<leader>g', '<localleader>f', '<leader>b'},
             config = [[ require('plugins.config.telescope') ]]
         }
         -- Completion
         use {
             'hrsh7th/nvim-cmp',
+            event = { 'CmdLineEnter', 'InsertEnter' },
             requires = {
                 { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
                 { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
                 { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' },
+                { 'dmitmel/cmp-cmdline-history', after = 'nvim-cmp' },
                 { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' },
                 { 'quangnguyen30192/cmp-nvim-tags', after = 'nvim-cmp' },
-                { 'hrsh7th/vim-vsnip', after = 'nvim-cmp' },
-                { 'hrsh7th/vim-vsnip-integ', after = 'nvim-cmp' },
-                { 'rafamadriz/friendly-snippets', after = 'nvim-cmp' },
-                { 'hrsh7th/cmp-vsnip', after = { 'nvim-cmp', 'vim-vsnip-integ' } },
+                {
+                    'L3MON4D3/LuaSnip',
+                    after = 'nvim-cmp',
+                    config = function()
+                        require('luasnip.loaders.from_snipmate').lazy_load()
+                    end
+                },
+                { 'honza/vim-snippets', after = 'nvim-cmp' },
+                { 'saadparwaiz1/cmp_luasnip', after = { 'LuaSnip', 'nvim-cmp' } },
             },
-            -- event = { 'BufReadPre', 'CmdwinEnter' },
             config = [[ require('plugins.config.completion') ]]
         }
         -- DAP
@@ -165,7 +169,6 @@ return packer.startup({
                     end
                 },
             },
-            module = 'dap',
             keys = '<leader>d',
             config = [[ require('plugins.config.dap') ]]
         }
@@ -178,19 +181,27 @@ return packer.startup({
         -- Bracket mapping
         use {
             'tpope/vim-unimpaired',
+            event = 'BufRead',
             keys = { '[', ']' }
         }
         -- Indentation by vim object
         use {
             'michaeljsmith/vim-indent-object',
+            event = 'BufRead',
             keys = require('utils').get_keys({'n', 'o', 'v'}, {{'a', 'i'}, {'i', 'I'}})
         }
         -- Repeat plugins commands
-        use 'tpope/vim-repeat'
-        -- -- Syntax
         use {
-            'sheerun/vim-polyglot',
+            'tpope/vim-repeat',
+            event = 'BufRead',
         }
+        -- Syntax
+        -- use {
+        --     'sheerun/vim-polyglot',
+        --     setup = function()
+        --         vim.g.polyglot_disabled = { 'org' }
+        --     end
+        -- }
         -- Treesitter
         use {
             'nvim-treesitter/nvim-treesitter',
@@ -198,24 +209,24 @@ return packer.startup({
             config = [[ require('plugins.config.treesitter') ]]
         }
         --- Rainbow parenthesis
-        use {
-            'p00f/nvim-ts-rainbow',
-            event = 'BufRead'
-        }
+        use 'p00f/nvim-ts-rainbow'
         -- Mark indentation column
         use {
-             'Yggdroot/indentLine',
-             event = 'BufRead',
-             config = function()
+            'Yggdroot/indentLine',
+            event = 'BufRead',
+            config = function()
                 vim.g.indentLine_char_list = {'|', '¦', '┆', '┊'}
                 vim.g.indentLine_fileTypeExclude = {"fzf", "dashboard", "packer"}
             end
         }
-        -- -- Easy motion
+        -- Easy motion
         use {
             'phaazon/hop.nvim',
             module = 'hop',
-            config = [[ require('plugins.config.hop') ]]
+            config = function()
+                require('hop').setup{winblend=0.85}
+            end,
+            setup = [[ require('plugins.config.hop') ]]
         }
         -- Git
         use {
@@ -234,9 +245,9 @@ return packer.startup({
             cmd = 'TagbarToggle'
         }
         use {
-             'ludovicchabant/vim-gutentags',
-             event = 'BufWritePost',
-             config = [[ require('plugins.config.gutentags') ]]
+            'ludovicchabant/vim-gutentags',
+            event = 'BufRead',
+            config = [[ require('plugins.config.gutentags') ]]
         }
         -- Quickterm
         use {
@@ -259,6 +270,7 @@ return packer.startup({
         -- Star search in visual mode
         use {
             'bronson/vim-visual-star-search',
+            event = 'BufRead',
             keys = '*'
         }
         -- Surrond brackets
@@ -267,14 +279,14 @@ return packer.startup({
             event = 'InsertEnter'
         }
         -- Session management
-        -- use {
-        --     'dhruvasagar/vim-prosession',
-        --     disable = true,
-        --     requires = { 'tpope/vim-obsession', disable = true },
-        --     config = function()
-        --         vim.g.prosession_dir = os.getenv("XDG_DATA_HOME") .. "/nvim/sessions/"
-        --     end
-        -- }
+        use {
+            'dhruvasagar/vim-prosession',
+            requires = { 'tpope/vim-obsession', after = 'vim-prosession' },
+            cmd = { 'Prossesion', 'ProsessionDelete', 'ProsessionClean' },
+            config = function()
+                vim.g.prosession_dir = os.getenv('HOME') .. '/.local/share/nvim/sessions/'
+            end
+        }
         -- Comment plugin
         use {
             'tomtom/tcomment_vim',
@@ -300,23 +312,23 @@ return packer.startup({
             'iamcco/markdown-preview.nvim',
             config = [[ require('plugins.config.markdown') ]],
             ft = { 'markdown', 'vimwiki', 'pandoc' },
-            run='cd app && yarn install'
+            run='cd app && npm install'
         }
-        use {
-            'vim-pandoc/vim-pandoc',
-            ft = { 'markdown', 'pandoc' },
-            requires = { { 'vim-pandoc/vim-pandoc-syntax' } },
-            config = [[ require('plugins.config.pandoc') ]]
-        }
+        -- -- use {
+        -- --     'vim-pandoc/vim-pandoc',
+        -- --     ft = { 'markdown', 'pandoc' },
+        -- --     requires = { { 'vim-pandoc/vim-pandoc-syntax' } },
+        -- --     config = [[ require('plugins.config.pandoc') ]]
+        -- -- }
         use {
             'vimwiki/vimwiki',
             config = [[ require('plugins.config.vimwiki') ]],
-            requires = { { 'mattn/calendar-vim' }, cmd = "Calendar" }
+            keys = { '<leader>Ww' },
         }
         -- Org-mode
         use {
             'nvim-orgmode/orgmode',
-            config = [[ require('plugins.config.orgmode') ]],
+            config = [[ require('plugins.config.orgmode') ]]
         }
         -- Rooter
         use {
@@ -327,7 +339,6 @@ return packer.startup({
         -- Tmux
         use {
             'aserowy/tmux.nvim',
-            event = 'VimEnter',
             config = [[ require('plugins.config.tmux') ]]
         }
         -- Test runner
@@ -345,6 +356,7 @@ return packer.startup({
         use {
             'sickill/vim-pasta',
             keys = { ',p', ',P' },
+            event = 'BufRead',
             config = function()
                 vim.g.pasta_paste_before_mapping = ',P'
                 vim.g.pasta_paste_after_mapping = ',p'

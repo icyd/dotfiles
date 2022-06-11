@@ -1,5 +1,4 @@
 vim.opt.shadafile = 'NONE'
-vim.g.did_load_filetypes = 1
 pcall(require, 'impatient')
 require('settings')
 require('keybindings')

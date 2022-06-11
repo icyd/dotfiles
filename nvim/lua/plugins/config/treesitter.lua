@@ -20,12 +20,12 @@ require'nvim-treesitter.configs'.setup {
         'yaml',
     },
     indent = {
-        enable = true
+        enable = true,
     },
     highlight = {
-        enable = true
+        enable = true,
+        additional_vim_regex_highlighting = { 'org' },
     },
-    additional_vim_regex_highlighting = { 'org' },
     rainbow = {
         enable = true,
         extended_mode = true,
