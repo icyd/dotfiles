@@ -1,4 +1,4 @@
-{ config, pkgs, lib, username, ... }: {
+{ config, pkgs, lib, username, stateVersion, ... }: {
   imports = [
     ./hardware-configuration.nix
   ];
@@ -142,6 +142,7 @@
     };
   };
   services = {
+    gnome.gnome-keyring.enable = true;
     gvfs.enable = true;
     xserver = {
       enable = true;
@@ -217,7 +218,7 @@
     # rollback results in sudo lectures after each reboot
     Defaults lecture = never
   '';
-  system.stateVersion = "21.11";
+  system.stateVersion = stateVersion;
   systemd.tmpfiles.rules = [
     "L /var/lib/NetworkManager/secret_key - - - - /persist/var/lib/NetworkManager/secret_key"
     "L /var/lib/NetworkManager/seen-bssids - - - - /persist/var/lib/NetworkManager/seen-bssids"
