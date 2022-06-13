@@ -9,7 +9,7 @@ nixos:
 ifeq ($(uname_s), Darwin)
 	darwin-rebuild switch --flake $(host)
 else
-	sudo nixos-rebuild switch --flake $(host)
+	nixos-rebuild switch --flake $(host) --use-remote-sudo
 endif
 
 nixos-build:

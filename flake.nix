@@ -1,14 +1,14 @@
 {
   description = "IcyD NixOS configuration";
   inputs = {
-    nixpkgs.url = "github:NixOs/nixpkgs/nixos-21.11";
+    nixpkgs.url = "github:NixOs/nixpkgs/nixos-22.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-21.11";
+      url = "github:nix-community/home-manager/release-22.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
-    nixpkgs-darwin.url = "github:NixOs/nixpkgs/nixpkgs-21.11-darwin";
+    nixpkgs-darwin.url = "github:NixOs/nixpkgs/nixpkgs-22.05-darwin";
     darwin = {
       url = "github:lnl7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
@@ -32,7 +32,7 @@
     nix-colors,
     ...
   }: let
-    stateVersion = "21.11";
+    stateVersion = "22.05";
 
     nixpkgsConfig = { system }:
     let
@@ -42,14 +42,6 @@
       config.allowUnfree = true;
       overlays = [
         (self: super: {
-          alacritty = unstable.alacritty;
-          neovim = unstable.neovim;
-          neovim-unwrapped = unstable.neovim-unwrapped;
-          tmuxPlugins = stable.tmuxPlugins // {
-            tmux-fzf = unstable.tmuxPlugins.tmux-fzf;
-            tmux-thumbs = unstable.tmuxPlugins.tmux-thumbs;
-          };
-          yq-go = unstable.yq-go;
         })
         nur.overlay
       ];
@@ -68,7 +60,7 @@
           })
           ./nix/system/${host}/configuration.nix
         ];
-        specialArgs = { inherit username; };
+        specialArgs = { inherit username stateVersion; };
       };
     };
 

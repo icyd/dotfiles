@@ -196,12 +196,15 @@ return packer.startup({
             event = 'BufRead',
         }
         -- Syntax
-        -- use {
-        --     'sheerun/vim-polyglot',
-        --     setup = function()
-        --         vim.g.polyglot_disabled = { 'org' }
-        --     end
-        -- }
+        use {
+            'sheerun/vim-polyglot',
+            ft = {
+                'nix'
+            },
+            setup = function()
+                vim.g.polyglot_disabled = { 'ftdetect' }
+            end
+        }
         -- Treesitter
         use {
             'nvim-treesitter/nvim-treesitter',
@@ -323,12 +326,15 @@ return packer.startup({
         use {
             'vimwiki/vimwiki',
             config = [[ require('plugins.config.vimwiki') ]],
-            keys = { '<leader>Ww' },
+            -- keys = { '<leader>Ww' },
         }
         -- Org-mode
         use {
             'nvim-orgmode/orgmode',
-            config = [[ require('plugins.config.orgmode') ]]
+            config = [[ require('plugins.config.orgmode') ]],
+            requires = {
+                'akinsho/org-bullets.nvim',
+            }
         }
         -- Rooter
         use {
