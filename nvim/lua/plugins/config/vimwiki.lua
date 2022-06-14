@@ -8,5 +8,5 @@ vim.g.vimwiki_list = {
         ext = '.md',
     }
 }
-vim.g.vimwiki_filetypes = {'markdown', 'pandoc'}
+vim.g.vimwiki_filetypes = {'markdown'}
 vim.g.vimwiki_map_prefix = '<leader>W'

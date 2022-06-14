@@ -108,6 +108,7 @@
   ];
   i18n.defaultLocale = "en_US.UTF-8";
   hardware = {
+    bluetooth.enable = true;
     enableAllFirmware = true;
     opengl = {
       enable = true;
@@ -142,6 +143,7 @@
     };
   };
   services = {
+    blueman.enable = true;
     gnome.gnome-keyring.enable = true;
     gvfs.enable = true;
     xserver = {
@@ -194,6 +196,7 @@
       kanshi
       mako
       mediainfo
+      networkmanagerapplet
       vimiv-qt
       xfce.ristretto
       xwayland
