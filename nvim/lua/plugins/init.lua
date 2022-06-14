@@ -1,4 +1,5 @@
 local ok, packer = pcall(require, 'plugins.bootstrap')
+local augroup = require('utils').augroup
 
 if not ok then return end
 
@@ -198,11 +199,11 @@ return packer.startup({
         -- Syntax
         use {
             'sheerun/vim-polyglot',
-            ft = {
-                'nix'
-            },
             setup = function()
-                vim.g.polyglot_disabled = { 'ftdetect' }
+                vim.g.polyglot_disabled = {
+                    'ftdetect',
+                    'org',
+                }
             end
         }
         -- Treesitter
@@ -334,6 +335,10 @@ return packer.startup({
             config = [[ require('plugins.config.orgmode') ]],
             requires = {
                 'akinsho/org-bullets.nvim',
+                {
+                    'ranjithshegde/orgWiki.nvim',
+                    config = [[ require('plugins.config.orgwiki') ]],
+                },
             }
         }
         -- Rooter
@@ -391,6 +396,21 @@ return packer.startup({
         use {
             'glepnir/dashboard-nvim',
             config = [[ require('plugins.config.dashboard') ]]
+        }
+        use {
+            'dhruvasagar/vim-table-mode',
+            keys = { '<leader>tm' },
+            fn = 'TableModeToggle',
+            config = function()
+                vim.g.vimwiki_table_auto_fmt=0
+                augroup('markdown_table', {
+                    "BufRead,BufFilePre,BufNewFile *.md let g:table_mode_corner='|'"
+                })
+            end
+        }
+        use {
+            'michaelb/sniprun',
+            run = 'bash install.sh',
         }
     end,
 })
