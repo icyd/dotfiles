@@ -24,6 +24,7 @@ in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors em
         };
         extensions = with pkgs; [
             nur.repos.rycee.firefox-addons.vimium
+            nur.repos.rycee.firefox-addons.gopass-bridge
         ];
     };
     programs.alacritty = import ../../modules/alacritty.nix { inherit config; };

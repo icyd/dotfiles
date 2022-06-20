@@ -197,14 +197,20 @@ return packer.startup({
             event = 'BufRead',
         }
         -- Syntax
+        -- use {
+        --     'sheerun/vim-polyglot',
+        --     setup = function()
+        --         vim.g.polyglot_disabled = {
+        --             'ftdetect',
+        --             'org',
+        --             'org.plugin',
+        --         }
+        --     end
+        -- }
+        use 'towolf/vim-helm'
         use {
-            'sheerun/vim-polyglot',
-            setup = function()
-                vim.g.polyglot_disabled = {
-                    'ftdetect',
-                    'org',
-                }
-            end
+            'LnL7/vim-nix',
+            ft = 'nix',
         }
         -- Treesitter
         use {
@@ -327,7 +333,7 @@ return packer.startup({
         use {
             'vimwiki/vimwiki',
             config = [[ require('plugins.config.vimwiki') ]],
-            -- keys = { '<leader>Ww' },
+            keys = { '<leader>Ww', '<leader>W<leader>w' },
         }
         -- Org-mode
         use {
@@ -411,6 +417,7 @@ return packer.startup({
         use {
             'michaelb/sniprun',
             run = 'bash install.sh',
+            cmd = 'SnipRun'
         }
     end,
 })

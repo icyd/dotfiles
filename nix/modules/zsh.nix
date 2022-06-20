@@ -55,7 +55,7 @@
 
       clear-scrollback-and-screen () {
         zle clear-screen
-        tmux clear-history
+        [ ! -z $TMUX ] && tmux clear-history
       }
       zle -N clear-scrollback-and-screen
       zle -N edit-command-line
