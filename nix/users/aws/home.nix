@@ -2,20 +2,15 @@
 let
     DOTFILES = "${config.home.homeDirectory}/.dotfiles";
     mypkgs = with pkgs; [
-      reattach-to-user-namespace
+      binutils
+      cmake
+      ccls
+      gcc
+      gdb
+      vifm
     ];
-    mypaths = [
-        "/opt/homebrew/bin"
-    ];
-    sessionVars = {
-        LANG = "en_US.UTF-8";
-        LC_ALL = "en_US.UTF-8";
-    };
-in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email mypkgs mypaths sessionVars; }) // {
-    xdg.configFile = {
-        nvim.source = config.lib.file.mkOutOfStoreSymlink "${DOTFILES}/nvim";
-    };
-    programs.alacritty = import ../../modules/alacritty.nix { inherit config; };
+in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email; }) //
+{
     programs.bat = {
         enable = true;
         config = { theme = "base16"; };
@@ -26,7 +21,4 @@ in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors em
     programs.home-manager.enable = true;
     programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
     programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs; };
-    xdg.configFile = {
-        tmuxp.source = ../../../tmux/tmuxp;
-    };
 }

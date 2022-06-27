@@ -1,4 +1,4 @@
-{ config, lib, pkgs, nix-colors, email, mypkgs ? [], mypaths ? [] }:
+{ config, lib, pkgs, nix-colors, email, mypkgs ? [], mypaths ? [], sessionVars ? {} }:
 let
     XDG = config.xdg;
 in {
@@ -69,5 +69,5 @@ in {
         XDG_CONFIG_HOME = "${XDG.configHome}";
         ZSH_CACHE_DIR = "$HOME/.cache/zsh";
         ZSH_CONFIG = "${XDG.configHome}/zsh";
-    };
+    } // sessionVars;
 }

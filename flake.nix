@@ -62,6 +62,16 @@
         ];
         specialArgs = { inherit username stateVersion; };
       };
+      aws = nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [
+          ({
+            nixpkgs = nixpkgsConfig { inherit system; };
+          })
+          ./nix/system/aws/configuration.nix
+        ];
+        specialArgs = { inherit username stateVersion; };
+      };
     };
 
     darwinConfigurations = let
@@ -70,7 +80,7 @@
       "${host}" = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         modules = [
-          ./nix/system/${host}/darwin-configuration.nix
+          ./nix/system/darwin/darwin-configuration.nix
         ];
       };
     };
@@ -102,6 +112,21 @@
         configuration = {
           imports = [
             ./nix/users/${username}/home.nix {}
+          ];
+          nixpkgs = nixpkgsConfig { inherit system; };
+        };
+      };
+      "aws" = let
+        system = "x86_64-linux";
+        username = "root";
+        email = "avazquez@contractor.ea.com";
+      in home-manager-darwin.lib.homeManagerConfiguration {
+        inherit stateVersion system username;
+        homeDirectory = "/root";
+        extraSpecialArgs = { inherit email nix-colors; };
+        configuration = {
+          imports = [
+            ./nix/users/aws/home.nix {}
           ];
           nixpkgs = nixpkgsConfig { inherit system; };
         };
