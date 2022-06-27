@@ -23,7 +23,10 @@
             options = "--delete-older-than 30d";
         };
     };
-    time.timeZone = "Europe/Madrid";
     programs.tmux.enable = true;
     programs.zsh.enable = true;
+    services.openssh = {
+        enable = true;
+    };
+    time.timeZone = "Europe/Madrid";
 }
