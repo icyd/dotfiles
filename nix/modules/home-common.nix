@@ -1,7 +1,4 @@
-{ config, lib, pkgs, nix-colors, email, mypkgs ? [], mypaths ? [], sessionVars ? {} }:
-let
-    XDG = config.xdg;
-in {
+{ config, lib, pkgs, nix-colors, email, mypkgs ? [], mypaths ? [], sessionVars ? {} }: {
     imports = [
       nix-colors.homeManagerModule
     ];
@@ -19,42 +16,29 @@ in {
         "$CARGO_HOME/bin"
         "$GOPATH/bin"
         "$HOME/.local/bin/"
-        "$KREW_ROOT/bin"
+        "$HOME/.krew/bin"
     ] ++ mypaths;
     home.packages = with pkgs; [
       asdf-vm
-      dive
       exa
-      (pkgs.callPackage ./go/gig/default.nix {})
       fd
-      gcc
-      gdb
-      go_1_17
-      gopass
-      gopass-jsonapi
       krew
       kubectl
       kubernetes-helm
       hyperfine
       jq
       jdk11
-      mosh
       neovim
       neovim-remote
       nodejs
       python3Minimal
       ripgrep
-      rustup
-      rust-analyzer
       stern
       tree-sitter
       universal-ctags
       yq-go
     ] ++ mypkgs;
     home.sessionVariables = {
-        ASDF_CONFIG_FILE = "${XDG.configHome}/asdf/asdfrc";
-        ASDF_DATA_DIR = "${XDG.dataHome}/asdf";
-        ASDF_DIR="$HOME/.asdf";
         BROWSER = "firefox";
         DOTFILES = "$HOME/.dotfiles";
         GOPATH = "$HOME/go";
@@ -66,8 +50,8 @@ in {
         PY_VENV = "$HOME/.venv";
         VIMWIKI_HOME = "$HOME/Nextcloud";
         WINEDLLOVERRIDES = "winemenubuilder.exe=d";
-        XDG_CONFIG_HOME = "${XDG.configHome}";
+        XDG_CONFIG_HOME = "${config.xdg.configHome}";
         ZSH_CACHE_DIR = "$HOME/.cache/zsh";
-        ZSH_CONFIG = "${XDG.configHome}/zsh";
+        ZSH_CONFIG = "${config.xdg.configHome}/zsh";
     } // sessionVars;
 }

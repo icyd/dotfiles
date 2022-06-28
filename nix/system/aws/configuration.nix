@@ -1,4 +1,4 @@
-{ modulesPath, pkgs, ... }: {
+{ config, pkgs, username, stateVersion, modulesPath, ... }: {
     imports = [ "${modulesPath}/virtualisation/amazon-image.nix" ];
     ec2.hvm = true;
     environment.systemPackages = with pkgs; [
@@ -23,10 +23,10 @@
             options = "--delete-older-than 30d";
         };
     };
+    programs.mosh.enable = true;
     programs.tmux.enable = true;
     programs.zsh.enable = true;
-    services.openssh = {
-        enable = true;
-    };
+    system.stateVersion = stateVersion;
     time.timeZone = "Europe/Madrid";
+    users.defaultUserShell = pkgs.zsh;
 }

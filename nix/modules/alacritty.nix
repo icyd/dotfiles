@@ -110,7 +110,7 @@ in {
     };
     window = {
         decorations = "none";
-        startup_mode = "Maximized";
+        startup_mode = "Fullscreen";
         padding = { x = 5; y = 5; };
     };
   };
