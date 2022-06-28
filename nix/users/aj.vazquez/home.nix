@@ -2,6 +2,14 @@
 let
     DOTFILES = "${config.home.homeDirectory}/.dotfiles";
     mypkgs = with pkgs; [
+      dive
+      (pkgs.callPackage ../../modules/go/gig/default.nix {})
+      go_1_17
+      gopass
+      gopass-jsonapi
+      mosh
+      rustup
+      rust-analyzer
       reattach-to-user-namespace
     ];
     mypaths = [
@@ -12,9 +20,6 @@ let
         LC_ALL = "en_US.UTF-8";
     };
 in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email mypkgs mypaths sessionVars; }) // {
-    xdg.configFile = {
-        nvim.source = config.lib.file.mkOutOfStoreSymlink "${DOTFILES}/nvim";
-    };
     programs.alacritty = import ../../modules/alacritty.nix { inherit config; };
     programs.bat = {
         enable = true;
@@ -27,6 +32,7 @@ in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors em
     programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
     programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs; };
     xdg.configFile = {
+        nvim.source = config.lib.file.mkOutOfStoreSymlink "${DOTFILES}/nvim";
         tmuxp.source = ../../../tmux/tmuxp;
     };
 }

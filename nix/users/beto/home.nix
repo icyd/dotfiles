@@ -5,15 +5,23 @@ let
       binutils
       cmake
       ccls
+      dive
       docker
+      (pkgs.callPackage ../../modules/go/gig/default.nix {})
       gcc
       gcc-arm-embedded
       gdb
+      go_1_17
+      gopass
+      gopass-jsonapi
+      mosh
+      rustup
+      rust-analyzer
       sshfs
       sumneko-lua-language-server
       vifm
     ];
-in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email; }) //
+in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email mypkgs; }) //
 {
     programs.firefox = {
         enable = true;

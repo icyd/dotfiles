@@ -1,4 +1,15 @@
-{ lib, pkgs }: {
+{ lib, pkgs, gpgInit ? true }:
+let
+    envExtraGPG = if !gpgInit then "" else ''
+        # Bind gpg-agent to this TTY if gpg commands are used.
+        export GPG_TTY=$(tty)
+        # SSH agent protocol doesn't support changing TTYs, so bind the agent
+        # to every new TTY.
+        ${pkgs.gnupg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null
+        export SSH_AUTH_SOCK=$(${pkgs.gnupg}/bin/gpgconf --list-dirs agent-ssh-socket)
+    '';
+
+in {
     enable = true;
     autocd = true;
     enableAutosuggestions = false;
@@ -18,13 +29,7 @@
         setopt no_global_rcs
         skip_global_compinit=1
         ZSH_DISABLE_COMPFIX="true"
-        # Bind gpg-agent to this TTY if gpg commands are used.
-        export GPG_TTY=$(tty)
-        # SSH agent protocol doesn't support changing TTYs, so bind the agent
-        # to every new TTY.
-        ${pkgs.gnupg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null
-        export SSH_AUTH_SOCK=$(${pkgs.gnupg}/bin/gpgconf --list-dirs agent-ssh-socket)
-    '';
+    '' + envExtraGPG;
     history = {
         size = 10000;
     };
