@@ -429,5 +429,19 @@ return packer.startup({
                 require('todo-comments').setup{}
             end,
         }
+        use {
+            'stevearc/dressing.nvim',
+            event = 'BufReadPre',
+            config = function()
+                require('dressing').setup {
+                    input = {
+                        relative = 'editor',
+                    },
+                    select = {
+                        backend = { 'telescope', 'fzf', 'bultin', },
+                    },
+                }
+            end,
+        }
     end,
 })

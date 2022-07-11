@@ -80,10 +80,10 @@ cmp.setup({
         }),
         ['<C-l>'] = cmp.mapping({
             i = function(fallback)
-                if luasnip.expand_or_jumpable() then
+                if luasnip.choice_active() then
+                    require('luasnip.extras.select_choice')()
+                elseif luasnip.expand_or_jumpable() then
                     luasnip.expand_or_jump()
-                elseif luasnip.choice_active() then
-                    luasnip.change_choice(1)
                 elseif cmp.visible() then
                     cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
                 else
@@ -97,15 +97,6 @@ cmp.setup({
             --         fallback()
             --     end
             -- end
-        }),
-        ['<C-g>'] = cmp.mapping({
-          i = function(fallback)
-            if luasnip.choice_active() then
-              require('luasnip.extras.select_choice')()
-            else
-              fallback()
-            end
-          end,
         }),
     },
     sources = cmp.config.sources({
