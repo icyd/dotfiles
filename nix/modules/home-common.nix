@@ -29,7 +29,6 @@
       jq
       jdk11
       neovim
-      neovim-remote
       nodejs
       python3Minimal
       ripgrep
@@ -42,7 +41,7 @@
         BROWSER = "firefox";
         DOTFILES = "$HOME/.dotfiles";
         GOPATH = "$HOME/go";
-        NVIM_LISTEN_ADDRESS = "/tmp/nvimsocket";
+        NVIM_SERVER = "/tmp/nvimsocket";
         ORGMODE_HOME = "$HOME/Nextcloud";
         PAGER = "less";
         PATH = "$ASDF_DATA_DIR/shims:$PATH";

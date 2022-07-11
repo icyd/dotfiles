@@ -5,6 +5,7 @@ let
       binutils
       cmake
       ccls
+      faas-cli
       gcc
       gdb
       go_1_17

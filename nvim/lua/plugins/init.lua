@@ -126,11 +126,11 @@ return packer.startup({
                 {
                     'L3MON4D3/LuaSnip',
                     after = 'nvim-cmp',
-                    config = function()
-                        require('luasnip.loaders.from_snipmate').lazy_load()
-                    end
+                    requires = {
+                        { 'honza/vim-snippets' },
+                        { 'rafamadriz/friendly-snippets' },
+                    },
                 },
-                { 'honza/vim-snippets', after = 'nvim-cmp' },
                 { 'saadparwaiz1/cmp_luasnip', after = { 'LuaSnip', 'nvim-cmp' } },
             },
             config = [[ require('plugins.config.completion') ]]
@@ -299,8 +299,12 @@ return packer.startup({
         }
         -- Comment plugin
         use {
-            'tomtom/tcomment_vim',
+            -- 'tomtom/tcomment_vim',
+            'numToStr/Comment.nvim',
             event = 'BufRead',
+            config = function()
+                require('Comment').setup()
+            end,
         }
         -- Tabularize
         use {
@@ -418,6 +422,12 @@ return packer.startup({
             'michaelb/sniprun',
             run = 'bash install.sh',
             cmd = 'SnipRun'
+        }
+        use {
+            'folke/todo-comments.nvim',
+            config = function()
+                require('todo-comments').setup{}
+            end,
         }
     end,
 })

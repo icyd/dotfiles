@@ -122,6 +122,16 @@ in {
           openssl rsa -noout -text -in "$@"
       }
 
+      nvim_client() {
+        NVIM_SERVER="''${NVIM_SERVER:-/tmp/nvimsocket}"
+        FILE_P="''${@: -1}"
+        if [[ "$FILE_P" != /* ]] && [[ "$FILE_P" != ~* ]]; then
+        FILE_P="$(pwd)/$FILE_P"
+        fi
+        set -- "''${@:1:$((#-1))}"
+        nvim --server "$NVIM_SERVER" "$@" "$FILE_P"
+      }
+
       [ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
@@ -174,8 +184,9 @@ in {
       fi
     '';
     sessionVariables = {
-        EDITOR = "nvim";
-        VISUAL = "nvim";
+        EDITOR = "nvim_client --remote-silent";
+        KUBE_EDITOR = "nvim_client --remote-tab-silent";
+        VISUAL = "nvim_client --remote-silent";
     };
     shellAliases = {
         cat = "bat";
@@ -198,14 +209,16 @@ in {
         lS = "exa -1";
         lx = "ls -lbhHigUmuSa@";
         g = "git";
-        n = "nvr -s";
+        nvr = "nvim --listen $NVIM_SERVER";
+        ncl = "nvim_client";
+        n = "nvim_client --remote-silent";
+        ns = "nvim_client --remote-send '<C-W><C-N>'";
+        nv = "nvim_client --remote-send '<C-W><C-V>'";
         o = "own_pop";
         p = "own_push";
-        s = "nvr -so";
         svim = "sudo -E $EDITOR";
         tree = "exa --tree";
         tx = "tmuxp_fzf";
-        v = "nvr -sO";
     };
     shellGlobalAliases = {
         AWK = "| awk ";

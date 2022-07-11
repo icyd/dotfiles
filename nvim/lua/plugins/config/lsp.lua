@@ -5,6 +5,7 @@ local servers = {
   "dockerls",
   "gopls",
   -- "graphql",
+  "jdtls",
   "jsonls",
   "pylsp",
   "rust_analyzer",
@@ -20,7 +21,20 @@ require('nvim-lsp-installer').setup({
 })
 
 for _, name in pairs(servers) do
-    require('lspconfig')[name].setup({})
+    if name == "yamlls" then
+        require('lspconfig')[name].setup({
+            on_attach = function(client, bufnr)
+                if vim.bo[bufnr].buftype ~= "" or vim.bo[bufnr].filetype == "helm" then
+                    vim.diagnostic.disable(bufnr)
+                    vim.defer_fn(function()
+                        vim.diagnostic.reset(nil, bufnr)
+                    end, 1000)
+                end
+            end,
+        })
+    else
+        require('lspconfig')[name].setup({})
+    end
 end
 
 -- lsp_installer.on_server_ready(function(server)

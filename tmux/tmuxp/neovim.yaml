@@ -6,7 +6,7 @@ windows:
   options: {}
   panes:
   - focus: 'true'
-    shell_command: nvr -s
+    shell_command: nvr
   - blank
   start_directory: '~/Projects/ea'
   window_name: zsh
