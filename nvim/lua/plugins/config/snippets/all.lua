@@ -117,6 +117,11 @@ local additional_snippets = {
         return os.date "%D - %H:%M"
     end)
     ),
+    s(
+    "choice", { c(1,
+        { t "choice 1", t "choice 2", t "choice 3", }
+    )}
+    ),
 }
 
 for k, v in pairs(additional_snippets) do todo_comment_snippets[k] = v end
