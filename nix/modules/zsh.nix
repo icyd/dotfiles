@@ -124,12 +124,19 @@ in {
 
       nvim_client() {
         NVIM_SERVER="''${NVIM_SERVER:-/tmp/nvimsocket}"
-        FILE_P="''${@: -1}"
-        if [[ "$FILE_P" != /* ]] && [[ "$FILE_P" != ~* ]]; then
-        FILE_P="$(pwd)/$FILE_P"
-        fi
-        set -- "''${@:1:$((#-1))}"
-        nvim --server "$NVIM_SERVER" "$@" "$FILE_P"
+        PARAMS=()
+        FILES_P=()
+        for p in "$@"; do
+            if [[ "$p" == -* ]]; then
+                PARAMS+=("$p")
+            elif [[ "$p" != ~* ]] && [[ "$p" != /* ]]; then
+                FILES_P+=("$(pwd)/$p")
+            else
+                FILES_P+=("$p")
+            fi
+        done
+        set -- "$PARAMS" "$FILES_P"
+        nvim --server "$NVIM_SERVER" "$@"
       }
 
       [ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
