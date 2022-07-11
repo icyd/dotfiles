@@ -4,9 +4,12 @@ let
     mypkgs = with pkgs; [
       dive
       (pkgs.callPackage ../../modules/go/gig/default.nix {})
+      faas-cli
       go_1_17
       gopass
       gopass-jsonapi
+      kind
+      helmfile
       mosh
       rustup
       rust-analyzer

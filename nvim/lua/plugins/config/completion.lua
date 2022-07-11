@@ -1,5 +1,4 @@
 local fn, map = vim.fn, require('utils').map
-
 local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
@@ -15,6 +14,11 @@ end
 
 local cmp = require('cmp')
 local luasnip = require('luasnip')
+local snippets_dir = vim.fn.stdpath('config') .. '/lua/plugins/config/snippets/'
+require('luasnip.loaders.from_lua').lazy_load { paths = snippets_dir }
+require('luasnip.loaders.from_snipmate').lazy_load()
+require('luasnip.loaders.from_vscode').lazy_load()
+vim.cmd [[ command! LuaSnipEdit :lua require('luasnip.loaders.from_lua').edit_snippet_files() ]]
 
 cmp.setup({
     snippet = {
@@ -75,7 +79,17 @@ cmp.setup({
             end
         }),
         ['<C-l>'] = cmp.mapping({
-            i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
+            i = function(fallback)
+                if luasnip.expand_or_jumpable() then
+                    luasnip.expand_or_jump()
+                elseif luasnip.choice_active() then
+                    luasnip.change_choice(1)
+                elseif cmp.visible() then
+                    cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+                else
+                    fallback()
+                end
+            end,
             -- c = function(fallback)
             --     if cmp.visible() then
             --         cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
@@ -84,10 +98,19 @@ cmp.setup({
             --     end
             -- end
         }),
+        ['<C-g>'] = cmp.mapping({
+          i = function(fallback)
+            if luasnip.choice_active() then
+              require('luasnip.extras.select_choice')()
+            else
+              fallback()
+            end
+          end,
+        }),
     },
     sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
         { name = 'luasnip' },
+        { name = 'nvim_lsp' },
     }, {
             { name = 'orgmode' },
             { name = 'tags' },
