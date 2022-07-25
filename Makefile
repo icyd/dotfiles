@@ -3,7 +3,8 @@ host ?= .\#
 standalone-channel ?= master
 uname_s := $(shell uname -s)
 uname_m := $(shell uname -m)
-all: hm nixos
+
+all: nixos hm
 
 nixos:
 ifeq ($(uname_s), Darwin)
@@ -35,4 +36,5 @@ hm-standalone-install:
 clean:
 	rm -rf result
 
+.DEFAULT_GOAL := all
 .PHONY: clean all nixos nixos-build hm hm-pkg
