@@ -37,13 +37,14 @@
       yq-go
     ] ++ mypkgs;
     home.sessionVariables = {
+        ASDF_DATA_DIR = "${config.xdg.dataHome}/asdf";
         BROWSER = "firefox";
         DOTFILES = "$HOME/.dotfiles";
         GOPATH = "$HOME/go";
         NVIM_SERVER = "/tmp/nvimsocket";
         ORGMODE_HOME = "$HOME/Nextcloud";
         PAGER = "less";
-        # PATH = "$ASDF_DATA_DIR/shims:$PATH";
+        PATH = "$ASDF_DATA_DIR/shims:$PATH";
         PASSWORD_STORE_GENERATED_LENGTH = 12;
         PY_VENV = "$HOME/.venv";
         VIMWIKI_HOME = "$HOME/Nextcloud";
