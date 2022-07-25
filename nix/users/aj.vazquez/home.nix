@@ -23,7 +23,7 @@ let
         LC_ALL = "en_US.UTF-8";
     };
 in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email mypkgs mypaths sessionVars; }) // {
-    programs.alacritty = import ../../modules/alacritty.nix { inherit config; };
+    programs.alacritty = import ../../modules/alacritty.nix { inherit config; startup_mode = "Fullscreen"; };
     programs.bat = {
         enable = true;
         config = { theme = "base16"; };

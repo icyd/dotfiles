@@ -2,6 +2,7 @@
 let
     DOTFILES = "${config.home.homeDirectory}/.dotfiles";
     mypkgs = with pkgs; [
+      avrdude
       binutils
       cmake
       ccls
@@ -11,10 +12,13 @@ let
       gcc
       gcc-arm-embedded
       gdb
-      go_1_17
+      glibc
+      go_1_18
       gopass
       gopass-jsonapi
+      kicad-small
       mosh
+      openocd
       rustup
       rust-analyzer
       sshfs
@@ -48,7 +52,7 @@ in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors em
     programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
     programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs; };
     services = {
-        gpg-agent = import ../../modules/services/gpg.nix { pinentryFlavor = "gtk2"; };
+        gpg-agent = import ../../modules/services/gpg.nix { pinentryFlavor = "gnome3"; };
         lorri.enable = true;
     };
     xdg.configFile = {

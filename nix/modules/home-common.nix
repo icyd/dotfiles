@@ -12,7 +12,6 @@
     };
     home.sessionPath = [
         "/usr/local/bin"
-        "$ASDF_DIR/bin"
         "$CARGO_HOME/bin"
         "$GOPATH/bin"
         "$HOME/.local/bin/"
@@ -44,7 +43,7 @@
         NVIM_SERVER = "/tmp/nvimsocket";
         ORGMODE_HOME = "$HOME/Nextcloud";
         PAGER = "less";
-        PATH = "$ASDF_DATA_DIR/shims:$PATH";
+        # PATH = "$ASDF_DATA_DIR/shims:$PATH";
         PASSWORD_STORE_GENERATED_LENGTH = 12;
         PY_VENV = "$HOME/.venv";
         VIMWIKI_HOME = "$HOME/Nextcloud";
