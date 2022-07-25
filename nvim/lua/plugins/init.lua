@@ -212,6 +212,7 @@ return packer.startup({
             'LnL7/vim-nix',
             ft = 'nix',
         }
+        use 'hashivim/vim-terraform'
         -- Treesitter
         use {
             'nvim-treesitter/nvim-treesitter',
