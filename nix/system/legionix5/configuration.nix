@@ -78,8 +78,6 @@
         fontconfig.enable = true;
     };
     environment.etc = {
-        passwd.source = "/persist/etc/passwd";
-        shadow.source = "/persist/etc/shadow";
         nixos.source = "/persist/etc/nixos";
         "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
         adjtime.source = "/persist/etc/adjtime";
@@ -150,14 +148,14 @@
             enable = true;
             videoDrivers = [ "amdgpu" ];
             displayManager = {
+                defaultSession = "sway";
+                gdm = {
+                    enable = true;
+                    wayland = true;
+                };
                 autoLogin = {
                     enable = true;
-                    user = username;
-                };
-                lightdm = {
-                    enable = true;
-                    greeter.enable = false;
-                    autoLogin.timeout = 0;
+                    user = "${username}";
                 };
             };
             libinput.enable = true;
@@ -171,7 +169,7 @@
             isNormalUser = true;
             uid = 1000;
             shell = pkgs.zsh;
-            extraGroups = [ "wheel" username "networkmanager" "video" ]; # Enable ‘sudo’ for the user.
+            extraGroups = [ "wheel" "${username}" "networkmanager" "video" ]; # Enable ‘sudo’ for the user.
         };
     };
     time.timeZone = "Europe/Madrid";
@@ -179,7 +177,7 @@
         enable = true;
         enableSSHSupport = true;
     };
-    programs.qt5ct.enable = true;
+    # programs.qt5ct.enable = true;
     programs.sway = {
         enable = true;
         wrapperFeatures.gtk = true;
@@ -207,7 +205,6 @@
         ];
         extraSessionCommands = ''
             export SDL_VIDEODRIVER=wayland
-            export QT_QPA_PLATFORM=wayland
             export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
             export _JAVA_AWT_WM_NONREPARENTING=1
             export MOZ_ENABLE_WAYLAND=1
@@ -229,5 +226,5 @@
         "L /var/lib/NetworkManager/secret_key - - - - /persist/var/lib/NetworkManager/secret_key"
         "L /var/lib/NetworkManager/seen-bssids - - - - /persist/var/lib/NetworkManager/seen-bssids"
         "L /var/lib/NetworkManager/timestamps - - - - /persist/var/lib/NetworkManager/timestamps"
-        ];
-        }
+    ];
+}

@@ -1,4 +1,4 @@
-{ config, ... }: let
+{ config, startup_mode ? "Maximized", ... }: let
   colors = config.colorscheme.colors;
 in {
   enable = true;
@@ -109,8 +109,8 @@ in {
         multiplier = 3;
     };
     window = {
+        inherit startup_mode;
         decorations = "none";
-        startup_mode = "Fullscreen";
         padding = { x = 5; y = 5; };
     };
   };

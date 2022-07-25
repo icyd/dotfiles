@@ -19,9 +19,9 @@ require'nvim-treesitter.configs'.setup {
         'toml',
         'yaml',
     },
-    -- indent = {
-    --     enable = true,
-    -- },
+    indent = {
+        enable = true,
+    },
     highlight = {
         enable = true,
         additional_vim_regex_highlighting = { 'org' },
