@@ -9,6 +9,7 @@ let
       gcc
       gdb
       go_1_17
+      gtop
       vifm
     ];
 in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email mypkgs; }) //
