@@ -13,6 +13,7 @@ local servers = {
   "sumneko_lua",
   "terraformls",
   -- "vimls",
+  "tsserver",
   "yamlls",
 }
 
@@ -32,9 +33,12 @@ for _, name in pairs(servers) do
                 end
             end,
         })
+    elseif name == "rust_analyzer" then
+        goto continue
     else
         require('lspconfig')[name].setup({})
     end
+    ::continue::
 end
 
 -- lsp_installer.on_server_ready(function(server)
@@ -56,12 +60,14 @@ end
 -- end)
 
 local nvim_lsp = require('lspconfig')
-local map = require('utils').map
+local utils = require('utils')
+local map, augroup = utils.map, utils.augroup
 
 -- Bindings
 map('n', '<leader>ld', '<cmd>lua vim.lsp.buf.definition()<CR>')
 map('n', '<leader>lk', '<cmd>lua vim.lsp.buf.declaration()<CR>')
-map('n', '<leader>lf', '<cmd>lua vim.lsp.buf.references()<CR>')
+map('n', '<leader>lc', '<cmd>lua vim.lsp.buf.references()<CR>')
+map('n', '<leader>lf', '<cmd>lua vim.lsp.buf.formatting()<CR>')
 map('n', '<leader>lt', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
 map('n', '<leader>li', '<cmd>lua vim.lsp.buf.implementation()<CR>')
 map('n', '<leader>ls', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
@@ -75,3 +81,8 @@ map('n', '<leader>lq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
 map('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
 map('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
 map('n', '<leader>lq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
+
+augroup('auto_format', {
+    'BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 2000)',
+    'BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 2000)',
+})

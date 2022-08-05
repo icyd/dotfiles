@@ -8,42 +8,32 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
         nur.url = "github:nix-community/NUR";
-        nixpkgs-darwin.url = "github:NixOs/nixpkgs/nixpkgs-22.05-darwin";
+        neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
         darwin = {
             url = "github:lnl7/nix-darwin/master";
-            inputs.nixpkgs.follows = "nixpkgs-darwin";
+            inputs.nixpkgs.follows = "nixpkgs";
         };
-        home-manager-darwin = {
-            url = "github:nix-community/home-manager";
-            inputs.nixpkgs.follows = "nixpkgs-darwin";
-        };
-        nix-colors.url = "github:misterio77/nix-colors";
+       nix-colors.url = "github:misterio77/nix-colors";
     };
 
-    outputs = {
-        self,
-        nixpkgs,
-        nixpkgs-unstable,
-        home-manager,
-        nur,
-        nixpkgs-darwin,
-        darwin,
-        home-manager-darwin,
-        nix-colors,
-        ...
-    }: let
+    outputs = { self, ... }@inputs:
+    let
         stateVersion = "22.05";
+        nix-colors = inputs.nix-colors;
 
         nixpkgsConfig = { system }:
         let
-            stable = import nixpkgs { inherit system; };
-            unstable = import nixpkgs-unstable { inherit system; };
+            stable = import inputs.nixpkgs { inherit system; };
+            unstable = import inputs.nixpkgs-unstable { inherit system; };
         in {
             config.allowUnfree = true;
             overlays = [
                 (self: super: {
+                    neovim-unstable = unstable.neovim;
+                    neovim-remote = unstable.neovim-remote;
                 })
-                nur.overlay
+                inputs.neovim-nightly-overlay.overlay
+                inputs.nur.overlay
             ];
         };
     in {
@@ -52,7 +42,7 @@
             username = "beto";
             system = "x86_64-linux";
         in {
-            ${host} = nixpkgs.lib.nixosSystem {
+            ${host} = inputs.nixpkgs.lib.nixosSystem {
                 inherit system;
                 modules = [
                     ({
@@ -62,7 +52,7 @@
                 ];
                 specialArgs = { inherit username stateVersion; };
             };
-            aws = nixpkgs.lib.nixosSystem {
+            aws = inputs.nixpkgs.lib.nixosSystem {
                 inherit system;
                 modules = [
                     ({
@@ -72,17 +62,21 @@
                 ];
                 specialArgs = {
                     inherit username stateVersion;
-                    modulesPath = nixpkgs + "/nixos/modules";
+                    modulesPath = inputs.nixpkgs + "/nixos/modules";
                 };
             };
         };
 
         darwinConfigurations = let
             host = "ES-IT00385";
+            system = "aarch64-darwin";
         in {
-            "${host}" = darwin.lib.darwinSystem {
-                system = "aarch64-darwin";
+            "${host}" = inputs.darwin.lib.darwinSystem {
+                inherit system;
                 modules = [
+                    ({
+                        nixpkgs = nixpkgsConfig { inherit system; };
+                    })
                     ./nix/system/darwin/darwin-configuration.nix
                 ];
             };
@@ -93,7 +87,7 @@
                 system = "x86_64-linux";
                 username = "beto";
                 email = "beto.v25@gmail.com";
-            in home-manager.lib.homeManagerConfiguration {
+            in inputs.home-manager.lib.homeManagerConfiguration {
                 inherit stateVersion system username;
                 homeDirectory = "/home/${username}";
                 extraSpecialArgs = { inherit email nix-colors; };
@@ -108,7 +102,7 @@
                 system = "aarch64-darwin";
                 username = "aj.vazquez";
                 email = "avazquez@contractor.ea.com";
-            in home-manager-darwin.lib.homeManagerConfiguration {
+            in inputs.home-manager.lib.homeManagerConfiguration {
                 inherit stateVersion system username;
                 homeDirectory = "/Users/${username}";
                 extraSpecialArgs = { inherit email nix-colors; };
@@ -123,7 +117,7 @@
                 system = "x86_64-linux";
                 username = "root";
                 email = "avazquez@contractor.ea.com";
-            in home-manager-darwin.lib.homeManagerConfiguration {
+            in inputs.home-manager.lib.homeManagerConfiguration {
                 inherit stateVersion system username;
                 homeDirectory = "/root";
                 extraSpecialArgs = { inherit email nix-colors; };

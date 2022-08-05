@@ -1,5 +1,6 @@
 local utils, telescope = require('utils'), require('telescope')
 local map, augroup = utils.map, utils.augroup
+local api = vim.api
 
 telescope.setup {
     defaults = {
@@ -16,10 +17,15 @@ telescope.setup {
             },
         },
     },
+    pickers = {
+        find_files = {
+            find_command = { "fd", "--hidden", "--exclude=.git" },
+        },
+    },
     extensions = {
         fzf = {
             fuzzy = true,
-            override_generic_sorter = false,
+            override_generic_sorter = true,
             override_file_sorter = true,
             case_mode = 'smart_case',
         },
@@ -77,6 +83,8 @@ map('n', '<leader>df',
           '<cmd>lua require"telescope".extensions.dap.frames{}<CR>')
 map('n', '<leader>dui', '<cmd>lua require"dapui".toggle()<CR>')
 
-augroup('Telescope', {
-    'FileType TelescopePrompt setlocal nocursorline nonumber norelativenumber signcolumn=no'
-})
+-- augroup('Telescope', {
+--     'FileType TelescopePrompt setlocal nocursorline nonumber norelativenumber signcolumn=no'
+-- })
+api.nvim_create_augroup('Telescope', { clear = true })
+api.nvim_create_autocmd('FileType', { group = 'Telescope', pattern = 'TelescopePrompt', command = 'setlocal nocursorline nonumber norelativenumber signcolumn=no' })

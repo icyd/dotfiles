@@ -30,6 +30,7 @@ return packer.startup({
                 })
                 vim.opt.background = "dark"
                 vim.cmd([[colorscheme kanagawa]])
+                vim.cmd [[highlight WinSeparator guibg=None]]
             end,
         }
         -- Statusbar
@@ -85,13 +86,6 @@ return packer.startup({
                         require('telescope').load_extension('fzf')
                     end
                 },
-                        {
-                            'nvim-telescope/telescope-ui-select.nvim',
-                            after = 'telescope.nvim',
-                            config = function()
-                                require('telescope').load_extension('ui-select')
-                            end
-                        },
                 {
                     'nvim-telescope/telescope-project.nvim',
                     after = 'telescope.nvim',
@@ -99,13 +93,13 @@ return packer.startup({
                         require('telescope').load_extension('project')
                     end
                 },
-                        {
-                            'nvim-telescope/telescope-dap.nvim',
-                            after = { 'telescope.nvim', 'nvim-dap' },
-                            config = function()
-                                require('telescope').load_extension('dap')
-                            end
-                        },
+                {
+                    'nvim-telescope/telescope-dap.nvim',
+                    after = { 'telescope.nvim', 'nvim-dap' },
+                    config = function()
+                        require('telescope').load_extension('dap')
+                    end
+                },
             },
                 cmd = 'Telescope',
                 module = 'telescope',
@@ -122,6 +116,9 @@ return packer.startup({
                 { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' },
                 { 'dmitmel/cmp-cmdline-history', after = 'nvim-cmp' },
                 { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' },
+                { 'hrsh7th/cmp-nvim-lsp-document-symbol', after = 'nvim-cmp' },
+                { 'hrsh7th/cmp-nvim-lua', after = 'nvim-cmp' },
+                { 'onsails/lspkind.nvim', after = 'nvim-cmp' },
                 { 'quangnguyen30192/cmp-nvim-tags', after = 'nvim-cmp' },
                 {
                     'L3MON4D3/LuaSnip',
@@ -218,6 +215,10 @@ return packer.startup({
             'nvim-treesitter/nvim-treesitter',
             run = ':TSUpdate',
             config = [[ require('plugins.config.treesitter') ]]
+        }
+        use {
+            'nvim-treesitter/playground',
+            cmd = 'TSPlaygroundToggle',
         }
         --- Rainbow parenthesis
         use 'p00f/nvim-ts-rainbow'
@@ -402,7 +403,22 @@ return packer.startup({
         use {
             'simrat39/rust-tools.nvim',
             module = 'rust-tools',
-            ft = 'rust'
+            ft = 'rust',
+            config = function()
+                local opts = {
+                    server = {
+                        settings = {
+                            ["rust-analyzer"] = {
+                                checkOnSave = {
+                                    command = "clippy",
+                                    allFeatures = true,
+                                },
+                            }
+                        }
+                    },
+                }
+                require('rust-tools').setup(opts)
+            end,
         }
         use {
             'glepnir/dashboard-nvim',
@@ -432,16 +448,21 @@ return packer.startup({
         }
         use {
             'stevearc/dressing.nvim',
-            event = 'BufReadPre',
             config = function()
                 require('dressing').setup {
                     input = {
                         relative = 'editor',
                     },
                     select = {
-                        backend = { 'telescope', 'fzf', 'bultin', },
+                        backend = { 'telescope', 'fzf', 'builtin', },
                     },
                 }
+            end,
+        }
+        use {
+            'jpalardy/vim-slime',
+            config = function()
+                vim.g.slime_target = 'tmux'
             end,
         }
     end,

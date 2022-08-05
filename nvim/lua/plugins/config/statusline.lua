@@ -10,9 +10,19 @@ lualine.setup {
   sections = {
     lualine_a = {'mode'},
     lualine_b = {'branch', 'diff'},
-    lualine_c = {'filename'},
+    lualine_c = {
+        {
+            'filename',
+            file_status = true,
+            path = 3,
+            shorting_target = 40,
+        },
+    },
     lualine_x = {
-        {'diagnostics', sources={'nvim_diagnostic'}},
+        {
+            'diagnostics',
+            sources={'nvim_diagnostic'}
+        },
         'encoding',
         'fileformat',
         'filetype'

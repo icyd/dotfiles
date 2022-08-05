@@ -122,22 +122,22 @@ in {
           openssl rsa -noout -text -in "$@"
       }
 
-      nvim_client() {
-        NVIM_SERVER="''${NVIM_SERVER:-/tmp/nvimsocket}"
-        PARAMS=()
-        FILES_P=()
-        for p in "$@"; do
-            if [[ "$p" == -* ]]; then
-                PARAMS+=("$p")
-            elif [[ "$p" != ~* ]] && [[ "$p" != /* ]]; then
-                FILES_P+=("$(pwd)/$p")
-            else
-                FILES_P+=("$p")
-            fi
-        done
-        set -- "$PARAMS" "$FILES_P"
-        nvim --server "$NVIM_SERVER" "$@"
-      }
+      # nvim_client() {
+      #   NVIM_SERVER="''${NVIM_SERVER:-/tmp/nvimsocket}"
+      #   PARAMS=()
+      #   FILES_P=()
+      #   for p in "$@"; do
+      #       if [[ "$p" == -* ]]; then
+      #           PARAMS+=("$p")
+      #       elif [[ "$p" != ~* ]] && [[ "$p" != /* ]]; then
+      #           FILES_P+=("$(pwd)/$p")
+      #       else
+      #           FILES_P+=("$p")
+      #       fi
+      #   done
+      #   set -- "$PARAMS" "$FILES_P"
+      #   nvim --server "$NVIM_SERVER" "$@"
+      # }
 
       [ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
@@ -191,9 +191,9 @@ in {
       fi
     '';
     sessionVariables = {
-        EDITOR = "nvim_client --remote-silent";
-        KUBE_EDITOR = "nvim_client --remote-tab-silent";
-        VISUAL = "nvim_client --remote-silent";
+        EDITOR = "nvr --remote-silent";
+        VISUAL = "nvr --remote-silent";
+        KUBE_EDITOR = "nvr --remote-tab-silent";
     };
     shellAliases = {
         cat = "bat";
@@ -216,11 +216,11 @@ in {
         lS = "exa -1";
         lx = "ls -lbhHigUmuSa@";
         g = "git";
-        nvr = "nvim --listen $NVIM_SERVER";
-        ncl = "nvim_client";
-        n = "nvim_client --remote-silent";
-        ns = "nvim_client --remote-send '<C-W><C-N>'";
-        nv = "nvim_client --remote-send '<C-W><C-V>'";
+        # nvr = "nvim --listen $NVIM_SERVER";
+        ncl = "nvr -s";
+        n = "nvr --remote-silent";
+        ns = "nvr -so";
+        nv = "nvr -sO";
         o = "own_pop";
         p = "own_push";
         svim = "sudo -E $EDITOR";
