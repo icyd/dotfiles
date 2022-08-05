@@ -77,8 +77,8 @@ cmp.setup({
             end,
         }),
         ['<C-e>'] = cmp.mapping(cmp.mapping.close(), {'i', 'c'}),
-        ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), {'i', 'c'}),
-        ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i', 'c'}),
+        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-u>'] = cmp.mapping.scroll_docs(4),
         ['<C-n>'] = cmp.mapping({
             c = function()
                 if cmp.visible() then
