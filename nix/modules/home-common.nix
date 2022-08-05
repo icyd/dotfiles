@@ -27,7 +27,8 @@
       hyperfine
       jq
       jdk11
-      neovim
+      neovim-nightly
+      neovim-remote
       nodejs
       python3Minimal
       ripgrep

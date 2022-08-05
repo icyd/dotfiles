@@ -11,6 +11,9 @@
     ];
     delta.enable = true;
     extraConfig = {
+        core = {
+            editor = "nvr --remote-wait-silent";
+        };
         diff = {
             tool = "nvr";
         };
