@@ -29,7 +29,7 @@ ls.config.setup({
 local snippets_dir = vim.fn.stdpath('config') .. '/lua/plugins/config/snippets/'
 require('luasnip.loaders.from_lua').lazy_load { paths = snippets_dir }
 -- require('luasnip.loaders.from_snipmate').lazy_load()
--- require('luasnip.loaders.from_vscode').lazy_load()
+require('luasnip.loaders.from_vscode').lazy_load()
 vim.cmd [[ command! LuaSnipEdit :lua require('luasnip.loaders.from_lua').edit_snippet_files() ]]
 
 local t = function(str)
@@ -50,6 +50,7 @@ cmp.setup({
         }),
     },
     sources = cmp.config.sources({
+        { name = 'nvim_lsp_signature_help' },
         { name = 'nvim_lua' },
         { name = 'luasnip' },
         { name = 'nvim_lsp' },
@@ -70,7 +71,7 @@ cmp.setup({
             i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
             c = function(fallback)
                 if cmp.visible() then
-                    cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+                    cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
                 else
                    fallback()
                 end

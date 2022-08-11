@@ -13,6 +13,7 @@ require'nvim-treesitter.configs'.setup {
         'markdown',
         'org',
         'python',
+        -- 'query',
         'regex',
         'ruby',
         'rust',
