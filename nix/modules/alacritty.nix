@@ -101,6 +101,16 @@ in {
           mods = "Command";
           chars = "\\x1b\\x70";
       }
+      {
+          key = "Key9";
+          mods = "Command";
+          chars = "\\x1d";
+      }
+      {
+          key = "RBracket";
+          mods = "Control";
+          chars = "\\x1d";
+      }
     ];
     live_config_reload = true;
     mouse = { hide_when_typing = true; };

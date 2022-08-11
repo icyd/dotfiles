@@ -1,45 +1,60 @@
-local utils = {}
+local M = {}
 
 local scopes = {o = vim.o, b = vim.bo, w = vim.wo, g = vim.g}
 
-function utils.opt(scope, key, value)
+function M.opt(scope, key, value)
     scopes[scope][key] = value
     if scope ~= 'o' then scopes['o'][key] = value end
 end
 
-function utils.map(mode, lhs, rhs, opts)
+function M.map(mode, lhs, rhs, opts)
     local options = {noremap = true; silent = true}
     if opts then options = vim.tbl_extend('force', options, opts) end
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
-function utils.augroup(name, definitions)
+function M.augroup(name, definitions)
     vim.cmd('augroup '..name..' | autocmd!')
     vim.tbl_map(function(c) vim.cmd('autocmd '..c) end, definitions)
     vim.cmd'augroup END'
 end
 
-function utils.reload()
-  local function get_module_name(s)
-    local module_name;
-    local dir = os.getenv("DOTFILES") .. "/nvim/.config/nvim/lua/"
+function M.reload()
+    local function get_module_name(file_name)
+        local module_name;
+        local config_dir = vim.fn.stdpath('config') .. '/lua/'
+        local dotfiles_dir = os.getenv('DOTFILES') .. '/nvim/lua/'
 
-    module_name = s:gsub("%.lua", "")
-    module_name = module_name:gsub(dir, "")
+        if string.match(file_name, 'lua/[^/]+/init.lua') then
+            module_name = file_name:gsub('/init.lua', '')
+        else
+            module_name = file_name:gsub("%.lua", "")
+        end
 
-    return module_name
-  end
+        if string.match(file_name, config_dir) then
+            module_name = module_name:gsub(config_dir, "")
+        elseif string.match(file_name, dotfiles_dir) then
+            module_name = module_name:gsub(dotfiles_dir, "")
+        else
+            return nil
+        end
 
-  local path = vim.api.nvim_buf_get_name(0)
-  local name = get_module_name(path)
-  --
-  require('plenary.reload').reload_module(name)
-  require(name)
-  print(vim.inspect(name .. " RELOADED!!!"))
+        return module_name
+    end
+
+    local path = vim.api.nvim_buf_get_name(0)
+    local name = get_module_name(path)
+    if name == "" or name == nil then
+        return
+    end
+
+    require('plenary').reload.reload_module(name)
+    -- require('packer').compile()
+    print(vim.inspect(name .. " RELOADED!!!"))
 end
 
 
-function utils.grab_server()
+function M.grab_server()
     if string.len(vim.api.nvim_get_vvar('servername')) > 1 then
         print("Setting servername to this nvim")
         local server = io.open('/tmp/nvim-server', 'w')
@@ -79,7 +94,7 @@ local function expand_keys(keys)
     end
 end
 
-function utils.get_keys(modes, keys)
+function M.get_keys(modes, keys)
     if type(modes) == 'string' then
         modes = {modes}
     end
@@ -92,4 +107,18 @@ function utils.get_keys(modes, keys)
     return combinations
 end
 
-return utils
+function M.P(v)
+    print(vim.inspect(v))
+    return(v)
+end
+
+if pcall(require, "plenary") then
+    local reload = require("plenary.reload").reload_module
+
+    function M.RELOAD(name)
+        reload(name)
+        return require(name)
+    end
+end
+
+return M

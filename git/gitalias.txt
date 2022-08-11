@@ -148,9 +148,9 @@
 
   # checkout - update the working tree to match a branch or paths. [same as "o" for "out"]
   co = checkout
-  om = checkout master
+  om = !git checkout $(git head-branch)
   ob = checkout -b
-  omiw = checkout master --ignore-other-worktrees
+  omiw = !git checkout $(git head-branch) --ignore-other-worktrees
   cong = checkout --no-guess
 
   ### cherry-pick aliases ###
@@ -1602,6 +1602,9 @@
   #    $ git config --system init.topicBaseBranchName "foo"
   #
   # Thanks to https://github.com/gwjo
+  #
+  upstream-branch2 = !git remote | egrep -o '(upstream|origin)' | tail -1
+  head-branch = !git remote show $(git upstream-branch2) | awk '/HEAD branch/ {print $NF}'
 
   topic-base-branch = "!f(){ \
     git config --get init.topicBaseBranchName || printf '%s\n' main; \

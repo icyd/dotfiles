@@ -6,7 +6,7 @@ in {
     aggressiveResize = true;
     baseIndex = 1;
     clock24 = true;
-    terminal = "xterm-256color";
+    terminal = "tmux-256color";
     escapeTime = 0;
     keyMode = "vi";
     historyLimit = 10000;

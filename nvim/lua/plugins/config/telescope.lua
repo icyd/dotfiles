@@ -2,6 +2,20 @@ local utils, telescope = require('utils'), require('telescope')
 local map, augroup = utils.map, utils.augroup
 local api = vim.api
 
+local telescope_mappings = {
+    i = {
+        ["<C-x>"] = false,
+        ["<C-q>"] = require('telescope.actions').send_to_qflist,
+    },
+}
+
+local ok_tr, trouble = pcall(require, "trouble.providers.telescope")
+if ok_tr then
+    telescope_mappings.i['<C-t>'] = trouble.open_with_trouble
+    telescope_mappings.n = {}
+    telescope_mappings.n['<C-t>'] = trouble.open_with_trouble
+end
+
 telescope.setup {
     defaults = {
         file_sorter = require('telescope.sorters').get_fzf_sorter,
@@ -10,12 +24,7 @@ telescope.setup {
         file_previewer = require('telescope.previewers').vim_buffer_cat.new,
         grep_previewer = require('telescope.previewers').vim_buffer_vimgrep.new,
         qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
-        mappings = {
-            i = {
-                ["<C-x>"] = false,
-                ["<C-q>"] = require('telescope.actions').send_to_qflist,
-            },
-        },
+        mappings = telescope_mappings,
     },
     pickers = {
         find_files = {
@@ -41,6 +50,7 @@ telescope.setup {
 map('n', '<leader>ff', ":Telescope find_files<CR>")
 map('n', '<leader>fl', ":lua require('telescope.builtin').find_files( { cwd = vim.fn.expand('%:p:h') })<CR>")
 map('n', '<leader>fb', ":Telescope file_browser<CR>")
+map('n', '<leader>fg', ":Telescope current_buffer_fuzzy_find<CR>")
 map('n', '<leader>fG', ":Telescope live_grep<CR>")
 map('n', '<leader>fh', ":Telescope help_tags<CR>")
 map('n', '<leader>fR', ":Telescope oldfiles<CR>")
@@ -51,6 +61,7 @@ map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buff
 map('n', '<leader>fv', ":lua require('my.telescope').search_dotfiles()<CR>")
 map('n', '<leader>fF', ":lua require('my.telescope').search_home()<CR>")
 map('n', '<leader>fB', ":lua require('my.telescope').browse_home()<CR>")
+map('n', '<leader>qr', ":lua require('my.telescope').reload()<CR>")
 map('n', '<leader>f/', ':Telescope search_history<CR>')
 map('n', '<leader>f:', ':Telescope command_history<CR>')
 map('n', '<leader>fs', ":lua require('telescope.builtin').grep_string({ search = vim.fn.expand(\"<cword>\") })<CR>")
@@ -88,3 +99,7 @@ map('n', '<leader>dui', '<cmd>lua require"dapui".toggle()<CR>')
 -- })
 api.nvim_create_augroup('Telescope', { clear = true })
 api.nvim_create_autocmd('FileType', { group = 'Telescope', pattern = 'TelescopePrompt', command = 'setlocal nocursorline nonumber norelativenumber signcolumn=no' })
+
+augroup('reload_lua', {
+    'BufWritePost *.lua lua require("utils").reload()',
+})

@@ -36,7 +36,7 @@ return packer.startup({
         -- Statusbar
         use {
             'nvim-lualine/lualine.nvim',
-            requires = {{ 'kyazdani42/nvim-web-devicons', opt = true }},
+            requires = {{ 'kyazdani42/nvim-web-devicons' }},
             config = [[ require('plugins.config.statusline') ]]
         }
         -- Editorconfig
@@ -52,6 +52,21 @@ return packer.startup({
                 'neovim/nvim-lspconfig',
                 config = [[ require('plugins.config.lsp') ]]
             }
+        }
+        use {
+            'folke/trouble.nvim',
+            config = function()
+                local trouble = require("trouble")
+                trouble.setup({})
+                vim.keymap.set('n', "[x", function() trouble.previous({skip_groups=true, jump=true}) end, { desc = "trouble:goto_prev" })
+                vim.keymap.set('n', "]x", function() trouble.next({skip_groups=true, jump=true}) end, { desc = "trouble:goto_next" })
+                vim.keymap.set('n', '<leader>xx', '<cmd>TroubleToggle<cr>', { desc = "trouble:toggle" })
+                vim.keymap.set('n', '<leader>xW', '<cmd>TroubleToggle workspace_diagnostics<cr>', { desc = "trouble:workspace_diag" })
+                vim.keymap.set('n', '<leader>xD', '<cmd>TroubleToggle document_diagnostics<cr>', { desc = "trouble:workspace_diag" })
+                vim.keymap.set('n', '<leader>xl', '<cmd>TroubleToggle loclist<cr>', { desc = "trouble:loclist" })
+                vim.keymap.set('n', '<leader>xq', '<cmd>TroubleToggle quickfix<cr>', { desc = "trouble:quickfix" })
+                vim.keymap.set('n', '<leader>xR', '<cmd>TroubleToggle lsp_references<cr>', { desc = "trouble:reference" })
+            end
         }
         -- Fuzzy finder LSP client
         use {
@@ -101,12 +116,10 @@ return packer.startup({
                     end
                 },
             },
-                cmd = 'Telescope',
-                module = 'telescope',
-                keys = { '<leader>f', '<leader>g', '<localleader>f', '<leader>b'},
             config = [[ require('plugins.config.telescope') ]]
         }
         -- Completion
+        use 'onsails/lspkind.nvim'
         use {
             'hrsh7th/nvim-cmp',
             event = { 'CmdLineEnter', 'InsertEnter' },
@@ -117,8 +130,8 @@ return packer.startup({
                 { 'dmitmel/cmp-cmdline-history', after = 'nvim-cmp' },
                 { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' },
                 { 'hrsh7th/cmp-nvim-lsp-document-symbol', after = 'nvim-cmp' },
+                { 'hrsh7th/cmp-nvim-lsp-signature-help', after = 'nvim-cmp' },
                 { 'hrsh7th/cmp-nvim-lua', after = 'nvim-cmp' },
-                { 'onsails/lspkind.nvim', after = 'nvim-cmp' },
                 { 'quangnguyen30192/cmp-nvim-tags', after = 'nvim-cmp' },
                 {
                     'L3MON4D3/LuaSnip',
@@ -229,6 +242,9 @@ return packer.startup({
             config = function()
                 vim.g.indentLine_char_list = {'|', '¦', '┆', '┊'}
                 vim.g.indentLine_fileTypeExclude = {"fzf", "dashboard", "packer"}
+                vim.g.indentLine_conceallevel = 1
+                vim.g.indentLine_concealcursor = 'nc'
+                vim.g.indentLine_setConceal = 0
             end
         }
         -- Easy motion
@@ -400,26 +416,7 @@ return packer.startup({
             'rhysd/vim-grammarous',
             fn = { 'GrammarousCheck', 'GrammarousReset' }
         }
-        use {
-            'simrat39/rust-tools.nvim',
-            module = 'rust-tools',
-            ft = 'rust',
-            config = function()
-                local opts = {
-                    server = {
-                        settings = {
-                            ["rust-analyzer"] = {
-                                checkOnSave = {
-                                    command = "clippy",
-                                    allFeatures = true,
-                                },
-                            }
-                        }
-                    },
-                }
-                require('rust-tools').setup(opts)
-            end,
-        }
+        use 'simrat39/rust-tools.nvim'
         use {
             'glepnir/dashboard-nvim',
             config = [[ require('plugins.config.dashboard') ]]
@@ -463,6 +460,15 @@ return packer.startup({
             'jpalardy/vim-slime',
             config = function()
                 vim.g.slime_target = 'tmux'
+            end,
+        }
+        use {
+            'mattn/emmet-vim',
+            ft = { 'html', 'css', 'sass', 'scss' },
+            config = function()
+                vim.g.user_emmet_install_global = 0
+                vim.g.user_emmet_leader_key = '<C-Z>'
+                vim.cmd [[autocmd FileType html,css EmmetInstall]]
             end,
         }
     end,
