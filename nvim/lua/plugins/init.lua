@@ -276,7 +276,11 @@ local function plugins(use)
     -- Treesitter
     use {
         'nvim-treesitter/nvim-treesitter',
-        run = ':TSUpdate',
+        run = function()
+            local ts_install = require("nvim-treesitter.install")
+            ts_install.compilers({ "gcc" })
+            ts_install.update({ with_sync = true })
+        end,
         config = [[ require('plugins.config.treesitter') ]]
     }
     use {
@@ -296,6 +300,18 @@ local function plugins(use)
             vim.g.indentLine_concealcursor = 'nc'
             vim.g.indentLine_setConceal = 0
         end
+    }
+    use {
+        'lukas-reineke/indent-blankline.nvim',
+        event = 'BufRead',
+        config = function()
+            vim.g.indentLine_char_list = {'|', '¦', '┆', '┊'}
+            vim.g.indentLine_fileTypeExclude = {"fzf", "dashboard", "packer"}
+            require('indent_blankline').setup({
+                    show_current_context = false,
+                    show_current_context_start = false,
+            })
+        end,
     }
     -- Easy motion
     use {
