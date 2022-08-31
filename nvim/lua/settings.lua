@@ -57,7 +57,7 @@ opt.lazyredraw = true
 opt.splitbelow = true
 opt.wildignorecase = true
 opt.undofile = true
-opt.winbar = [[%=%m %f]]
+-- opt.winbar = [[%=%m %f]]
 opt.writebackup = true
 opt.wildmenu = true
 opt.wildmode = 'longest,full'

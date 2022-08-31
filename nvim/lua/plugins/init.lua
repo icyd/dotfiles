@@ -338,6 +338,18 @@ local function plugins(use)
                 require('gitsigns').setup()
             end,
     }
+    use {
+        "TimUntersberger/neogit",
+        cmd = "Neogit",
+        config = function()
+            require('neogit').setup({
+                integrations = { diffview = true }
+            })
+        end,
+        requires = {
+            'sindrets/diffview.nvim'
+        },
+    }
     -- Quickterm
     use {
         'akinsho/toggleterm.nvim',
