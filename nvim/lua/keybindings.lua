@@ -1,13 +1,14 @@
-local map = require('utils').map
-local cmd, g = vim.cmd, vim.g
+local g, map = vim.g, vim.keymap.set
 
+
+-- Map leader localleader
 g.mapleader = ' '
-g.maplocalleader = '\\'
-
+g.maplocalleader = [[\]]
 -- Delete and paste
-map('v', '<localleader>P', '"_dP')
-map('n', '<localleader>P', '"_ddP')
-map('i', '<C-c>', '<ESC>')
+map('v', '<localleader>P', '"_dP', { desc = 'Delete & paste' })
+map('n', '<localleader>P', '"_ddP', { desc = 'Delete & paste' })
+map('i', '<C-c>', '<ESC>', { desc = 'Escape' })
+
 -- Disable arrows
 map('n', '<Up>', '<Nop>')
 map('n', '<Down>', '<Nop>')
@@ -24,76 +25,104 @@ map('v', '<Right>', '<Nop>')
 map('n', 'Q', '<Nop>')
 map('v', 'Q', '<Nop>')
 map('o', 'Q', '<Nop>')
-map('i', '<C-d>', '<C-o>x')
+
+-- map('i', '<C-d>', '<C-o>x', { desc = 'Delete key' })
 map('i', 'jk', '<ESC>')
-map('n', '<leader><space>', ':nohlsearch<CR>')
-map('n', '$', 'g$')
-map('n', '^', 'g^')
-map('n', 'j', 'gj')
-map('n', 'k', 'gk')
+map('n', '<leader><Space>', '<cmd>nohlsearch<CR>')
+map('n', '$', 'g$', { desc = 'Linewrap go to init' })
+map('n', '^', 'g^', { desc = 'Linewrap go to end' })
+map('n', 'j', 'gj', { desc = 'Linewrap down' })
+map('n', 'k', 'gk', { desc = 'Linewrap up' })
+
 -- Make Y behave like D,C...
-map('n', 'Y', 'y$')
+map('n', 'Y', 'y$', { desc = 'Yank whole line' })
+
 -- keep cursor centered
-map('n', 'n', 'nzzzv')
-map('n', 'N', 'Nzzzv')
-map('n', 'J', 'mzJ`z')
+map('n', 'n', 'nzzzv', { desc = 'Center when next match' })
+map('n', 'N', 'Nzzzv', { desc = 'Center when prev match' })
+map('n', 'J', 'mzJ`z', { desc = 'Center when wrapping lines' })
+
 -- Undo break points
 map('i', ',', ',<C-g>u')
 map('i', '.', '.<C-g>u')
 map('i', '!', '!<C-g>u')
 map('i', '?', '?<C-g>u')
+
 -- Jumplist mutations (more than 5 lines)
-map('n', 'k', [[(v:count > 5 ? "m'" . v:count : "") . 'k']], { noremap = true, silent = true, expr = true })
-map('n', 'j', [[(v:count > 5 ? "m'" . v:count : "") . 'j']], { noremap = true, silent = true, expr = true })
-map('n', '<leader>X', ':make<CR>')
-map('n', '<leader>s', ':mksession<CR>')
--- map('i', '<C-v>', '<ESC>"+pa')
--- map('v', '<C-v>', 'c<ESC>"+pa')
-map('v', '<C-c>', '"+y')
-map('i', '<M-h>', '<C-\\><C-N><C-w>h')
-map('i', '<M-j>', '<C-\\><C-N><C-w>j')
-map('i', '<M-k>', '<C-\\><C-N><C-w>k')
-map('i', '<M-l>', '<C-\\><C-N><C-w>l')
-map('n', '<M-h>', '<C-w>h')
-map('n', '<M-j>', '<C-w>j')
-map('n', '<M-k>', '<C-w>k')
-map('n', '<M-l>', '<C-w>l')
-map('n', '<leader>-', ':split<CR>')
-map('n', '<leader>\\', ':vsplit<CR>')
-map('n', '<M-a>', '<C-a>')
-map('n', '<M-x>', '<C-x>')
+map('n', 'k', [[(v:count > 5 ? "m'" . v:count : "") . 'k']], { expr = true })
+map('n', 'j', [[(v:count > 5 ? "m'" . v:count : "") . 'j']], { expr = true })
+map('n', '<leader>X', '<cmd>make<CR>', { desc = 'Make' })
+map('n', '<leader>s', '<cmd>mksession<CR>', { desc = 'Save session' })
+
+--map('v', '<C-c>', '"+y', { desc = 'Yank on visual mode' })
+
+-- Move between splits
+map('i', '<M-h>', [[<C-\><C-N><C-w>h]], { desc = 'Move left' })
+map('i', '<M-j>', [[<C-\><C-N><C-w>j]], { desc = 'Move down' })
+map('i', '<M-k>', [[<C-\><C-N><C-w>k]], { desc = 'Move up' })
+map('i', '<M-l>', [[<C-\><C-N><C-w>l]], { desc = 'Move right' })
+map('n', '<M-h>', '<C-w>h', { desc = 'Move left' })
+map('n', '<M-j>', '<C-w>j', { desc = 'Move down' })
+map('n', '<M-k>', '<C-w>k', { desc = 'Move up' })
+map('n', '<M-l>', '<C-w>l', { desc = 'Move right' })
+
+-- New split
+map('n', '<leader>-', '<cmd>split<CR>', { desc = 'Split horizontal' })
+map('n', [[<leader>\]], '<cmd>vsplit<CR>', { desc = 'Split vertical' })
+
+-- Number increase & decrease
+map('n', '<M-a>', '<C-a>', { desc = 'Increase number' })
+map('n', '<M-x>', '<C-x>', { desc = 'Decrease number' })
+
 -- Moving text
-map('v', '<C-j>', ':move \'>+1<CR>gv=gv')
-map('v', '<C-k>', ':move \'<-2<CR>gv=gv')
-map('n', '<C-j>', ':move .+1<CR>==')
-map('n', '<C-k>', ':move .-2<CR>==')
-map('i', '<C-j>', '<ESC>:move .+1<CR>==')
-map('i', '<C-k>', '<ESC>:move .-2<CR>==')
+map('v', '<C-j>', [[:move '>+1<CR>gv=gv]], { desc = 'Move selected down' })
+map('v', '<C-k>', [[:move '<-2<CR>gv=gv]], { desc = 'Move selected up' })
+map('n', '<C-j>', '<cmd>move .+1<CR>==', { desc = 'Move line down' })
+map('n', '<C-k>', '<cmd>move .-2<CR>==', { desc = 'Move line up' })
+map('i', '<C-j>', '<ESC><cmd>move .+1<CR>==', { desc = 'Move line down' })
+map('i', '<C-k>', '<ESC><cmd>move .-2<CR>==', { desc = 'Move line up' })
+
 -- Open terminal
-map('n', '<leader>\'', ':terminal<CR>', {noremap=false})
+map('n', [[<leader>']], '<cmd>terminal<CR>', { desc = 'Open terminal' })
+
 -- Save with leader
-map('n', '<leader>w', ':w<CR>')
+map('n', '<leader>w', '<cmd>w<CR>', { desc = 'Save buffer' })
+
 -- Escape terminal
-map('t', '<ESC>', '<C-\\><C-N>')
-map('t', '<localleader>q', '<ESC>')
-map('t', '<M-h>', '<C-\\><C-N><C-w>h')
-map('t', '<M-j>', '<C-\\><C-N><C-w>j')
-map('t', '<M-k>', '<C-\\><C-N><C-w>k')
-map('t', '<M-l>', '<C-\\><C-N><C-w>l')
-map('n', '<leader>ac', ':tabnew<CR>')
-map('n', '<leader>a^', ':tabfirst<CR>')
-map('n', '<leader>an', ':tabnext<CR>')
-map('n', '<leader>ap', ':tabprev<CR>')
-map('n', '<leader>a$', ':tablast<CR>')
-map('n', '<leader>ae', ':tabedit<CR>')
-map('n', '<leader>ab', ':tabnext<SPACE>')
-map('n', '<leader>am', ':tabm<SPACE>')
-map('n', '<leader>ax', ':tabclose<CR>')
-map('n', '<leader>ax', ':tabclose<CR>')
-map('c', 'w!!', 'w !sudo tee % >/dev/null')
-map('n', '<leader>md', ':!mkdir -p %:p:h<CR>', {silent=false})
-map('n', '<leader>cd', [[:lcd %:h<CR>:echo "Changed directory to: "expand('%:p:h')<CR>]])
-map('n', '<leader>ew', [[:e <C-r>=expand("%:p:h")."/"<CR>]])
-map('n', '<localleader>cc', [[:lua require('utils').reload()<CR>]])
-map('n', '<localleader>ss', ':GrabServerName<CR>', {silent=false})
-map('c', '%%', "getcmdtype() == ':' ? expand('%:h').'/' : '%%'", { noremap = false, silent = false, expr = true })
+map('t', '<localleader>q', '<ESC>', { desc = 'Espace on terminal with leader' })
+map('t', '<ESC>', [[<C-\><C-N>]], { desc = 'Escape on terminal with ESC key' })
+map('t', '<M-h>', [[<C-\><C-N><C-w>h]], { desc = 'Move left' })
+map('t', '<M-j>', [[<C-\><C-N><C-w>j]], { desc = 'Move down' })
+map('t', '<M-k>', [[<C-\><C-N><C-w>k]], { desc = 'Move up' })
+map('t', '<M-l>', [[<C-\><C-N><C-w>l]], { desc = 'Move right' })
+
+-- Tabs
+map('n', '<leader>ac', '<cmd>tabnew<CR>', { desc = 'Create new tab' })
+map('n', '<leader>a^', '<cmd>tabfirst<CR>', { desc = 'Go to first tab' })
+map('n', '<leader>an', '<cmd>tabnext<CR>', { desc = 'Go to next tab' })
+map('n', '<leader>ap', '<cmd>tabprev<CR>', { desc = 'Go to prev tab' })
+map('n', '<leader>a$', '<cmd>tablast<CR>', { desc = 'Go to last tab' })
+map('n', '<leader>ae', '<cmd>tabedit<CR>', { desc = 'Edit in new tab' })
+map('n', '<leader>ab', '<cmd>tabnext<Space>', { desc = 'Tab next with arg' })
+map('n', '<leader>am', '<cmd>tabm<Space>', { desc = 'Tab move with arg' })
+map('n', '<leader>ax', '<cmd>tabclose<CR>', { desc = 'Close tab' })
+
+map('c', 'w!!', 'w !sudo tee % >/dev/null', { desc = 'Save buffer with sudo' })
+
+map('n', '<leader>md', '<cmd>!mkdir -p %:p:h<CR>', { desc = 'Create new dir', silent=false })
+
+map('n', '<leader>cd',
+    [[<cmd>lcd %:h<CR>:echo "Changed directory to: "expand('%:p:h')<CR>]],
+    { desc = 'Change directory to current file' })
+
+map('n', '<leader>ew', [[:e <C-r>=expand("%:p:h")."/"<CR>]],
+    { desc = 'Open relative to current file' })
+
+map('n', '<localleader>cc', require('utils').reload,
+    { desc = 'Reload current module' })
+
+map('n', '<localleader>ss', '<cmd>GrabServer<CR>',
+    { desc = 'Grab server', silent = false })
+
+map('c', '%%', "getcmdtype() == ':' ? expand('%:h').'/' : '%%'",
+    { desc = 'Expand to current path', silent = false, expr = true })

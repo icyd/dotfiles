@@ -20,7 +20,7 @@ M.search_home = function()
 end
 
 M.browse_home = function()
-    require('telescope.builtin').file_browser({
+    require('telescope').extensions.file_browser.file_browser({
             prompt_title = "< HOME >",
             cwd = home,
         })

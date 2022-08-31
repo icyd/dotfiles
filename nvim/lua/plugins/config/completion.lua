@@ -1,4 +1,3 @@
--- local fn, map = vim.fn, require('utils').map
 -- local has_words_before = function()
 --     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 --     return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
@@ -9,7 +8,7 @@
 -- end
 --
 local cmp = require('cmp')
-local lspkind = require("lspkind")
+local lspkind = require('lspkind')
 local ls = require('luasnip')
 local types = require('luasnip.util.types')
 
@@ -28,9 +27,8 @@ ls.config.setup({
 
 local snippets_dir = vim.fn.stdpath('config') .. '/lua/plugins/config/snippets/'
 require('luasnip.loaders.from_lua').lazy_load { paths = snippets_dir }
--- require('luasnip.loaders.from_snipmate').lazy_load()
 require('luasnip.loaders.from_vscode').lazy_load()
-vim.cmd [[ command! LuaSnipEdit :lua require('luasnip.loaders.from_lua').edit_snippet_files() ]]
+vim.api.nvim_create_user_command('LuaSnipEdit', require('luasnip.loaders.from_lua').edit_snippet_files, {})
 
 local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
@@ -55,7 +53,7 @@ cmp.setup({
         { name = 'luasnip' },
         { name = 'nvim_lsp' },
     }, {
-        { name = 'tags' },
+        -- { name = 'tags' },
         { name = 'path' },
         { name = 'buffer', keyword_length = 5 },
         { name = 'orgmode' },
@@ -66,12 +64,14 @@ cmp.setup({
         end,
     },
     mapping = {
-        ['<C-y>'] = cmp.mapping(cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true }), {'i', 'c'}),
+        ['<C-y>'] = cmp.mapping(cmp.mapping.confirm({
+            behavior = cmp.ConfirmBehavior.Insert,
+            select = true }), {'i', 'c'}),
         ['<CR>']  = cmp.mapping({
             i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
             c = function(fallback)
                 if cmp.visible() then
-                    cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
+                    cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })
                 else
                    fallback()
                 end
@@ -137,20 +137,52 @@ cmp.setup({
                 end
             end
         }),
-        ['<Tab>'] = cmp.mapping(function(fallback)
-            if ls.jumpable() then
-                ls.jump(1)
-            else
-                fallback()
-            end
-        end, {'i', 's'}),
-        ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if ls.jumpable(-1) then
-                ls.jump()
-            else
-                fallback()
-            end
-        end, {'i', 's'}),
+        ['<Tab>'] = cmp.mapping({
+            i = function(fallback)
+                if ls.jumpable() then
+                    ls.jump(1)
+                else
+                    fallback()
+                end
+            end,
+            s = function(fallback)
+                if ls.jumpable() then
+                    ls.jump(1)
+                else
+                    fallback()
+                end
+            end,
+            c = function()
+                if cmp.visible() then
+                    cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+                else
+                    cmp.complete()
+                end
+            end,
+        }),
+        ['<S-Tab>'] = cmp.mapping({
+            i = function(fallback)
+                if ls.jumpable(-1) then
+                    ls.jump()
+                else
+                    fallback()
+                end
+            end,
+            s = function(fallback)
+                if ls.jumpable(-1) then
+                    ls.jump()
+                else
+                    fallback()
+                end
+            end,
+            c = function()
+                if cmp.visible() then
+                    cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
+                else
+                    cmp.complete()
+                end
+            end,
+        }),
     },
 
 
@@ -160,7 +192,7 @@ cmp.setup({
 })
 
 cmp.setup.cmdline(':', {
-    completion = { autocomplete = false },
+    completion = { autocomplete = true },
     sources = cmp.config.sources({
         { name = 'path' },
         { name = 'cmdline' },
@@ -187,3 +219,8 @@ for _, cmd_type in ipairs({'?', '@'}) do
         },
     })
 end
+
+cmp.event:on(
+    'confirm_done',
+    require('nvim-autopairs.completion.cmp').on_confirm_done()
+)

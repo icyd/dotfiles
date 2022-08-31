@@ -2,9 +2,10 @@
 let
     DOTFILES = "${config.home.homeDirectory}/.dotfiles";
     mypkgs = with pkgs; [
-      avrdude
       binutils
+      cargo
       cmake
+      chromium
       ccls
       dive
       docker
@@ -16,10 +17,12 @@ let
       go_1_18
       gopass
       gopass-jsonapi
+      luajit
+      luajitPackages.luarocks
       kicad-small
       mosh
       openocd
-      rustup
+      rustc
       rust-analyzer
       sshfs
       sumneko-lua-language-server

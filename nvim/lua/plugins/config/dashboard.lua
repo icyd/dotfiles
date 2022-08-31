@@ -1,5 +1,4 @@
-local utils = require('utils')
-local g, map, augroup = vim.g, utils.map, utils.augroup
+local g, map = vim.g, vim.kemap.set
 
 g.dashboard_disable_at_vimenter = 0
 g.dashboard_default_executive = "telescope"
@@ -11,9 +10,9 @@ g.dashboard_custom_header = {
    ' ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║',
    ' ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝',
 }
-map('n', '<localleader>fn', ":DashboardNewFile<CR>")
-map('n', '<localleader>fS', ":SessionLoad<CR>")
-map('n', '<localleader>fs', ":SessionSave<CR>")
+map('n', '<localleader>fn', "<cmd>DashboardNewFile<CR>")
+map('n', '<localleader>fS', "<cmd>SessionLoad<CR>")
+map('n', '<localleader>fs', "<cmd>SessionSave<CR>")
 
 g.dashboard_custom_section = {
    a = { description = { "  Find Project              SPC f p" }, command = "Telescope project" },
