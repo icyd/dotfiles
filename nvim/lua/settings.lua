@@ -159,6 +159,7 @@ api.nvim_create_user_command('Vbuffer', function(args)
     vim.cmd('vert belowright sb ' .. args.args)
 end, { nargs = 1 })
 
+-- Neovim-remote inside nvim when installed inside pyenv
 local pyenv = os.getenv("PY_ENV")
 local nvr =  pyenv and pyenv .. "/nvr/bin/nvr" or nil
 if nvr and vim.fn.has('nvim') and vim.fn.executable(nvr) then

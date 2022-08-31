@@ -541,6 +541,12 @@ local function plugins(use)
             vim.keymap.set('n', '<leader>?', '<cmd>WhickKey <CR>')
         end,
     }
+    use {
+        'declancm/maximize.nvim',
+        config = function()
+            vim.keymap.set('n', '<leader>z', require("maximize").toggle)
+        end,
+    }
 
     if bootstrap then
         packer.sync()

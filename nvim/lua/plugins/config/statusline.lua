@@ -1,10 +1,14 @@
 local M = {}
 
 function M.setup()
+    local function maximize_status()
+        return vim.t.maximized and '   ' or ''
+    end
+
     require('lualine').setup {
       options = {
         icons_enabled = true,
-        theme = 'gruvbox-material',
+        theme = 'kanagawa',
         component_separators = {'', ''},
         section_separators = {'', ''},
         disabled_filetypes = {}
@@ -27,7 +31,8 @@ function M.setup()
             },
             'encoding',
             'fileformat',
-            'filetype'
+            'filetype',
+            maximize_status
         },
         lualine_y = {'progress'},
         lualine_z = {'location'}

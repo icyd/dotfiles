@@ -82,6 +82,31 @@ in {
           chars = "\\x1b\\x6a";
       }
       {
+          key = "L";
+          mods = "Alt";
+          chars = "\\x1b\\x6c";
+      }
+      {
+          key = "H";
+          mods = "Alt";
+          chars = "\\x1b\\x68";
+      }
+      {
+          key = "K";
+          mods = "Alt";
+          chars = "\\x1b\\x6b";
+      }
+      {
+          key = "J";
+          mods = "Alt";
+          chars = "\\x1b\\x6a";
+      }
+      {
+          key = "C";
+          mods = "Alt";
+          chars = "\\x1b\\x63";
+      }
+      {
           key = "B";
           mods = "Command";
           chars = "\\x1b\\x62";

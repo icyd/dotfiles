@@ -29,6 +29,7 @@
             config.allowUnfree = true;
             overlays = [
                 (self: super: {
+                    dnsutils-unstable = unstable.dnsutils;
                     neovim-unstable = unstable.neovim;
                     neovim-remote = unstable.neovim-remote;
                 })
