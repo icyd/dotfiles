@@ -32,7 +32,9 @@
       neovim-nightly
       neovim-remote
       nodejs
-      python3Minimal
+      python310
+      python310Packages.pip
+      python310Packages.virtualenv
       ripgrep
       stern
       tree-sitter

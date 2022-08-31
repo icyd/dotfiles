@@ -1,6 +1,7 @@
-local utils, telescope = require('utils'), require('telescope')
-local map, augroup = utils.map, utils.augroup
-local api = vim.api
+local telescope = require('telescope')
+local builtin = require('telescope.builtin')
+local my_telescope = require('my.telescope')
+local api, map = vim.api, vim.keymap.set
 
 local telescope_mappings = {
     i = {
@@ -44,62 +45,104 @@ telescope.setup {
            },
            hidden_files = false
         },
+        file_browser = {
+            hijack_netrw = true,
+        }
     }
 }
 
-map('n', '<leader>ff', ":Telescope find_files<CR>")
-map('n', '<leader>fl', ":lua require('telescope.builtin').find_files( { cwd = vim.fn.expand('%:p:h') })<CR>")
-map('n', '<leader>fb', ":Telescope file_browser<CR>")
-map('n', '<leader>fg', ":Telescope current_buffer_fuzzy_find<CR>")
-map('n', '<leader>fG', ":Telescope live_grep<CR>")
-map('n', '<leader>fh', ":Telescope help_tags<CR>")
-map('n', '<leader>fR', ":Telescope oldfiles<CR>")
-map('n', '<leader>lA', ":Telescope lsp_code_actions<CR>")
-map('n', '<leader>lG', ":Telescope lsp_document_diagnostics<CR>")
-map('n', '<leader>ft', ":lua require('telescope.builtin').tags()<CR>")
-map('n', '<leader>b', ":lua require('telescope.builtin').buffers({ show_all_buffers = true, sort_lastused = true, ignore_current_buffer = true, sort_mru = true })<CR>")
-map('n', '<leader>fv', ":lua require('my.telescope').search_dotfiles()<CR>")
-map('n', '<leader>fF', ":lua require('my.telescope').search_home()<CR>")
-map('n', '<leader>fB', ":lua require('my.telescope').browse_home()<CR>")
-map('n', '<leader>qr', ":lua require('my.telescope').reload()<CR>")
-map('n', '<leader>f/', ':Telescope search_history<CR>')
-map('n', '<leader>f:', ':Telescope command_history<CR>')
-map('n', '<leader>fs', ":lua require('telescope.builtin').grep_string({ search = vim.fn.expand(\"<cword>\") })<CR>")
-map('n', '<leader>fS', ":lua require('telescope.builtin').grep_string({ search = vim.fn.input(\"Grep for: \") })<CR>")
--- map('n', '<leader>fw', ":lua telescope.extensions.git_worktree.git_worktrees()<CR>")
--- map('n', '<leader>fW', ":lua telescope.extensions.git_worktree.create_git_worktree()<CR>")
-map('n', '<leader>fp', ":lua require('telescope').extensions.project.project{ display_type = 'full' }<CR>")
+map('n', '<leader>ff', builtin.find_files, { desc = 'Find files' })
+map('n', '<leader>fl',
+    function() builtin.find_files({ cwd = vim.fn.expand('%:p:h') }) end,
+    { desc = 'Find files relative current file' })
+map('n', '<leader>fb', function()
+       telescope.extensions.file_browser.file_browser()
+    end, { desc = 'Browse files' })
+map('n', '<leader>fg', builtin.current_buffer_fuzzy_find,
+    { desc = 'Find in current buffer' })
+map('n', '<leader>fG', builtin.live_grep,
+    { desc = 'Live grep' })
+map('n', '<leader>fh', builtin.help_tags,
+    { desc = 'Help tags' })
+map('n', '<leader>fR', builtin.oldfiles,
+    { desc = 'Oldfiles' })
+-- map('n', '<leader>lA', builtin.lsp_code_actions,
+--     { desc = 'Lsp code actions' })
+-- map('n', '<leader>lG', builtin.lsp_document_diagnostics,
+--     { desc = 'Lsp document diagnostics' })
+map('n', '<leader>b', function()
+        builtin.buffers({
+            show_all_buffers = true,
+            sort_lastused = true,
+            ignore_current_buffer = true,
+            sort_mru = true })
+    end, { desc = 'Buffers' })
+map('n', '<leader>fv', my_telescope.search_dotfiles,
+    { desc = 'Search in dotfiles' })
+map('n', '<leader>fF', my_telescope.search_home,
+    { desc = 'Search in home' })
+map('n', '<leader>fB', my_telescope.browse_home,
+    { desc = 'Browse home' })
+map('n', '<leader>qr', my_telescope.reload,
+    { desc = 'Reload' })
+map('n', '<leader>f/', builtin.search_history,
+    { desc = 'Search history' })
+map('n', '<leader>f:', builtin.command_history,
+    { desc = 'Command history' })
+map('n', '<leader>fs', function()
+        builtin.grep_string({ search = vim.fn.expand([[<cword>]]) })
+    end, { desc = 'Grep current string' })
+map('n', '<leader>fS', function()
+        builtin.grep_string({ search = vim.fn.input('Grep for: ') })
+    end, { desc = 'Grep string' })
+-- map('n', '<leader>fw', telescope.extensions.git_worktree.git_worktrees,
+-- { desc = 'Git worktrees' })
+-- map('n', '<leader>fW', telescope.extensions.git_worktree.create_git_worktree,
+-- { desc = 'Create git worktree' })
+map('n', '<leader>fp', function()
+        telescope.extensions.project.project{ display_type = 'full' }
+    end, { desc = 'Projects' })
+--
+map('n', '<localleader>fR', builtin.registers,
+            { desc = 'Registers' })
+map('n', '<localleader>fm', builtin.marks,
+    { desc = 'Marks' })
+map('n', '<localleader>fj', builtin.jumplist,
+    { desc = 'Jumplint' })
+map('n', '<localleader>fx', builtin.commands,
+    { desc = 'Commands' })
+map('n', '<localleader>fn', my_telescope.find_notes,
+    { desc = 'Find notes' })
 
-map('n', '<localleader>fR', ':Telescope registers<CR>')
-map('n', '<localleader>fm', ':Telescope marks<CR>')
-map('n', '<localleader>fj', ':Telescope jumplist<CR>')
-map('n', '<localleader>fx', ':Telescope commands<CR>')
-map('n', '<localleader>fn', ":lua require('my.telescope').find_notes()<CR>")
+map('n', '<leader>gb', builtin.git_branches,
+    { desc = 'Git branches' })
+map('n', '<leader>gc', builtin.git_commits,
+    { desc = 'Git commits' })
+map('n', '<leader>gC', builtin.git_bcommits,
+    { desc = 'Git current buffer commits' })
+map('n', '<leader>fi', builtin.treesitter,
+    { desc = 'Treesitter' })
 
-map('n', '<leader>gb', ':Telescope git_branches<CR>')
-map('n', '<leader>gc', ':Telescope git_commits<CR>')
-map('n', '<leader>gC', ':Telescope git_bcommits<CR>')
-map('n', '<leader>fz', ':Telescope current_buffer_fuzzy_find<CR>')
-map('n', '<leader>fi', ':Telescope treesitter<CR>')
+-- map('n', '<leader>dcc',
+--     '<cmd>lua require"telescope".extensions.dap.commands{}<CR>')
+-- map('n', '<leader>dco',
+--     '<cmd>lua require"telescope".extensions.dap.configurations{}<CR>')
+-- map('n', '<leader>dlb',
+--     '<cmd>lua require"telescope".extensions.dap.list_breakpoints{}<CR>')
+-- map('n', '<leader>dv',
+--     '<cmd>lua require"telescope".extensions.dap.variables{}<CR>')
+-- map('n', '<leader>df',
+--           '<cmd>lua require"telescope".extensions.dap.frames{}<CR>')
+-- map('n', '<leader>dui', '<cmd>lua require"dapui".toggle()<CR>')
 
-map('n', '<leader>dcc',
-    '<cmd>lua require"telescope".extensions.dap.commands{}<CR>')
-map('n', '<leader>dco',
-    '<cmd>lua require"telescope".extensions.dap.configurations{}<CR>')
-map('n', '<leader>dlb',
-    '<cmd>lua require"telescope".extensions.dap.list_breakpoints{}<CR>')
-map('n', '<leader>dv',
-    '<cmd>lua require"telescope".extensions.dap.variables{}<CR>')
-map('n', '<leader>df',
-          '<cmd>lua require"telescope".extensions.dap.frames{}<CR>')
-map('n', '<leader>dui', '<cmd>lua require"dapui".toggle()<CR>')
-
--- augroup('Telescope', {
---     'FileType TelescopePrompt setlocal nocursorline nonumber norelativenumber signcolumn=no'
--- })
-api.nvim_create_augroup('Telescope', { clear = true })
-api.nvim_create_autocmd('FileType', { group = 'Telescope', pattern = 'TelescopePrompt', command = 'setlocal nocursorline nonumber norelativenumber signcolumn=no' })
-
-augroup('reload_lua', {
-    'BufWritePost *.lua lua require("utils").reload()',
+local telescope_au = api.nvim_create_augroup('telescope_au', { clear = true })
+api.nvim_create_autocmd('FileType', {
+    group = telescope_au,
+    pattern = 'TelescopePrompt',
+    command = 'setlocal nocursorline nonumber norelativenumber signcolumn=no',
+})
+api.nvim_create_autocmd('BufWritePost', {
+    pattern = '*.lua',
+    group = telescope_au,
+    callback = require('utils').reload,
 })

@@ -1,7 +1,7 @@
 vim.opt.shadafile = 'NONE'
-pcall(require, 'impatient')
 require('settings')
 require('keybindings')
+require('plugins')
 
 if root then
    set.shada = ''

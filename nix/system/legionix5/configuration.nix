@@ -86,8 +86,10 @@
     };
     environment.systemPackages = with pkgs; [
         binutils
+        dnsutils
         gcc
         gnumake
+        google-chrome
         cmake
         autogen
         sqlite
@@ -96,13 +98,16 @@
         arc-theme
         papirus-icon-theme
         capitaine-cursors
+        openssl
         breeze-icons
         nextcloud-client
         pavucontrol
         okular
         unzip
+        usbutils
         wget
         vim
+        zip
     ];
     i18n.defaultLocale = "en_US.UTF-8";
     hardware = {
@@ -127,6 +132,9 @@
         interfaces.eno1.useDHCP = true;
         interfaces.wlp4s0.useDHCP = true;
         networkmanager.enable = true;
+        # dhcpcd.extraConfig = "nohook resolv.conf";
+        # networkmanager.dns = "none";
+        # nameservers = [ "192.168.1.8" ];
         useDHCP = false;
     };
     nix = {
@@ -142,7 +150,6 @@
     };
     services = {
         blueman.enable = true;
-        gnome.gnome-keyring.enable = true;
         gvfs.enable = true;
         xserver = {
             enable = true;
@@ -152,6 +159,7 @@
                 gdm = {
                     enable = true;
                     wayland = true;
+                    autoSuspend = false;
                 };
                 autoLogin = {
                     enable = true;
@@ -160,16 +168,20 @@
             };
             libinput.enable = true;
         };
+        udev.extraRules = (builtins.readFile ./udev.rules);
     };
     sound.enable = true;
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
     users = {
+        mutableUsers = false;
         groups.${username}.gid = 1000;
         users.${username} = {
             isNormalUser = true;
             uid = 1000;
             shell = pkgs.zsh;
             extraGroups = [ "wheel" "${username}" "networkmanager" "video" ]; # Enable ‘sudo’ for the user.
+            # initialHashedPassword = "$6$wxp/3sRBcMHx3fsm$vWVUshizSk1XaZS7gHPKy2NF.LHd.iMZ/o3Ipx0aKWs4Q3GiiPPAf1Abe9Flt7TAdcsTvDlbn5eTYhIzxOa/5/";
+            passwordFile = "/persist/beto.pass";
         };
     };
     time.timeZone = "Europe/Madrid";
@@ -219,7 +231,7 @@
             # rollback results in sudo lectures after each reboot
             Defaults lecture = never
         '';
-        pam.services.login.enableGnomeKeyring = true;
+        pam.services.gdm.enableGnomeKeyring = true;
     };
     system.stateVersion = stateVersion;
     systemd.tmpfiles.rules = [

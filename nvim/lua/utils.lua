@@ -1,23 +1,5 @@
 local M = {}
 
-local scopes = {o = vim.o, b = vim.bo, w = vim.wo, g = vim.g}
-
-function M.opt(scope, key, value)
-    scopes[scope][key] = value
-    if scope ~= 'o' then scopes['o'][key] = value end
-end
-
-function M.map(mode, lhs, rhs, opts)
-    local options = {noremap = true; silent = true}
-    if opts then options = vim.tbl_extend('force', options, opts) end
-    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
-
-function M.augroup(name, definitions)
-    vim.cmd('augroup '..name..' | autocmd!')
-    vim.tbl_map(function(c) vim.cmd('autocmd '..c) end, definitions)
-    vim.cmd'augroup END'
-end
 
 function M.reload()
     local function get_module_name(file_name)
@@ -52,7 +34,6 @@ function M.reload()
     -- require('packer').compile()
     print(vim.inspect(name .. " RELOADED!!!"))
 end
-
 
 function M.grab_server()
     if string.len(vim.api.nvim_get_vvar('servername')) > 1 then
