@@ -40,10 +40,10 @@ telescope.setup {
             case_mode = 'smart_case',
         },
         project = {
-           base_dirs = {
-               {path = '~/Projects', max_depth = 5},
-           },
-           hidden_files = false
+            base_dirs = {
+                { path = '~/Projects', max_depth = 5 },
+            },
+            hidden_files = false
         },
         file_browser = {
             hijack_netrw = true,
@@ -56,8 +56,8 @@ map('n', '<leader>fl',
     function() builtin.find_files({ cwd = vim.fn.expand('%:p:h') }) end,
     { desc = 'Find files relative current file' })
 map('n', '<leader>fb', function()
-       telescope.extensions.file_browser.file_browser()
-    end, { desc = 'Browse files' })
+    telescope.extensions.file_browser.file_browser()
+end, { desc = 'Browse files' })
 map('n', '<leader>fg', builtin.current_buffer_fuzzy_find,
     { desc = 'Find in current buffer' })
 map('n', '<leader>fG', builtin.live_grep,
@@ -71,40 +71,39 @@ map('n', '<leader>fR', builtin.oldfiles,
 -- map('n', '<leader>lG', builtin.lsp_document_diagnostics,
 --     { desc = 'Lsp document diagnostics' })
 map('n', '<leader>b', function()
-        builtin.buffers({
-            show_all_buffers = true,
-            sort_lastused = true,
-            ignore_current_buffer = true,
-            sort_mru = true })
-    end, { desc = 'Buffers' })
+    builtin.buffers({
+        show_all_buffers = true,
+        sort_lastused = true,
+        ignore_current_buffer = true,
+        sort_mru = true
+    })
+end, { desc = 'Buffers' })
 map('n', '<leader>fv', my_telescope.search_dotfiles,
     { desc = 'Search in dotfiles' })
 map('n', '<leader>fF', my_telescope.search_home,
     { desc = 'Search in home' })
 map('n', '<leader>fB', my_telescope.browse_home,
     { desc = 'Browse home' })
-map('n', '<leader>qr', my_telescope.reload,
-    { desc = 'Reload' })
 map('n', '<leader>f/', builtin.search_history,
     { desc = 'Search history' })
 map('n', '<leader>f:', builtin.command_history,
     { desc = 'Command history' })
 map('n', '<leader>fs', function()
-        builtin.grep_string({ search = vim.fn.expand([[<cword>]]) })
-    end, { desc = 'Grep current string' })
+    builtin.grep_string({ search = vim.fn.expand([[<cword>]]) })
+end, { desc = 'Grep current string' })
 map('n', '<leader>fS', function()
-        builtin.grep_string({ search = vim.fn.input('Grep for: ') })
-    end, { desc = 'Grep string' })
+    builtin.grep_string({ search = vim.fn.input('Grep for: ') })
+end, { desc = 'Grep string' })
 -- map('n', '<leader>fw', telescope.extensions.git_worktree.git_worktrees,
 -- { desc = 'Git worktrees' })
 -- map('n', '<leader>fW', telescope.extensions.git_worktree.create_git_worktree,
 -- { desc = 'Create git worktree' })
 map('n', '<leader>fp', function()
-        telescope.extensions.project.project{ display_type = 'full' }
-    end, { desc = 'Projects' })
+    telescope.extensions.project.project { display_type = 'full' }
+end, { desc = 'Projects' })
 --
 map('n', '<localleader>fR', builtin.registers,
-            { desc = 'Registers' })
+    { desc = 'Registers' })
 map('n', '<localleader>fm', builtin.marks,
     { desc = 'Marks' })
 map('n', '<localleader>fj', builtin.jumplist,
@@ -123,26 +122,9 @@ map('n', '<leader>gC', builtin.git_bcommits,
 map('n', '<leader>fi', builtin.treesitter,
     { desc = 'Treesitter' })
 
--- map('n', '<leader>dcc',
---     '<cmd>lua require"telescope".extensions.dap.commands{}<CR>')
--- map('n', '<leader>dco',
---     '<cmd>lua require"telescope".extensions.dap.configurations{}<CR>')
--- map('n', '<leader>dlb',
---     '<cmd>lua require"telescope".extensions.dap.list_breakpoints{}<CR>')
--- map('n', '<leader>dv',
---     '<cmd>lua require"telescope".extensions.dap.variables{}<CR>')
--- map('n', '<leader>df',
---           '<cmd>lua require"telescope".extensions.dap.frames{}<CR>')
--- map('n', '<leader>dui', '<cmd>lua require"dapui".toggle()<CR>')
-
 local telescope_au = api.nvim_create_augroup('telescope_au', { clear = true })
 api.nvim_create_autocmd('FileType', {
     group = telescope_au,
     pattern = 'TelescopePrompt',
     command = 'setlocal nocursorline nonumber norelativenumber signcolumn=no',
-})
-api.nvim_create_autocmd('BufWritePost', {
-    pattern = '*.lua',
-    group = telescope_au,
-    callback = require('utils').reload,
 })
