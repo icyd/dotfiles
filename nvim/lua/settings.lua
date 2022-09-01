@@ -1,20 +1,20 @@
 local api, g, opt = vim.api, vim.g, vim.opt
 
 local disabled_built_ins = {
-	'gzip',
-	'man',
-	-- 'matchit',
-	-- 'matchparen',
-	'shada_plugin',
-	'tarPlugin',
-	'tar',
-	'zipPlugin',
-	'zip',
-	-- 'netrwPlugin',
+    'gzip',
+    'man',
+    -- 'matchit',
+    -- 'matchparen',
+    'shada_plugin',
+    'tarPlugin',
+    'tar',
+    'zipPlugin',
+    'zip',
+    -- 'netrwPlugin',
 }
 
 for _, name in ipairs(disabled_built_ins) do
-	vim.g['loaded_' .. name] = 1
+    vim.g['loaded_' .. name] = 1
 end
 
 local indent = 4
@@ -34,7 +34,7 @@ opt.cmdheight = 2
 opt.completeopt = 'menu,menuone,noselect'
 opt.conceallevel = 1
 opt.concealcursor = 'nc'
-opt.diffopt = vim.o.diffopt..',vertical'
+opt.diffopt = vim.o.diffopt .. ',vertical'
 opt.grepprg = 'rg --vimgrep --smart-case --follow'
 opt.hidden = true
 opt.history = 200
@@ -46,7 +46,7 @@ opt.laststatus = 3
 opt.mouse = 'n'
 opt.scrolloff = 4
 opt.shell = 'zsh'
-opt.shortmess = vim.o.shortmess..'atTAIc'
+opt.shortmess = vim.o.shortmess .. 'atTAIc'
 opt.showmatch = true
 opt.showmode = false
 opt.smartcase = true
@@ -57,26 +57,26 @@ opt.lazyredraw = true
 opt.splitbelow = true
 opt.wildignorecase = true
 opt.undofile = true
--- opt.winbar = [[%=%m %f]]
+opt.winbar = [[%=%m %f]]
 opt.writebackup = true
 opt.wildmenu = true
 opt.wildmode = 'longest,full'
 opt.wildignore = {
-	'*.pyc',
-	'*_build/*',
-	'**/coverage/*',
-	'**/node_modules/*',
-	'**/android/*',
-	'**/ios/*',
-	'**/.git/*'
+    '*.pyc',
+    '*_build/*',
+    '**/coverage/*',
+    '**/node_modules/*',
+    '**/android/*',
+    '**/ios/*',
+    '**/.git/*'
 }
 opt.listchars = {
-	nbsp = '~',
-	extends = '»',
-	precedes = '«',
-	tab = '▷─',
-	trail = '•',
-	eol = '¬',
+    nbsp = '~',
+    extends = '»',
+    precedes = '«',
+    tab = '▷─',
+    trail = '•',
+    eol = '¬',
 }
 opt.colorcolumn = '79'
 opt.cursorcolumn = false
@@ -109,7 +109,7 @@ api.nvim_create_autocmd('BufWritePre', {
     desc = 'Disable undofile for tmp files',
 })
 
-local cursor_line = api.nvim_create_augroup('cursor_line', { clear=true })
+local cursor_line = api.nvim_create_augroup('cursor_line', { clear = true })
 api.nvim_create_autocmd({ 'VimEnter', 'WinEnter', 'BufWinEnter' }, {
     pattern = '*',
     group = cursor_line,
@@ -117,7 +117,7 @@ api.nvim_create_autocmd({ 'VimEnter', 'WinEnter', 'BufWinEnter' }, {
     desc = 'Set cursor line',
 })
 
-local auto_spell = api.nvim_create_augroup('auto_spell', { clear=true })
+local auto_spell = api.nvim_create_augroup('auto_spell', { clear = true })
 api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
     pattern = { '*.md', '*.txt', '*.pandoc' },
     group = auto_spell,
@@ -131,7 +131,7 @@ api.nvim_create_autocmd('FileType', {
     desc = 'Enable spell on gitcommit filetype',
 })
 
-local nvim_term_conf = api.nvim_create_augroup('nvim_term_conf',  { clear=true })
+local nvim_term_conf = api.nvim_create_augroup('nvim_term_conf', { clear = true })
 api.nvim_create_autocmd({ 'TermOpen', 'TermEnter' }, {
     pattern = '*',
     group = nvim_term_conf,
@@ -153,7 +153,7 @@ api.nvim_create_autocmd('FileType', {
     desc = 'Set text width on gitcommit files',
 })
 
-api.nvim_create_user_command('GrabServer', require"utils".grab_server, {})
+api.nvim_create_user_command('GrabServer', require "utils".grab_server, {})
 
 api.nvim_create_user_command('Vbuffer', function(args)
     vim.cmd('vert belowright sb ' .. args.args)
@@ -161,7 +161,7 @@ end, { nargs = 1 })
 
 -- Neovim-remote inside nvim when installed inside pyenv
 local pyenv = os.getenv("PY_ENV")
-local nvr =  pyenv and pyenv .. "/nvr/bin/nvr" or nil
+local nvr = pyenv and pyenv .. "/nvr/bin/nvr" or nil
 if nvr and vim.fn.has('nvim') and vim.fn.executable(nvr) then
     vim.env.VISUAL = nvr .. " -cc split --remote-wait-silent"
 end
