@@ -9,8 +9,8 @@ function M.setup()
         options = {
             icons_enabled = true,
             theme = 'kanagawa',
-            component_separators = {'', ''},
-            section_separators = {'', ''},
+            component_separators = { '', '' },
+            section_separators = { '', '' },
             disabled_filetypes = {
                 statusline = {},
                 winbar = {
@@ -26,8 +26,8 @@ function M.setup()
             }
         },
         sections = {
-            lualine_a = {'mode'},
-            lualine_b = {'branch', 'diff'},
+            lualine_a = { 'mode' },
+            lualine_b = { 'branch', 'diff' },
             lualine_c = {
                 {
                     'filename',
@@ -39,41 +39,41 @@ function M.setup()
             lualine_x = {
                 {
                     'diagnostics',
-                    sources={'nvim_diagnostic'}
+                    sources = { 'nvim_diagnostic' }
                 },
                 'encoding',
                 'fileformat',
                 'filetype',
                 maximize_status
             },
-            lualine_y = {'progress'},
-            lualine_z = {'location'}
+            lualine_y = { 'progress' },
+            lualine_z = { 'location' }
         },
         inactive_sections = {
             lualine_a = {},
             lualine_b = {},
-            lualine_c = {'filename'},
-            lualine_x = {'location'},
+            lualine_c = { 'filename' },
+            lualine_x = { 'location' },
             lualine_y = {},
             lualine_z = {}
         },
         tabline = {},
         extensions = { "nvim-tree", "toggleterm", "quickfix" },
-        winbar = {
-           lualine_a = {},
-           lualine_b = {
-                'diagnostics'
-            },
-           lualine_c = {},
-           lualine_x = {
-               {
-                   'filename',
-                   file_status = true,
-               },
-           },
-           lualine_y = {},
-           lualine_z = {},
-        }
+        -- winbar = {
+        --    lualine_a = {},
+        --    lualine_b = {
+        --         'diagnostics'
+        --     },
+        --    lualine_c = {},
+        --    lualine_x = {
+        --        {
+        --            'filename',
+        --            file_status = true,
+        --        },
+        --    },
+        --    lualine_y = {},
+        --    lualine_z = {},
+        -- }
     }
 end
 
