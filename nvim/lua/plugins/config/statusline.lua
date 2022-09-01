@@ -12,14 +12,17 @@ function M.setup()
             component_separators = {'', ''},
             section_separators = {'', ''},
             disabled_filetypes = {
-                "help",
-                "startify",
-                "dashboard",
-                "packer",
-                "neogitstatus",
-                "NvimTree",
-                "Trouble",
-                "toggleterm",
+                statusline = {},
+                winbar = {
+                    "help",
+                    "startify",
+                    "dashboard",
+                    "packer",
+                    "neogitstatus",
+                    "NvimTree",
+                    "Trouble",
+                    "toggleterm",
+                },
             }
         },
         sections = {
@@ -57,17 +60,19 @@ function M.setup()
         tabline = {},
         extensions = { "nvim-tree", "toggleterm", "quickfix" },
         winbar = {
-            lualine_a = {},
-            lualine_b = {},
-            lualine_c = {},
-            lualine_x = {},
-            lualine_y = {},
-            lualine_z = {
-                {
-                    'filename',
-                    file_status = true,
-                },
+           lualine_a = {},
+           lualine_b = {
+                'diagnostics'
             },
+           lualine_c = {},
+           lualine_x = {
+               {
+                   'filename',
+                   file_status = true,
+               },
+           },
+           lualine_y = {},
+           lualine_z = {},
         }
     }
 end

@@ -5,20 +5,20 @@ if not ok then
 end
 
 local packer_conf = {
-        compile_path = vim.fn.stdpath('data')..'/site/pack/loader/start/packer.nvim/plugin/packer_compiled.lua',
-        compile_on_sync = true,
-        profile = {
-                enable = false,
-                threshold = 3,
-        },
-        git = {
-                clone_timeout = 120,
-        },
-        display = {
-                open_fn = function()
-                        return require('packer.util').float({ border = 'single' })
-                end,
-        }
+    compile_path = vim.fn.stdpath('data') .. '/site/pack/loader/start/packer.nvim/plugin/packer_compiled.lua',
+    compile_on_sync = true,
+    profile = {
+        enable = false,
+        threshold = 3,
+    },
+    git = {
+        clone_timeout = 120,
+    },
+    display = {
+        open_fn = function()
+            return require('packer.util').float({ border = 'single' })
+        end,
+    }
 }
 
 local function plugins(use)
@@ -35,23 +35,23 @@ local function plugins(use)
         module_pattern = 'plenary.*',
     }
     use {
-       'kyazdani42/nvim-web-devicons',
-       module = 'nvim-web-devicons',
-   }
+        'kyazdani42/nvim-web-devicons',
+        module = 'nvim-web-devicons',
+    }
     -- Colorscheme
     use {
-    'rebelot/kanagawa.nvim',
-    config = function()
-        local default_colors = require('kanagawa.colors').setup()
-        require('kanagawa').setup({
-            colors = { bg_visual = default_colors.waveBlue2 }
-        })
-        vim.opt.background = "dark"
-        vim.cmd [[colorscheme kanagawa]]
-        vim.cmd [[highlight WinSeparator guibg=None]]
-    end,
-   }
-   -- Statusbar
+        'rebelot/kanagawa.nvim',
+        config = function()
+            local default_colors = require('kanagawa.colors').setup()
+            require('kanagawa').setup({
+                colors = { bg_visual = default_colors.waveBlue2 }
+            })
+            vim.opt.background = "dark"
+            vim.cmd [[colorscheme kanagawa]]
+            vim.cmd [[highlight WinSeparator guibg=None]]
+        end,
+    }
+    -- Statusbar
     use {
         'nvim-lualine/lualine.nvim',
         requires = { 'kyazdani42/nvim-web-devicons' },
@@ -63,9 +63,9 @@ local function plugins(use)
         event = 'BufRead',
         config = function()
             vim.g.EditorConfig_exclude_patterns = {
-               'fugitive://.*',
-               'scp://.*',
-               'fzf://.*',
+                'fugitive://.*',
+                'scp://.*',
+                'fzf://.*',
             }
         end,
     }
@@ -119,9 +119,9 @@ local function plugins(use)
         },
         config = function()
             vim.cmd([[command! -bang -nargs=* Rg call ]] ..
-            [[fzf#vim#grep('rg --column --line-number --no-heading ]] ..
-            [[--color=always --smart-case -- ]] ..
-            [['.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
+                [[fzf#vim#grep('rg --column --line-number --no-heading ]] ..
+                [[--color=always --smart-case -- ]] ..
+                [['.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
         end
     }
     -- Telescope
@@ -154,14 +154,14 @@ local function plugins(use)
                 config = function()
                     require('telescope').load_extension('file_browser')
                 end,
-            }
-            -- {
-            --     'nvim-telescope/telescope-dap.nvim',
-            --     after = { 'telescope.nvim', 'nvim-dap' },
-            --     config = function()
-            --         require('telescope').load_extension('dap')
-            --     end
-            -- },
+            },
+            {
+                'nvim-telescope/telescope-dap.nvim',
+                after = { 'telescope.nvim', 'nvim-dap' },
+                config = function()
+                    require('telescope').load_extension('dap')
+                end
+            },
         },
         config = [[ require('plugins.config.telescope') ]]
     }
@@ -191,40 +191,22 @@ local function plugins(use)
         },
         config = [[ require('plugins.config.completion') ]]
     }
--- 		-- DAP
--- 		use {
--- 			'mfussenegger/nvim-dap';
--- 			opt = true,
--- 			event = 'BufReadPre',
--- 			module = { 'dap' },
--- 			wants = {
--- 				'nvim-dap-virtual-text',
--- 				'nvim-dap-ui',
--- 				'nvim-dap-python',
--- 				'which-key.nvim',
--- 			},
--- 			requires = {
--- 				-- {
--- 				--     'Pocco81/DAPInstall.nvim',
--- 				--     branch = 'dev',
--- 				--     -- after = 'nvim-dap',
--- 				--     config = function()
--- 				--         require('dap-install').setup({
--- 				--             installation_path = vim.fn.stdpath("data").."/dapinstall/",
--- 				--             verbosely_call_debuggers = false,
--- 				--         })
--- 				--     end
--- 				-- },
--- 				'theHamsta/nvim-dap-virtual-text',
--- 				'rcarriga/nvim-dap-ui',
--- 				"mfussenegger/nvim-dap-python",
--- 				{ "leoluz/nvim-dap-go", module = "dap-go" },
--- 				{ "jbyuki/one-small-step-for-vimkind", module = "osv" },
--- 			},
--- 			config = function()
--- 				require('plugins.config.dap').setup()
--- 			end,
--- 		}
+    -- DAP
+    use {
+        'mfussenegger/nvim-dap',
+        event = 'BufReadPre',
+        module = 'dap',
+        requires = {
+            'theHamsta/nvim-dap-virtual-text',
+            'rcarriga/nvim-dap-ui',
+            'mfussenegger/nvim-dap-python',
+            { 'leoluz/nvim-dap-go', module = 'dap-go' },
+            { 'jbyuki/one-small-step-for-vimkind', module = 'osv' },
+        },
+        config = function()
+            -- require('plugins.config.dap').setup()
+        end,
+    }
     -- Autopairing by brackets
     use {
         'windwp/nvim-autopairs',
@@ -254,7 +236,7 @@ local function plugins(use)
     use {
         'michaeljsmith/vim-indent-object',
         event = 'BufRead',
-        keys = require('utils').get_keys({'n', 'o', 'v'}, {{'a', 'i'}, {'i', 'I'}})
+        keys = require('utils').get_keys({ 'n', 'o', 'v' }, { { 'a', 'i' }, { 'i', 'I' } })
     }
     -- Repeat plugins commands
     use {
@@ -294,8 +276,8 @@ local function plugins(use)
         'Yggdroot/indentLine',
         event = 'BufRead',
         config = function()
-            vim.g.indentLine_char_list = {'|', '¦', '┆', '┊'}
-            vim.g.indentLine_fileTypeExclude = {"fzf", "dashboard", "packer"}
+            vim.g.indentLine_char_list = { '|', '¦', '┆', '┊' }
+            vim.g.indentLine_fileTypeExclude = { "fzf", "dashboard", "packer" }
             vim.g.indentLine_conceallevel = 1
             vim.g.indentLine_concealcursor = 'nc'
             vim.g.indentLine_setConceal = 0
@@ -305,11 +287,11 @@ local function plugins(use)
         'lukas-reineke/indent-blankline.nvim',
         event = 'BufRead',
         config = function()
-            vim.g.indentLine_char_list = {'|', '¦', '┆', '┊'}
-            vim.g.indentLine_fileTypeExclude = {"fzf", "dashboard", "packer"}
+            vim.g.indentLine_char_list = { '|', '¦', '┆', '┊' }
+            vim.g.indentLine_fileTypeExclude = { "fzf", "dashboard", "packer" }
             require('indent_blankline').setup({
-                    show_current_context = false,
-                    show_current_context_start = false,
+                show_current_context = false,
+                show_current_context_start = false,
             })
         end,
     }
@@ -318,7 +300,7 @@ local function plugins(use)
         'phaazon/hop.nvim',
         event = 'BufRead',
         config = function()
-            require('hop').setup{ winblend=0.85 }
+            require('hop').setup { winblend = 0.85 }
             vim.keymap.set('n', '<localleader>w', require('hop').hint_words, { desc = 'Jump to word' })
             vim.keymap.set('n', '<localleader>l', require('hop').hint_lines, { desc = 'Jump to line' })
             vim.keymap.set('n', '<localleader>x', require('hop').hint_char1, { desc = 'Jump to character' })
@@ -333,21 +315,28 @@ local function plugins(use)
     }
     use {
         'lewis6991/gitsigns.nvim',
-            event = 'BufRead',
-            config = function()
-                require('gitsigns').setup()
-            end,
+        event = 'BufRead',
+        config = function()
+            require('gitsigns').setup()
+        end,
     }
     use {
         "TimUntersberger/neogit",
-        cmd = "Neogit",
+        cmd = 'Neogit',
         config = function()
             require('neogit').setup({
                 integrations = { diffview = true }
             })
         end,
+        setup = function()
+            vim.keymap.set('n', '<leader>gn', '<cmd>Neogit<CR>',
+                { desc = 'Open Neogit' })
+        end,
         requires = {
-            'sindrets/diffview.nvim'
+            {
+                'sindrets/diffview.nvim',
+                after = 'neogit',
+            },
         },
     }
     -- Quickterm
@@ -356,7 +345,7 @@ local function plugins(use)
         keys = [[<c-\>]],
         cmd = 'ToggleTerm',
         config = function()
-            require('toggleterm').setup{
+            require('toggleterm').setup {
                 open_mapping = [[<c-\>]],
                 hide_numbers = true,
             }
@@ -367,10 +356,10 @@ local function plugins(use)
         'tpope/vim-abolish',
         cmd = { 'Abolish', 'S' },
         keys = require('utils').get_keys(
-            {'n', 'o', 'v'},
+            { 'n', 'o', 'v' },
             {
-                {'cr'},
-                {'c', 'm', '-', '_', 's', 'u', 'U', 'k', '.', '<space>', 't'}
+                { 'cr' },
+                { 'c', 'm', '-', '_', 's', 'u', 'U', 'k', '.', '<space>', 't' }
             }),
     }
     -- Star search in visual mode
@@ -412,7 +401,7 @@ local function plugins(use)
         'mbbill/undotree',
         cmd = 'UndotreeToggle',
         config = function()
-            vim.g.undotree_WindowLayout=3
+            vim.g.undotree_WindowLayout = 3
             vim.keymap.set('n', '<leader>U', '<cmd>UndotreeToggle<CR>')
         end,
     }
@@ -422,24 +411,24 @@ local function plugins(use)
         config = function()
             vim.g.mkdp_echo_preview_url = 1
             vim.g.mkdp_browser = 'Firefox'
-            vim.g.mkdp_filetypes = {'markdown', 'pandoc'}
+            vim.g.mkdp_filetypes = { 'markdown', 'pandoc' }
             -- vim.env.NVIM_MKDP_LOG_FILE = vim.fn.expand('~/mkdp-log.log')
             -- vim.env.NVIM_MKDP_LOG_LEVEL = 'debug'
         end,
         ft = { 'markdown', 'vimwiki', 'pandoc' },
-        run='cd app && npm install'
+        run = 'cd app && npm install'
     }
     use {
         'dhruvasagar/vim-table-mode',
         keys = { '<leader>tm' },
         fn = 'TableModeToggle',
         config = function()
-            vim.g.vimwiki_table_auto_fmt=0
+            vim.g.vimwiki_table_auto_fmt = 0
             local tm_au = vim.api.nvim_create_augroup('vim_table_mode_au', { clear = true })
             vim.api.nvim_create_autocmd({ 'BufRead', 'BufFilePre', 'BufNewFile' }, {
-            pattern = '*.md',
-            group = tm_au,
-            command = [[let g:table_mode_corner='|']],
+                pattern = '*.md',
+                group = tm_au,
+                command = [[let g:table_mode_corner='|']],
             })
         end,
     }
@@ -477,16 +466,16 @@ local function plugins(use)
     -- Test runner
     use {
         'vim-test/vim-test',
-            requires = { { 'tpope/vim-dispatch', after = 'vim-test' } },
-            fn = { 'TestFile', 'TestSuite', 'TestLast', 'TestVisit' },
-            config = function()
-                vim.g["test#strategy"] = "dispatch"
-                vim.keymap.set('n', '<localleader>tn', '<cmd>TestNearest<CR>', { desc = 'Run nearest test' })
-                vim.keymap.set('n', '<localleader>tf', '<cmd>TestFile<CR>', { desc = 'Run file tests' })
-                vim.keymap.set('n', '<localleader>ts', '<cmd>TestSuite<CR>', { desc = 'Run suite tests' })
-                vim.keymap.set('n', '<localleader>tl', '<cmd>TestLast<CR>', { desc = 'Run last test' })
-                vim.keymap.set('n', '<localleader>tv', '<cmd>TestVisit<CR>')
-            end,
+        requires = { { 'tpope/vim-dispatch', after = 'vim-test' } },
+        fn = { 'TestFile', 'TestSuite', 'TestLast', 'TestVisit' },
+        config = function()
+            vim.g["test#strategy"] = "dispatch"
+            vim.keymap.set('n', '<localleader>tn', '<cmd>TestNearest<CR>', { desc = 'Run nearest test' })
+            vim.keymap.set('n', '<localleader>tf', '<cmd>TestFile<CR>', { desc = 'Run file tests' })
+            vim.keymap.set('n', '<localleader>ts', '<cmd>TestSuite<CR>', { desc = 'Run suite tests' })
+            vim.keymap.set('n', '<localleader>tl', '<cmd>TestLast<CR>', { desc = 'Run last test' })
+            vim.keymap.set('n', '<localleader>tv', '<cmd>TestVisit<CR>')
+        end,
     }
     -- Other
     use {
