@@ -43,10 +43,10 @@ map('n', 'N', 'Nzzzv', { desc = 'Center when prev match' })
 map('n', 'J', 'mzJ`z', { desc = 'Center when wrapping lines' })
 
 -- Undo break points
-map('i', ',', ',<C-g>u')
-map('i', '.', '.<C-g>u')
-map('i', '!', '!<C-g>u')
-map('i', '?', '?<C-g>u')
+-- map('i', ',', ',<C-g>u')
+-- map('i', '.', '.<C-g>u')
+-- map('i', '!', '!<C-g>u')
+-- map('i', '?', '?<C-g>u')
 
 -- Jumplist mutations (more than 5 lines)
 map('n', 'k', [[(v:count > 5 ? "m'" . v:count : "") . 'k']], { expr = true })
@@ -109,7 +109,7 @@ map('n', '<leader>ax', '<cmd>tabclose<CR>', { desc = 'Close tab' })
 
 map('c', 'w!!', 'w !sudo tee % >/dev/null', { desc = 'Save buffer with sudo' })
 
-map('n', '<leader>md', '<cmd>!mkdir -p %:p:h<CR>', { desc = 'Create new dir', silent=false })
+map('n', '<leader>md', '<cmd>!mkdir -p %:p:h<CR>', { desc = 'Create new dir', silent = false })
 
 map('n', '<leader>cd',
     [[<cmd>lcd %:h<CR>:echo "Changed directory to: "expand('%:p:h')<CR>]],

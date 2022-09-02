@@ -28,9 +28,12 @@ require('mason-lspconfig').setup({
     automatic_installation = true,
 })
 
-local mason_root_dir = vim.fn.stdpath('data') .. '/mason'
+require('plugins.config.lsp.null-ls').setup()
 
-local common_on_attach = function()
+-- local mason_root_dir = vim.fn.stdpath('data') .. '/mason'
+local nix_codelldb = '/nix/store/v0x5l0r5jkh4ljzbi05j4v30ky7nqmg0-vscode-extension-vadimcn-vscode-lldb-1.6.10/share/vscode'
+
+local common_on_attach = function(client)
     map("n", "K", vim.lsp.buf.hover, { desc = "lsp:hover", buffer = 0 })
     map("n", "gd", vim.lsp.buf.declaration, { desc = "lsp:declaration" })
     map("n", "gD", vim.lsp.buf.definition, { desc = "lsp:definition" })
@@ -50,6 +53,15 @@ local common_on_attach = function()
     map("n", "<leader>lq", vim.diagnostic.setqflist, { desc = "diag:set_to_quicklist" })
     map("n", "<leader>ll", vim.diagnostic.setloclist, { desc = "diag:set_to_loclist" })
     map("n", "<leader>lg", vim.diagnostic.open_float, { desc = "diag:open_float" })
+
+    print(vim.inspect(client.resolved_capabilities))
+    if client.resolved_capabilities.document_formatting then
+        api.nvim_create_autocmd('BufWritePre', {
+            buffer = 0,
+            group = api.nvim_create_augroup('lsp_au', { clear = true }),
+            callback = function() vim.lsp.buf.format({ async = false }) end,
+        })
+    end
 end
 
 local common_flags = {
@@ -81,7 +93,11 @@ for _, name in pairs(servers) do
         })
         goto continue
     elseif name == "sumneko_lua" then
-        lspconfig[name].setup(require('lua-dev').setup())
+        lspconfig[name].setup(require('lua-dev').setup({
+            lspconfig = {
+                on_attach = common_server_opts,
+            }
+        }))
         --     lspconfig[name].setup({
         --         on_attach = common_on_attach,
         --         settings = {
@@ -108,15 +124,25 @@ for _, name in pairs(servers) do
             print("Failed to load rust_tools, setting up rust_analyzer instead")
             goto continue
         else
-            local extension_path = mason_root_dir .. "/packages/codelldb/extension/"
+            -- local extension_path = mason_root_dir .. "/packages/codelldb/extension/"
+            local extension_path = nix_codelldb .. '/extensions/vadimcn.vscode-lldb/'
             local codelldb_path = extension_path .. "adapter/codelldb"
             local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
             rust_tools.setup({
+                tools = {
+                    hover_actions = {
+                        auto_focus = true,
+                    }
+                },
                 dap = {
                     adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path),
                 },
                 server = {
-                    on_attach = common_on_attach,
+                    on_attach = function(client)
+                        common_on_attach(client)
+                        map('n', 'gK', require('rust-tools').hover_actions.hover_actions, { desc = 'rt:hover_actions' })
+                    end,
+                    flags = common_flags,
                     settings = {
                         ["rust-analyzer"] = {
                             checkOnSave = {
@@ -139,10 +165,3 @@ for _, name in pairs(servers) do
     lspconfig[name].setup(common_server_opts)
     ::continue::
 end
-
-local lsp_au = api.nvim_create_augroup('lsp_au', { clear = true })
-api.nvim_create_autocmd('BufWritePre', {
-    pattern = { '*.rs', '*.lua' },
-    group = lsp_au,
-    callback = function() vim.lsp.buf.format({ async = false }) end,
-})
