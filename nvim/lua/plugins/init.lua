@@ -95,6 +95,16 @@ local function plugins(use)
     use 'simrat39/rust-tools.nvim'
     use 'folke/lua-dev.nvim'
     use {
+        'jose-elias-alvarez/null-ls.nvim',
+        module = 'null-ls',
+    }
+    use {
+        'j-hui/fidget.nvim',
+        config = function()
+            require('fidget').setup()
+        end,
+    }
+    use {
         'neovim/nvim-lspconfig',
         event = 'BufReadPre',
         config = [[ require('plugins.config.lsp') ]]
@@ -204,7 +214,7 @@ local function plugins(use)
             { 'jbyuki/one-small-step-for-vimkind', module = 'osv' },
         },
         config = function()
-            -- require('plugins.config.dap').setup()
+            require('plugins.config.dap').setup()
         end,
     }
     -- Autopairing by brackets
@@ -265,6 +275,14 @@ local function plugins(use)
         end,
         config = [[ require('plugins.config.treesitter') ]]
     }
+    use {
+        'nvim-treesitter/nvim-treesitter-context',
+        config = function()
+            require('treesitter-context').setup()
+        end,
+        command = { 'TSContextEnable', 'TSContextDisable', 'TSContextToggle' },
+    }
+    use 'RRethy/nvim-treesitter-textsubjects'
     use {
         'nvim-treesitter/playground',
         cmd = 'TSPlaygroundToggle',

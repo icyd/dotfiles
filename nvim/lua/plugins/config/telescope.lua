@@ -112,6 +112,8 @@ map('n', '<localleader>fx', builtin.commands,
     { desc = 'Commands' })
 map('n', '<localleader>fn', my_telescope.find_notes,
     { desc = 'Find notes' })
+map('n', '<localleader>fk', builtin.keymaps,
+    { desc = 'Keymaps' })
 
 map('n', '<leader>gb', builtin.git_branches,
     { desc = 'Git branches' })

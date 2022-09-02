@@ -1,4 +1,4 @@
-require'nvim-treesitter.configs'.setup {
+require 'nvim-treesitter.configs'.setup {
     ensure_installed = {
         'bash',
         'c',
@@ -31,5 +31,14 @@ require'nvim-treesitter.configs'.setup {
         enable = true,
         extended_mode = true,
         max_file_lines = 1000
-    }
+    },
+    textsubjects = {
+        enable = true,
+        prev_selection = ',', -- (Optional) keymap to select the previous selection
+        keymaps = {
+            ['.'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-container-outer',
+            ['i;'] = 'textsubjects-container-inner',
+        },
+    },
 }

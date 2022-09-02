@@ -3,7 +3,7 @@ local M = {}
 local function configure()
     local dap_breakpoints = {
         error = {
-            text = "🟥",
+            text = "",
             texthl = "LspDiagnosticsSignError",
             linehl = "",
             numhl = "",
@@ -15,7 +15,7 @@ local function configure()
             numhl = "",
         },
         stopped = {
-            text = "⭐️",
+            text = "",
             texthl = "LspDiagnosticsSignInformation",
             linehl = "DiagnosticUnderlineInfo",
             numhl = "LspDiagnosticsSignInformation",
@@ -33,7 +33,7 @@ local function configure_exts()
     }
 
     local dap, dapui = require('dap'), require('dapui')
-    dapui.setup({}) -- use default
+    dapui.setup() -- use default
 
     dap.listeners.after.event_initialized["dapui_config"] = function()
         dapui.open()
@@ -47,10 +47,10 @@ local function configure_exts()
 end
 
 local function configure_debuggers()
-    -- require('plugins.config.dap.lua').setup()
-    -- require('plugins.config.dap.python').setup()
-    -- require('plugins.config.dap.rust').setup()
-    -- require('plugins.config.dap.go').setup()
+    require('plugins.config.dap.lua').setup()
+    require('plugins.config.dap.python').setup()
+    require('plugins.config.dap.go').setup()
+    require('plugins.config.dap.rust').setup()
 end
 
 function M.setup()
