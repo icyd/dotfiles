@@ -94,9 +94,7 @@ for _, name in pairs(servers) do
         goto continue
     elseif name == "sumneko_lua" then
         lspconfig[name].setup(require('lua-dev').setup({
-            lspconfig = {
-                on_attach = common_server_opts,
-            }
+            lspconfig = common_server_opts,
         }))
         --     lspconfig[name].setup({
         --         on_attach = common_on_attach,
