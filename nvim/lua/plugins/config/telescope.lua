@@ -3,6 +3,9 @@ local builtin = require('telescope.builtin')
 local my_telescope = require('my.telescope')
 local api, map = vim.api, vim.keymap.set
 
+pcall(telescope.load_extension, 'aerial')
+pcall(telescope.load_extension, 'notify')
+
 local telescope_mappings = {
     i = {
         ["<C-x>"] = false,
@@ -47,6 +50,13 @@ telescope.setup {
         },
         file_browser = {
             hijack_netrw = true,
+        },
+        aerial = {
+            show_nesting = {
+                ['_'] = false, -- This key will be the default
+                json = true,   -- You can set the option for specific filetypes
+                yaml = true,
+            }
         }
     }
 }

@@ -2,9 +2,9 @@ local map = vim.keymap.set
 local trouble = require("trouble")
 trouble.setup()
 
-map('n', "[x", function() trouble.previous({skip_groups=true, jump=true}) end,
+map('n', "[X", function() trouble.previous({skip_groups=true, jump=true}) end,
     { desc = "trouble:goto_prev" })
-map('n', "]x", function() trouble.next({skip_groups=true, jump=true}) end,
+map('n', "]X", function() trouble.next({skip_groups=true, jump=true}) end,
     { desc = "trouble:goto_next" })
 map('n', '<leader>xx', '<cmd>TroubleToggle<cr>', { desc = "trouble:toggle" })
 map('n', '<leader>xW', '<cmd>TroubleToggle workspace_diagnostics<cr>',

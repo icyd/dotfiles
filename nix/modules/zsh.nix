@@ -208,6 +208,9 @@ in {
         krrsts = "kubectl rollout restart statefulset";
         l = "ls -lbF";
         la = "ls -lbhHigUmuSa";
+        ldr = "ledger --pedantic --file $LEDGER_HOME/main.ledger";
+        ldre = "ldr --exchange EUR";
+        ldru = "ldr --exchange USD";
         li = "cd_in";
         ll = "ls -la";
         llm = "ll --sort=modified";

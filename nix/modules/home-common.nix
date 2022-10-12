@@ -28,6 +28,7 @@
       hyperfine
       jq
       jdk11
+      ledger
       neovim-nightly
       neovim-remote
       nodejs
@@ -45,6 +46,7 @@
         BROWSER = "firefox";
         DOTFILES = "$HOME/.dotfiles";
         GOPATH = "$HOME/go";
+        LEDGER_HOME = "$HOME/Nextcloud/ledger";
         NVIM_SERVER = "/tmp/nvimsocket";
         ORGMODE_HOME = "$HOME/Nextcloud";
         PAGER = "less";

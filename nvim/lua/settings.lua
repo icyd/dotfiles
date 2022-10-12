@@ -1,16 +1,26 @@
 local api, g, opt = vim.api, vim.g, vim.opt
 
 local disabled_built_ins = {
+    '2html_plugin',
+    'getscript',
+    'getscriptPlugin',
     'gzip',
+    'logipat',
     'man',
-    -- 'matchit',
-    -- 'matchparen',
+    'matchit',
+    'matchparen',
+    'netrw',
+    'netrwPlugin',
+    'netrwSettings',
+    'netrwFileHandlers',
+    'rrhelper',
     'shada_plugin',
-    'tarPlugin',
     'tar',
-    'zipPlugin',
+    'tarPlugin',
+    -- 'vimball',
+    -- 'vimballPlugin',
     'zip',
-    -- 'netrwPlugin',
+    'zipPlugin',
 }
 
 for _, name in ipairs(disabled_built_ins) do

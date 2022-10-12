@@ -67,7 +67,7 @@ fn {}(){}{{
     s("eq", fmt("assert_eq!({}, {});{}", { i(1), i(2), i(0) })),
     s("sfn", fmt(
 [[
-{}struct {} {{
+{}{}struct {} {{
     {}
 }}
 
@@ -79,12 +79,17 @@ impl {} {{
     }}
 }}]],
         {
-            c(1, { t"", t"pub " }),
-            i(2, "Name"),
-            i(3, "Fields"),
+            c(1, { t"", sn(nil, fmt(
+[[
+#[derive({})]
+
+]], { i(1, "Derive") })) }),
+            c(2, { t"", t"pub " }),
+            i(3, "Name"),
+            i(4, "Fields"),
+            rep(3),
             rep(2),
-            rep(1),
-            i(4, "args"),
+            i(5, "args"),
             i(0),
         }
     )),
@@ -103,4 +108,22 @@ impl {} {{
             i(0)
         }
     )),
+    s("str", fmt(
+[[
+{}{}struct {} {{
+    {}
+}}
+]],
+        {
+            c(1, { t"", sn(nil, fmt(
+[[
+#[derive({})]
+
+]], { i(1, "Derive") }))}),
+            c(2, { t"", t"pub " }),
+            i(3, "Name"),
+            i(0),
+        }
+    )),
+    s("rexp", { t"pub use ", i(0), }),
 }

@@ -332,6 +332,24 @@ return {
       }
     )
   ),
+
+  -- Constructor {{{
+  s(
+    { trig = "ctor", name = "Constructor", dscr = "Create new function for struct" },
+    fmt([[
+func new{}({}) *{} {{
+    return &{}{{
+        {}
+    }}
+}}
+]], {
+        i(1, "name"),
+        i(2, "args"),
+        rep(1),
+        rep(1),
+        i(0),
+    })
+  )
   -- }}}
 }
 
