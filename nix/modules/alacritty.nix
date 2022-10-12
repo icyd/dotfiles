@@ -127,6 +127,16 @@ in {
           chars = "\\x1b\\x70";
       }
       {
+          key = "D";
+          mods = "Command";
+          chars = "\\x1b\\x64";
+      }
+      {
+          key = "U";
+          mods = "Command";
+          chars = "\\x1b\\x75";
+      }
+      {
           key = "Key9";
           mods = "Command";
           chars = "\\x1d";

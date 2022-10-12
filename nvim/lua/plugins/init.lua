@@ -5,6 +5,7 @@ if not ok then
 end
 
 local packer_conf = {
+    max_jobs = 10,
     compile_path = vim.fn.stdpath('data') .. '/site/pack/loader/start/packer.nvim/plugin/packer_compiled.lua',
     compile_on_sync = true,
     profile = {
@@ -54,8 +55,15 @@ local function plugins(use)
     -- Statusbar
     use {
         'nvim-lualine/lualine.nvim',
-        requires = { 'kyazdani42/nvim-web-devicons' },
         config = require('plugins.config.statusline').setup,
+    }
+
+    -- Notification
+    use {
+        'rcarriga/nvim-notify',
+        config = function()
+            vim.notify = require('notify')
+        end,
     }
     -- Editorconfig
     use {
@@ -97,6 +105,7 @@ local function plugins(use)
     use {
         'jose-elias-alvarez/null-ls.nvim',
         module = 'null-ls',
+        commit = '76d0573fc159839a9c4e62a0ac4f1046845cdd50',
     }
     use {
         'j-hui/fidget.nvim',
@@ -140,7 +149,7 @@ local function plugins(use)
         branch = '0.1.x',
         cmd = 'Telescope',
         modules_pattern = 'telescope.*',
-        keys = { '<leader>f', '<localleader>f', '<leader>g' },
+        keys = { '<leader>f', '<localleader>f', '<leader>g', '<leader>b' },
         requires = {
             -- 'nvim-lua/popup.nvim',
             {
@@ -245,14 +254,16 @@ local function plugins(use)
     -- Indentation by vim object
     use {
         'michaeljsmith/vim-indent-object',
-        event = 'BufRead',
-        keys = require('utils').get_keys({ 'n', 'o', 'v' }, { { 'a', 'i' }, { 'i', 'I' } })
+        event = 'BufReadPre',
+        keys = require('utils').get_keys({ 'n', 'o', 'v' }, { { 'a', 'i' }, { 'i', 'I' } }),
     }
     -- Repeat plugins commands
     use {
         'tpope/vim-repeat',
         event = 'BufRead',
+        disable = true,
     }
+    -- Syntax plugins
     use {
         'towolf/vim-helm',
         ft = 'helm',
@@ -265,6 +276,10 @@ local function plugins(use)
         'hashivim/vim-terraform',
         ft = { 'terraform', 'terragrunt' },
     }
+    use {
+        'ledger/vim-ledger',
+        ft = 'ledger',
+    }
     -- Treesitter
     use {
         'nvim-treesitter/nvim-treesitter',
@@ -273,26 +288,32 @@ local function plugins(use)
             ts_install.compilers({ "gcc" })
             ts_install.update({ with_sync = true })
         end,
-        config = [[ require('plugins.config.treesitter') ]]
+        event = 'BufRead',
+        module_pattern = 'treesitter.*',
+        config = [[ require('plugins.config.treesitter') ]],
+        requires = {
+            {
+                'nvim-treesitter/nvim-treesitter-context',
+                config = function()
+                    require('treesitter-context').setup()
+                end,
+                command = { 'TSContextEnable', 'TSContextDisable', 'TSContextToggle' },
+            },
+            'RRethy/nvim-treesitter-textsubjects',
+            'nvim-treesitter/nvim-treesitter-textobjects',
+            'JoosepAlviste/nvim-ts-context-commentstring',
+            --- Rainbow parenthesis
+            'p00f/nvim-ts-rainbow',
+            {
+                'nvim-treesitter/playground',
+                cmd = 'TSPlaygroundToggle',
+            },
+        },
     }
-    use {
-        'nvim-treesitter/nvim-treesitter-context',
-        config = function()
-            require('treesitter-context').setup()
-        end,
-        command = { 'TSContextEnable', 'TSContextDisable', 'TSContextToggle' },
-    }
-    use 'RRethy/nvim-treesitter-textsubjects'
-    use {
-        'nvim-treesitter/playground',
-        cmd = 'TSPlaygroundToggle',
-    }
-    --- Rainbow parenthesis
-    use 'p00f/nvim-ts-rainbow'
     -- Mark indentation column
     use {
         'Yggdroot/indentLine',
-        event = 'BufRead',
+        event = 'BufReadPre',
         config = function()
             vim.g.indentLine_char_list = { '|', '¦', '┆', '┊' }
             vim.g.indentLine_fileTypeExclude = { "fzf", "dashboard", "packer" }
@@ -303,7 +324,7 @@ local function plugins(use)
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
-        event = 'BufRead',
+        event = 'BufReadPre',
         config = function()
             vim.g.indentLine_char_list = { '|', '¦', '┆', '┊' }
             vim.g.indentLine_fileTypeExclude = { "fzf", "dashboard", "packer" }
@@ -314,18 +335,18 @@ local function plugins(use)
         end,
     }
     -- Easy motion
-    use {
-        'phaazon/hop.nvim',
-        event = 'BufRead',
-        config = function()
-            require('hop').setup { winblend = 0.85 }
-            vim.keymap.set('n', '<localleader>w', require('hop').hint_words, { desc = 'Jump to word' })
-            vim.keymap.set('n', '<localleader>l', require('hop').hint_lines, { desc = 'Jump to line' })
-            vim.keymap.set('n', '<localleader>x', require('hop').hint_char1, { desc = 'Jump to character' })
-            vim.keymap.set('n', '<localleader>X', require('hop').hint_char2, { desc = 'Jump to bigram' })
-            vim.keymap.set('n', '<localleader>n', require('hop').hint_patterns, { desc = 'Jump to pattern' })
-        end,
-    }
+    -- use {
+    --     'phaazon/hop.nvim',
+    --     event = 'BufRead',
+    --     config = function()
+    --         require('hop').setup { winblend = 0.85 }
+    --         vim.keymap.set('n', '<localleader>w', require('hop').hint_words, { desc = 'Jump to word' })
+    --         vim.keymap.set('n', '<localleader>l', require('hop').hint_lines, { desc = 'Jump to line' })
+    --         vim.keymap.set('n', '<localleader>x', require('hop').hint_char1, { desc = 'Jump to character' })
+    --         vim.keymap.set('n', '<localleader>X', require('hop').hint_char2, { desc = 'Jump to bigram' })
+    --         vim.keymap.set('n', '<localleader>n', require('hop').hint_patterns, { desc = 'Jump to pattern' })
+    --     end,
+    -- }
     -- Git
     use {
         'tpope/vim-fugitive',
@@ -333,7 +354,7 @@ local function plugins(use)
     }
     use {
         'lewis6991/gitsigns.nvim',
-        event = 'BufRead',
+        event = 'BufReadPre',
         config = function()
             require('gitsigns').setup()
         end,
@@ -387,8 +408,21 @@ local function plugins(use)
     }
     -- Surrond brackets
     use {
+        'andymass/vim-matchup',
+        event = 'CursorMoved',
+    }
+    use {
         'tpope/vim-surround',
-        event = 'InsertEnter'
+        event = 'InsertEnter',
+        disable = true,
+    }
+    use {
+        'kylechui/nvim-surround',
+        tag = '*',
+        event = 'InsertEnter',
+        config = function()
+            require('nvim-surround').setup({})
+        end
     }
     -- Session management
     use {
@@ -403,9 +437,18 @@ local function plugins(use)
     use {
         'numToStr/Comment.nvim',
         -- event = 'BufRead',
+        keys = { 'gc', 'gcc', 'gbc' },
         module_pattern = 'Comment.*',
         config = function()
-            require('Comment').setup()
+            local my_pre_hook = nil
+            local ok, ts_context_comment = pcall(require, 'ts_context_commentstring.integrations.comment_nvim')
+            if ok then
+                my_pre_hook = ts_context_comment.create_pre_hook()
+            end
+
+            require('Comment').setup({
+                pre_hook = my_pre_hook,
+            })
         end,
     }
     -- Tabularize
@@ -459,12 +502,21 @@ local function plugins(use)
     use {
         'nvim-orgmode/orgmode',
         config = [[ require('plugins.config.orgmode') ]],
+        keys = { '<leader>oc', '<leader>oa' },
         requires = {
-            'akinsho/org-bullets.nvim',
+            {
+                'akinsho/org-bullets.nvim',
+                config = function()
+                    require('org-bullets').setup({})
+                end
+            },
             {
                 'ranjithshegde/orgWiki.nvim',
                 config = [[ require('plugins.config.orgwiki') ]],
             },
+            {
+                'TravonteD/org-capture-filetype',
+            }
         }
     }
     -- Rooter
@@ -479,15 +531,16 @@ local function plugins(use)
     -- Tmux
     use {
         'aserowy/tmux.nvim',
+        event = 'VimEnter',
         config = require('plugins.config.tmux').setup,
     }
     -- Test runner
     use {
         'vim-test/vim-test',
-        requires = { { 'tpope/vim-dispatch', after = 'vim-test' } },
-        fn = { 'TestFile', 'TestSuite', 'TestLast', 'TestVisit' },
+        requires = { 'neomake/neomake' },
+        cmd = { 'TestFile', 'TestSuite', 'TestLast', 'TestVisit' },
         config = function()
-            vim.g["test#strategy"] = "dispatch"
+            vim.g["test#strategy"] = "neomake"
             vim.keymap.set('n', '<localleader>tn', '<cmd>TestNearest<CR>', { desc = 'Run nearest test' })
             vim.keymap.set('n', '<localleader>tf', '<cmd>TestFile<CR>', { desc = 'Run file tests' })
             vim.keymap.set('n', '<localleader>ts', '<cmd>TestSuite<CR>', { desc = 'Run suite tests' })
@@ -500,14 +553,14 @@ local function plugins(use)
         'McAuleyPenney/tidy.nvim',
         event = 'BufWritePre',
     }
-    use {
-        'sickill/vim-pasta',
-        keys = { ',p', ',P' },
-        config = function()
-            vim.g.pasta_paste_before_mapping = ',P'
-            vim.g.pasta_paste_after_mapping = ',p'
-        end
-    }
+    -- use {
+    --     'sickill/vim-pasta',
+    --     keys = { ',p', ',P' },
+    --     config = function()
+    --         vim.g.pasta_paste_before_mapping = ',P'
+    --         vim.g.pasta_paste_after_mapping = ',p'
+    --     end
+    -- }
     use {
         'moll/vim-bbye',
         event = 'BufEnter',
@@ -524,17 +577,19 @@ local function plugins(use)
     }
     use {
         'rhysd/vim-grammarous',
-        fn = { 'GrammarousCheck', 'GrammarousReset' }
+        cmd = { 'GrammarousCheck', 'GrammarousReset' }
     }
     use {
         'folke/todo-comments.nvim',
-        cmd = { 'TodoQuickFix', 'TodoLocList', 'TodoTrouble', 'TodoTelescope' },
+        -- cmd = { 'TodoQuickFix', 'TodoLocList', 'TodoTrouble', 'TodoTelescope' },
+        event = 'BufRead',
         config = function()
             require('todo-comments').setup {}
         end,
     }
     use {
         'stevearc/dressing.nvim',
+        event = 'BufReadPre',
         config = function()
             require('dressing').setup {
                 input = {
@@ -569,6 +624,7 @@ local function plugins(use)
     }
     use {
         'folke/which-key.nvim',
+        event = 'VimEnter',
         config = function()
             require("which-key").setup({
                 triggers = { '<leader>', '<localleader>' },
@@ -578,9 +634,26 @@ local function plugins(use)
     }
     use {
         'declancm/maximize.nvim',
+        keys = { '<leader>z' },
         config = function()
             vim.keymap.set('n', '<leader>z', require("maximize").toggle)
         end,
+    }
+    use 'direnv/direnv.vim'
+    -- use {
+    --     'glacambre/firenvim',
+    --     run = function() vim.fn['firenvim#install'](0) end
+    -- }
+    use {
+        'stevearc/aerial.nvim',
+        config = function()
+            require('aerial').setup()
+        end,
+        module = 'aerial',
+    }
+    use {
+        'ThePrimeagen/vim-be-good',
+        cmd = 'VimBeGood',
     }
 
     if bootstrap then

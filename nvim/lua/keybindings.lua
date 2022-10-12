@@ -86,7 +86,7 @@ map('i', '<C-k>', '<ESC><cmd>move .-2<CR>==', { desc = 'Move line up' })
 map('n', [[<leader>']], '<cmd>terminal<CR>', { desc = 'Open terminal' })
 
 -- Save with leader
-map('n', '<leader>w', '<cmd>w<CR>', { desc = 'Save buffer' })
+-- map('n', '<leader>w', '<cmd>w<CR>', { desc = 'Save buffer' })
 
 -- Escape terminal
 map('t', '<localleader>q', '<ESC>', { desc = 'Espace on terminal with leader' })
@@ -126,3 +126,13 @@ map('n', '<localleader>ss', '<cmd>GrabServer<CR>',
 
 map('c', '%%', "getcmdtype() == ':' ? expand('%:h').'/' : '%%'",
     { desc = 'Expand to current path', silent = false, expr = true })
+
+
+local git_cz = vim.api.nvim_create_augroup('git_cz', { clear = true })
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'fugitive,NeogitStatus',
+    group = git_cz,
+    callback = function()
+        vim.keymap.set('n', '<localleader>cc', require('my.toggleterm-cz-cli').git_commit_toggle, { desc = 'Conventional commits' })
+    end,
+})

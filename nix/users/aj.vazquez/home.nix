@@ -8,12 +8,16 @@ let
       go_1_17
       gopass
       gopass-jsonapi
+      luajit
+      luajitPackages.luarocks
       kind
+      nodejs
       helmfile
       mosh
       rustup
       rust-analyzer
       reattach-to-user-namespace
+      wget
     ];
     mypaths = [
         "/opt/homebrew/bin"

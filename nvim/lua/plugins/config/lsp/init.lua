@@ -33,7 +33,7 @@ require('plugins.config.lsp.null-ls').setup()
 -- local mason_root_dir = vim.fn.stdpath('data') .. '/mason'
 local nix_codelldb = '/nix/store/v0x5l0r5jkh4ljzbi05j4v30ky7nqmg0-vscode-extension-vadimcn-vscode-lldb-1.6.10/share/vscode'
 
-local common_on_attach = function(client)
+local function common_on_attach(client, bufnr)
     map("n", "K", vim.lsp.buf.hover, { desc = "lsp:hover", buffer = 0 })
     map("n", "gd", vim.lsp.buf.declaration, { desc = "lsp:declaration" })
     map("n", "gD", vim.lsp.buf.definition, { desc = "lsp:definition" })
@@ -54,10 +54,14 @@ local common_on_attach = function(client)
     map("n", "<leader>ll", vim.diagnostic.setloclist, { desc = "diag:set_to_loclist" })
     map("n", "<leader>lg", vim.diagnostic.open_float, { desc = "diag:open_float" })
 
-    print(vim.inspect(client.resolved_capabilities))
-    if client.resolved_capabilities.document_formatting then
+    local ok, aerial = pcall(require, 'aerial')
+    if ok then
+        aerial.on_attach(client, bufnr)
+    end
+
+    if client.server_capabilities.document_formatting then
         api.nvim_create_autocmd('BufWritePre', {
-            buffer = 0,
+            buffer = bufnr,
             group = api.nvim_create_augroup('lsp_au', { clear = true }),
             callback = function() vim.lsp.buf.format({ async = false }) end,
         })
@@ -81,22 +85,20 @@ for _, name in pairs(servers) do
 
     if name == "yamlls" then
         lspconfig[name].setup({
-            on_attach = function(_, bufnr)
+            on_attach = function(client, bufnr)
                 if vim.bo[bufnr].buftype ~= "" or vim.bo[bufnr].filetype == "helm" then
                     vim.diagnostic.disable(bufnr)
                     vim.defer_fn(function()
                         vim.diagnostic.reset(nil, bufnr)
                     end, 1000)
                 end
-                common_on_attach()
+                common_on_attach(client, bufnr)
             end,
         })
         goto continue
     elseif name == "sumneko_lua" then
         lspconfig[name].setup(require('lua-dev').setup({
-            lspconfig = {
-                on_attach = common_server_opts,
-            }
+            lspconfig = common_server_opts,
         }))
         --     lspconfig[name].setup({
         --         on_attach = common_on_attach,
@@ -138,8 +140,8 @@ for _, name in pairs(servers) do
                     adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path),
                 },
                 server = {
-                    on_attach = function(client)
-                        common_on_attach(client)
+                    on_attach = function(client, bufnr)
+                        common_on_attach(client, bufnr)
                         map('n', 'gK', require('rust-tools').hover_actions.hover_actions, { desc = 'rt:hover_actions' })
                     end,
                     flags = common_flags,

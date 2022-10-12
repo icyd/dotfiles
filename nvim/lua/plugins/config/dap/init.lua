@@ -51,6 +51,7 @@ local function configure_debuggers()
     require('plugins.config.dap.python').setup()
     require('plugins.config.dap.go').setup()
     require('plugins.config.dap.rust').setup()
+    require('plugins.config.dap.javascript').setup()
 end
 
 function M.setup()
