@@ -26,6 +26,22 @@ function M.setup()
             cwd = "${workspaceFolder}",
             stopOnEntry = true,
         },
+        {
+            name = "Remote attach",
+            type = "codelldb",
+            request = "custom",
+            targetCreateCommands = function()
+                local input = vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+                return { "target create " .. input }
+            end,
+            processCreateCommands = function()
+                local host = vim.fn.input("Host [127.0.0.1]: ", "127.0.0.1")
+                local port = vim.fn.input("Port [3333]: ", "3333")
+                return { string.format("gdb remote %s:%s", host, port) }
+            end,
+            cwd = "${workspaceFolder}",
+            stopOnEntry = true,
+        },
     }
 
     dap.configurations.c = dap.configurations.cpp

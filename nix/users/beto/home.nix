@@ -20,6 +20,7 @@ let
       luajit
       luajitPackages.luarocks
       kicad-small
+      libreoffice-fresh
       mosh
       openocd
       rustc
