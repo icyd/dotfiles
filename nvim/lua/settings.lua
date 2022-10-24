@@ -42,7 +42,7 @@ opt.background = 'dark'
 opt.clipboard = 'unnamedplus'
 opt.cmdheight = 2
 opt.completeopt = 'menu,menuone,noselect'
-opt.conceallevel = 1
+opt.conceallevel = 2
 opt.concealcursor = 'nc'
 opt.diffopt = vim.o.diffopt .. ',vertical'
 opt.grepprg = 'rg --vimgrep --smart-case --follow'
@@ -67,7 +67,7 @@ opt.lazyredraw = true
 opt.splitbelow = true
 opt.wildignorecase = true
 opt.undofile = true
-opt.winbar = [[%=%m %f]]
+-- opt.winbar = [[%=%m %f]]
 opt.writebackup = true
 opt.wildmenu = true
 opt.wildmode = 'longest,full'
@@ -120,18 +120,25 @@ api.nvim_create_autocmd('BufWritePre', {
 })
 
 local cursor_line = api.nvim_create_augroup('cursor_line', { clear = true })
-api.nvim_create_autocmd({ 'VimEnter', 'WinEnter', 'BufWinEnter' }, {
-    pattern = '*',
+-- api.nvim_create_autocmd({ 'VimEnter', 'WinEnter', 'BufWinEnter' }, {
+--     group = cursor_line,
+--     command = 'setlocal cursorline',
+--     desc = 'Set cursor line',
+-- })
+api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
     group = cursor_line,
-    command = 'setlocal cursorline',
-    desc = 'Set cursor line',
+    command = 'set cursorline',
+})
+api.nvim_create_autocmd({ 'InsertEnter', 'WinLeave' }, {
+    group = cursor_line,
+    command = 'set nocursorline',
 })
 
 local auto_spell = api.nvim_create_augroup('auto_spell', { clear = true })
 api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
-    pattern = { '*.md', '*.txt', '*.pandoc' },
+    pattern = { '*.md', '*.txt', '*.pandoc', '*.org' },
     group = auto_spell,
-    command = 'setlocal spell spelllang=en_us',
+    command = 'setlocal spell spelllang=en',
     desc = 'Enable spell on pattern',
 })
 api.nvim_create_autocmd('FileType', {
@@ -163,6 +170,20 @@ api.nvim_create_autocmd('FileType', {
     desc = 'Set text width on gitcommit files',
 })
 
+local yankhl_au = api.nvim_create_augroup('YankHighlight', { clear = true })
+api.nvim_create_autocmd('TextYankPost', {
+    group = yankhl_au,
+    command = 'silent! lua vim.highlight.on_yank()',
+})
+
+api.nvim_create_autocmd('BufReadPost', {
+    command = [[
+if line("'\"") > 1 && line("'\"") <= line("$")
+    execute "normal! g`\""
+endif
+    ]],
+})
+
 api.nvim_create_user_command('GrabServer', require "utils".grab_server, {})
 
 api.nvim_create_user_command('Vbuffer', function(args)
@@ -174,4 +195,8 @@ local pyenv = os.getenv("PY_ENV")
 local nvr = pyenv and pyenv .. "/nvr/bin/nvr" or nil
 if nvr and vim.fn.has('nvim') and vim.fn.executable(nvr) then
     vim.env.VISUAL = nvr .. " -cc split --remote-wait-silent"
+end
+
+if vim.fn.has('nvim') and vim.fn.executable('nvr') then
+    vim.env.GIT_EDITOR = "nvr -cc split --remote-wait +'set bufhidden=wipe'"
 end

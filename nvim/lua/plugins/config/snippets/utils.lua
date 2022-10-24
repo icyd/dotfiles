@@ -246,6 +246,18 @@ M.snake_case = function(titlecase) --{{{
   end)
 end --}}}
 
+M.capitalize = function(str)
+    return string.gsub(str, '^%l', string.upper)
+end
+
+M.camel_case = function(str)
+    return string.gsub(str, '%W+(%w+)', M.capitalize)
+end
+
+M.upper_camel_case = function(str)
+    return string.gsub(str, '%W*(%w+)', M.capitalize)
+end
+
 M.create_t_run = function(args) --{{{
   return c(1, {
     t({ "" }),

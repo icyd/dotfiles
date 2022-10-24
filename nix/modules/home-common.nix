@@ -5,8 +5,8 @@
     colorscheme = nix-colors.colorSchemes.gruvbox-dark-medium;
     fonts.fontconfig.enable = true;
     home.file = {
-        ".editorconfig".source = ../../editorconfig/.editorconfig;
-        ".npmrc".source = ../../npm/.npmrc;
+        ".editorconfig".source = ../../editorconfig/editorconfig;
+        ".npmrc".source = ../../npm/npmrc;
         ".p10k.zsh".source = ../../zsh/p10k.zsh;
         ".k8s_aliases.zsh".source = ../../zsh/kubectl_aliases.zsh;
         ".gitalias".source = ../../git/gitalias.txt;
