@@ -101,7 +101,7 @@ local function plugins(use)
     }
     use 'williamboman/mason-lspconfig.nvim'
     use 'simrat39/rust-tools.nvim'
-    use 'folke/lua-dev.nvim'
+    use 'folke/neodev.nvim'
     use {
         'jose-elias-alvarez/null-ls.nvim',
         module = 'null-ls',

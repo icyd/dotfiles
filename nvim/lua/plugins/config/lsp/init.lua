@@ -21,6 +21,11 @@ local servers = {
     "yamlls",
 }
 
+local neodev_ok, neodev = pcall(require, 'neodev')
+if neodev_ok then
+    neodev.setup({})
+end
+
 local lspconfig = require('lspconfig')
 
 require('mason-lspconfig').setup({
@@ -102,28 +107,7 @@ for _, name in pairs(servers) do
         })
         goto continue
     elseif name == "sumneko_lua" then
-        lspconfig[name].setup(require('lua-dev').setup({
-            lspconfig = common_server_opts,
-        }))
-        --     lspconfig[name].setup({
-        --         on_attach = common_on_attach,
-        --         settings = {
-        --             Lua = {
-        --                 runtime = {
-        --                     version = 'LuaJIT',
-        --                 },
-        --                 diagnostics = {
-        --                     globals = { 'vim' },
-        --                 },
-        --                 workspace = {
-        --                     library = vim.api.nvim_get_runtime_file("", true),
-        --                 },
-        --                 telemetry = {
-        --                     enable = false,
-        --                 }
-        --             },
-        --         },
-        --     })
+        lspconfig[name].setup(common_server_opts)
         goto continue
     elseif name == "rust_analyzer" then
         local ok, rust_tools = pcall(require, "rust-tools")
