@@ -8,7 +8,6 @@
 
 " ---------------------------------------------------------------------
 " Load Once: {{{1
-echo "HELLO"
 if exists("g:loaded_LargeFile") || &cp
  finish
 endif

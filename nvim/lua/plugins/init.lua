@@ -105,7 +105,6 @@ local function plugins(use)
     use {
         'jose-elias-alvarez/null-ls.nvim',
         module = 'null-ls',
-        commit = '76d0573fc159839a9c4e62a0ac4f1046845cdd50',
     }
     use {
         'j-hui/fidget.nvim',
@@ -251,6 +250,10 @@ local function plugins(use)
         'tpope/vim-unimpaired',
         event = 'BufRead',
     }
+    -- Word motion
+    use 'chaoren/vim-wordmotion'
+    -- Motion targets
+    use 'wellle/targets.vim'
     -- Indentation by vim object
     use {
         'michaeljsmith/vim-indent-object',
@@ -302,6 +305,12 @@ local function plugins(use)
             'RRethy/nvim-treesitter-textsubjects',
             'nvim-treesitter/nvim-treesitter-textobjects',
             'JoosepAlviste/nvim-ts-context-commentstring',
+            {
+                'm-demare/hlargs.nvim',
+                config = function()
+                   require('hlargs').setup()
+                end,
+            },
             --- Rainbow parenthesis
             'p00f/nvim-ts-rainbow',
             {
@@ -311,17 +320,6 @@ local function plugins(use)
         },
     }
     -- Mark indentation column
-    use {
-        'Yggdroot/indentLine',
-        event = 'BufReadPre',
-        config = function()
-            vim.g.indentLine_char_list = { '|', '¦', '┆', '┊' }
-            vim.g.indentLine_fileTypeExclude = { "fzf", "dashboard", "packer" }
-            vim.g.indentLine_conceallevel = 1
-            vim.g.indentLine_concealcursor = 'nc'
-            vim.g.indentLine_setConceal = 0
-        end
-    }
     use {
         'lukas-reineke/indent-blankline.nvim',
         event = 'BufReadPre',
@@ -378,6 +376,19 @@ local function plugins(use)
             },
         },
     }
+    use {
+        'ThePrimeagen/git-worktree.nvim',
+        module = 'git-worktree',
+        config = function()
+            local git_worktree = require("git-worktree")
+            git_worktree.setup({})
+            git_worktree.on_tree_change(function(op, metadata)
+                if op == git_worktree.Operations.Switch then
+                    print("Switched from " .. metadata.prev_path .. " to " .. metadata.path)
+                end
+            end)
+        end,
+    }
     -- Quickterm
     use {
         'akinsho/toggleterm.nvim',
@@ -427,7 +438,7 @@ local function plugins(use)
     -- Session management
     use {
         'dhruvasagar/vim-prosession',
-        requires = { 'tpope/vim-obsession', after = 'vim-prosession' },
+        requires = { 'tpope/vim-obsession' },
         cmd = { 'Prossesion', 'ProsessionDelete', 'ProsessionClean' },
         config = function()
             vim.g.prosession_dir = os.getenv('HOME') .. '/.local/share/nvim/sessions/'
@@ -502,7 +513,7 @@ local function plugins(use)
     use {
         'nvim-orgmode/orgmode',
         config = [[ require('plugins.config.orgmode') ]],
-        keys = { '<leader>oc', '<leader>oa' },
+        -- keys = { '<leader>oc', '<leader>oa' },
         requires = {
             {
                 'akinsho/org-bullets.nvim',
@@ -510,10 +521,10 @@ local function plugins(use)
                     require('org-bullets').setup({})
                 end
             },
-            {
-                'ranjithshegde/orgWiki.nvim',
-                config = [[ require('plugins.config.orgwiki') ]],
-            },
+        --     {
+        --         'ranjithshegde/orgWiki.nvim',
+        --         config = [[ require('plugins.config.orgwiki') ]],
+        --     },
             {
                 'TravonteD/org-capture-filetype',
             }
@@ -648,12 +659,37 @@ local function plugins(use)
         'stevearc/aerial.nvim',
         config = function()
             require('aerial').setup()
+            vim.keymap.set('n', '<leader>xa', '<cmd>AerialToggle!<cr>', { desc = "aerial:toggle" })
         end,
         module = 'aerial',
     }
     use {
         'ThePrimeagen/vim-be-good',
         cmd = 'VimBeGood',
+    }
+    use {
+        'unblevable/quick-scope',
+        config = function()
+            vim.g.qs_highlight_on_keys = {'f', 'F', 't', 'T'}
+        end,
+    }
+    use {
+        'ThePrimeagen/harpoon',
+        config = function()
+            local function harpoon_goto()
+                if (vim.v.count > 0) then
+                    return require('harpoon.ui').nav_file(vim.v.count)
+                end
+
+                return require('harpoon.ui').nav_next()
+            end
+            require('harpoon').setup({})
+            vim.keymap.set('n', '<leader>hu', require('harpoon.ui').toggle_quick_menu, { desc = 'Harpoon quick menu' })
+            vim.keymap.set('n', '<leader>hU', require('telescope').extensions.harpoon.marks, { desc = 'Harpoon telescope menu' })
+            vim.keymap.set('n', '<leader>hm', require('harpoon.mark').add_file, { desc = 'Harpoon add mark' })
+            vim.keymap.set('n', '<leader>hg', harpoon_goto, { desc = 'Harpoon go to file' })
+            vim.keymap.set('n', '<leader>ht', function() require('harpoon.term').gotoTerminal(vim.v.count1) end, { desc = 'Harpoon go to terminal' })
+        end,
     }
 
     if bootstrap then

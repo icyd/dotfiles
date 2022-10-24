@@ -3,8 +3,11 @@ local builtin = require('telescope.builtin')
 local my_telescope = require('my.telescope')
 local api, map = vim.api, vim.keymap.set
 
+pcall(require, 'git-worktree')
 pcall(telescope.load_extension, 'aerial')
 pcall(telescope.load_extension, 'notify')
+pcall(telescope.load_extension, 'harpoon')
+pcall(telescope.load_extension, 'git_worktree')
 
 local telescope_mappings = {
     i = {
@@ -133,6 +136,12 @@ map('n', '<leader>gC', builtin.git_bcommits,
     { desc = 'Git current buffer commits' })
 map('n', '<leader>fi', builtin.treesitter,
     { desc = 'Treesitter' })
+map('n', '<leader>gw',
+    telescope.extensions.git_worktree.git_worktrees,
+    { desc = 'Git worktree' })
+map('n', '<leader>gW',
+    telescope.extensions.git_worktree.create_git_worktree,
+    { desc = 'Create worktree' })
 
 local telescope_au = api.nvim_create_augroup('telescope_au', { clear = true })
 api.nvim_create_autocmd('FileType', {

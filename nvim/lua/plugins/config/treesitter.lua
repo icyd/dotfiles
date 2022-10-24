@@ -1,3 +1,19 @@
+local swap_next, swap_prev = (function()
+  local swap_objects = {
+    p = "@parameter.inner",
+    f = "@function.outer",
+    c = "@class.outer",
+  }
+
+  local n, p = {}, {}
+  for key, obj in pairs(swap_objects) do
+    n[string.format("<leader>x%s", key)] = obj
+    p[string.format("<leader>x%s", string.upper(key))] = obj
+  end
+
+  return n, p
+end)()
+
 require 'nvim-treesitter.configs'.setup {
     ensure_installed = {
         'bash',
@@ -90,8 +106,8 @@ require 'nvim-treesitter.configs'.setup {
         },
         swap = {
            enable = true,
-           swap_next = {["<leader>xp"] = "@parameter.inner"},
-           swap_previous = {["<leader>xP"] = "@parameter.inner"}
+           swap_next = swap_next,
+           swap_previous = swap_prev,
         },
         include_surronding_whitespace = true,
     },

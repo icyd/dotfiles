@@ -29,12 +29,12 @@ function M.setup()
             lualine_a = { 'mode' },
             lualine_b = { 'branch', 'diff' },
             lualine_c = {
-                {
-                    'filename',
-                    file_status = true,
-                    path = 3,
-                    shorting_target = 40,
-                },
+                -- {
+                --     'filename',
+                --     file_status = true,
+                --     path = 3,
+                --     shorting_target = 40,
+                -- },
             },
             lualine_x = {
                 {
@@ -59,21 +59,26 @@ function M.setup()
         },
         tabline = {},
         extensions = { "nvim-tree", "toggleterm", "quickfix" },
-        -- winbar = {
-        --    lualine_a = {},
-        --    lualine_b = {
-        --         'diagnostics'
-        --     },
-        --    lualine_c = {},
-        --    lualine_x = {
-        --        {
-        --            'filename',
-        --            file_status = true,
-        --        },
-        --    },
-        --    lualine_y = {},
-        --    lualine_z = {},
-        -- }
+        winbar = {
+           lualine_a = {},
+           lualine_b = {
+                -- {
+                --     'diagnostics',
+                --     sources = { 'nvim_diagnostic'},
+                -- },
+            },
+           lualine_c = {},
+           lualine_x = {
+               {
+                    'filename',
+                    file_status = true,
+                    newfile_status = true,
+                    path = 3,
+               },
+           },
+           lualine_y = {},
+           lualine_z = {},
+        }
     }
 end
 

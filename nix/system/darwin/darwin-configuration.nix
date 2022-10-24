@@ -16,4 +16,16 @@
   programs.zsh.enable = true;
   services.nix-daemon.enable = true;
   system.stateVersion = 4;
+  homebrew = {
+    enable = true;
+    taps = [
+      "homebrew/cask"
+    ];
+    casks = [
+      "gpg-suite"
+    ];
+    brews = [
+      "asdf"
+    ];
+  };
 }

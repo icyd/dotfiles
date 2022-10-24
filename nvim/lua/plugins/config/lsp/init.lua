@@ -59,13 +59,13 @@ local function common_on_attach(client, bufnr)
         aerial.on_attach(client, bufnr)
     end
 
-    if client.server_capabilities.document_formatting then
-        api.nvim_create_autocmd('BufWritePre', {
-            buffer = bufnr,
-            group = api.nvim_create_augroup('lsp_au', { clear = true }),
-            callback = function() vim.lsp.buf.format({ async = false }) end,
-        })
-    end
+    -- if client.server_capabilities.document_formatting then
+    --     api.nvim_create_autocmd('BufWritePre', {
+    --         buffer = bufnr,
+    --         group = api.nvim_create_augroup('lsp_au', { clear = true }),
+    --         callback = function() vim.lsp.buf.format({ async = false }) end,
+    --     })
+    -- end
 end
 
 local common_flags = {
@@ -73,18 +73,23 @@ local common_flags = {
 }
 
 local ok_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+local capabilities = {}
 if ok_cmp then
-    cmp_nvim_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    capabilities = cmp_nvim_lsp.default_capabilities()
 end
+
+
 
 for _, name in pairs(servers) do
     local common_server_opts = {
+        capabilities = capabilities,
         on_attach = common_on_attach,
         flags = common_flags,
     }
 
     if name == "yamlls" then
         lspconfig[name].setup({
+            capabilities = capabilities,
             on_attach = function(client, bufnr)
                 if vim.bo[bufnr].buftype ~= "" or vim.bo[bufnr].filetype == "helm" then
                     vim.diagnostic.disable(bufnr)
@@ -140,6 +145,8 @@ for _, name in pairs(servers) do
                     adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path),
                 },
                 server = {
+                    capabilities = capabilities,
+                    standalone = true,
                     on_attach = function(client, bufnr)
                         common_on_attach(client, bufnr)
                         map('n', 'gK', require('rust-tools').hover_actions.hover_actions, { desc = 'rt:hover_actions' })

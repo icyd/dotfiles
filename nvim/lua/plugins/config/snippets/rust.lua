@@ -120,10 +120,20 @@ impl {} {{
 #[derive({})]
 
 ]], { i(1, "Derive") }))}),
-            c(2, { t"", t"pub " }),
+            -- c(2, { t"", t"pub " }),
+            i(2),
             i(3, "Name"),
             i(0),
         }
     )),
-    s("rexp", { t"pub use ", i(0), }),
+    s("rexp", fmt(
+[[
+pub use {}::{};
+]],
+    {
+        i(1),
+        f(function(args)
+          return utils.upper_camel_case(args[1][1])
+        end, { 1 }),
+    })),
 }
