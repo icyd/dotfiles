@@ -87,13 +87,21 @@
     environment.systemPackages = with pkgs; [
         binutils
         dnsutils
+        evince
         gcc
         gnumake
         google-chrome
         cmake
         autogen
         sqlite
+        ffmpegthumbnailer
         git
+        gst_all_1.gstreamer
+        gst_all_1.gst-vaapi
+        gst_all_1.gst-plugins-base
+        gst_all_1.gst-plugins-good
+        gst_all_1.gst-plugins-ugly
+        gst_all_1.gst-plugins-bad
         firefox
         arc-theme
         papirus-icon-theme
@@ -103,6 +111,7 @@
         nextcloud-client
         pavucontrol
         okular
+        smplayer
         unzip
         usbutils
         wget
@@ -173,18 +182,26 @@
     sound.enable = true;
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
     users = {
-        mutableUsers = false;
+        mutableUsers = true;
         groups.${username}.gid = 1000;
         users.${username} = {
             isNormalUser = true;
             uid = 1000;
             shell = pkgs.zsh;
-            extraGroups = [ "wheel" "${username}" "networkmanager" "video" ]; # Enable ‘sudo’ for the user.
-            # initialHashedPassword = "$6$wxp/3sRBcMHx3fsm$vWVUshizSk1XaZS7gHPKy2NF.LHd.iMZ/o3Ipx0aKWs4Q3GiiPPAf1Abe9Flt7TAdcsTvDlbn5eTYhIzxOa/5/";
-            passwordFile = "/persist/beto.pass";
+            extraGroups = [
+                "wheel"
+                "${username}"
+                "networkmanager"
+                "video"
+                "dialout"
+                "adbusers"
+            ]; # Enable ‘sudo’ for the user.
+            initialHashedPassword = "$6$wxp/3sRBcMHx3fsm$vWVUshizSk1XaZS7gHPKy2NF.LHd.iMZ/o3Ipx0aKWs4Q3GiiPPAf1Abe9Flt7TAdcsTvDlbn5eTYhIzxOa/5/";
+            # passwordFile = "/persist/beto.pass";
         };
     };
     time.timeZone = "Europe/Madrid";
+    programs.adb.enable = true;
     programs.gnupg.agent = {
         enable = true;
         enableSSHSupport = true;

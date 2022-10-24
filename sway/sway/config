@@ -98,6 +98,13 @@ input 1165:49408:ITE_Tech._Inc._ITE_Device(8910)_Keyboard {
     xkb_options "lv3:ralt_switch,compose:102,caps:swapescape,shift:breaks_caps,grp:alt_space_toggle"
 }
 
+input 51984:25430:Keebio_Iris_Rev._6a {
+    xkb_numlock enable
+    xkb_layout icyd,us
+    xkb_variant icyd,
+    xkb_options "shift:breaks_caps"
+}
+
 # input 65261:18755:QMK_Icydox_keyboard_Keyboard {
 #     xkb_layout es,us
 #     xkb_variant icyd,

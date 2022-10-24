@@ -78,3 +78,6 @@ ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", TAG+="uaccess"
 
 # STM32F3DISCOVERY rev C+ - ST-LINK/V2-1
 ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", TAG+="uaccess"
+
+# FT232 - USB <-> Serial Converter
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE:="0666"
