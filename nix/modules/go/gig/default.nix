@@ -1,8 +1,8 @@
-{ lib, buildGo117Module, fetchFromGitHub }:
+{ lib, buildGo118Module, fetchFromGitHub }:
 let
   owner = "shihanng";
   repo = "gig";
-in buildGo117Module rec {
+in buildGo118Module rec {
     pname = "gig";
     version = "0.8.3";
     src = fetchFromGitHub {

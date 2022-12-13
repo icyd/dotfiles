@@ -1,10 +1,10 @@
 {
     description = "IcyD NixOS configuration";
     inputs = {
-        nixpkgs.url = "github:NixOs/nixpkgs/nixos-22.05";
+        nixpkgs.url = "github:NixOs/nixpkgs/nixos-22.11";
         nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
         home-manager = {
-            url = "github:nix-community/home-manager/release-22.05";
+            url = "github:nix-community/home-manager/release-22.11";
             inputs.nixpkgs.follows = "nixpkgs";
         };
         nur.url = "github:nix-community/NUR";
@@ -23,13 +23,12 @@
 
         nixpkgsConfig = { system }:
         let
-            stable = import inputs.nixpkgs { inherit system; };
             unstable = import inputs.nixpkgs-unstable { inherit system; };
         in {
+            inherit system;
             config.allowUnfree = true;
             overlays = [
                 (self: super: {
-                    dnsutils-unstable = unstable.dnsutils;
                     neovim-unstable = unstable.neovim;
                     neovim-remote = unstable.neovim-remote;
                 })
@@ -53,6 +52,7 @@
                 ];
                 specialArgs = { inherit username stateVersion; };
             };
+
             aws = inputs.nixpkgs.lib.nixosSystem {
                 inherit system;
                 modules = [
@@ -89,45 +89,38 @@
                 username = "beto";
                 email = "beto.v25@gmail.com";
             in inputs.home-manager.lib.homeManagerConfiguration {
-                inherit stateVersion system username;
-                homeDirectory = "/home/${username}";
-                extraSpecialArgs = { inherit email nix-colors; };
-                configuration = {
-                    imports = [
-                        ./nix/users/${username}/home.nix {}
-                    ];
-                    nixpkgs = nixpkgsConfig { inherit system; };
-                };
+                pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
+                modules = [
+                    ./nix/modules/home-common.nix
+                    ./nix/users/${username}/home.nix
+                ];
+                extraSpecialArgs = { inherit stateVersion username email nix-colors; };
             };
+
             "aj.vazquez" = let
                 system = "aarch64-darwin";
                 username = "aj.vazquez";
                 email = "avazquez@contractor.ea.com";
             in inputs.home-manager.lib.homeManagerConfiguration {
-                inherit stateVersion system username;
-                homeDirectory = "/Users/${username}";
-                extraSpecialArgs = { inherit email nix-colors; };
-                configuration = {
-                    imports = [
-                        ./nix/users/${username}/home.nix {}
-                    ];
-                    nixpkgs = nixpkgsConfig { inherit system; };
-                };
+                pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
+                modules = [
+                    ./nix/modules/home-common.nix
+                    ./nix/users/${username}/home.nix
+                ];
+                extraSpecialArgs = { inherit stateVersion username email nix-colors; };
             };
+
             "aws" = let
                 system = "x86_64-linux";
                 username = "root";
                 email = "avazquez@contractor.ea.com";
             in inputs.home-manager.lib.homeManagerConfiguration {
-                inherit stateVersion system username;
-                homeDirectory = "/root";
-                extraSpecialArgs = { inherit email nix-colors; };
-                configuration = {
-                    imports = [
-                        ./nix/users/aws/home.nix {}
-                    ];
-                    nixpkgs = nixpkgsConfig { inherit system; };
-                };
+                pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
+                modules = [
+                    ./nix/modules/home-common.nix
+                    ./nix/users/${username}/home.nix
+                ];
+                extraSpecialArgs = { inherit stateVersion username email nix-colors; };
             };
         };
     };

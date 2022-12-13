@@ -58,6 +58,21 @@
                 efiSupport = true;
                 useOSProber = true;
                 configurationLimit = 20;
+                memtest86.enable = true;
+                extraEntries = ''
+                    menuentry 'Arch Linux' --class arch --class gnu-linux --class gnu --class os {
+                        load_video
+                        set gfxpayload=keep
+                        insmod gzio
+                        insmod part_gpt
+                        insmod fat
+                        search --no-floppy --fs-uuid --set=root 4ECB-CF02
+                        echo    'Loading Linux linux-lts ...'
+                        linux   /vmlinuz-linux-lts root=UUID=62abb064-54c0-4c02-b5f0-5ca57ee8004a rw rootflags=subvol=@ nvidia-drm.modeset=1 luks.name=a1e85fe0-0d91-40c0-ba67-b784fe163998=cryptroot luks.options=discard root=/dev/mapper/cryptroot quiet loglevel=4
+                        echo    'Loading initial ramdisk ...'
+                        initrd  /amd-ucode.img /initramfs-linux-lts.img
+                    }
+                '';
             };
         };
     };
@@ -83,6 +98,8 @@
         adjtime.source = "/persist/etc/adjtime";
         NIXOS.source = "/persist/etc/NIXOS";
         machine-id.source = "/persist/etc/machine-id";
+        # passwd.source = "/persist/etc/passwd";
+        # shadow.source = "/persist/etc/shadow";
     };
     environment.systemPackages = with pkgs; [
         binutils
@@ -134,6 +151,11 @@
             ];
         };
         pulseaudio.enable = true;
+        # nvidia.prime = {
+        #     offload.enable = true;
+        #     nvidiaBusId = "PCI:1:0:0";
+        #     amdgpuBusId = "PCI:6:0:0";
+        # };
     };
     networking = {
         firewall.enable = true;
@@ -165,10 +187,12 @@
             videoDrivers = [ "amdgpu" ];
             displayManager = {
                 defaultSession = "sway";
-                gdm = {
+                lightdm = {
                     enable = true;
-                    wayland = true;
-                    autoSuspend = false;
+                    greeter.enable = false;
+                    autoLogin.timeout = 0;
+                    # wayland = true;
+                    # autoSuspend = false;
                 };
                 autoLogin = {
                     enable = true;

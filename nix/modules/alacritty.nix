@@ -1,5 +1,5 @@
 { config, startup_mode ? "Maximized", ... }: let
-  colors = config.colorscheme.colors;
+  colors = config.colorScheme.colors;
 in {
   enable = true;
   settings = {
