@@ -12,20 +12,21 @@ orgmode.setup({
         orgmode_dir .. '/org/**/*',
     },
     org_default_notes_file = orgmode_dir .. '/org/refile.org',
-    org_capture_templates = {
-        t = {
-            description = 'Todo',
-            template = '* TODO %?\n %u',
-            target = orgmode_dir .. '/org/refile.org',
-        },
-        l = {
-            description = 'Ledger entry',
-            template = '\n%<%m-%d> %^{Description}\n    %?',
-            target = string.format(orgmode_dir .. '/ledger/journals/%s.ledger', vim.fn.strftime('%Y-%m')),
-            filetype = 'ledger',
-        }
-
-    },
+    -- org_capture_templates = {
+    --     t = {
+    --         description = 'Todo',
+    --         template = '* TODO %?\n %u',
+    --         target = orgmode_dir .. '/org/refile.org',
+    --     },
+    --     l = {
+    --         description = 'Ledger entry',
+    --         template = '\n%<%m-%d> %^{Description}\n    %?',
+    --         target = string.format(orgmode_dir .. '/ledger/journals/%s.ledger', vim.fn.strftime('%Y-%m')),
+    --         filetype = 'ledger',
+    --     }
+    -- },
 })
+
+vim.keymap.set('n', '<leader>ww', function() vim.cmd('e ' .. orgmode_dir .. '/org/orgwiki/Index.org') end, { desc = 'Open orgwiki index' })
 
 pcall(require, 'org-capture-filetype')

@@ -114,7 +114,6 @@ local function plugins(use)
     }
     use {
         'neovim/nvim-lspconfig',
-        event = 'BufReadPre',
         config = [[ require('plugins.config.lsp') ]]
     }
     use {
@@ -146,9 +145,9 @@ local function plugins(use)
     use {
         'nvim-telescope/telescope.nvim',
         branch = '0.1.x',
-        cmd = 'Telescope',
-        modules_pattern = 'telescope.*',
-        keys = { '<leader>f', '<localleader>f', '<leader>g', '<leader>b' },
+        -- cmd = 'Telescope',
+        -- modules_pattern = 'telescope.*',
+        -- keys = { '<leader>f', '<localleader>f', '<leader>g', '<leader>b' },
         requires = {
             -- 'nvim-lua/popup.nvim',
             {
@@ -251,9 +250,15 @@ local function plugins(use)
         event = 'BufRead',
     }
     -- Word motion
-    use 'chaoren/vim-wordmotion'
+    use {
+        'chaoren/vim-wordmotion',
+        event = 'BufReadPre',
+    }
     -- Motion targets
-    use 'wellle/targets.vim'
+    use {
+        'wellle/targets.vim',
+        event = 'BufReadPre',
+    }
     -- Indentation by vim object
     use {
         'michaeljsmith/vim-indent-object',
@@ -283,6 +288,10 @@ local function plugins(use)
         'ledger/vim-ledger',
         ft = 'ledger',
     }
+    use {
+        'dix75/jira.vim',
+        ft = 'confluencewiki'
+    }
     -- Treesitter
     use {
         'nvim-treesitter/nvim-treesitter',
@@ -302,17 +311,18 @@ local function plugins(use)
                 end,
                 command = { 'TSContextEnable', 'TSContextDisable', 'TSContextToggle' },
             },
-            'RRethy/nvim-treesitter-textsubjects',
-            'nvim-treesitter/nvim-treesitter-textobjects',
-            'JoosepAlviste/nvim-ts-context-commentstring',
+            { 'RRethy/nvim-treesitter-textsubjects', event = 'BufRead' },
+            { 'nvim-treesitter/nvim-treesitter-textobjects', event = 'BufRead' },
+            { 'JoosepAlviste/nvim-ts-context-commentstring', event = 'BufRead' },
             {
                 'm-demare/hlargs.nvim',
+                event = 'BufReadPre',
                 config = function()
                    require('hlargs').setup()
                 end,
             },
             --- Rainbow parenthesis
-            'p00f/nvim-ts-rainbow',
+            { 'p00f/nvim-ts-rainbow', event = 'BufReadPre' },
             {
                 'nvim-treesitter/playground',
                 cmd = 'TSPlaygroundToggle',
@@ -504,16 +514,12 @@ local function plugins(use)
             })
         end,
     }
-    -- use {
-    --     'vimwiki/vimwiki',
-    --     config = [[ require('plugins.config.vimwiki') ]],
-    --     keys = { '<leader>Ww', '<leader>W<leader>w' },
-    -- }
     -- Org-mode
     use {
         'nvim-orgmode/orgmode',
         config = [[ require('plugins.config.orgmode') ]],
-        -- keys = { '<leader>oc', '<leader>oa' },
+        keys = { '<leader>oc', '<leader>oa' },
+        ft = 'org',
         requires = {
             {
                 'akinsho/org-bullets.nvim',
@@ -521,13 +527,12 @@ local function plugins(use)
                     require('org-bullets').setup({})
                 end
             },
-        --     {
-        --         'ranjithshegde/orgWiki.nvim',
-        --         config = [[ require('plugins.config.orgwiki') ]],
-        --     },
-            {
-                'TravonteD/org-capture-filetype',
-            }
+            -- {
+            --     'ranjithshegde/orgWiki.nvim',
+            --     config = [[ require('plugins.config.orgwiki') ]],
+            --     disable = true,
+            -- },
+            -- 'TravonteD/org-capture-filetype',
         }
     }
     -- Rooter
@@ -651,10 +656,6 @@ local function plugins(use)
         end,
     }
     use 'direnv/direnv.vim'
-    -- use {
-    --     'glacambre/firenvim',
-    --     run = function() vim.fn['firenvim#install'](0) end
-    -- }
     use {
         'stevearc/aerial.nvim',
         config = function()
@@ -664,10 +665,6 @@ local function plugins(use)
         module = 'aerial',
     }
     use {
-        'ThePrimeagen/vim-be-good',
-        cmd = 'VimBeGood',
-    }
-    use {
         'unblevable/quick-scope',
         config = function()
             vim.g.qs_highlight_on_keys = {'f', 'F', 't', 'T'}
@@ -675,6 +672,7 @@ local function plugins(use)
     }
     use {
         'ThePrimeagen/harpoon',
+        keys = { '<leader>h' },
         config = function()
             local function harpoon_goto()
                 if (vim.v.count > 0) then
@@ -691,6 +689,39 @@ local function plugins(use)
             vim.keymap.set('n', '<leader>ht', function() require('harpoon.term').gotoTerminal(vim.v.count1) end, { desc = 'Harpoon go to terminal' })
         end,
     }
+    use {
+        'kevinhwang91/nvim-ufo',
+        requires = 'kevinhwang91/promise-async',
+        disable = true,
+        event = 'BufReadPre',
+        config = function()
+            local ufo = require("ufo")
+            vim.keymap.set('n', 'zR', ufo.openAllFolds, { desc = 'Open all folds' })
+            vim.keymap.set('n', 'zM', ufo.closeAllFolds, { desc = 'Close all folds' })
+            ufo.setup()
+            -- vim.api.nvim_create_autocmd('FileType', {
+            --     pattern = 'org',
+            --     group = vim.api.nvim_create_augroup('UfoDetachFts', { clear = true }),
+            --     command = 'UfoDetach',
+            -- })
+        end,
+    }
+    use {
+        'jamessan/vim-gnupg',
+        config = function()
+            vim.g.GPGPreferArmor = 1
+            vim.g.GPGPreferSign = 1
+            vim.g.GPGDefaultRecipients = {'beto.v25@gmail.com'}
+        end,
+    }
+    -- use 'tpope/vim-speeddating'
+    use {
+        'aspeddro/pandoc.nvim',
+        config = function()
+            require 'pandoc'.setup()
+        end
+    }
+
 
     if bootstrap then
         packer.sync()
