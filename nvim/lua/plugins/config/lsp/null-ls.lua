@@ -38,8 +38,8 @@ function M.setup()
                 extra_args = { '--config', vim.fn.expand('~/.commitlintrc.js')}
             }),
             builtins.diagnostics.eslint_d,
-            -- builtins.diagnostics.pylint,
-            -- builtins.diagnostics.mypy,
+            builtins.diagnostics.pylint,
+            builtins.diagnostics.mypy,
             -- builtins.diagnostics.golangci_lint,
             -- builtins.diagnostics.jsonlint,
             -- builtins.diagnostics.luacheck,
@@ -48,8 +48,8 @@ function M.setup()
 
             builtins.formatting.eslint_d,
             builtins.formatting.clang_format,
-            -- builtins.formatting.black,
-            -- builtins.formatting.isort,
+            builtins.formatting.black,
+            builtins.formatting.isort,
             builtins.formatting.gofmt,
             builtins.formatting.rustfmt,
             builtins.formatting.terraform_fmt,

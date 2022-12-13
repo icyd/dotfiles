@@ -91,8 +91,11 @@ opt.listchars = {
 opt.colorcolumn = '79'
 opt.cursorcolumn = false
 opt.cursorline = false
-opt.foldlevel = 4
-opt.foldmethod = 'indent'
+opt.foldenable = true
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldmethod = 'expr'
+opt.foldexpr = 'nvim_treesitter#foldexpr()'
 opt.foldnestmax = 8
 opt.linebreak = true
 opt.list = true
@@ -182,6 +185,13 @@ if line("'\"") > 1 && line("'\"") <= line("$")
     execute "normal! g`\""
 endif
     ]],
+})
+
+local confluencewiki = api.nvim_create_augroup('ConfluenceWiki', { clear = true })
+api.nvim_create_autocmd('BufRead,BufNewFile', {
+    pattern = '*.jira',
+    command = 'set filetype=confluencewiki',
+    group = confluencewiki,
 })
 
 api.nvim_create_user_command('GrabServer', require "utils".grab_server, {})

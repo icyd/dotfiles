@@ -77,13 +77,40 @@ local common_flags = {
     debounce_text_changes = 150,
 }
 
-local ok_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-local capabilities = {}
-if ok_cmp then
-    capabilities = cmp_nvim_lsp.default_capabilities()
+local function table_merge(into,from)
+    local stack = {}
+    local node1 = into
+    local node2 = from
+    while (true) do
+        for k,v in pairs(node2) do
+            if (type(v) == "table" and type(node1[k]) == "table") then
+                table.insert(stack,{node1[k],node2[k]})
+            else
+                node1[k] = v
+            end
+        end
+        if (#stack > 0) then
+            local t = stack[#stack]
+            node1,node2 = t[1],t[2]
+            stack[#stack] = nil
+        else
+            break
+        end
+    end
+    return into
 end
 
-
+local ok_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local cmp_capabilities = {}
+if ok_cmp then
+    cmp_capabilities = cmp_nvim_lsp.default_capabilities()
+end
+capabilities.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true
+}
+capabilities = table_merge(capabilities, cmp_capabilities)
 
 for _, name in pairs(servers) do
     local common_server_opts = {
@@ -107,7 +134,37 @@ for _, name in pairs(servers) do
         })
         goto continue
     elseif name == "sumneko_lua" then
-        lspconfig[name].setup(common_server_opts)
+        lspconfig[name].setup({
+            on_attach = common_on_attach,
+            flags = common_flags,
+            capabilities = capabilities,
+            settings = {
+                Lua = {
+                    completion = {
+                        callSnippet = 'Replace',
+                    }
+                }
+            },
+        })
+        --     lspconfig[name].setup({
+        --         on_attach = common_on_attach,
+        --         settings = {
+        --             Lua = {
+        --                 runtime = {
+        --                     version = 'LuaJIT',
+        --                 },
+        --                 diagnostics = {
+        --                     globals = { 'vim' },
+        --                 },
+        --                 workspace = {
+        --                     library = vim.api.nvim_get_runtime_file("", true),
+        --                 },
+        --                 telemetry = {
+        --                     enable = false,
+        --                 }
+        --             },
+        --         },
+        --     })
         goto continue
     elseif name == "rust_analyzer" then
         local ok, rust_tools = pcall(require, "rust-tools")
