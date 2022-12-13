@@ -128,11 +128,11 @@ map('c', '%%', "getcmdtype() == ':' ? expand('%:h').'/' : '%%'",
     { desc = 'Expand to current path', silent = false, expr = true })
 
 
-local git_cz = vim.api.nvim_create_augroup('git_cz', { clear = true })
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'fugitive,NeogitStatus',
-    group = git_cz,
-    callback = function()
-        vim.keymap.set('n', '<localleader>cc', require('my.toggleterm-cz-cli').git_commit_toggle, { desc = 'Conventional commits' })
-    end,
-})
+-- local git_cz = vim.api.nvim_create_augroup('git_cz', { clear = true })
+-- vim.api.nvim_create_autocmd('FileType', {
+--     pattern = 'fugitive,NeogitStatus',
+--     group = git_cz,
+--     callback = function()
+--         vim.keymap.set('n', '<localleader>cc', require('my.toggleterm-cz-cli').git_commit_toggle, { desc = 'Conventional commits' })
+--     end,
+-- })

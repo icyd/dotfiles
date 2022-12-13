@@ -156,6 +156,7 @@ in {
             mollifier/cd-gitroot \
             chisui/zsh-nix-shell \
             hlissner/zsh-autopair \
+            OMZP::aws \
         as"completion" \
             OMZP::docker/_docker \
         as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
@@ -208,7 +209,8 @@ in {
         krrsts = "kubectl rollout restart statefulset";
         l = "ls -lbF";
         la = "ls -lbhHigUmuSa";
-        ldr = "ledger --pedantic --file $LEDGER_HOME/main.ledger";
+        ldr = "gpg -d $LEDGER_HOME/journals/journal.ledger.gpg | ledger --pedantic --file $LEDGER_HOME/main.ledger --file -";
+        hldr = "ldr print | hledger -f-";
         ldre = "ldr --exchange EUR";
         ldru = "ldr --exchange USD";
         li = "cd_in";
@@ -238,6 +240,7 @@ in {
         KN = " -oyaml | kubectl neat";
         RG = "| rg ";
         SED = "| sed -E";
+        T = "| tee ";
         WC = "| wc -l";
         X = "| xargs ";
         Y = " | yq";

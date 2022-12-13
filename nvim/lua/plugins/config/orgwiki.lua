@@ -4,6 +4,7 @@ if vimwiki_dir == nil or vimwiki_dir == "" then
 end
 
 require('orgWiki').setup({
-    wiki_path = { vimwiki_dir .. "/orgwiki/" },
-    diary_path = vimwiki_dir .. "/orgwiki/diary",
+    disable_mappings = false,
+    wiki_path = { vimwiki_dir .. "/org/orgwiki/" },
+    diary_path = vimwiki_dir .. "/org/orgwiki/diary",
 })

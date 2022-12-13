@@ -26,6 +26,9 @@
     ];
     brews = [
       "asdf"
+      "pinentry-mac"
+      "podman"
+      "saml2aws"
     ];
   };
 }
