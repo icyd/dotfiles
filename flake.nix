@@ -121,7 +121,7 @@
                 pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
                 modules = [
                     ./nix/modules/home-common.nix
-                    ./nix/users/${username}/home.nix
+                    ./nix/users/aws/home.nix
                 ];
                 extraSpecialArgs = { inherit stateVersion username homeDirectory email nix-colors; };
             };
