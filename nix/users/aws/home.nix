@@ -1,19 +1,5 @@
-{ config, pkgs, lib, nix-colors, email, ... }:
-let
-    DOTFILES = "${config.home.homeDirectory}/.dotfiles";
-    mypkgs = with pkgs; [
-      binutils
-      cmake
-      ccls
-      faas-cli
-      gcc
-      gdb
-      go_1_17
-      gtop
-      vifm
-    ];
-in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email mypkgs; }) //
-{
+{ config, pkgs, lib, email, ... }: {
+
     programs.bat = {
         enable = true;
         config = { theme = "base16"; };
@@ -24,9 +10,23 @@ in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors em
     programs.home-manager.enable = true;
     programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
     programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs; gpgInit = false; };
+
     xdg.configFile = {
-        nvim.source = config.lib.file.mkOutOfStoreSymlink "${DOTFILES}/nvim";
+        nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/nvim";
         "tmux/tmux.remote.conf".source = ../../../tmux/tmux.remote.conf;
         tmuxp.source = ../../../tmux/tmuxp;
     };
+
+    home.packages = with pkgs; [
+      binutils
+      cmake
+      ccls
+      dnsutils
+      faas-cli
+      gcc
+      gdb
+      go_1_17
+      gtop
+      vifm
+    ];
 }

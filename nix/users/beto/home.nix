@@ -1,36 +1,4 @@
-{ config, pkgs, lib, nix-colors, email, ... }:
-let
-    DOTFILES = "${config.home.homeDirectory}/.dotfiles";
-    mypkgs = with pkgs; [
-      binutils
-      cargo
-      cmake
-      chromium
-      ccls
-      dive
-      docker
-      (pkgs.callPackage ../../modules/go/gig/default.nix {})
-      gcc
-      gcc-arm-embedded
-      gdb
-      glibc
-      go_1_18
-      gopass
-      gopass-jsonapi
-      luajit
-      luajitPackages.luarocks
-      kicad-small
-      libreoffice-fresh
-      mosh
-      openocd
-      rustc
-      rust-analyzer
-      sshfs
-      sumneko-lua-language-server
-      vifm
-    ];
-in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors email mypkgs; }) //
-{
+{ pkgs, lib, config, email, ... }: {
     programs.firefox = {
         enable = true;
         profiles.default = {
@@ -62,7 +30,7 @@ in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors em
     xdg.configFile = {
         gammastep.source = ../../../sway/gammastep;
         mako.source = ../../../sway/mako;
-        nvim.source = config.lib.file.mkOutOfStoreSymlink "${DOTFILES}/nvim";
+        nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/nvim";
         sway.source = ../../../sway/sway;
         swaylock.source = ../../../sway/swaylock;
         waybar.source = ../../../sway/waybar;
@@ -71,4 +39,33 @@ in (import ../../modules/home-common.nix { inherit config pkgs lib nix-colors em
         tmuxp.source = ../../../tmux/tmuxp;
         xkb.source = ../../../xkb;
     };
+
+    home.packages = with pkgs; [
+      binutils
+      cargo
+      cmake
+      chromium
+      ccls
+      dive
+      docker
+      (pkgs.callPackage ../../modules/go/gig/default.nix {})
+      gcc
+      gcc-arm-embedded
+      # gdb
+      glibc
+      go_1_18
+      gopass
+      gopass-jsonapi
+      luajit
+      luajitPackages.luarocks
+      kicad-small
+      libreoffice-fresh
+      mosh
+      openocd
+      rustc
+      rust-analyzer
+      sshfs
+      sumneko-lua-language-server
+      vifm
+    ];
 }

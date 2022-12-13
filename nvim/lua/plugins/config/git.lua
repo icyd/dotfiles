@@ -2,8 +2,8 @@ local map = vim.keymap.set
 
 map('n', '<leader>gs', '<cmd>Git<CR>', { desc = 'Git status' })
 map('n', '<leader>gd', '<cmd>Gvdiffsplit!<CR>', { desc = 'Git diff split' })
-map('n', '<leader>gph', '<cmd>Git -c push.default=current push <CR>', { desc = 'Git push to upstream' })
-map('n', '<leader>gpl', '<cmd>Git pull<CR>', { desc = 'Git pull from upstream' })
+map('n', '<leader>gP', '<cmd>Git -c push.default=current push <CR>', { desc = 'Git push to upstream' })
+map('n', '<leader>gp', '<cmd>Git pull<CR>', { desc = 'Git pull from upstream' })
 map('n', '<leader>gh', '<cmd>diffget //2<CR>', { desc = 'Git diff get left' })
 map('n', '<leader>gl', '<cmd>diffget //3<CR>', { desc = 'Git diff get right' })
 
