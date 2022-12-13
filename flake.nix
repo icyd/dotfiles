@@ -13,7 +13,7 @@
             url = "github:lnl7/nix-darwin/master";
             inputs.nixpkgs.follows = "nixpkgs";
         };
-       nix-colors.url = "github:misterio77/nix-colors";
+        nix-colors.url = "github:misterio77/nix-colors";
     };
 
     outputs = { self, ... }@inputs:
@@ -87,6 +87,7 @@
             "beto" = let
                 system = "x86_64-linux";
                 username = "beto";
+                homeDirectory = "/home/${username}";
                 email = "beto.v25@gmail.com";
             in inputs.home-manager.lib.homeManagerConfiguration {
                 pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
@@ -94,12 +95,13 @@
                     ./nix/modules/home-common.nix
                     ./nix/users/${username}/home.nix
                 ];
-                extraSpecialArgs = { inherit stateVersion username email nix-colors; };
+                extraSpecialArgs = { inherit stateVersion username homeDirectory email nix-colors; };
             };
 
             "aj.vazquez" = let
                 system = "aarch64-darwin";
                 username = "aj.vazquez";
+                homeDirectory = "/Users/${username}";
                 email = "avazquez@contractor.ea.com";
             in inputs.home-manager.lib.homeManagerConfiguration {
                 pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
@@ -107,12 +109,13 @@
                     ./nix/modules/home-common.nix
                     ./nix/users/${username}/home.nix
                 ];
-                extraSpecialArgs = { inherit stateVersion username email nix-colors; };
+                extraSpecialArgs = { inherit stateVersion username homeDirectory email nix-colors; };
             };
 
             "aws" = let
                 system = "x86_64-linux";
                 username = "root";
+                homeDirectory = "/${username}";
                 email = "avazquez@contractor.ea.com";
             in inputs.home-manager.lib.homeManagerConfiguration {
                 pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
@@ -120,7 +123,7 @@
                     ./nix/modules/home-common.nix
                     ./nix/users/${username}/home.nix
                 ];
-                extraSpecialArgs = { inherit stateVersion username email nix-colors; };
+                extraSpecialArgs = { inherit stateVersion username homeDirectory email nix-colors; };
             };
         };
     };

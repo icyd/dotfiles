@@ -1,4 +1,4 @@
-{ pkgs, lib, config, stateVersion, username, email, nix-colors, ... }: {
+{ pkgs, lib, config, stateVersion, username, homeDirectory, email, nix-colors, ... }: {
     imports = [
       nix-colors.homeManagerModule
     ];
@@ -6,8 +6,7 @@
     fonts.fontconfig.enable = true;
 
     home = {
-        inherit stateVersion username;
-        homeDirectory = "/home/${username}";
+        inherit stateVersion username homeDirectory;
 
         file = {
             ".editorconfig".source = ../../editorconfig/editorconfig;
