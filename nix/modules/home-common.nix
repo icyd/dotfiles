@@ -54,6 +54,7 @@
           jq
           jdk11
           ledger
+          reckon
           neovim-nightly
           neovim-remote
           nodejs

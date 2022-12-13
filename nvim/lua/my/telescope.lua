@@ -33,10 +33,10 @@ M.project_files = function()
 end
 
 M.find_notes = function()
-    require('telescope.builtin').file_browser({
+    local orgmode_dir = os.getenv('ORGMODE_HOME')
+    require('telescope.builtin').find_files({
             prompt_title = "< Notes >",
-            shorten_path = false,
-            cwd = home .. "/Nextcloud/vimwiki",
+            cwd = orgmode_dir .. "/org",
         })
 end
 

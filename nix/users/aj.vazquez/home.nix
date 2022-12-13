@@ -1,5 +1,5 @@
 { pkgs, lib, config, email, ... }: {
-    home.sessionVars = {
+    home.sessionVariables = {
         LANG = "en_US.UTF-8";
         LC_ALL = "en_US.UTF-8";
     };
@@ -21,10 +21,11 @@
     };
 
     home.packages = with pkgs; [
+      awscli2
       dive
       (pkgs.callPackage ../../modules/go/gig/default.nix {})
       faas-cli
-      go_1_17
+      go_1_18
       gopass
       gopass-jsonapi
       luajit
