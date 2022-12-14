@@ -58,19 +58,6 @@ local function common_on_attach(client, bufnr)
     map("n", "<leader>lq", vim.diagnostic.setqflist, { desc = "diag:set_to_quicklist" })
     map("n", "<leader>ll", vim.diagnostic.setloclist, { desc = "diag:set_to_loclist" })
     map("n", "<leader>lg", vim.diagnostic.open_float, { desc = "diag:open_float" })
-
-    local ok, aerial = pcall(require, 'aerial')
-    if ok then
-        aerial.on_attach(client, bufnr)
-    end
-
-    -- if client.server_capabilities.document_formatting then
-    --     api.nvim_create_autocmd('BufWritePre', {
-    --         buffer = bufnr,
-    --         group = api.nvim_create_augroup('lsp_au', { clear = true }),
-    --         callback = function() vim.lsp.buf.format({ async = false }) end,
-    --     })
-    -- end
 end
 
 local common_flags = {

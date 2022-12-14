@@ -159,9 +159,6 @@ in {
             OMZP::aws \
         as"completion" \
             OMZP::docker/_docker \
-        as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
-          atpull'%atclone' pick"direnv" src"zhook.zsh" \
-            direnv/direnv \
         atload'bindkey "^P" history-substring-search-up;
             bindkey "^N" history-substring-search-down' \
             zsh-users/zsh-history-substring-search \
@@ -194,7 +191,7 @@ in {
     sessionVariables = {
         EDITOR = "nvr --remote-silent";
         VISUAL = "nvr --remote-silent";
-        KUBE_EDITOR = "nvr --remote-tab-silent";
+        KUBE_EDITOR = "nvr --remote-tab-wait-silent";
     };
     shellAliases = {
         cat = "bat";

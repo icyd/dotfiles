@@ -99,7 +99,10 @@ local function plugins(use)
             })
         end,
     }
-    use 'williamboman/mason-lspconfig.nvim'
+    use {
+        'williamboman/mason-lspconfig.nvim',
+        module = 'mason-lspconfig',
+    }
     use 'simrat39/rust-tools.nvim'
     use 'folke/neodev.nvim'
     use {
@@ -114,12 +117,12 @@ local function plugins(use)
     }
     use {
         'neovim/nvim-lspconfig',
-        config = [[ require('plugins.config.lsp') ]]
+        config = [[ require('plugins.config.lsp') ]],
     }
     use {
         'folke/trouble.nvim',
         module_pattern = 'trouble.*',
-        config = [[ require('plugins.config.trouble') ]],
+        config = require('plugins.config.trouble').setup,
     }
     -- Fuzzy finder LSP client
     use {
@@ -130,57 +133,40 @@ local function plugins(use)
                 'ojroques/nvim-lspfuzzy',
                 event = 'BufReadPre',
                 config = function()
-                    require('lspfuzzy').setup {}
-                end
+                    require('lspfuzzy').setup()
+                end,
             }
         },
         config = function()
             vim.cmd([[command! -bang -nargs=* Rg call ]] ..
-                [[fzf#vim#grep('rg --column --line-number --no-heading ]] ..
-                [[--color=always --smart-case -- ]] ..
-                [['.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
+            [[fzf#vim#grep('rg --column --line-number --no-heading ]] ..
+            [[--color=always --smart-case -- ]] ..
+            [['.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
         end
     }
     -- Telescope
     use {
         'nvim-telescope/telescope.nvim',
         branch = '0.1.x',
-        -- cmd = 'Telescope',
-        -- modules_pattern = 'telescope.*',
-        -- keys = { '<leader>f', '<localleader>f', '<leader>g', '<leader>b' },
         requires = {
-            -- 'nvim-lua/popup.nvim',
             {
                 'nvim-telescope/telescope-fzf-native.nvim',
-                after = 'telescope.nvim',
-                run = 'make',
-                config = function()
-                    require('telescope').load_extension('fzf')
-                end
+                module = 'telescope._extensions.fzf',
             },
             {
                 'nvim-telescope/telescope-project.nvim',
-                after = 'telescope.nvim',
-                config = function()
-                    require('telescope').load_extension('project')
-                end
+                module = 'telescope._extensions.project',
             },
             {
                 'nvim-telescope/telescope-file-browser.nvim',
-                after = 'telescope.nvim',
-                config = function()
-                    require('telescope').load_extension('file_browser')
-                end,
+                module = 'telescope._extensions.file_browser',
             },
             {
                 'nvim-telescope/telescope-dap.nvim',
-                after = { 'telescope.nvim', 'nvim-dap' },
-                config = function()
-                    require('telescope').load_extension('dap')
-                end
+                module = 'telescope._extensions.dap',
             },
         },
-        config = [[ require('plugins.config.telescope') ]]
+        config = [[ require('plugins.config.telescope') ]],
     }
     -- Completion
     use {
@@ -206,7 +192,7 @@ local function plugins(use)
             },
             { 'saadparwaiz1/cmp_luasnip', after = { 'LuaSnip', 'nvim-cmp' } },
         },
-        config = [[ require('plugins.config.completion') ]]
+        config = [[ require('plugins.config.completion') ]],
     }
     -- DAP
     use {
@@ -237,13 +223,6 @@ local function plugins(use)
             })
         end,
     }
-    -- use {
-    --     'jiangmiao/auto-pairs',
-    --     event = 'InsertEnter',
-    --     config = function()
-    --         vim.g.AutoPairsFlyMode = 1
-    --     end,
-    -- }
     -- Bracket mapping
     use {
         'tpope/vim-unimpaired',
@@ -266,11 +245,11 @@ local function plugins(use)
         keys = require('utils').get_keys({ 'n', 'o', 'v' }, { { 'a', 'i' }, { 'i', 'I' } }),
     }
     -- Repeat plugins commands
-    use {
-        'tpope/vim-repeat',
-        event = 'BufRead',
-        disable = true,
-    }
+    -- use {
+    --     'tpope/vim-repeat',
+    --     event = 'BufRead',
+    --     disable = true,
+    -- }
     -- Syntax plugins
     use {
         'towolf/vim-helm',
@@ -311,14 +290,14 @@ local function plugins(use)
                 end,
                 command = { 'TSContextEnable', 'TSContextDisable', 'TSContextToggle' },
             },
-            { 'RRethy/nvim-treesitter-textsubjects', event = 'BufRead' },
+            -- { 'RRethy/nvim-treesitter-textsubjects', event = 'BufRead' },
             { 'nvim-treesitter/nvim-treesitter-textobjects', event = 'BufRead' },
             { 'JoosepAlviste/nvim-ts-context-commentstring', event = 'BufRead' },
             {
                 'm-demare/hlargs.nvim',
                 event = 'BufReadPre',
                 config = function()
-                   require('hlargs').setup()
+                    require('hlargs').setup()
                 end,
             },
             --- Rainbow parenthesis
@@ -358,7 +337,7 @@ local function plugins(use)
     -- Git
     use {
         'tpope/vim-fugitive',
-        config = [[ require('plugins.config.git') ]]
+        config = [[ require('plugins.config.git') ]],
     }
     use {
         'lewis6991/gitsigns.nvim',
@@ -367,25 +346,25 @@ local function plugins(use)
             require('gitsigns').setup()
         end,
     }
-    use {
-        "TimUntersberger/neogit",
-        cmd = 'Neogit',
-        config = function()
-            require('neogit').setup({
-                integrations = { diffview = true }
-            })
-        end,
-        setup = function()
-            vim.keymap.set('n', '<leader>gn', '<cmd>Neogit<CR>',
-                { desc = 'Open Neogit' })
-        end,
-        requires = {
-            {
-                'sindrets/diffview.nvim',
-                after = 'neogit',
-            },
-        },
-    }
+    --     -- use {
+    --     --     "TimUntersberger/neogit",
+    --     --     cmd = 'Neogit',
+    --     --     config = function()
+    --     --         require('neogit').setup({
+    --     --             integrations = { diffview = true }
+    --     --         })
+    --     --     end,
+    --     --     setup = function()
+    --     --         vim.keymap.set('n', '<leader>gn', '<cmd>Neogit<CR>',
+    --     --             { desc = 'Open Neogit' })
+    --     --     end,
+    --     --     requires = {
+    --     --         {
+    --     --             'sindrets/diffview.nvim',
+    --     --             after = 'neogit',
+    --     --         },
+    --     --     },
+    --     -- }
     use {
         'ThePrimeagen/git-worktree.nvim',
         module = 'git-worktree',
@@ -416,11 +395,11 @@ local function plugins(use)
         'tpope/vim-abolish',
         cmd = { 'Abolish', 'S' },
         keys = require('utils').get_keys(
-            { 'n', 'o', 'v' },
-            {
-                { 'cr' },
-                { 'c', 'm', '-', '_', 's', 'u', 'U', 'k', '.', '<space>', 't' }
-            }),
+        { 'n', 'o', 'v' },
+        {
+            { 'cr' },
+            { 'c', 'm', '-', '_', 's', 'u', 'U', 'k', '.', '<space>', 't' }
+        }),
     }
     -- Star search in visual mode
     use {
@@ -432,28 +411,28 @@ local function plugins(use)
         'andymass/vim-matchup',
         event = 'CursorMoved',
     }
-    use {
-        'tpope/vim-surround',
-        event = 'InsertEnter',
-        disable = true,
-    }
+    -- use {
+    --     'tpope/vim-surround',
+    --     event = 'InsertEnter',
+    --     disable = true,
+    -- }
     use {
         'kylechui/nvim-surround',
         tag = '*',
         event = 'InsertEnter',
         config = function()
-            require('nvim-surround').setup({})
-        end
+            require('nvim-surround').setup()
+        end,
     }
     -- Session management
-    use {
-        'dhruvasagar/vim-prosession',
-        requires = { 'tpope/vim-obsession' },
-        cmd = { 'Prossesion', 'ProsessionDelete', 'ProsessionClean' },
-        config = function()
-            vim.g.prosession_dir = os.getenv('HOME') .. '/.local/share/nvim/sessions/'
-        end
-    }
+    --     use {
+    --         'dhruvasagar/vim-prosession',
+    --         requires = { 'tpope/vim-obsession' },
+    --         cmd = { 'Prossesion', 'ProsessionDelete', 'ProsessionClean' },
+    --         config = function()
+    --             vim.g.prosession_dir = os.getenv('HOME') .. '/.local/share/nvim/sessions/'
+    --         end
+    --     }
     -- Comment plugin
     use {
         'numToStr/Comment.nvim',
@@ -488,18 +467,18 @@ local function plugins(use)
         end,
     }
     -- Markdown preview
-    use {
-        'iamcco/markdown-preview.nvim',
-        config = function()
-            vim.g.mkdp_echo_preview_url = 1
-            vim.g.mkdp_browser = 'Firefox'
-            vim.g.mkdp_filetypes = { 'markdown', 'pandoc' }
-            -- vim.env.NVIM_MKDP_LOG_FILE = vim.fn.expand('~/mkdp-log.log')
-            -- vim.env.NVIM_MKDP_LOG_LEVEL = 'debug'
-        end,
-        ft = { 'markdown', 'vimwiki', 'pandoc' },
-        run = 'cd app && npm install'
-    }
+    -- use {
+    --     'iamcco/markdown-preview.nvim',
+    --     config = function()
+    --         vim.g.mkdp_echo_preview_url = 1
+    --         vim.g.mkdp_browser = 'Firefox'
+    --         vim.g.mkdp_filetypes = { 'markdown', 'pandoc' }
+    --         -- vim.env.NVIM_MKDP_LOG_FILE = vim.fn.expand('~/mkdp-log.log')
+    --         -- vim.env.NVIM_MKDP_LOG_LEVEL = 'debug'
+    --     end,
+    --     ft = { 'markdown', 'vimwiki', 'pandoc' },
+    --     run = 'cd app && npm install'
+    -- }
     use {
         'dhruvasagar/vim-table-mode',
         keys = { '<leader>tm' },
@@ -523,9 +502,10 @@ local function plugins(use)
         requires = {
             {
                 'akinsho/org-bullets.nvim',
+                after = 'orgmode',
                 config = function()
-                    require('org-bullets').setup({})
-                end
+                    require('org-bullets').setup()
+                end,
             },
             -- {
             --     'ranjithshegde/orgWiki.nvim',
@@ -569,14 +549,6 @@ local function plugins(use)
         'McAuleyPenney/tidy.nvim',
         event = 'BufWritePre',
     }
-    -- use {
-    --     'sickill/vim-pasta',
-    --     keys = { ',p', ',P' },
-    --     config = function()
-    --         vim.g.pasta_paste_before_mapping = ',P'
-    --         vim.g.pasta_paste_after_mapping = ',p'
-    --     end
-    -- }
     use {
         'moll/vim-bbye',
         event = 'BufEnter',
@@ -589,7 +561,9 @@ local function plugins(use)
         'tsandall/vim-rego',
         requires = { { 'sbdchd/neoformat', ft = 'rego' } },
         ft = 'rego',
-        config = require('plugins.config.rego').setup,
+        config = function()
+            require('plugins.config.rego').setup()
+        end,
     }
     use {
         'rhysd/vim-grammarous',
@@ -600,23 +574,23 @@ local function plugins(use)
         -- cmd = { 'TodoQuickFix', 'TodoLocList', 'TodoTrouble', 'TodoTelescope' },
         event = 'BufRead',
         config = function()
-            require('todo-comments').setup {}
+            require('todo-comments').setup()
         end,
     }
-    use {
-        'stevearc/dressing.nvim',
-        event = 'BufReadPre',
-        config = function()
-            require('dressing').setup {
-                input = {
-                    relative = 'editor',
-                },
-                select = {
-                    backend = { 'telescope', 'fzf', 'builtin', },
-                },
-            }
-        end,
-    }
+    --  use {
+    --         'stevearc/dressing.nvim',
+    --         event = 'BufReadPre',
+    --         config = function()
+    --             require('dressing').setup {
+    --                 input = {
+    --                     relative = 'editor',
+    --                 },
+    --                 select = {
+    --                     backend = { 'telescope', 'fzf', 'builtin', },
+    --                 },
+    --             }
+    --         end,
+    --     }
     use {
         'jpalardy/vim-slime',
         keys = { '<C-c><C-c>', '<C-c>v' },
@@ -655,57 +629,47 @@ local function plugins(use)
             vim.keymap.set('n', '<leader>z', require("maximize").toggle)
         end,
     }
-    use 'direnv/direnv.vim'
+    use {
+        'direnv/direnv.vim',
+        event = 'VimEnter',
+    }
     use {
         'stevearc/aerial.nvim',
         config = function()
             require('aerial').setup()
             vim.keymap.set('n', '<leader>xa', '<cmd>AerialToggle!<cr>', { desc = "aerial:toggle" })
         end,
-        module = 'aerial',
     }
-    use {
-        'unblevable/quick-scope',
-        config = function()
-            vim.g.qs_highlight_on_keys = {'f', 'F', 't', 'T'}
-        end,
-    }
+    --     -- use {
+    --     --     'unblevable/quick-scope',
+    --     --     config = function()
+    --     --         vim.g.qs_highlight_on_keys = {'f', 'F', 't', 'T'}
+    --     --     end,
+    --     -- }
     use {
         'ThePrimeagen/harpoon',
-        keys = { '<leader>h' },
+        module = 'harpoon',
         config = function()
-            local function harpoon_goto()
-                if (vim.v.count > 0) then
-                    return require('harpoon.ui').nav_file(vim.v.count)
-                end
-
-                return require('harpoon.ui').nav_next()
-            end
-            require('harpoon').setup({})
-            vim.keymap.set('n', '<leader>hu', require('harpoon.ui').toggle_quick_menu, { desc = 'Harpoon quick menu' })
-            vim.keymap.set('n', '<leader>hU', require('telescope').extensions.harpoon.marks, { desc = 'Harpoon telescope menu' })
-            vim.keymap.set('n', '<leader>hm', require('harpoon.mark').add_file, { desc = 'Harpoon add mark' })
-            vim.keymap.set('n', '<leader>hg', harpoon_goto, { desc = 'Harpoon go to file' })
-            vim.keymap.set('n', '<leader>ht', function() require('harpoon.term').gotoTerminal(vim.v.count1) end, { desc = 'Harpoon go to terminal' })
+            require('harpoon').setup()
         end,
     }
-    use {
-        'kevinhwang91/nvim-ufo',
-        requires = 'kevinhwang91/promise-async',
-        disable = true,
-        event = 'BufReadPre',
-        config = function()
-            local ufo = require("ufo")
-            vim.keymap.set('n', 'zR', ufo.openAllFolds, { desc = 'Open all folds' })
-            vim.keymap.set('n', 'zM', ufo.closeAllFolds, { desc = 'Close all folds' })
-            ufo.setup()
-            -- vim.api.nvim_create_autocmd('FileType', {
-            --     pattern = 'org',
-            --     group = vim.api.nvim_create_augroup('UfoDetachFts', { clear = true }),
-            --     command = 'UfoDetach',
-            -- })
-        end,
-    }
+    --     use {
+    --         'kevinhwang91/nvim-ufo',
+    --         requires = 'kevinhwang91/promise-async',
+    --         disable = true,
+    --         event = 'BufReadPre',
+    --         config = function()
+    --             local ufo = require("ufo")
+    --             vim.keymap.set('n', 'zR', ufo.openAllFolds, { desc = 'Open all folds' })
+    --             vim.keymap.set('n', 'zM', ufo.closeAllFolds, { desc = 'Close all folds' })
+    --             ufo.setup()
+    --             -- vim.api.nvim_create_autocmd('FileType', {
+    --             --     pattern = 'org',
+    --             --     group = vim.api.nvim_create_augroup('UfoDetachFts', { clear = true }),
+    --             --     command = 'UfoDetach',
+    --             -- })
+    --         end,
+    --     }
     use {
         'jamessan/vim-gnupg',
         config = function()

@@ -4,6 +4,10 @@
         LC_ALL = "en_US.UTF-8";
     };
 
+    home.sessionPath = [
+        "/opt/homebrew/bin"
+    ];
+
     programs.alacritty = import ../../modules/alacritty.nix { inherit config; startup_mode = "Fullscreen"; };
     programs.bat = {
         enable = true;
@@ -21,22 +25,23 @@
     };
 
     home.packages = with pkgs; [
-      awscli2
-      dive
-      (pkgs.callPackage ../../modules/go/gig/default.nix {})
-      faas-cli
-      go_1_18
-      gopass
-      gopass-jsonapi
-      luajit
-      luajitPackages.luarocks
-      kind
-      nodejs
-      helmfile
-      mosh
-      rustup
-      rust-analyzer
-      reattach-to-user-namespace
-      wget
+        awscli2
+        dive
+        (pkgs.callPackage ../../modules/go/gig/default.nix {})
+        faas-cli
+        go_1_18
+        gopass
+        gopass-jsonapi
+        luajit
+        luajitPackages.luarocks
+        kind
+        nodejs
+        helmfile
+        mosh
+        rustup
+        rust-analyzer
+        reattach-to-user-namespace
+        saml2aws
+        wget
     ];
 }
