@@ -26,9 +26,15 @@
     ];
     brews = [
       "asdf"
+      "binutils"
+      "coreutils"
+      "findutils"
+      "gnu-sed"
+      "gnu-tar"
       "pinentry-mac"
       "podman"
       "saml2aws"
+      "watch"
     ];
   };
 }

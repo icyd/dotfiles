@@ -3,11 +3,85 @@ local builtin = require('telescope.builtin')
 local my_telescope = require('my.telescope')
 local api, map = vim.api, vim.keymap.set
 
-pcall(require, 'git-worktree')
-pcall(telescope.load_extension, 'aerial')
+local extensions = {}
+if pcall(require, 'aerial') then
+    telescope.load_extension('aerial')
+    extensions['aerial'] = {
+        show_nesting = {
+            ['_'] = false, -- This key will be the default
+            json = true,   -- You can set the option for specific filetypes
+            yaml = true,
+        }
+    }
+end
+
 pcall(telescope.load_extension, 'notify')
-pcall(telescope.load_extension, 'harpoon')
-pcall(telescope.load_extension, 'git_worktree')
+
+if pcall(require, 'harpoon') then
+    telescope.load_extension('harpoon')
+
+    local function harpoon_goto()
+        if (vim.v.count > 0) then
+            return require('harpoon.ui').nav_file(vim.v.count)
+        end
+
+        return require('harpoon.ui').nav_next()
+    end
+
+    map('n', '<leader>hu', require('harpoon.ui').toggle_quick_menu, { desc = 'Harpoon quick menu' })
+    map('n', '<leader>hU', require('telescope').extensions.harpoon.marks, { desc = 'Harpoon telescope menu' })
+    map('n', '<leader>hm', require('harpoon.mark').add_file, { desc = 'Harpoon add mark' })
+    map('n', '<leader>hg', harpoon_goto, { desc = 'Harpoon go to file' })
+    map('n', '<leader>ht', function() require('harpoon.term').gotoTerminal(vim.v.count1) end, { desc = 'Harpoon go to terminal' })
+end
+
+local gwt_ok = pcall(require, 'git-worktree')
+if gwt_ok then
+    telescope.load_extension('git_worktree')
+    map('n', '<leader>gw',
+        telescope.extensions.git_worktree.git_worktrees,
+        { desc = 'Git worktree' })
+    map('n', '<leader>gW',
+        telescope.extensions.git_worktree.create_git_worktree,
+        { desc = 'Create worktree' })
+end
+
+if pcall(require, 'telescope._extensions.fzf') then
+    telescope.load_extension('fzf')
+    extensions['fzf'] = {
+        fuzzy = true,
+        override_generic_sorter = true,
+        override_file_sorter = true,
+        case_mode = 'smart_case',
+    }
+end
+
+if pcall(require, 'telescope._extensions.project') then
+    telescope.load_extension('project')
+    map('n', '<leader>fp', function()
+        telescope.extensions.project.project { display_type = 'full' }
+    end, { desc = 'Projects' })
+    extensions['project'] = {
+        base_dirs = {
+            { path = '~/Projects', max_depth = 5 },
+        },
+        hidden_files = false
+    }
+end
+
+if pcall(require, 'telescope._extensions.file_browser') then
+    telescope.load_extension('file_browser')
+    map('n', '<leader>fb', function()
+        telescope.extensions.file_browser.file_browser()
+    end, { desc = 'Browse files' })
+    extensions['file_browser'] = {
+        hijack_netrw = true,
+    }
+end
+
+if pcall(require, 'telescope._extensions.dap') then
+ telescope.load_extension('dap')
+end
 
 local telescope_mappings = {
     i = {
@@ -38,39 +112,13 @@ telescope.setup {
             find_command = { "fd", "--hidden", "--exclude=.git" },
         },
     },
-    extensions = {
-        fzf = {
-            fuzzy = true,
-            override_generic_sorter = true,
-            override_file_sorter = true,
-            case_mode = 'smart_case',
-        },
-        project = {
-            base_dirs = {
-                { path = '~/Projects', max_depth = 5 },
-            },
-            hidden_files = false
-        },
-        file_browser = {
-            hijack_netrw = true,
-        },
-        aerial = {
-            show_nesting = {
-                ['_'] = false, -- This key will be the default
-                json = true,   -- You can set the option for specific filetypes
-                yaml = true,
-            }
-        }
-    }
+    extensions = extensions,
 }
 
 map('n', '<leader>ff', builtin.find_files, { desc = 'Find files' })
 map('n', '<leader>fl',
     function() builtin.find_files({ cwd = vim.fn.expand('%:p:h') }) end,
     { desc = 'Find files relative current file' })
-map('n', '<leader>fb', function()
-    telescope.extensions.file_browser.file_browser()
-end, { desc = 'Browse files' })
 map('n', '<leader>fg', builtin.current_buffer_fuzzy_find,
     { desc = 'Find in current buffer' })
 map('n', '<leader>fG', builtin.live_grep,
@@ -79,10 +127,6 @@ map('n', '<leader>fh', builtin.help_tags,
     { desc = 'Help tags' })
 map('n', '<leader>fR', builtin.oldfiles,
     { desc = 'Oldfiles' })
--- map('n', '<leader>lA', builtin.lsp_code_actions,
---     { desc = 'Lsp code actions' })
--- map('n', '<leader>lG', builtin.lsp_document_diagnostics,
---     { desc = 'Lsp document diagnostics' })
 map('n', '<leader>b', function()
     builtin.buffers({
         show_all_buffers = true,
@@ -107,13 +151,6 @@ end, { desc = 'Grep current string' })
 map('n', '<leader>fS', function()
     builtin.grep_string({ search = vim.fn.input('Grep for: ') })
 end, { desc = 'Grep string' })
--- map('n', '<leader>fw', telescope.extensions.git_worktree.git_worktrees,
--- { desc = 'Git worktrees' })
--- map('n', '<leader>fW', telescope.extensions.git_worktree.create_git_worktree,
--- { desc = 'Create git worktree' })
-map('n', '<leader>fp', function()
-    telescope.extensions.project.project { display_type = 'full' }
-end, { desc = 'Projects' })
 --
 map('n', '<localleader>fR', builtin.registers,
     { desc = 'Registers' })
@@ -136,12 +173,6 @@ map('n', '<leader>gC', builtin.git_bcommits,
     { desc = 'Git current buffer commits' })
 map('n', '<leader>fi', builtin.treesitter,
     { desc = 'Treesitter' })
-map('n', '<leader>gw',
-    telescope.extensions.git_worktree.git_worktrees,
-    { desc = 'Git worktree' })
-map('n', '<leader>gW',
-    telescope.extensions.git_worktree.create_git_worktree,
-    { desc = 'Create worktree' })
 
 local telescope_au = api.nvim_create_augroup('telescope_au', { clear = true })
 api.nvim_create_autocmd('FileType', {

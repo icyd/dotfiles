@@ -30,7 +30,7 @@
         ];
 
         sessionVariables = {
-            ASDF_DATA_DIR = "${config.xdg.dataHome}/asdf";
+            # ASDF_DATA_DIR = "${config.xdg.dataHome}/asdf";
             BROWSER = "firefox";
             DOTFILES = "$HOME/.dotfiles";
             GOPATH = "$HOME/go";
@@ -38,7 +38,8 @@
             NVIM_SERVER = "/tmp/nvimsocket";
             ORGMODE_HOME = "$HOME/Nextcloud";
             PAGER = "less";
-            PATH = "$ASDF_DATA_DIR/shims:$HOME/.npm-global/bin:$PATH";
+            PATH = "$HOME/.npm-global/bin:$PATH";
+            # PATH = "$ASDF_DATA_DIR/shims:$HOME/.npm-global/bin:$PATH";
             PASSWORD_STORE_GENERATED_LENGTH = 12;
             PY_VENV = "$HOME/.venv";
             VIMWIKI_HOME = "$HOME/Nextcloud";
