@@ -3,8 +3,10 @@ local M = {}
 function M.setup()
 
     local dap = require "dap"
-    local mason_root_dir = vim.fn.stdpath "data" .. "/mason"
-    local extension_path = mason_root_dir .. "/packages/codelldb/extension/"
+    local nix_codelldb = '/nix/store/v0x5l0r5jkh4ljzbi05j4v30ky7nqmg0-vscode-extension-vadimcn-vscode-lldb-1.6.10/share/vscode'
+    -- local install_root_dir = vim.fn.stdpath "data" .. "/mason"
+    -- local extension_path = nix_codelldb .. "/packages/codelldb/extension/"
+    local extension_path = nix_codelldb .. '/extensions/vadimcn.vscode-lldb/'
     local codelldb_path = extension_path .. 'adapter/codelldb'
 
     dap.adapters.codelldb = {
