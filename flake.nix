@@ -3,6 +3,7 @@
     inputs = {
         nixpkgs.url = "github:NixOs/nixpkgs/nixos-22.11";
         nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+        impermanence.url = "github:nix-community/impermanence";
         home-manager = {
             url = "github:nix-community/home-manager/release-22.11";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -45,6 +46,7 @@
             ${host} = inputs.nixpkgs.lib.nixosSystem {
                 inherit system;
                 modules = [
+                    inputs.impermanence.nixosModules.impermanence
                     ({
                         nixpkgs = nixpkgsConfig { inherit system; };
                     })
@@ -92,6 +94,7 @@
             in inputs.home-manager.lib.homeManagerConfiguration {
                 pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
                 modules = [
+                    inputs.impermanence.nixosModules.home-manager.impermanence
                     ./nix/modules/home-common.nix
                     ./nix/users/${username}/home.nix
                 ];
