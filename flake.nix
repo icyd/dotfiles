@@ -20,6 +20,7 @@
     let
         stateVersion = "22.05";
         nix-colors = inputs.nix-colors;
+        awsHosname = "aws-avazquez";
 
         nixpkgsConfig = { system }:
         let
@@ -53,13 +54,31 @@
                 specialArgs = { inherit username stateVersion; };
             };
 
-            aws = inputs.nixpkgs.lib.nixosSystem {
+            ${awsHostname} = let
+                username = "root";
+                homeDirectory = "/${username}";
+                email = "avazquez@contractor.ea.com";
+            in inputs.nixpkgs.lib.nixosSystem {
                 inherit system;
                 modules = [
                     ({
                         nixpkgs = nixpkgsConfig { inherit system; };
                     })
                     ./nix/system/aws/configuration.nix
+                    inputs.home-manager.nixosModules.home-manager
+                    {
+                        home-manager = {
+                            users.${username} = import ./nix/users/aws/home.nix;
+                            sharedModules = [
+                                ./nix/modules/home-common.nix
+                            ];
+                            useGlobalPkgs = true;
+                            extraSpecialArgs = {
+                                inherit stateVersion username homeDirectory email nix-colors;
+                                hostname = awsHostname;
+                            };
+                        };
+                    }
                 ];
                 specialArgs = {
                     inherit username stateVersion;
@@ -108,20 +127,6 @@
                 modules = [
                     ./nix/modules/home-common.nix
                     ./nix/users/${username}/home.nix
-                ];
-                extraSpecialArgs = { inherit stateVersion username homeDirectory email nix-colors; };
-            };
-
-            "aws" = let
-                system = "x86_64-linux";
-                username = "root";
-                homeDirectory = "/${username}";
-                email = "avazquez@contractor.ea.com";
-            in inputs.home-manager.lib.homeManagerConfiguration {
-                pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
-                modules = [
-                    ./nix/modules/home-common.nix
-                    ./nix/users/aws/home.nix
                 ];
                 extraSpecialArgs = { inherit stateVersion username homeDirectory email nix-colors; };
             };
