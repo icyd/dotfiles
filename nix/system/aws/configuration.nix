@@ -1,4 +1,4 @@
-{ config, pkgs, username, stateVersion, modulesPath, ... }: {
+{ config, pkgs, username, stateVersion, modulesPath, hostname, ... }: {
     imports = [ "${modulesPath}/virtualisation/amazon-image.nix" ];
     ec2.hvm = true;
     environment.systemPackages = with pkgs; [
@@ -12,6 +12,7 @@
         wget
         vim
     ];
+    networking.hostName = hostname;
     nix = {
         package = pkgs.nixFlakes;
         extraOptions = ''
