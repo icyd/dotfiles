@@ -58,6 +58,7 @@
           hyperfine
           jq
           jdk11
+          lazygit
           ledger
           reckon
           neovim-nightly
