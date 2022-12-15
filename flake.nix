@@ -21,7 +21,7 @@
     let
         stateVersion = "22.05";
         nix-colors = inputs.nix-colors;
-        awsHosname = "aws-avazquez";
+        awsHostname = "aws-avazquez";
 
         nixpkgsConfig = { system }:
         let
