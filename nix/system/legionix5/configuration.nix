@@ -6,75 +6,24 @@
         blacklistedKernelModules = [ "nouveau" "intel" ];
         initrd = {
             kernelModules = [ "amdgpu" ];
-            postDeviceCommands = pkgs.lib.mkBefore ''
-                mkdir -p /mnt
-
-        # We first mount the btrfs root to /mnt
-        # so we can manipulate btrfs subvolumes.
-                mount -o subvol=/ /dev/mapper/cryptroot /mnt
-
-        # While we're tempted to just delete /root and create
-        # a new snapshot from /root-blank, /root is already
-        # populated at this point with a number of subvolumes,
-        # which makes `btrfs subvolume delete` fail.
-        # So, we remove them first.
-        #
-        # /root contains subvolumes:
-        # - /root/var/lib/portables
-        # - /root/var/lib/machines
-        #
-        # I suspect these are related to systemd-nspawn, but
-        # since I don't use it I'm not 100% sure.
-        # Anyhow, deleting these subvolumes hasn't resulted
-        # in any issues so far, except for fairly
-        # benign-looking errors from systemd-tmpfiles.
-                btrfs subvolume list -o /mnt/nix/@root |
-                cut -f9 -d' ' |
-                while read subvolume; do
-                echo "deleting /$subvolume subvolume..."
-                btrfs subvolume delete "/mnt/$subvolume"
-                done &&
-                echo "deleting /root subvolume..." &&
-                btrfs subvolume delete /mnt/nix/@root
-
-                echo "restoring blank /root subvolume..."
-                btrfs subvolume snapshot /mnt/nix/@root-blank /mnt/nix/@root
-
-        # Once we're done rolling back to a blank snapshot,
-        # we can unmount /mnt and continue on the boot process.
-                umount /mnt
-            '';
+            # postDeviceCommands = pkgs.lib.mkBefore ''
+            #     mkdir -p /mnt
+            #     mount -o subvol=/ /dev/mapper/cryptroot /mnt
+            #     btrfs subvolume list -o /mnt/nix/@root |
+            #     cut -f9 -d' ' |
+            #     while read subvolume; do
+            #     echo "deleting /$subvolume subvolume..."
+            #     btrfs subvolume delete "/mnt/$subvolume"
+            #     done &&
+            #     echo "deleting /root subvolume..." &&
+            #     btrfs subvolume delete /mnt/nix/@root
+            #
+            #     echo "restoring blank /root subvolume..."
+            #     btrfs subvolume snapshot /mnt/nix/@root-blank /mnt/nix/@root
+            #     umount /mnt
+            # '';
         };
-        loader = {
-            systemd-boot.enable = false;
-            efi = {
-                canTouchEfiVariables = true;
-                efiSysMountPoint = "/boot/efi";
-            };
-            grub = {
-                enable = true;
-                version = 2;
-                device = "nodev";
-                efiSupport = true;
-                useOSProber = true;
-                configurationLimit = 20;
-                memtest86.enable = true;
-                extraEntries = ''
-                    menuentry 'Arch Linux' --class arch --class gnu-linux --class gnu --class os {
-                        load_video
-                        set gfxpayload=keep
-                        insmod gzio
-                        insmod part_gpt
-                        insmod fat
-                        search --no-floppy --fs-uuid --set=root 4ECB-CF02
-                        echo    'Loading Linux linux-lts ...'
-                        linux   /vmlinuz-linux-lts root=UUID=62abb064-54c0-4c02-b5f0-5ca57ee8004a rw rootflags=subvol=@ nvidia-drm.modeset=1 luks.name=a1e85fe0-0d91-40c0-ba67-b784fe163998=cryptroot luks.options=discard root=/dev/mapper/cryptroot quiet loglevel=4
-                        echo    'Loading initial ramdisk ...'
-                        initrd  /amd-ucode.img /initramfs-linux-lts.img
-                    }
-                '';
-            };
-        };
+        tmpOnTmpfs = true;
     };
     console = {
         font = "Lat2-Terminus16";
@@ -92,14 +41,16 @@
         ];
         fontconfig.enable = true;
     };
-    environment.etc = {
-        nixos.source = "/persist/etc/nixos";
-        "NetworkManager/system-connections".source = "/persist/etc/NetworkManager/system-connections";
-        adjtime.source = "/persist/etc/adjtime";
-        NIXOS.source = "/persist/etc/NIXOS";
-        machine-id.source = "/persist/etc/machine-id";
-        # passwd.source = "/persist/etc/passwd";
-        # shadow.source = "/persist/etc/shadow";
+    environment.persistence."/persist" = {
+        hideMounts = true;
+        files = [
+            "/etc/machine-id"
+            "/etc/adjtime"
+        ];
+        directories = [
+            "/etc/nixos"
+            "/etc/NetworkManager/system-connections"
+        ];
     };
     environment.systemPackages = with pkgs; [
         binutils
@@ -163,9 +114,11 @@
         interfaces.eno1.useDHCP = true;
         interfaces.wlp4s0.useDHCP = true;
         networkmanager.enable = true;
-        # dhcpcd.extraConfig = "nohook resolv.conf";
-        # networkmanager.dns = "none";
-        # nameservers = [ "192.168.1.8" ];
+        networkmanager.dns = "none";
+        resolvconf.dnsExtensionMechanism = false;
+        dhcpcd.extraConfig = "nohook resolv.conf";
+        nameservers = [ "192.168.1.8" ];
+        # nameservers = [ "127.0.0.1" "::1" ];
         useDHCP = false;
     };
     nix = {
@@ -182,6 +135,7 @@
     services = {
         blueman.enable = true;
         gvfs.enable = true;
+        gnome.at-spi2-core.enable = true;
         xserver = {
             enable = true;
             videoDrivers = [ "amdgpu" ];
@@ -202,11 +156,35 @@
             libinput.enable = true;
         };
         udev.extraRules = (builtins.readFile ./udev.rules);
+        dnscrypt-proxy2 = {
+          enable = true;
+          settings = {
+            ipv6_servers = true;
+            require_dnssec = true;
+
+            sources.public-resolvers = {
+              urls = [
+                "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md"
+                "https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md"
+              ];
+              cache_file = "/var/lib/dnscrypt-proxy2/public-resolvers.md";
+              minisign_key = "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
+            };
+
+            # You can choose a specific set of servers from https://github.com/DNSCrypt/dnscrypt-resolvers/blob/master/v3/public-resolvers.md
+            # server_names = [ ... ];
+          };
+        };
     };
+
+    systemd.services.dnscrypt-proxy2.serviceConfig = {
+      StateDirectory = "dnscrypt-proxy";
+    };
+
     sound.enable = true;
     powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
     users = {
-        mutableUsers = true;
+        mutableUsers = false;
         groups.${username}.gid = 1000;
         users.${username} = {
             isNormalUser = true;
@@ -219,9 +197,8 @@
                 "video"
                 "dialout"
                 "adbusers"
-            ]; # Enable ‘sudo’ for the user.
-            initialHashedPassword = "$6$wxp/3sRBcMHx3fsm$vWVUshizSk1XaZS7gHPKy2NF.LHd.iMZ/o3Ipx0aKWs4Q3GiiPPAf1Abe9Flt7TAdcsTvDlbn5eTYhIzxOa/5/";
-            # passwordFile = "/persist/beto.pass";
+            ];
+            passwordFile = "/persist/passwords/${username}";
         };
     };
     time.timeZone = "Europe/Madrid";
@@ -230,7 +207,6 @@
         enable = true;
         enableSSHSupport = true;
     };
-    # programs.qt5ct.enable = true;
     programs.sway = {
         enable = true;
         wrapperFeatures.gtk = true;
