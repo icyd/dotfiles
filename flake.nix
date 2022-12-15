@@ -77,7 +77,6 @@
                             useGlobalPkgs = true;
                             extraSpecialArgs = {
                                 inherit stateVersion username homeDirectory email nix-colors;
-                                hostname = awsHostname;
                             };
                         };
                     }
@@ -85,6 +84,7 @@
                 specialArgs = {
                     inherit username stateVersion;
                     modulesPath = inputs.nixpkgs + "/nixos/modules";
+                    hostname = awsHostname;
                 };
             };
         };
