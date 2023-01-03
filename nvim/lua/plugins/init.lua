@@ -346,6 +346,14 @@ local function plugins(use)
             require('gitsigns').setup()
         end,
     }
+    use {
+        'akinsho/git-conflict.nvim',
+        tag = '*',
+        event = 'BufReadPre',
+        config = function()
+            require('git-conflict').setup()
+        end,
+    }
     --     -- use {
     --     --     "TimUntersberger/neogit",
     --     --     cmd = 'Neogit',
@@ -425,14 +433,14 @@ local function plugins(use)
         end,
     }
     -- Session management
-    --     use {
-    --         'dhruvasagar/vim-prosession',
-    --         requires = { 'tpope/vim-obsession' },
-    --         cmd = { 'Prossesion', 'ProsessionDelete', 'ProsessionClean' },
-    --         config = function()
-    --             vim.g.prosession_dir = os.getenv('HOME') .. '/.local/share/nvim/sessions/'
-    --         end
-    --     }
+        use {
+            'dhruvasagar/vim-prosession',
+            requires = { 'tpope/vim-obsession' },
+            cmd = { 'Prossesion', 'ProsessionDelete', 'ProsessionClean' },
+            config = function()
+                vim.g.prosession_dir = os.getenv('HOME') .. '/.local/share/nvim/sessions/'
+            end
+        }
     -- Comment plugin
     use {
         'numToStr/Comment.nvim',
@@ -685,7 +693,13 @@ local function plugins(use)
             require 'pandoc'.setup()
         end
     }
-
+    use {
+        'folke/zen-mode.nvim',
+        config = function()
+            require('zen-mode').setup()
+        end,
+        cmd = 'ZenMode',
+    }
 
     if bootstrap then
         packer.sync()
