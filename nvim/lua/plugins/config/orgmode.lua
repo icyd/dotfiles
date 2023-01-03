@@ -12,6 +12,9 @@ orgmode.setup({
         orgmode_dir .. '/org/**/*',
     },
     org_default_notes_file = orgmode_dir .. '/org/refile.org',
+    mappings = {
+        org_return = false,
+    }
     -- org_capture_templates = {
     --     t = {
     --         description = 'Todo',
