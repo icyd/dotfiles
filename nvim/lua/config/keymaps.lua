@@ -1,6 +1,4 @@
 local g, map = vim.g, vim.keymap.set
-
-
 -- Map leader localleader
 g.mapleader = ' '
 g.maplocalleader = [[\]]
@@ -56,23 +54,9 @@ map('n', '<leader>s', '<cmd>mksession<CR>', { desc = 'Save session' })
 
 --map('v', '<C-c>', '"+y', { desc = 'Yank on visual mode' })
 
--- Move between splits
-map('i', '<M-h>', [[<C-\><C-N><C-w>h]], { desc = 'Move left' })
-map('i', '<M-j>', [[<C-\><C-N><C-w>j]], { desc = 'Move down' })
-map('i', '<M-k>', [[<C-\><C-N><C-w>k]], { desc = 'Move up' })
-map('i', '<M-l>', [[<C-\><C-N><C-w>l]], { desc = 'Move right' })
-map('n', '<M-h>', '<C-w>h', { desc = 'Move left' })
-map('n', '<M-j>', '<C-w>j', { desc = 'Move down' })
-map('n', '<M-k>', '<C-w>k', { desc = 'Move up' })
-map('n', '<M-l>', '<C-w>l', { desc = 'Move right' })
-
 -- New split
 map('n', '<leader>-', '<cmd>split<CR>', { desc = 'Split horizontal' })
 map('n', [[<leader>\]], '<cmd>vsplit<CR>', { desc = 'Split vertical' })
-
--- Number increase & decrease
-map('n', '<M-a>', '<C-a>', { desc = 'Increase number' })
-map('n', '<M-x>', '<C-x>', { desc = 'Decrease number' })
 
 -- Moving text
 map('v', '<C-j>', [[:move '>+1<CR>gv=gv]], { desc = 'Move selected down' })
@@ -126,13 +110,3 @@ map('n', '<localleader>ss', '<cmd>GrabServer<CR>',
 
 map('c', '%%', "getcmdtype() == ':' ? expand('%:h').'/' : '%%'",
     { desc = 'Expand to current path', silent = false, expr = true })
-
-
--- local git_cz = vim.api.nvim_create_augroup('git_cz', { clear = true })
--- vim.api.nvim_create_autocmd('FileType', {
---     pattern = 'fugitive,NeogitStatus',
---     group = git_cz,
---     callback = function()
---         vim.keymap.set('n', '<localleader>cc', require('my.toggleterm-cz-cli').git_commit_toggle, { desc = 'Conventional commits' })
---     end,
--- })

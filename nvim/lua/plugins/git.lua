@@ -1,0 +1,73 @@
+return {
+    {
+        'lewis6991/gitsigns.nvim',
+        event = 'BufReadPre',
+        config = {},
+    },
+    {
+        'akinsho/git-conflict.nvim',
+        version = '*',
+        event = 'BufReadPre',
+        config = {},
+    },
+    {
+        'sindrets/diffview.nvim',
+        cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles' },
+        config = {},
+    },
+    {
+        "TimUntersberger/neogit",
+        cmd = 'Neogit',
+        keys = {
+            { '<leader>gn', '<cmd>Neogit<CR>', desc = 'Open Neogit' },
+        },
+        config = function()
+            require('neogit').setup({
+                integrations = { diffview = true }
+            })
+        end,
+        dependencies = {
+            'sindrets/diffview.nvim',
+        },
+    },
+    {
+        'ThePrimeagen/git-worktree.nvim',
+        config = function()
+            local git_worktree = require("git-worktree")
+            git_worktree.setup({})
+            git_worktree.on_tree_change(function(op, metadata)
+                if op == git_worktree.Operations.Switch then
+                    print("Switched from " .. metadata.prev_path .. " to " .. metadata.path)
+                end
+            end)
+        end,
+    },
+    {
+        'tpope/vim-fugitive',
+        keys = {
+            { '<leader>gs', '<cmd>Git<CR>', desc = 'Git status' },
+            { '<leader>gd', '<cmd>Gvdiffsplit!<CR>', desc = 'Git diff split' },
+            { '<leader>gP', '<cmd>Git -c push.default=current push <CR>', desc = 'Git push to upstream' },
+            { '<leader>gp', '<cmd>Git pull<CR>', desc = 'Git pull from upstream' },
+            { '<leader>gh', '<cmd>diffget //2<CR>', desc = 'Git diff get left' },
+            { '<leader>gl', '<cmd>diffget //3<CR>', desc = 'Git diff get right' },
+        },
+        config = function()
+            local fugitive_au = vim.api.nvim_create_augroup('fugitive_au', { clear = true })
+            vim.api.nvim_create_autocmd('BufReadPost', {
+                pattern = 'fugitive://*',
+                group = fugitive_au,
+                command = 'set bufhidden=delete',
+            })
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'fugitive',
+                group = fugitive_au,
+                command = [[if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' ]]..
+                    [[nnoremap <buffer> .. :edit %:h<CR> | endif]]
+            })
+        end,
+    },
+}
+
+
+

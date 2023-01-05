@@ -1,6 +1,5 @@
 local M = {}
 
-
 function M.reload()
     local function get_module_name(file_name)
         local module_name;
@@ -67,7 +66,7 @@ end
 
 local function expand_keys(keys)
     if type(keys) == 'string' then
-        return {keys}
+        return { keys }
     elseif type(keys[1]) == 'string' then
         return keys
     else
@@ -77,20 +76,33 @@ end
 
 function M.get_keys(modes, keys)
     if type(modes) == 'string' then
-        modes = {modes}
+        modes = { modes }
     end
     local combinations = {}
     for _, mode in ipairs(modes) do
         for _, v in ipairs(expand_keys(keys)) do
-            table.insert(combinations, {mode, v})
+            table.insert(combinations, { mode, v })
         end
     end
     return combinations
 end
 
+function M.gen_lazy_keys(modes, keys)
+    if type(modes) == 'string' then
+        modes = { modes }
+    end
+
+    local combinations = {}
+    for _, v in ipairs(expand_keys(keys)) do
+        table.insert(combinations, { v, mode = modes })
+    end
+
+    return combinations
+end
+
 function M.P(v)
     print(vim.inspect(v))
-    return(v)
+    return (v)
 end
 
 if pcall(require, "plenary") then
@@ -100,6 +112,42 @@ if pcall(require, "plenary") then
         reload(name)
         return require(name)
     end
+end
+
+function M.table_merge(into, from)
+    local stack = {}
+    local node1 = into
+    local node2 = from
+    while (true) do
+        for k, v in pairs(node2) do
+            if (type(v) == 'table' and type(node1[k]) == 'table') then
+                table.insert(stack, { node1[k], node2[k] })
+            else
+                node1[k] = v
+            end
+        end
+        if (#stack > 0) then
+            local t = stack[#stack]
+            node1, node2 = t[1], t[2]
+            stack[#stack] = nil
+        else
+            break
+        end
+    end
+    return into
+end
+
+function M.is_empty(val)
+    return val == nil or val == ""
+end
+
+function M.get_buf_option(opt)
+    local ok, buf_opt = pcall(vim.api.nvim_buf_get_option, 0, opt)
+    if ok then
+        return buf_opt
+    end
+
+    return nil
 end
 
 return M
