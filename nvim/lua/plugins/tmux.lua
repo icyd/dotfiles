@@ -1,8 +1,17 @@
-local M = {}
+local M = {
+    'aserowy/tmux.nvim',
+    keys = {
+        '<M-h>',
+        '<M-j>',
+        '<M-k>',
+        '<M-l>',
+    },
+}
 
-function M.setup()
+function M.config()
     local map = vim.keymap.set
-    require('tmux').setup({
+    local tmux = require('tmux')
+    tmux.setup({
         copy_sync = {
             -- enables copy sync and overwrites all register actions to
             -- sync registers *, +, unnamed, and 0 till 9 from tmux in advance
@@ -14,10 +23,10 @@ function M.setup()
         },
     })
 
-    map({ 'i', 'n' }, '<M-h>', require('tmux').move_left)
-    map({ 'i', 'n' }, '<M-j>', require('tmux').move_bottom)
-    map({ 'i', 'n' }, '<M-k>', require('tmux').move_top)
-    map({ 'i', 'n' }, '<M-l>', require('tmux').move_right)
+    map({ 'i', 'n' }, '<M-h>', tmux.move_left)
+    map({ 'i', 'n' }, '<M-j>', tmux.move_bottom)
+    map({ 'i', 'n' }, '<M-k>', tmux.move_top)
+    map({ 'i', 'n' }, '<M-l>', tmux.move_right)
 end
 
 return M
