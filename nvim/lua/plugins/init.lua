@@ -294,7 +294,8 @@ return {
         config = {},
     },
     {
-        'rhysd/vim-grammarous',
+        -- 'rhysd/vim-grammarous',
+        'rodolfoap/vim-grammarous',
         cmd = { 'GrammarousCheck', 'GrammarousReset' }
     },
     {

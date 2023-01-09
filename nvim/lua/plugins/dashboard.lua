@@ -21,7 +21,7 @@ return {
             dashboard.button('n', '  New File          \\ f n', '<cmd>enew <BAR> startinsert<CR>'),
             dashboard.button('l', '鈴 Lazy                    ', '<cmd>Lazy<CR>'),
             dashboard.button('c', '  Config            SPC f v',
-                '<cmd>lua require("utils.telescope").seah_dotfiles()<CR>'),
+                '<cmd>lua require("utils.telescope").search_dotfiles()<CR>'),
             dashboard.button('m', '  Bookmarks         \\ f m', '<cmd>Telescope marks<CR>'),
             dashboard.button('s', '  Load Session      \\ f S', '<cmd>SessionManager load_session<CR>'),
         }
