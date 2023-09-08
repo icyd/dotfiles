@@ -110,3 +110,26 @@ map('n', '<localleader>ss', '<cmd>GrabServer<CR>',
 
 map('c', '%%', "getcmdtype() == ':' ? expand('%:h').'/' : '%%'",
     { desc = 'Expand to current path', silent = false, expr = true })
+
+-- netrw
+-- map('n', '<leader>dd', '<cmd>Lexplore %:p:h<CR>', { desc = 'Open netrw in current file directory' })
+-- map('n', '<leader>da', '<cmd>Lexplore<CR>', { desc = 'Open netrw in current directory' })
+
+-- local netrw_au = vim.api.nvim_create_augroup("Netrw_mapping", {
+--     clear = true,
+-- })
+-- vim.api.nvim_create_autocmd("FileType", {
+--     pattern = "netrw",
+--     group = netrw_au,
+--     callback = function()
+--         print("NETRW!!!")
+--         map('n', 'H', 'u', { buffer = 0, desc = "Go back in history" })
+--         map('n', 'h', '-^', { buffer = 0, desc = "Go up in tree" })
+--         map('n', 'l', '<CR>', { buffer = 0, desc = "Open" })
+--         map('n', 'P', '<C-w>z', { buffer = 0, desc = "Close preview window" })
+--         map('n', 'L', '<CR><cmd>Lexplore<CR>', { buffer = 0, desc = "Open file and close netrw" })
+--         map('n', '<leader>dd', '<cmd>Lexplore<CR>', { buffer = 0, desc = "Close netrw" })
+--         map('n', '<TAB>', 'mf', { buffer = 0, desc = "Toggle mark" })
+--         map('n', '<leader><TAB>', 'mu', { buffer = 0, desc = "Remove all marks" })
+--     end,
+-- })

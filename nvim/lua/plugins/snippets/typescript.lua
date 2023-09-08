@@ -1,5 +1,11 @@
 return {
     s(
+        { trig = "cl" },
+        fmt([[
+console.log({});
+]]       , { i(0) }
+        )),
+    s(
         { trig = "tdesc" },
         fmt([[
 describe('{}', () => {{

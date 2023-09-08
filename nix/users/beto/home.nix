@@ -23,10 +23,11 @@
     programs.gpg.enable = true;
     programs.home-manager.enable = true;
     programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
-    programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs; };
+    programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs config; };
     services = {
         gpg-agent = import ../../modules/services/gpg.nix { pinentryFlavor = "gnome3"; };
         lorri.enable = true;
+        pueue.enable = true;
     };
     xdg.configFile = {
         gammastep.source = ../../../sway/gammastep;

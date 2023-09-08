@@ -2,7 +2,19 @@ return {
     {
         'lewis6991/gitsigns.nvim',
         event = 'BufReadPre',
-        config = {},
+        config = function()
+            local gitsigns = require("gitsigns")
+            local map = vim.keymap.set
+            map('n', ']h', gitsigns.next_hunk, { desc = 'Next Hunk' })
+            map('n', '[h', gitsigns.prev_hunk, { desc = 'Prev Hunk' })
+            map('n', '<leader>gv', gitsigns.preview_hunk, { desc = 'Preview Hunk' })
+            map('n', '<leader>gr', gitsigns.reset_hunk, { desc = 'Reset Hunk' })
+            map('n', '<leader>gR', gitsigns.reset_buffer, { desc = 'Reset Buffer' })
+            map('n', '<leader>gt', gitsigns.stage_hunk, { desc = 'Stage Buffer' })
+            map('n', '<leader>gu', gitsigns.undo_stage_hunk, { desc = 'Undo stage Buffer' })
+            map('n', '<leader>gd', gitsigns.diffthis, { desc = 'Diff' })
+            map('n', '<leader>gD', function() gitsigns.diffthis('~') end, { desc = 'Diff' })
+        end,
     },
     {
         'akinsho/git-conflict.nvim',
@@ -62,12 +74,16 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'fugitive',
                 group = fugitive_au,
-                command = [[if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' ]]..
+                command = [[if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' ]] ..
                     [[nnoremap <buffer> .. :edit %:h<CR> | endif]]
             })
         end,
     },
+    {
+        'kdheepak/lazygit.nvim',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        keys = {
+            { '<leader>gg', '<cmd>LazyGit<CR>', desc = 'LazyGit' },
+        }
+    }
 }
-
-
-

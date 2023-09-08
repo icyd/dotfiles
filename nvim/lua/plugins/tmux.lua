@@ -6,11 +6,13 @@ local M = {
         '<M-k>',
         '<M-l>',
     },
+    dependencies = { 'icyd/zellij.nvim' },
 }
 
 function M.config()
     local map = vim.keymap.set
     local tmux = require('tmux')
+    local zellij = require("zellij")
     tmux.setup({
         copy_sync = {
             -- enables copy sync and overwrites all register actions to
@@ -22,11 +24,40 @@ function M.config()
             redirect_to_clipboard = true,
         },
     })
+    zellij.setup({
+        replaceVimWindowNavigationKeybinds = false,
+        vimTmuxNavigatorKeybinds = false,
+        moveFocusOrTab = false,
+    })
 
-    map({ 'i', 'n' }, '<M-h>', tmux.move_left)
-    map({ 'i', 'n' }, '<M-j>', tmux.move_bottom)
-    map({ 'i', 'n' }, '<M-k>', tmux.move_top)
-    map({ 'i', 'n' }, '<M-l>', tmux.move_right)
+    local function move(dir)
+        if os.getenv('ZELLIJ') then
+            if dir == "left" then
+                return function() zellij.zjNavigate('h') end
+            elseif dir == "bottom" then
+                return function() zellij.zjNavigate('j') end
+            elseif dir == "top" then
+                return function() zellij.zjNavigate('k') end
+            elseif dir == "right" then
+                return function() zellij.zjNavigate('l') end
+            end
+        else
+            if dir == "left" then
+                return tmux.move_left
+            elseif dir == "bottom" then
+                return tmux.move_bottom
+            elseif dir == "top" then
+                return tmux.move_top
+            elseif dir == "right" then
+                return tmux.move_right
+            end
+        end
+    end
+
+    map({ 'i', 'n' }, '<M-h>', move('left'))
+    map({ 'i', 'n' }, '<M-j>', move('bottom'))
+    map({ 'i', 'n' }, '<M-k>', move('top'))
+    map({ 'i', 'n' }, '<M-l>', move('right'))
 end
 
 return M

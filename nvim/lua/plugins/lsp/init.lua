@@ -1,4 +1,5 @@
-local nix_codelldb = '/nix/store/v0x5l0r5jkh4ljzbi05j4v30ky7nqmg0-vscode-extension-vadimcn-vscode-lldb-1.6.10/share/vscode'
+local nix_codelldb =
+'/nix/store/v0x5l0r5jkh4ljzbi05j4v30ky7nqmg0-vscode-extension-vadimcn-vscode-lldb-1.6.10/share/vscode'
 local extension_path = nix_codelldb .. '/extensions/vadimcn.vscode-lldb/'
 local codelldb_path = extension_path .. "adapter/codelldb"
 local liblldb_path = extension_path .. 'lldb/lib/liblldb.so'
@@ -108,7 +109,7 @@ return {
             local nls_au = vim.api.nvim_create_augroup('LspFormatting', {})
             nls.setup({
                 sources = {
-                    builtins.code_actions.eslint_d,
+                    builtins.code_actions.eslint,
                     -- builtins.code_actions.gitsigns,
                     builtins.code_actions.shellcheck,
 
@@ -116,20 +117,24 @@ return {
                         filetypes = { 'gitcommit', 'NeogitCommitMessage' },
                         extra_args = { '--config', vim.fn.expand('~/.commitlintrc.js') }
                     }),
-                    builtins.diagnostics.eslint_d,
-                    builtins.diagnostics.pylint,
-                    builtins.diagnostics.mypy,
+                    builtins.diagnostics.eslint,
+                    builtins.diagnostics.flake8,
+                    builtins.diagnostics.mypy.with({
+                        prefer_local = '.venv/bin',
+                    }),
                     -- builtins.diagnostics.golangci_lint,
                     -- builtins.diagnostics.jsonlint,
                     -- builtins.diagnostics.luacheck,
                     builtins.diagnostics.shellcheck,
                     -- builtins.diagnostics.yamllint,
-
-                    builtins.formatting.eslint_d,
+                    -- openapi
+                    builtins.diagnostics.vacuum,
+                    builtins.formatting.eslint,
                     builtins.formatting.clang_format,
                     builtins.formatting.black,
                     builtins.formatting.isort,
                     builtins.formatting.gofmt,
+                    builtins.formatting.goimports,
                     builtins.formatting.rustfmt,
                     builtins.formatting.terraform_fmt,
                 },
@@ -149,6 +154,7 @@ return {
             -- dotls = {},
             dockerls = {},
             gopls = {},
+            -- hls = {},
             -- graphql = {},
             jdtls = {},
             jsonls = {
@@ -166,7 +172,7 @@ return {
                 },
             },
             html = {},
-            pylsp = {},
+            pyright = {},
             rust_analyzer = {
                 tools = {
                     hover_actions = {
@@ -194,7 +200,7 @@ return {
                 },
             },
             -- solargraph = {},
-            sumneko_lua = {
+            lua_ls = {
                 settings = {
                     Lua = {
                         completion = {
@@ -216,6 +222,7 @@ return {
                     end
                 end,
             },
+            zls = {},
         },
         config = function(plugin)
             require('utils.lsp').on_attach(function(client, buffer)
@@ -240,15 +247,23 @@ return {
                 local server_opts = opts
                 server_opts.flags = plugin.common_flags
                 server_opts.capabilities = capabilities
-                require('lspconfig')[server].setup(server_opts)
+                if server == "rust_analyzer" then
+                    require('rust-tools').setup(server_opts)
+                else
+                    require('lspconfig')[server].setup(server_opts)
+                end
             end
         end,
         dependencies = {
-            { 'folke/neodev.nvim', config = {} },
-            { 'j-hui/fidget.nvim', config = {} },
+            { 'folke/neodev.nvim',       config = {} },
+            { 'j-hui/fidget.nvim',       tag = 'legacy', config = {} },
             { 'smjonas/inc-rename.nvim', config = {} },
             { 'b0o/SchemaStore.nvim' },
             { 'simrat39/rust-tools.nvim' },
+            {
+                'mrcjkb/haskell-tools.nvim',
+                branch = '1.x.x',
+            },
             'mason.nvim',
             {
                 'SmiteshP/nvim-navic',
@@ -262,7 +277,7 @@ return {
             },
             {
                 'williamboman/mason-lspconfig.nvim',
-                config = { automatic_installation = true },
+                config = { automatic_installation = false },
             },
             'hrsh7th/cmp-nvim-lsp',
         },

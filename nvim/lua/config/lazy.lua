@@ -14,7 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local ok, lazy = pcall(require, 'lazy')
 if not ok then
-   error('Error while sourcing lazy.nvim')
+    error('Error while sourcing lazy.nvim')
 end
 
 lazy.setup('plugins', {
@@ -51,3 +51,5 @@ lazy.setup('plugins', {
         },
     },
 })
+
+vim.cmd [[packadd cfilter]]

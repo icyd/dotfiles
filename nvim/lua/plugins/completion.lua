@@ -42,8 +42,8 @@ local function cmp_config()
         local select_func = cmp.select_prev_item
 
         if is_next then
-           key = '<Down>'
-           select_func = cmp.select_next_item
+            key = '<Down>'
+            select_func = cmp.select_next_item
         end
 
         return {
@@ -52,7 +52,7 @@ local function cmp_config()
                     select_func(select_opts)
                 else
                     vim.api.nvim_feedkeys(
-                       vim.api.nvim_replace_termcodes(key, true, true, true),
+                        vim.api.nvim_replace_termcodes(key, true, true, true),
                         'n',
                         true
                     )
@@ -90,45 +90,46 @@ local function cmp_config()
         }, {
             { name = 'path' },
             { name = 'buffer', keyword_length = 5 },
+            { name = 'neorg' },
             { name = 'orgmode' },
-            }),
+        }),
         snippet = {
             expand = function(args)
                 ls.lsp_expand(args.body)
             end,
         },
         mapping = {
-            ['<C-y>'] = cmp.mapping(function()
-                    if cmp.visible() then
-                        cmp.confirm({behavior = cmp.ConfirmBehavior.Insert,
-                            select = true })
-                    elseif ls.choice_active() then
-                        require('luasnip.extras.select_choice')()
-                    else
-                        cmp.complete()
-                    end
-                end, {'i', 'c'}),
-            ['<CR>']  = cmp.mapping({
+            ['<C-y>']   = cmp.mapping(function()
+                if cmp.visible() then
+                    cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert,
+                        select = true })
+                elseif ls.choice_active() then
+                    require('luasnip.extras.select_choice')()
+                else
+                    cmp.complete()
+                end
+            end, { 'i', 'c' }),
+            ['<CR>']    = cmp.mapping({
                 i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
                 c = function(fallback)
                     if cmp.visible() then
                         cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })
                     else
-                       fallback()
+                        fallback()
                     end
                 end,
             }),
-            ['<C-e>'] = cmp.mapping(cmp.mapping.close(), {'i', 'c'}),
-            ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-            ['<C-u>'] = cmp.mapping.scroll_docs(4),
-            ['<C-n>'] = cmp.mapping(next_prev_func(true, { behavior = cmp.SelectBehavior.Select })),
-            ['<C-p>'] = cmp.mapping(next_prev_func(false, { behavior = cmp.SelectBehavior.Select })),
-            ['<C-l>'] = cmp.mapping({
+            ['<C-e>']   = cmp.mapping(cmp.mapping.close(), { 'i', 'c' }),
+            ['<C-d>']   = cmp.mapping.scroll_docs(-4),
+            ['<C-u>']   = cmp.mapping.scroll_docs(4),
+            ['<C-n>']   = cmp.mapping(next_prev_func(true, { behavior = cmp.SelectBehavior.Select })),
+            ['<C-p>']   = cmp.mapping(next_prev_func(false, { behavior = cmp.SelectBehavior.Select })),
+            ['<C-l>']   = cmp.mapping({
                 c = cmp.mapping.complete(),
                 s = ctr_l_func,
                 i = ctr_l_func,
             }),
-            ['<Tab>'] = cmp.mapping(tab_func(1), { 'i', 's' }),
+            ['<Tab>']   = cmp.mapping(tab_func(1), { 'i', 's' }),
             ['<S-Tab>'] = cmp.mapping(tab_func(-1), { 'i', 's' }),
         },
 
@@ -139,7 +140,7 @@ local function cmp_config()
     })
 
     cmp.setup.cmdline(':', {
-        completion = { autocomplete = cmp.TriggerEvent },
+        completion = { autocomplete = false },
         sources = cmp.config.sources({
             { name = 'path' },
             { name = 'cmdline' },
@@ -158,7 +159,7 @@ local function cmp_config()
         }),
     })
 
-    for _, cmd_type in ipairs({'?', '@'}) do
+    for _, cmd_type in ipairs({ '?', '@' }) do
         cmp.setup.cmdline(cmd_type, {
             completion = { autocomplete = false },
             sources = {
@@ -182,7 +183,7 @@ return {
         },
         config = function()
             local snippets_dir = vim.fn.stdpath('config') .. '/lua/plugins/snippets/'
-            require('luasnip').filetype_extend('typescriptreact', {'typescript'})
+            require('luasnip').filetype_extend('typescriptreact', { 'typescript' })
             require('luasnip.loaders.from_lua').lazy_load { paths = snippets_dir }
             require('luasnip.loaders.from_vscode').lazy_load()
             vim.api.nvim_create_user_command('LuaSnipEdit', require('luasnip.loaders.from_lua').edit_snippet_files, {})

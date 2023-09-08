@@ -1,5 +1,5 @@
 -- Requires {{{
-local utils = require("plugins.config.snippets.utils")
+local utils = require("plugins.snippets.utils")
 local rep = require('luasnip.extras').rep
 --}}}
 --
@@ -32,7 +32,7 @@ return {
           use super::*;
           {}
       }}
-    ]],
+    ]]       ,
             i(0)
         )
     ),
@@ -42,9 +42,9 @@ return {
             [[
   #[test]
   fn {}(){}{{
-    {}
+      {}
   }}
-  ]],
+  ]]         ,
             {
                 i(1, "testname"),
                 d(2, result_choices, {}),
@@ -56,17 +56,17 @@ return {
 fn {}(){}{{
     {}
 }}
-]],
-            {
-                i(1, "name"),
-                d(2, result_choices, {}),
-                i(0),
-            }
-        )
+]]   ,
+        {
+            i(1, "name"),
+            d(2, result_choices, {}),
+            i(0),
+        }
+    )
     ),
     s("eq", fmt("assert_eq!({}, {});{}", { i(1), i(2), i(0) })),
     s("sfn", fmt(
-[[
+        [[
 {}{}struct {} {{
     {}
 }}
@@ -77,14 +77,14 @@ impl {} {{
         {}
         }}
     }}
-}}]],
+}}]]     ,
         {
-            c(1, { t"", sn(nil, fmt(
-[[
+            c(1, { t "", sn(nil, fmt(
+                [[
 #[derive({})]
 
-]], { i(1, "Derive") })) }),
-            c(2, { t"", t"pub " }),
+]]               , { i(1, "Derive") })) }),
+            c(2, { t "", t "pub " }),
             i(3, "Name"),
             i(4, "Fields"),
             rep(3),
@@ -95,31 +95,31 @@ impl {} {{
     )),
     s("pln", { t('println!("'), i(0), t('");') }),
     s("fns", fmt(
-[[
+        [[
 {}fn {}({}{}){} {{
     {}
-}}]],
+}}]]     ,
         {
-            c(1, { t"", t"pub " }),
+            c(1, { t "", t "pub " }),
             i(2, "Name"),
-            c(3, { t"&self", t"&mut self" }),
+            c(3, { t "&self", t "&mut self" }),
             i(4),
-            c(5, { t"", sn(nil, { t" -> ", i(1, "Result") })}),
+            c(5, { t "", sn(nil, { t " -> ", i(1, "Result") }) }),
             i(0)
         }
     )),
     s("str", fmt(
-[[
+        [[
 {}{}struct {} {{
     {}
 }}
-]],
+]]       ,
         {
-            c(1, { t"", sn(nil, fmt(
-[[
+            c(1, { t "", sn(nil, fmt(
+                [[
 #[derive({})]
 
-]], { i(1, "Derive") }))}),
+]]               , { i(1, "Derive") })) }),
             -- c(2, { t"", t"pub " }),
             i(2),
             i(3, "Name"),
@@ -127,13 +127,13 @@ impl {} {{
         }
     )),
     s("rexp", fmt(
-[[
+        [[
 pub use {}::{};
-]],
-    {
-        i(1),
-        f(function(args)
-          return utils.upper_camel_case(args[1][1])
-        end, { 1 }),
-    })),
+]]       ,
+        {
+            i(1),
+            f(function(args)
+                return utils.upper_camel_case(args[1][1])
+            end, { 1 }),
+        })),
 }

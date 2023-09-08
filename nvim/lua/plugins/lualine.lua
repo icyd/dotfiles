@@ -8,7 +8,7 @@ local utils = require("utils")
 aux_color = '#ff9e64'
 ok, colors = pcall(require, 'kanagawa.colors')
 if ok then
-    aux_color = colors.setup().co
+    aux_color = colors.setup({ theme = 'wave' }).co
 end
 
 local function get_modified()
@@ -28,7 +28,7 @@ local function get_modified()
         return '' .. ' '
     end
 
-        return ''
+    return ''
 end
 
 local function get_location()

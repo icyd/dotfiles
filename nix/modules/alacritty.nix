@@ -3,7 +3,10 @@
 in {
   enable = true;
   settings = {
-    alt_send_esc = true;
+    # shell = {
+    #     program = "~/.nix-profile/bin/nu";
+    #     args = ["--login" "--interactive"];
+    # };
     bell = {
         animation = "EaseOutExpo";
         duration = 10;
@@ -48,9 +51,11 @@ in {
       # ];
     };
     cursor.style = "Block";
-    font = let fontname = "MesloLGS Nerd Font"; in {
+    # font = let fontname = "MesloLGS Nerd Font"; in {
+    # font = let fontname = "Hack Nerd Font"; in {
+    font = let fontname = "AnonymicePro Nerd Font"; in {
         normal = { family = fontname; };
-        size = 13;
+        size = 15;
     };
     key_bindings = [
       {
@@ -146,6 +151,11 @@ in {
           mods = "Control";
           chars = "\\x1d";
       }
+      {
+          key = "E";
+          mods = "Command";
+          chars = "\\x1b\\x65";
+      }
     ];
     live_config_reload = true;
     mouse = { hide_when_typing = true; };
@@ -157,6 +167,7 @@ in {
         inherit startup_mode;
         decorations = "none";
         padding = { x = 5; y = 5; };
+        option_as_alt = "Both";
     };
   };
 }

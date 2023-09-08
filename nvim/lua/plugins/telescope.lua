@@ -13,7 +13,9 @@ local M = {
             require('telescope.builtin').find_files()
         end, desc = 'Find files' },
         { '<leader>fl', function()
-            require('telescope.builtin').find_files({ cwd = vim.fn.expand('%:p:h') })
+            require('telescope.builtin').find_files({
+                cwd = string.gsub(vim.fn.expand('%:p:h'), "oil://", "")
+            })
         end, desc = 'Find files relative current file' },
         { '<leader>fg', function()
             require('telescope.builtin').current_buffer_fuzzy_find()
@@ -99,7 +101,7 @@ function M.config()
         extensions['aerial'] = {
             show_nesting = {
                 ['_'] = false, -- This key will be the default
-                json = true,   -- You can set the option for specific filetypes
+                json = true, -- You can set the option for specific filetypes
                 yaml = true,
             }
         }
@@ -109,20 +111,6 @@ function M.config()
 
     if pcall(require, 'harpoon') then
         telescope.load_extension('harpoon')
-
-        local function harpoon_goto()
-            if (vim.v.count > 0) then
-                return require('harpoon.ui').nav_file(vim.v.count)
-            end
-
-            return require('harpoon.ui').nav_next()
-        end
-
-        map('n', '<leader>hu', require('harpoon.ui').toggle_quick_menu, { desc = 'Harpoon quick menu' })
-        map('n', '<leader>hU', require('telescope').extensions.harpoon.marks, { desc = 'Harpoon telescope menu' })
-        map('n', '<leader>hm', require('harpoon.mark').add_file, { desc = 'Harpoon add mark' })
-        map('n', '<leader>hg', harpoon_goto, { desc = 'Harpoon go to file' })
-        map('n', '<leader>ht', function() require('harpoon.term').gotoTerminal(vim.v.count1) end, { desc = 'Harpoon go to terminal' })
     end
 
     local gwt_ok = pcall(require, 'git-worktree')
@@ -134,6 +122,12 @@ function M.config()
         map('n', '<leader>gW',
             telescope.extensions.git_worktree.create_git_worktree,
             { desc = 'Create worktree' })
+    end
+
+    local lazygit_ok = pcall(require, 'lazygit')
+    if lazygit_ok then
+        telescope.load_extension('lazygit')
+        map('n', '<localleader>gg', require('telescope').extensions.lazygit.lazygit, { desc = 'Lazygit' })
     end
 
     if pcall(require, 'telescope._extensions.fzf') then
@@ -159,15 +153,15 @@ function M.config()
         }
     end
 
-    if pcall(require, 'telescope._extensions.file_browser') then
-        telescope.load_extension('file_browser')
-        map('n', '<leader>fb', function()
-            telescope.extensions.file_browser.file_browser()
-        end, { desc = 'Browse files' })
-        extensions['file_browser'] = {
-            hijack_netrw = true,
-        }
-    end
+    -- if pcall(require, 'telescope._extensions.file_browser') then
+    --     telescope.load_extension('file_browser')
+    --     map('n', '<leader>fb', function()
+    --         telescope.extensions.file_browser.file_browser()
+    --     end, { desc = 'Browse files' })
+    --     extensions['file_browser'] = {
+    --         hijack_netrw = false,
+    --     }
+    -- end
 
     if pcall(require, 'telescope._extensions.dap') then
         telescope.load_extension('dap')
