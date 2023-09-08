@@ -11,11 +11,12 @@
     ];
     delta.enable = true;
     extraConfig = {
+        push.default = "current";
         core = {
-            editor = "nvr --remote-wait-silent";
+            editor = "nvim";
         };
         diff = {
-            tool = "nvr";
+            tool = "nvim";
         };
         difftool.nvim = {
             cmd = "nvim -d $LOCAL $REMOTE";

@@ -1,4 +1,4 @@
-{ lib, pkgs, gpgInit ? true }:
+{ lib, pkgs, config, gpgInit ? true }:
 let
     envExtraGPG = if !gpgInit then "" else ''
         # Bind gpg-agent to this TTY if gpg commands are used.
@@ -8,7 +8,10 @@ let
         ${pkgs.gnupg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null
         export SSH_AUTH_SOCK=$(${pkgs.gnupg}/bin/gpgconf --list-dirs agent-ssh-socket)
     '';
-
+    zellijConfigDir = if pkgs.stdenv.isDarwin then
+        "${config.home.homeDirectory}/Library/Application Support/org.Zellij-Contributors.Zellij"
+    else
+        "${config.xdg.configHome}/zellij";
 in {
     enable = true;
     autocd = true;
@@ -17,13 +20,14 @@ in {
     enableSyntaxHighlighting = false;
     defaultKeymap = "viins";
     dirHashes = {
-        docs = "$HOME/Documents";
-        dot  = "$HOME/.dotfiles";
-        dw   = "$HOME/Downloads";
-        ea   = "$HOME/Projects/ea";
-        nex  = "$HOME/Nextcloud";
-        nix  = "$HOME/.dotfiles/nix";
-        pj   = "$HOME/Projects";
+        docs  = "$HOME/Documents";
+        dot   = "$HOME/.dotfiles";
+        dw    = "$HOME/Downloads";
+        ea    = "$HOME/Projects/ea";
+        nex   = "$HOME/Nextcloud";
+        drop  = "$HOME/Dropbox";
+        nix   = "$HOME/.dotfiles/nix";
+        pj    = "$HOME/Projects";
     };
     envExtra = ''
         setopt no_global_rcs
@@ -66,6 +70,7 @@ in {
       zle -N edit-command-line
 
       bindkey '^h' backward-delete-char
+      bindkey '^k' backward-kill-line
       bindkey '^w' backward-kill-word
       bindkey -v '^L' clear-scrollback-and-screen
       bindkey '^[[Z' reverse-menu-complete
@@ -122,33 +127,27 @@ in {
           openssl rsa -noout -text -in "$@"
       }
 
-      # nvim_client() {
-      #   NVIM_SERVER="''${NVIM_SERVER:-/tmp/nvimsocket}"
-      #   PARAMS=()
-      #   FILES_P=()
-      #   for p in "$@"; do
-      #       if [[ "$p" == -* ]]; then
-      #           PARAMS+=("$p")
-      #       elif [[ "$p" != ~* ]] && [[ "$p" != /* ]]; then
-      #           FILES_P+=("$(pwd)/$p")
-      #       else
-      #           FILES_P+=("$p")
-      #       fi
-      #   done
-      #   set -- "$PARAMS" "$FILES_P"
-      #   nvim --server "$NVIM_SERVER" "$@"
-      # }
+      nvim_client() {
+        OPTS="''${@:1:$((#-1))}"
+        FILE="''${@:$#}"
+        nvim --server "$NVIM_SERVER" "$OPTS" "$(readlink -qm "$FILE")"
+      }
 
-      [ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
+      # [ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
       zpcompdef g='git'
       autoload -Uz _zinit
       (( ''${+_comps} )) && _comps[zinit]=_zinit
 
+      # zinit light-mode for \
+        # depth"1" \
+        #  romkatv/powerlevel10k \
       zinit light-mode for \
-        depth"1" \
-          romkatv/powerlevel10k \
+        as"command" from"gh-r" \
+          atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
+          atpull"%atclone" src"init.zsh" \
+            starship/starship \
         pick"zsh-lazyload.zsh" \
             qoomon/zsh-lazyload
 
@@ -204,30 +203,41 @@ in {
         krrdep = "kubectl rollout restart deployment";
         krrds = "kubectl rollout restart daemonset";
         krrsts = "kubectl rollout restart statefulset";
-        l = "ls -lbF";
-        la = "ls -lbhHigUmuSa";
-        ldr = "gpg -d $LEDGER_HOME/journals/journal.ledger.gpg | ledger --pedantic --file $LEDGER_HOME/main.ledger --file -";
-        hldr = "ldr print | hledger -f-";
-        ldre = "ldr --exchange EUR";
-        ldru = "ldr --exchange USD";
-        li = "cd_in";
-        ll = "ls -la";
-        llm = "ll --sort=modified";
-        lo = "cd .. && l";
-        ls = "exa";
-        lS = "exa -1";
-        lx = "ls -lbhHigUmuSa@";
-        g = "git";
-        # nvr = "nvim --listen $NVIM_SERVER";
-        ncl = "nvr -s";
-        n = "nvr --remote-silent";
-        ns = "nvr -so";
-        nv = "nvr -sO";
+        l = "exa";
+        l1 = "exa -1";
+        lb = "exa -lb";
+        ll = "exa -la";
+        llm = "exa -la --sort=modified";
+        lx = "exa -lbhHigUmuSa@";
+        la = "exa -lbhHigUmuSa";
+        # l = "ls -lbF";
+        # la = "ls -lbhHigUmuSa";
+        # ldr = "gpg -d $LEDGER_HOME/journals/journal.ledger.gpg | ledger --pedantic --file $LEDGER_HOME/main.ledger --file -";
+        # hldr = "ldr print | hledger -f-";
+        # ldre = "ldr --exchange EUR";
+        # ldru = "ldr --exchange USD";
+        # li = "cd_in";
+        # ll = "ls -la";
+        # llm = "ll --sort=modified";
+        # lo = "cd .. && l";
+        # ls = "exa";
+        # lS = "exa -1";
+        # lx = "ls -lbhHigUmuSa@";
+        gi = "git";
+        nvr = "nvim --listen $NVIM_SERVER";
+        n = "nvim_client --remote-silent";
+        nt = "nvim_client --remote-tab-silent";
+        # ncl = "nvr -s";
+        # ns = "nvr -so";
+        # nv = "nvr -sO";
         o = "own_pop";
         p = "own_push";
         svim = "sudo -E $EDITOR";
         tree = "exa --tree";
         tx = "tmuxp_fzf";
+        zj = "zellij";
+        zr = "zellij-runner";
+        mini-ci = "zellij action start-or-reload-plugin `file:${zellijConfigDir}/plugins/multitask.wasm`";
     };
     shellGlobalAliases = {
         AWK = "| awk ";

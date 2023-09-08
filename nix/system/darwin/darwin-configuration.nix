@@ -18,17 +18,24 @@
   system.stateVersion = 4;
   homebrew = {
     enable = true;
+    onActivation = {
+        autoUpdate = true;
+        upgrade = true;
+    };
     taps = [
       "homebrew/cask"
     ];
     casks = [
       "gpg-suite"
+      "wireshark"
+      "wezterm"
     ];
     brews = [
       "asdf"
       "binutils"
       "coreutils"
       "findutils"
+      "moreutils"
       "gnu-sed"
       "gnu-tar"
       "pinentry-mac"

@@ -22,3 +22,5 @@ export def-env cd-gitroot [
     let root_path = (git rev-parse --show-toplevel)
     cd $"($root_path)/($path)"
 }
+
+export alias cdr = cd-gitroot

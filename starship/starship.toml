@@ -2,67 +2,75 @@
 symbol = "  "
 
 [buf]
-symbol = " "
+disabled = true
 
 [c]
 symbol = " "
 
 [conda]
-symbol = " "
+disabled = true
+
+[container]
+symbol = '⬢'
 
 [dart]
-symbol = " "
+disabled = true
 
 [directory]
 read_only = " "
 
 [docker_context]
-symbol = " "
+disabled = true
 
 [elixir]
-symbol = " "
+disabled = true
 
 [elm]
-symbol = " "
+disabled = true
 
 [fossil_branch]
-symbol = " "
+disabled = true
 
 [git_branch]
 symbol = " "
+command_timeout = 700
 
 [golang]
 symbol = " "
 
 [guix_shell]
-symbol = " "
+disabled = true
 
 [haskell]
-symbol = " "
+disabled = true
 
 [haxe]
-symbol = "⌘ "
+disabled = true
 
 [hg_branch]
-symbol = " "
+disabled = true
 
 [java]
 symbol = " "
 
 [julia]
-symbol = " "
+disabled = true
 
 [lua]
 symbol = " "
+
+[kubernetes]
+symbol = "☸ "
+disabled = false
 
 [memory_usage]
 symbol = " "
 
 [meson]
-symbol = "喝 "
+disabled = true
 
 [nim]
-symbol = " "
+disabled = true
 
 [nix_shell]
 symbol = " "
@@ -112,13 +120,13 @@ Windows = " "
 symbol = " "
 
 [pijul_channel]
-symbol = "🪺 "
+disabled = true
 
 [python]
 symbol = " "
 
 [rlang]
-symbol = "ﳒ "
+disabled = true
 
 [ruby]
 symbol = " "
@@ -127,7 +135,13 @@ symbol = " "
 symbol = " "
 
 [scala]
-symbol = " "
+disabled = true
 
 [spack]
-symbol = "🅢 "
+disabled = true
+
+[time]
+disabled = false
+
+[zig]
+symbol = '↯ '

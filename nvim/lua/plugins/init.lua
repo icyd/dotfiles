@@ -8,12 +8,7 @@ return {
         lazy = false,
         priority = 1000,
         config = function()
-            local default_colors = require('kanagawa.colors').setup()
-            require('kanagawa').setup({
-                colors = { bg_visual = default_colors.waveBlue2 }
-            })
-            vim.cmd([[colorscheme kanagawa]])
-            vim.cmd([[highlight WinSeparator guibg=None]])
+            vim.cmd([[colorscheme kanagawa-wave]])
         end,
     },
     -- UI
@@ -56,12 +51,18 @@ return {
             winblend = 0.85,
         },
         keys = {
-            { '<localleader>w', '<cmd>HopWord<CR>', desc = 'Hop to word' },
-            { '<localleader>l', '<cmd>HopLine<CR>', desc = 'Hop to line' },
-            { '<localleader>x', '<cmd>HopChar1<CR>', desc = 'Hop to char' },
-            { '<localleader>w', '<cmd>HopChar2<CR>', desc = 'Hop to bigram' },
+            { '<localleader>w', '<cmd>HopWord<CR>',    desc = 'Hop to word' },
+            { '<localleader>l', '<cmd>HopLine<CR>',    desc = 'Hop to line' },
+            { '<localleader>x', '<cmd>HopChar1<CR>',   desc = 'Hop to char' },
+            { '<localleader>w', '<cmd>HopChar2<CR>',   desc = 'Hop to bigram' },
             { '<localleader>n', '<cmd>HopPattern<CR>', desc = 'Hop to pattern' },
         },
+    },
+    {
+        'folke/flash.nvim',
+        event = 'VeryLazy',
+        enabled = false,
+        opts = {},
     },
     -- Editorconfig
     {
@@ -90,6 +91,9 @@ return {
             require('Comment').setup({
                 pre_hook = my_pre_hook,
             })
+
+            vim.keymap.set('n', '<localleader>cc', 'yy<Plug>(comment_toggle_linewise_current)p')
+            vim.keymap.set('x', '<localleader>cc', 'ygv<Plug>(comment_toggle_linewise_visual)`>p')
         end,
     },
     {
@@ -169,6 +173,7 @@ return {
     -- Remove extra spaces
     {
         'McAuleyPenney/tidy.nvim',
+        config = true,
         event = 'BufWritePre',
     },
     -- Close bufffer without closing window
@@ -176,7 +181,7 @@ return {
         'moll/vim-bbye',
         event = 'BufEnter',
         keys = {
-            { '<localleader>q', '<cmd>Bdelete<CR>', desc = 'Remove buffer' },
+            { '<localleader>q', '<cmd>Bdelete<CR>',  desc = 'Remove buffer' },
             { '<localleader>Q', '<cmd>Bdelete!<CR>', desc = 'Remove buffer without saving' },
         },
     },
@@ -262,15 +267,15 @@ return {
             filetypes = { '*', '!lazy' },
             buftype = { '*', '!prompt', '!nofile' },
             user_default_options = {
-                RGB = true, -- #RGB hex codes
-                RRGGBB = true, -- #RRGGBB hex codes
-                names = false, -- 'Name' codes like Blue
-                RRGGBBAA = true, -- #RRGGBBAA hex codes
+                RGB = true,       -- #RGB hex codes
+                RRGGBB = true,    -- #RRGGBB hex codes
+                names = false,    -- 'Name' codes like Blue
+                RRGGBBAA = true,  -- #RRGGBBAA hex codes
                 AARRGGBB = false, -- 0xAARRGGBB hex codes
-                rgb_fn = true, -- CSS rgb() and rgba() functions
-                hsl_fn = true, -- CSS hsl() and hsla() functions
-                css = false, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-                css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+                rgb_fn = true,    -- CSS rgb() and rgba() functions
+                hsl_fn = true,    -- CSS hsl() and hsla() functions
+                css = false,      -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+                css_fn = true,    -- Enable all CSS *functions*: rgb_fn, hsl_fn
                 mode = 'virtualtext',
                 virtualtext = '■',
             },
@@ -278,10 +283,47 @@ return {
     },
     {
         'ThePrimeagen/harpoon',
-        config = {},
+        opts = {},
+        keys = {
+            {
+                '<leader>hm',
+                function() require('harpoon.mark').add_file() end,
+                desc = 'Harpoon add mark',
+
+            },
+            {
+                '<leader>hu',
+                function() require('harpoon.ui').toggle_quick_menu() end,
+                desc = 'Harpoon quick menu',
+            },
+            {
+                '<leader>hU',
+                function() require('telescope').extensions.harpoon.marks() end,
+                desc = 'Harpoon telescope menu',
+            },
+            {
+                '<leader>hg',
+                function()
+                    if (vim.v.count > 0) then
+                        return require('harpoon.ui').nav_file(vim.v.count)
+                    end
+
+                    return require('harpoon.ui').nav_next()
+                end,
+                desc = 'Harpoon go to file',
+            },
+            {
+                '<leader>ht',
+                function() require('harpoon.term').gotoTerminal(vim.v.count1) end,
+                desc = 'Harpoon go to terminal',
+            },
+        },
+
+
     },
     {
         'jamessan/vim-gnupg',
+        event = 'VeryLazy',
         config = function()
             vim.g.GPGPreferArmor = 1
             vim.g.GPGPreferSign = 1
@@ -290,6 +332,7 @@ return {
     },
     {
         'aspeddro/pandoc.nvim',
+        enabled = false,
         cmd = 'Pandoc',
         config = {},
     },
@@ -300,20 +343,59 @@ return {
     },
     {
         'neomake/neomake',
-        cmd = 'Neomake',
+        event = 'VeryLazy',
     },
+    { '/tpope/vim-dispatch' },
+    { 'skywind3000/asyncrun.vim', event = "VeryLazy" },
     {
         'vim-test/vim-test',
-        dependencies = 'neomake/neomake',
         cmd = { 'TestFile', 'TestSuite', 'TestLast', 'TestVisit' },
+        enabled = false,
         config = function()
             local map = vim.keymap.set
             vim.g["test#strategy"] = "neomake"
-            map('n', '<localleader>tn', '<cmd>TestNearest<CR>', { desc = 'Run nearest test' })
-            map('n', '<localleader>tf', '<cmd>TestFile<CR>', { desc = 'Run file tests' })
-            map('n', '<localleader>ts', '<cmd>TestSuite<CR>', { desc = 'Run suite tests' })
-            map('n', '<localleader>tl', '<cmd>TestLast<CR>', { desc = 'Run last test' })
-            map('n', '<localleader>tv', '<cmd>TestVisit<CR>')
+            -- map('n', '<localleader>tn', '<cmd>TestNearest<CR>', { desc = 'Run nearest test' })
+            -- map('n', '<localleader>tf', '<cmd>TestFile<CR>', { desc = 'Run file tests' })
+            -- map('n', '<localleader>ts', '<cmd>TestSuite<CR>', { desc = 'Run suite tests' })
+            -- map('n', '<localleader>tl', '<cmd>TestLast<CR>', { desc = 'Run last test' })
+            -- map('n', '<localleader>tv', '<cmd>TestVisit<CR>')
+        end,
+    },
+    {
+        'nvim-neotest/neotest',
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+            'nvim-treesitter/nvim-treesitter',
+            'antoinemadec/FixCursorHold.nvim',
+            'rouge8/neotest-rust',
+        },
+        keys = {
+            '<localleader>tt',
+            '<localleader>tf',
+            '<localleader>tw',
+            '<localleader>ts',
+            '<localleader>to',
+        },
+        config = function()
+            local map = vim.keymap.set
+            local neotest = require("neotest")
+            neotest.setup({
+                adapters = {
+                    require('neotest-rust'),
+                },
+                quickfix = {
+                    open = true,
+                },
+            })
+            map('n', '<localleader>tt', neotest.run.run, { desc = 'Run nearest tests' })
+            map('n', '<localleader>tf', function()
+                neotest.run.run(vim.fn.expand("%"))
+            end, { desc = 'Run tests in current file' })
+            map('n', '<localleader>tw', function()
+                neotest.watch.toggle(vim.fn.expand("%"))
+            end, { desc = 'Toggle test watch current file' })
+            map('n', '<localleader>ts', neotest.summary.toggle, { desc = 'Toggle test summary window' })
+            map('n', '<localleader>to', neotest.output_pane.toggle, { desc = 'Toggle test output pane window' })
         end,
     },
     -- Improved folding
@@ -373,8 +455,61 @@ return {
     {
         'jpalardy/vim-slime',
         keys = { '<C-c><C-c>', '<C-c>v' },
+        enabled = false,
         config = function()
             vim.g.slime_target = 'tmux'
         end,
     },
+    {
+        'michaelb/sniprun',
+        cmd = { 'SnipRun', 'SnipInfo' },
+        build = 'bash install.sh',
+        keys = {
+            { '<C-c>',  '<Plug>SnipRun',         desc = 'SnipRun',        mode = 'v' },
+            { '<C-c>',  '<Plug>SnipRunOperator', desc = 'SnipRunOperator' },
+            { '<C-c>c', '<Plug>SnipRun',         desc = 'SnipRun' },
+        },
+    },
+    {
+        'direnv/direnv.vim',
+        event = 'VeryLazy',
+    },
+    {
+        'stevearc/oil.nvim',
+        lazy = false,
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            require('oil').setup({})
+        end,
+    },
+    {
+        'vim-pandoc/vim-pandoc',
+        enabled = false,
+        dependencies = { 'vim-pandoc/vim-pandoc-syntax', enabled = false },
+        ft = { 'markdown', 'pandoc' }
+    },
+    {
+        'preservim/vim-markdown',
+        dependencies = 'godlygeek/tabular',
+        ft = 'markdown',
+        config = function()
+            vim.g.vim_markdown_frontmatter = 1
+            vim.g.vim_markdown_strikethrough = 1
+        end,
+    },
+    {
+        'iamcco/markdown-preview.nvim',
+        ft = 'markdown',
+        build = 'bash -c "cd app && npm install"',
+        config = function()
+            vim.g.mkdp_filetypes = { "markdown" }
+        end,
+    },
+    {
+        'mattn/emmet-vim',
+        cmd = { 'EmmetInstall' },
+        config = function()
+            vim.g.user_emmet_install_global = 0
+        end
+    }
 }

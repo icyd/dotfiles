@@ -14,6 +14,17 @@ local swap_next, swap_prev = (function()
     return n, p
 end)()
 
+-- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+--
+-- parser_config.nu = {
+--     install_info = {
+--         url = "https://github.com/nushell/tree-sitter-nu",
+--         files = { "src/parser.c" },
+--         branch = "main",
+--     },
+--     filetype = "nu",
+-- }
+--
 return {
     {
         'nvim-treesitter/playground',
@@ -29,7 +40,7 @@ return {
             vim.cmd([[
             omap     <silent> m :<C-U>lua require('tsht').nodes()<CR>
             xnoremap <silent> m :lua require('tsht').nodes()<CR>
-          ]] )
+          ]])
         end,
     },
     {
@@ -70,6 +81,7 @@ return {
                 },
                 highlight = {
                     enable = true,
+                    disable = { 'markdown' },
                     additional_vim_regex_highlighting = { 'org' },
                 },
                 matchup = {
@@ -109,7 +121,7 @@ return {
                     },
                     selection_modes = {
                         ['@parameter.outer'] = 'v', -- charwise
-                        ['@function.outer'] = 'V', -- linewise
+                        ['@function.outer'] = 'V',  -- linewise
                         ['@class.outer'] = '<c-v>', -- blockwise
                     },
                     move = {
@@ -146,7 +158,7 @@ return {
             { 'RRethy/nvim-treesitter-textsubjects' },
             { 'nvim-treesitter/nvim-treesitter-textobjects' },
             { 'JoosepAlviste/nvim-ts-context-commentstring' },
-            { 'm-demare/hlargs.nvim', config = {} },
+            { 'm-demare/hlargs.nvim',                       config = {} },
             -- {
             --     'nvim-treesitter/nvim-treesitter-context',
             --     config = {},

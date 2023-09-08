@@ -18,9 +18,9 @@ api.nvim_create_autocmd({ 'InsertEnter', 'WinLeave' }, {
 
 local auto_spell = api.nvim_create_augroup('auto_spell', { clear = true })
 api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
-    pattern = { '*.md', '*.txt', '*.pandoc', '*.org' },
+    pattern = { '*.md', '*.txt', '*.pandoc', '*.org', '*.norg', '*.neorg' },
     group = auto_spell,
-    command = 'setlocal spell spelllang=en',
+    command = 'setlocal spell spelllang=en tw=80',
     desc = 'Enable spell on pattern',
 })
 api.nvim_create_autocmd('FileType', {
@@ -77,26 +77,32 @@ api.nvim_create_user_command('Vbuffer', function(args)
     vim.cmd('vert belowright sb ' .. args.args)
 end, { nargs = 1 })
 
+api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+    pattern = '*.nu',
+    command = 'set filetype=nu',
+    group = vim.api.nvim_create_augroup('nu', { clear = true }),
+})
+
 -- Fix conceallevel for json files
 vim.api.nvim_create_autocmd({ 'FileType' }, {
-  pattern = 'json',
-  callback = function()
-    vim.wo.spell = false
-    vim.wo.conceallevel = 0
-  end,
+    pattern = 'json',
+    callback = function()
+        vim.wo.spell = false
+        vim.wo.conceallevel = 0
+    end,
 })
 
 -- create directories when needed, when saving a file
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("auto_create_dir", { clear = true }),
-  callback = function(event)
-    local file = vim.loop.fs_realpath(event.match) or event.match
+    group = vim.api.nvim_create_augroup("auto_create_dir", { clear = true }),
+    callback = function(event)
+        local file = vim.loop.fs_realpath(event.match) or event.match
 
-    vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
-    local backup = vim.fn.fnamemodify(file, ":p:~:h")
-    backup = backup:gsub("[/\\]", "%%")
-    vim.go.backupext = backup
-  end,
+        vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+        local backup = vim.fn.fnamemodify(file, ":p:~:h")
+        backup = backup:gsub("[/\\]", "%%")
+        vim.go.backupext = backup
+    end,
 })
 
 -- Neovim-remote inside nvim when installed inside pyenv

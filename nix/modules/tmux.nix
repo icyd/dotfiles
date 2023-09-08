@@ -61,21 +61,9 @@ in {
                 set -g status-right "#{prefix_highlight}$my_is_keys_off$my_is_zoomed #{sysstat_cpu} | #{sysstat_mem} | #{sysstat_loadavg} | $my_user_host | $my_date $my_battery #{online_status}"
             '';
         }
-        {
-            plugin = online-status;
-            # extraConfig = ''
-            # '';
-        }
-        {
-            plugin = battery;
-            # extraConfig = ''
-            # '';
-        }
-        {
-            plugin = sysstat;
-            # extraConfig = ''
-            # '';
-        }
+        online-status
+        battery
+        sysstat
         {
             plugin = continuum;
             extraConfig = ''
@@ -117,5 +105,6 @@ in {
         logging
         sessionist
         yank
+        extrakto
     ];
 }

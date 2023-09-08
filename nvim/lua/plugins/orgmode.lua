@@ -1,3 +1,7 @@
+local heading_config = {
+    fat_headline_upper_string = "▄",
+    fat_headline_lower_string = "▀"
+}
 return {
     'nvim-orgmode/orgmode',
     keys = { '<leader>oc', '<leader>oa' },
@@ -6,7 +10,26 @@ return {
         {
             'akinsho/org-bullets.nvim',
             config = {},
+            enabled = false,
         },
+        {
+            'lukas-reineke/headlines.nvim',
+            dependencies = 'nvim-treesitter/nvim-treesitter',
+            config = {
+                org = heading_config,
+                norg = heading_config,
+            }
+        },
+        {
+            'ranjithshegde/orgWiki.nvim',
+            config = function()
+                local vimwiki_dir = os.getenv('VIMWIKI_HOME')
+                require('orgWiki').setup {
+                    wiki_path = { vimwiki_dir .. '/vimwiki' },
+                    diary_path = vimwiki_dir .. '/vimwiki/diary',
+                }
+            end,
+        }
     },
     config = function()
         local orgmode_dir = os.getenv('ORGMODE_HOME')
