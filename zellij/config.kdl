@@ -1,0 +1,181 @@
+keybinds {
+    // shared {
+    //     bind "Ctrl b" {
+    //         LaunchOrFocusPlugin "file:/Users/aj.vazquez/Library/Application Support/org.Zellij-Contributors.Zellij/plugins/harpoon.wasm" {
+    //             floating true
+    //         }
+    //     }
+    // }
+    normal {
+        // unbind "Ctrl b"
+        unbind "Ctrl n"
+        unbind "Ctrl p"
+        unbind "Ctrl o"
+        unbind "Ctrl t"
+        unbind "Ctrl h"
+        unbind "Ctrl s"
+        unbind "Ctrl q"
+        bind "Ctrl a" { SwitchToMode "tmux"; }
+    }
+    scroll {
+        bind "/" { SwitchToMode "EnterSearch"; SearchInput 1; }
+    }
+    tmux {
+        // bind "[" { SwitchToMode "Scroll"; }
+        // bind "Ctrl b" { Write 2; SwitchToMode "Normal"; }
+        // bind "\"" { NewPane "Down"; SwitchToMode "Normal"; }
+        // bind "%" { NewPane "Right"; SwitchToMode "Normal"; }
+        // bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+        // bind "c" { NewTab; SwitchToMode "Normal"; }
+        bind "," { SwitchToMode "RenameTab"; }
+        bind "." { SwitchToMode "RenamePane"; }
+        bind "P" { SwitchToMode "Pane"; }
+        bind "T" { SwitchToMode "Tab"; }
+        bind "M" { SwitchToMode "Move"; }
+        bind "R" { SwitchToMode "Resize"; }
+        bind "S" { SwitchToMode "Session"; }
+        bind "w" { ToggleFloatingPanes; SwitchToMode "Normal"; }
+        bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
+        // bind "n" { GoToNextTab; SwitchToMode "Normal"; }
+        // bind "Left" { MoveFocus "Left"; SwitchToMode "Normal"; }
+        // bind "Right" { MoveFocus "Right"; SwitchToMode "Normal"; }
+        // bind "Down" { MoveFocus "Down"; SwitchToMode "Normal"; }
+        // bind "Up" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        // bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
+        // bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
+        // bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
+        // bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        // bind "o" { FocusNextPane; }
+        // bind "d" { Detach; }
+        bind "<" { PreviousSwapLayout; }
+        bind ">" { NextSwapLayout; }
+        bind "Space" { NextSwapLayout; }
+        // bind "x" { CloseFocus; SwitchToMode "Normal"; }
+        bind "-" { NewPane "Down"; SwitchToMode "normal"; }
+        bind r"\" { NewPane "Right"; SwitchToMode "normal"; }
+        bind "b" {
+            Run "bash" "-c" "gopass show -C $(gopass ls --flat | fzf)" {
+                name "gopass"
+                direction "Down"
+                floating true
+                close-on-exit true
+            };
+        }
+    }
+    shared_except "locked" {
+        bind "Alt h" { MoveFocus "Left"; }
+        bind "Alt l" { MoveFocus "Right"; }
+        bind "Alt j" { MoveFocus "Down"; }
+        bind "Alt k" { MoveFocus "Up"; }
+    }
+}
+
+// Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
+// eg. when terminal window with an active zellij session is closed
+// Options:
+//   - detach (Default)
+//   - quit
+//
+// on_force_close "quit"
+
+// Send a request for a simplified ui (without arrow fonts) to plugins
+// Options:
+//   - true
+//   - false (Default)
+//
+simplified_ui false
+
+// Choose the path to the default shell that zellij will use for opening new panes
+// Default: $SHELL
+//
+default_shell "nu"
+
+// Toggle between having pane frames around the panes
+// Options:
+//   - true (default)
+//   - false
+//
+// pane_frames true
+
+// Choose the theme that is specified in the themes section.
+// Default: default
+//
+theme "kanagawa"
+
+// The name of the default layout to load on startup
+// Default: "default"
+//
+default_layout "editor"
+
+// Choose the mode that zellij uses when starting up.
+// Default: normal
+//
+default_mode "locked"
+
+// Toggle enabling the mouse mode.
+// On certain configurations, or terminals this could
+// potentially interfere with copying text.
+// Options:
+//   - true (default)
+//   - false
+//
+// mouse_mode false
+
+// Configure the scroll back buffer size
+// This is the number of lines zellij stores for each pane in the scroll back
+// buffer. Excess number of lines are discarded in a FIFO fashion.
+// Valid values: positive integers
+// Default value: 10000
+//
+// scroll_buffer_size 10000
+
+// Provide a command to execute when copying text. The text will be piped to
+// the stdin of the program to perform the copy. This can be used with
+// terminal emulators which do not support the OSC 52 ANSI control sequence
+// that will be used by default if this option is not set.
+// Examples:
+//
+// copy_command "xclip -selection clipboard" // x11
+// copy_command "wl-copy"                    // wayland
+// copy_command "pbcopy"                     // osx
+
+// Choose the destination for copied text
+// Allows using the primary selection buffer (on x11/wayland) instead of the system clipboard.
+// Does not apply when using copy_command.
+// Options:
+//   - system (default)
+//   - primary
+//
+// copy_clipboard "primary"
+
+// Enable or disable automatic copy (and clear) of selection when releasing mouse
+// Default: true
+//
+// copy_on_select false
+
+// Path to the default editor to use to edit pane scrollbuffer
+// Default: $EDITOR or $VISUAL
+//
+// scrollback_editor "nvim"
+
+// When attaching to an existing session with other users,
+// should the session be mirrored (true)
+// or should each user have their own cursor (false)
+// Default: false
+//
+// mirror_session true
+
+// The folder in which Zellij will look for layouts
+//
+// layout_dir /path/to/my/layout_dir
+
+// The folder in which Zellij will look for themes
+//
+// theme_dir "/path/to/my/theme_dir"
+
+// plugins {
+//     tab-bar { path "tab-bar"; }
+//     status-bar { path "status-bar"; }
+//     strider { path "strider"; }
+// }
+//

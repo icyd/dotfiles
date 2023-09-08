@@ -1,5 +1,0 @@
-hash -d ea=$HOME/Projects/ea
-hash -d dw=$HOME/Downloads
-hash -d pj=$HOME/Projects
-hash -d dot=$HOME/.dotfiles
-

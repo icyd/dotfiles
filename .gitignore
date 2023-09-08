@@ -30,3 +30,5 @@ kitty/theme.conf
 .tags
 **/keymaps
 **/*.xk[mb]
+result
+**/local.*

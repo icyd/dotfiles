@@ -1,0 +1,30 @@
+layout {
+    tab_template name="ui" {
+        pane size=1 borderless=true {
+            plugin location="file:/Users/aj.vazquez/Library/Application Support/org.Zellij-Contributors.Zellij/plugins/zellij-datetime.wasm" {
+                timezone1 "CET/+1"
+                timezone2 "CEST/+2"
+                default_timezone "CEST"
+            }
+        }
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+           plugin location="zellij:status-bar"
+        }
+    }
+    pane_template name="neovim" {
+        command "nu"
+        args "-c" "nvim --listen $env.NVIM_SERVER"
+    }
+
+    ui name="editor" split_direction="vertical" {
+        neovim name="neovim"
+        pane stacked=true {
+            pane
+            pane
+        }
+    }
+}

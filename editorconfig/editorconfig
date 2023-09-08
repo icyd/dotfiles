@@ -1,0 +1,95 @@
+# https://editorconfig.org/
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+charset = utf-8
+
+# Docstrings and comments use max_line_length = 79
+[*.py]
+max_line_length = 79
+
+# Use 2 spaces for the HTML files
+[*.html]
+indent_size = 2
+
+# The JSON files contain newlines inconsistently
+[*.json]
+indent_size = 2
+insert_final_newline = ignore
+
+# The yaml files contain newlines inconsistently
+[*.{yaml,yml}]
+indent_size = 2
+insert_final_newline = ignore
+
+[**/admin/js/vendor/**]
+indent_style = ignore
+indent_size = ignore
+
+# Minified JavaScript files shouldn't be changed
+[**.min.js]
+indent_style = ignore
+insert_final_newline = ignore
+
+# Makefiles always use tabs for indentation
+[Makefile]
+indent_style = tab
+indent_size = 8
+
+# C/C++ indentation
+[*.{c,cpp,h,hpp}]
+indent_style = tab
+indent_size = 8
+
+# Java and related files
+[*.{java,gradle,groovy}]
+indent_style = tab
+indent_size = 4
+
+# Go
+[{go.mod,go.sum,*.go}]
+indent_style = tab
+indent_size = 8
+
+# Ruby
+[*.{rb,gemspec}]
+indent_size = 2
+
+# Rust
+[*.rs]
+indent_style = space
+indent_space = 4
+
+# Javascript, Typescript, JSX, TSX
+[*.{js,ts,jsx,tsx}]
+indent_size = 4
+indent_style = space
+
+# Css, Scss
+[*.{css,scss}]
+indent_size = 2
+
+# PHP
+[*.php]
+indent_size = 4
+
+# Batch files use tabs for indentation
+[*.{bat,sh}]
+indent_style = tab
+
+[docs/**.txt]
+max_line_length = 79
+
+[*.{xml,xsd}]
+max_line_length = off
+end_of_line = lf
+indent_style = space
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+indent_size = 2
