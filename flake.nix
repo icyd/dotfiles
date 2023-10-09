@@ -29,9 +29,16 @@
     let
         stateVersion = "22.05";
         nix-colors = inputs.nix-colors;
-        darwinUsername = "aj.vazquez";
-        darwinEmail = "beto.v25@gmail.com";
-        darwinHostname = "macos";
+        linux = {
+            user = "beto";
+            email = "beto.v25@gmail.com";
+            host = "legionix5";
+        };
+        darwin = {
+            user = "aj.vazquez";
+            email = "beto.v25@gmail.com";
+            host= "darwin";
+        };
 
         nixpkgsConfig = { system }:
         let
@@ -59,8 +66,8 @@
         };
     in {
         nixosConfigurations = let
-            host = "legionix5";
-            username = "beto";
+            host = linux.host;
+            username = linux.user;
             system = "x86_64-linux";
         in {
             ${host} = inputs.nixpkgs.lib.nixosSystem {
@@ -77,6 +84,7 @@
         };
 
         darwinConfigurations = let
+            host = darwin.host;
             system = "aarch64-darwin";
         in {
             "${host}" = inputs.darwin.lib.darwinSystem {
@@ -91,11 +99,11 @@
         };
 
         homeConfigurations = {
-            "beto" = let
+            "${linux.user}" = let
                 system = "x86_64-linux";
-                username = "beto";
+                username = linux.user;
                 homeDirectory = "/home/${username}";
-                email = "beto.v25@gmail.com";
+                email = linux.email;
             in inputs.home-manager.lib.homeManagerConfiguration {
                 pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
                 modules = [
@@ -106,11 +114,11 @@
                 extraSpecialArgs = { inherit stateVersion username homeDirectory email nix-colors; };
             };
 
-            ${darwinHostname} = let
+            "${darwin.user}" = let
                 system = "aarch64-darwin";
-                username = ${darwinUsername};
+                username = darwin.user;
                 homeDirectory = "/Users/${username}";
-                email = ${darwinEmail};
+                email = darwin.email;
             in inputs.home-manager.lib.homeManagerConfiguration {
                 pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
                 modules = [
