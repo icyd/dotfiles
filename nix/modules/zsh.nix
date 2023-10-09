@@ -188,9 +188,9 @@ in {
       # fi
     '';
     sessionVariables = {
-        EDITOR = "nvr --remote-silent";
-        VISUAL = "nvr --remote-silent";
-        KUBE_EDITOR = "nvr --remote-tab-wait-silent";
+        EDITOR = "nvim";
+        VISUAL = "nvim";
+        KUBE_EDITOR = "nvim";
     };
     shellAliases = {
         cat = "bat";

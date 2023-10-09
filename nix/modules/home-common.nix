@@ -107,6 +107,7 @@ in {
             zr = "zellij-runner";
             d = "shells";
             a = "enter";
+            nuwatch = ''hwatch -c -s "nu -c"'';
             mini-ci = "zellij action start-or-reload-plugin `file:${zellijConfigDir}/plugins/multitask.wasm`";
         };
 
@@ -127,11 +128,14 @@ in {
 
     extraConfig = ''
         source ~/.k8s_aliases.nu
-        # # use job.nu
-        use get-weather.nu *
+        # use job.nu
+        use modules/background_task/job.nu *
+        # use get-weather.nu *
+        use modules/weather/get-weather.nu *
         use git-gone.nu *
         use cd-root.nu *
         use k8s.nu *
+        # use modules/kubernetes/kubernetes.nu *
         use certs.nu *
         use local.nu *
     '';
@@ -359,6 +363,7 @@ in {
           carapace
           direnv
           fd
+          fish
           hyperfine
           jq
           jdk11
@@ -384,7 +389,7 @@ in {
           sd
           tree-sitter
           universal-ctags
-          yq-go
+          yq-unstable
           # zellij-unstable
         ] ++ [neovim-patched];
     };

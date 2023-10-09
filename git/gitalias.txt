@@ -150,6 +150,9 @@
   co = checkout
   om = !git checkout $(git head-branch)
   ob = checkout -b
+  obm = "!f(){ \
+      git checkout -b \"$1\" origin/master; \
+  };f"
   omiw = !git checkout $(git head-branch) --ignore-other-worktrees
   cong = checkout --no-guess
 

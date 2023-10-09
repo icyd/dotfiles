@@ -57,7 +57,7 @@ in {
         nodejs
         helmfile
         mosh
-        pueue
+        pueue-unstable
         rustup
         # rust-analyzer
         reattach-to-user-namespace

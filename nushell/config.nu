@@ -65,8 +65,43 @@ let menu_style = {
     description_text: $base04
 }
 
-let carapace_completer = {|spans|
-  carapace $spans.0 nushell $spans | from json
+let carapace_completer = {|spans: list<string>|
+    let expanded_alias = (scope aliases
+        | where name == $spans.0
+        | get -i 0.expansion
+    )
+
+    let spans = if ($expanded_alias != null) {
+        ($spans
+            | skip 1
+            | prepend ($expanded_alias | split words)
+        )
+    } else {
+        $spans
+    }
+
+    carapace $spans.0 nushell $spans
+        | from json
+        | if ($in | default [] | where value =~ '^-.*ERR$' | is-empty) {
+            $in
+        } else {
+            null
+        }
+}
+
+let fish_completer = {|spans|
+    fish --command $'complete "--do-complete=($spans | str join " ")"'
+        | $"value(char tab)description(char newline)" + $in
+        | from tsv --flexible --no-infer
+}
+
+let multiple_completer = {|spans|
+    match $spans.0 {
+        nu => $fish_completer
+        git => $fish_completer
+        asdf => $fish_completer
+        _ => $carapace_completer
+    } | do $in $spans
 }
 
 $env.PWD_STACK = []
@@ -113,7 +148,7 @@ $env.config = {
     external: {
       enable: true
       max_results: 100 # setting it lower can improve completion performance at the cost of omitting some options
-      completer: $carapace_completer
+      completer: $multiple_completer
     }
   }
   cursor_shape: {
@@ -134,12 +169,24 @@ $env.config = {
   render_right_prompt_on_last_line: false # true or false to enable or disable right prompt to be rendered on last line of the prompt.
 
   hooks: {
-    pre_prompt: [{
-      code: "
-        let direnv = (direnv export json | from json)
-            let direnv = if ($direnv | length) == 1 { $direnv } else { {} }
-            $direnv | load-env
-      "
+    pre_prompt: [{||
+        let direnv = (direnv export json | from json | default {})
+        if ($direnv | is-empty) {
+            return
+        }
+        $direnv
+            | items {|key, value|
+                {
+                    key: $key,
+                    value: (if ($key in $env.ENV_CONVERSIONS) {
+                        do ($env.ENV_CONVERSIONS | get $key | get from_string) $value
+                    } else {
+                        $value
+                    }),
+                }
+            }
+            | transpose -ird
+            | load-env
     }]
     pre_execution: [{ null }]
     env_change: {
@@ -205,10 +252,10 @@ $env.config = {
             col_padding: 2
         }
         style: $menu_style
-        source: { |buffer, position|
-            $nu.scope.commands
-            | where name =~ $buffer
-            | each { |it| {value: $it.name description: $it.usage} }
+        source: {|buffer, position|
+            scope commands
+                | where name =~ $buffer
+                | each {|it| {value: $it.name description: $it.usage}}
         }
       }
       {
@@ -220,11 +267,11 @@ $env.config = {
             page_size: 10
         }
         style: $menu_style
-        source: { |buffer, position|
-            $nu.scope.vars
-            | where name =~ $buffer
-            | sort-by name
-            | each { |it| {value: $it.name description: $it.type} }
+        source: {|buffer, position|
+            scope variables
+                | where name =~ $buffer
+                | sort-by name
+                | each {|it| {value: $it.name description: $it.type}}
         }
       }
       {
@@ -241,9 +288,9 @@ $env.config = {
         }
         style: $menu_style
         source: { |buffer, position|
-            $nu.scope.commands
-            | where name =~ $buffer
-            | each { |it| {value: $it.name description: $it.usage} }
+            scope commands
+                | where name =~ $buffer
+                | each {|it| {value: $it.name description: $it.usage}}
         }
       }
   ]
@@ -321,7 +368,7 @@ $env.config = {
       mode: [ vi_normal vi_insert ]
       event: {
         until: [
-            { send: menuright }
+            # { send: menuright }
             { send: menupagenext }
         ]
       }
@@ -333,7 +380,7 @@ $env.config = {
       mode: [ vi_normal vi_insert ]
       event: {
         until: [
-            { send: menuleft }
+            # { send: menuleft }
             { send: menupageprevious }
         ]
       }
