@@ -150,4 +150,23 @@ function M.get_buf_option(opt)
     return nil
 end
 
+--@param table1 object[]
+--@param table2 object[]
+--@return object[] merged
+function M.table_of_array_merge(table1, table2)
+    local merged = {}
+    local keys = vim.fn.uniq(
+        vim.list_extend(vim.tbl_keys(table1), vim.tbl_keys(table2))
+    ) or {}
+
+    for _, k in pairs(keys) do
+        local values1 = vim.tbl_get(table1, k) or {}
+        local values2 = vim.tbl_get(table2, k) or {}
+
+        merged[k] = vim.fn.uniq(vim.list_extend(values1, values2))
+    end
+
+    return merged
+end
+
 return M

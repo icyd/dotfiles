@@ -1,65 +1,104 @@
-def _text [is_cert: bool = false] {
-  if ($is_cert) {
-      $in | openssl x509 -noout -text
-  } else {
-      $in | openssl rsa -noout -text
+def _text [
+    data: string
+    --key (-k): bool = false
+] {
+  if ($key) {
+      return ($data | openssl rsa -noout -text)
   }
+
+  ($data | openssl x509 -noout -text)
 }
 
-export def cert_key_verify [
+export def key_verify [
     cert: path
     key: path
 ] {
-  let cert = (openssl x509 -noout -modulus -in $cert | openssl md5)
-  let key = (openssl rsa -noout -modulus -in $key | openssl md5)
-  if ($cert == $key) {
-    echo "OK\n"
-  } else {
-    echo "ERROR\n"
+  let cert_md5 = (openssl x509 -noout -modulus -in $cert | openssl md5)
+  let key_md5 = (openssl rsa -noout -modulus -in $key | openssl md5)
+  if ($cert_md5 == $key_md5) {
+    return "OK"
   }
+
+  "ERROR"
 }
 
-export def cert_text [
-    cert: path
+export def text [
+    file?: path
+    --key
 ] {
-    open $cert | _text true
-}
+    if ($in != null) {
+        return (_text $in --key $key)
+    } else if ($file != null) {
+        return (_text (open $file) --key $key)
+    }
 
-export def key_text [
-    key: path
-] {
-    open $key | _text
+    error make {
+        msg: "Missing file or pipeline input"
+    }
 }
 
 export def verify [
-    cert: path
-    ca?: path
+    cert_file: path
+    ca_file?: path
 ] {
-    mut result = {openssl verify $cert | complete}
-    if ($ca != null) {
-        $result = {openssl verify -CAfile $ca $cert | complete}
+    let result = if ($ca_file != null) {
+        do {openssl verify -CAfile $ca_file $cert_file} | complete
+    } else {
+        do {openssl verify $cert_file} | complete
     }
 
-    if ((do $result).exit_code == 0) {
-        echo "OK"
-    } else {
-        echo "ERROR"
+    if ($result.exit_code == 0) {
+        return "OK"
     }
+
+    "ERROR"
 }
 
 export def chain_text [
-    cert: path
-    ca?: path
+    cert_file: path
+    ca_file?: path
 ] {
     let temp = (mktemp)
-    if ($ca != null) {
-        cat $cert | save --raw --force $temp
+    if ($ca_file != null) {
+        cat $cert_file | save --raw --force $temp
         echo "\n" | save --raw --append $temp
-        cat $ca | save --raw --append $temp
+        cat $ca_file | save --raw --append $temp
     } else {
-        cat $cert | save --raw --force $temp
+        cat $cert_file | save --raw --force $temp
     }
 
-    openssl crl2pkcs7 -nocrl -certfile $temp | openssl pkcs7 -print_certs -noout -text
+    let result = (openssl crl2pkcs7 -nocrl -certfile $temp
+        | openssl pkcs7 -print_certs -noout -text
+    )
     rm $temp
+    $result
+}
+
+# Unencrypt key file
+export def key_unencrypt [
+    key_file: path,
+    pass_file?: path # If omitted, will look for key_file path suffixed with '_passphrase'
+] {
+
+    let pass = if ($pass_file != null) {
+        open $pass_file | str trim
+    } else {
+        let default_pass_file = $"($key_file)_passphrase"
+        if ($default_pass_file | path exists) {
+            open $default_pass_file | str trim
+        } else {
+            let span = (metadata $pass_file).span
+            error make {
+                msg: $"'pass_file' or ($default_pass_file) required",
+                label: {
+                    text: "Passphrase file not found",
+                    start: $span.start,
+                    end: $span.end,
+                }
+            }
+        }
+    }
+    (openssl rsa -in $key_file -out $"($key_file)_unencrypted"
+        -passin $"pass:($pass)"
+    )
 }

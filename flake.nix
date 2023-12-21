@@ -1,23 +1,16 @@
 {
     description = "IcyD NixOS configuration";
     inputs = {
-        nixpkgs.url = "github:NixOs/nixpkgs/nixos-23.05";
+        nixpkgs.url = "github:NixOs/nixpkgs/nixos-23.11";
 
         nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
         impermanence.url = "github:nix-community/impermanence";
         home-manager = {
-            url = "github:nix-community/home-manager/release-23.05";
-            inputs.nixpkgs.follows = "nixpkgs";
+            url = "github:nix-community/home-manager/release-23.11";
+            # inputs.nixpkgs.follows = "nixpkgs";
         };
         nur.url = "github:nix-community/NUR";
-     #    neovim-nightly-overlay = {
-	    # url = "github:nix-community/neovim-nightly-overlay?rev=c57746e2b9e3b42c0be9d9fd1d765f245c3827b7";
-     #        inputs.nixpkgs.url = "github:nixos/nixpkgs";
-     #    };
-        neovim-nightly-overlay = {
-	    url = "github:nix-community/neovim-nightly-overlay";
-            inputs.nixpkgs.url = "github:nixos/nixpkgs";
-        };
+        neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
         darwin = {
             url = "github:lnl7/nix-darwin/master";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -36,29 +29,22 @@
         };
         darwin = {
             user = "aj.vazquez";
-            email = "beto.v25@gmail.com";
-            host= "darwin";
+            email = "aj.vazquez@globant.com";
+            host= "ES-IT00385";
         };
 
         nixpkgsConfig = { system }:
         let
-            unstable = import inputs.nixpkgs-unstable { inherit system; };
+            unstable = import inputs.nixpkgs-unstable {
+                inherit system;
+                config.allowUnfree = true;
+            };
         in {
             inherit system;
             config.allowUnfree = true;
             overlays = [
                 (self: super: {
-                    ghc-unstable = unstable.ghc;
-                    cabal-install-unstable = unstable.cabal-install;
-                    stack-unstable = unstable.stack;
-                    hsl-unstable = unstable.haskell-language-server;
-                    neovim-unstable = unstable.neovim;
-                    neovim-remote = unstable.neovim-remote;
-                    nushell-unstable = unstable.nushellFull;
-                    pueue-unstable = unstable.pueue;
-                    starship-unstable = unstable.starship;
-                    zellij-unstable = unstable.zellij;
-                    yq-unstable = unstable.yq-go;
+                    inherit unstable;
                 })
                 inputs.neovim-nightly-overlay.overlay
                 inputs.nur.overlay
@@ -74,9 +60,6 @@
                 inherit system;
                 modules = [
                     inputs.impermanence.nixosModules.impermanence
-                    ({
-                        nixpkgs = nixpkgsConfig { inherit system; };
-                    })
                     ./nix/system/${host}/configuration.nix
                 ];
                 specialArgs = { inherit username stateVersion; };
@@ -90,9 +73,6 @@
             "${host}" = inputs.darwin.lib.darwinSystem {
                 inherit system;
                 modules = [
-                    ({
-                        nixpkgs = nixpkgsConfig { system = "aarch64-darwin"; };
-                    })
                     ./nix/system/darwin/darwin-configuration.nix
                 ];
             };

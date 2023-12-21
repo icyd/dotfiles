@@ -6,7 +6,7 @@ local function lines(args, parent, old_state, initial_text)
     local count = tonumber(args[1][1])
     -- Make sure there's a number in args[1].
     if count then
-        for j=1, count do
+        for j = 1, count do
             local iNode
             if old_state and old_state[j] then
                 -- old_text is used internally to determine whether
@@ -18,10 +18,10 @@ local function lines(args, parent, old_state, initial_text)
             else
                 iNode = i(j, initial_text)
             end
-            nodes[2*j-1] = iNode
+            nodes[2 * j - 1] = iNode
 
             -- linebreak
-            nodes[2*j] = t({"",""})
+            nodes[2 * j] = t({ "", "" })
             -- Store insertNode in old_state, potentially overwriting older
             -- nodes.
             old_state[j] = iNode
@@ -37,26 +37,26 @@ end
 
 return {
     s("localreq",
-        fmt('local {} = require("{}")', {
+        fmt([[local {} = require('{}')]], {
             l(l._1:match("[^.]*$"):gsub("[^%a]+", "_"), 1),
             i(1, "module"),
         })
     ),
     s("trig", {
-        t"text: ", i(1), t{"", "copy: "},
+        t "text: ", i(1), t { "", "copy: " },
         d(2, function(args)
-            -- the returned snippetNode doesn't need a position; it's inserted
-            -- "inside" the dynamicNode.
-            return sn(nil, {
-                -- jump-indices are local to each snippetNode, so restart at 1.
-                i(1, args[1])
-            })
-        end,
-            {1})
+                -- the returned snippetNode doesn't need a position; it's inserted
+                -- "inside" the dynamicNode.
+                return sn(nil, {
+                    -- jump-indices are local to each snippetNode, so restart at 1.
+                    i(1, args[1])
+                })
+            end,
+            { 1 })
     }),
     s("trig2", {
         i(1, "1"),
         -- pos, function, argnodes, opts (containing the user_arg).
-        d(2, lines, {1}, {user_args = {"\\nSample Text"}})
+        d(2, lines, { 1 }, { user_args = { "\\nSample Text" } })
     })
 }, nil

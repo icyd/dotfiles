@@ -1,6 +1,6 @@
 { lib, pkgs  }:
 let
-    customTmuxPlugins = pkgs.callPackage ./tmux-custom-plugins.nix {};
+    # customTmuxPlugins = pkgs.callPackage ./tmux-custom-plugins.nix {};
 in {
     enable = true;
     aggressiveResize = true;
@@ -85,13 +85,13 @@ in {
                 set -g @thumbs-alphabet dvorak-homerow
             '';
         }
-        (customTmuxPlugins.tmux-gopass // {
-            extraConfig = ''
-                set -g @gopass-filter-program 'fzf'
-                set -g @gopass-vertical-split-pane-key 'b'
-                set -g @gopass-pane-percentage 20
-            '';
-        })
+        # (customTmuxPlugins.tmux-gopass // {
+        #     extraConfig = ''
+        #         set -g @gopass-filter-program 'fzf'
+        #         set -g @gopass-vertical-split-pane-key 'b'
+        #         set -g @gopass-pane-percentage 20
+        #     '';
+        # })
         better-mouse-mode
         jump
         fzf-tmux-url

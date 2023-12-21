@@ -30,12 +30,11 @@ return {
     {
         'LhKipp/nvim-nu',
         ft = 'nu',
-        -- build = ':TSInstall nu',
+        build = ':TSInstall nu',
         -- enabled = false,
-        config = true,
-        -- config = {
-        --     --     use_lsp_features = true,
-        --     --     all_cmd_names = [[nu -c 'help command | get name| str join "\n"']],
-        --     -- },
+        opts = {
+            use_lsp_features = false,
+            all_cmd_names = [[nu -c 'help command | get name| str join "\n"']],
+        },
     }
 }

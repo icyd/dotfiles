@@ -1,68 +1,45 @@
 use std log
+use certs.nu
+use utils.nu
 
-def kcmd [
+def _kcmd [
     command: string
-    current: bool
-    context?: string
+    query_text?: string
+    --current: bool = false
 ] {
     if ($current) {
         kubectl $command --current
-    } else if ($context != null) {
-        kubectl $command (kubectl $command | fzf --preview-window=:hidden $"--query=($context)")
+    } else if ($query_text != null) {
+        kubectl $command (kubectl $command | fzf --preview-window=:hidden $"--query=($query_text)")
     } else {
         kubectl $command (kubectl $command | fzf --preview-window=:hidden)
     }
 }
 
-export def kcx [context?: string --current (-c)] {
-    if ($in != null) {
-        kcmd ctx $in
+export def kcx [
+    query_text?: string
+    --current (-c)
+] {
+    let q = if ($in != null) {
+        $in
     } else {
-        kcmd ctx $current $context
+        $query_text
     }
+
+    _kcmd ctx $q --current $current
 }
 
-export def kns [context?: string --current (-c)] {
-    if ($in != null) {
-        kcmd ns $in
+export def kns [
+    query_text?: string
+    --current (-c)
+] {
+    let q = if ($in != null) {
+        $in
     } else {
-        kcmd ns $current $context
+        $query_text
     }
-}
 
-def _k_cert_key_verify [] {
-  let data = ($in | from json | get data)
-  let cert = ($data | get "tls.crt" | base64 -d | openssl x509 -noout -modulus | openssl md5)
-  let key = ($data | get "tls.key" | base64 -d | openssl rsa -noout -modulus | openssl md5)
-  if ($cert == $key) {
-    echo "OK\n"
-  } else {
-    echo "ERROR\n"
-  }
-}
-
-def _k_text [is_cert: bool = false] {
-  if ($is_cert) {
-      let data = ($in | from json | get data | get "tls.crt" | base64 -d)
-      $data | openssl x509 -noout -text
-  } else {
-      let data = ($in | from json | get data | get "tls.key" | base64 -d)
-      $data | openssl rsa -noout -text
-  }
-}
-
-def _k_verify [] {
-      let data = ($in | from json | get data)
-      let cert = (mktemp)
-      let bundle = (mktemp)
-      $data | get "tls.crt" | base64 -d | save --raw --append $cert
-      $data | get "ca.crt" | base64 -d | save --raw --append $bundle
-      if ((openssl verify -CAfile $bundle $cert | complete).exit_code == 0) {
-        echo "OK"
-      } else {
-        echo "ERROR"
-      }
-      rm $bundle $cert
+    _kcmd ns $q --current $current
 }
 
 def k_namespace [
@@ -80,7 +57,7 @@ def k_namespace [
         $namespace
     }
 
-    if ($verify and ((kubectl get ns | from ssv | where NAME == $ns | length) == 0)) {
+    if (($verify != null) and ((kubectl get ns | from ssv | where NAME == $ns | length) == 0)) {
         let span = (metadata $namespace).span;
         error make {
             msg: "Error with namespace provided"
@@ -95,14 +72,48 @@ def k_namespace [
     $ns
 }
 
-export def k_cert_key_verify [
+def _k_data [
     secret: string
-    --namespace (-n): string
+    --namespace (-n): bool = false
+    --key
+    --ca-cert
 ] {
-    if ($namespace != null) {
-        kubectl get secret --namespace $namespace $secret -ojson | _k_cert_key_verify
+    let data = if ($namespace != null) {
+        (kubectl get secret --namespace $namespace $secret -ojson
+            | from json
+            | get data
+        )
     } else {
-        kubectl get secret $secret -ojson | _k_cert_key_verify
+        (kubectl get secret $secret -ojson
+            | from json
+            | get data
+        )
+    }
+
+    if ($key) {
+        if ("tls.key" in ($data | columns)) {
+          return ($data."tls.key" | base64 -d)
+        } else if ("key" in ($data | columns)) {
+          return ($data."key" | base64 -d)
+        }
+
+        error make {msg: "no 'tls.key' nor 'key' entry in secret data"}
+    } else if ($ca_cert) {
+        if ("ca.crt" in ($data | columns)) {
+          return ($data."ca.crt" | base64 -d)
+        } else if ("cacert" in ($data | columns)) {
+          return ($data."cacert" | base64 -d)
+        }
+
+        error make {msg: "no 'ca.crt' nor 'cacert' entry in secret data"}
+    } else {
+        if ("tls.crt" in ($data | columns)) {
+            return ($data."tls.crt" | base64 -d)
+        } else if ("cert" in ($data | columns)) {
+            return ($data."cert" | base64 -d)
+        }
+
+        error make {msg: "no 'tls.crt' nor 'cert' entry in secret data"}
     }
 }
 
@@ -110,69 +121,69 @@ export def k_cert_text [
     secret: string
     --namespace (-n): string
 ] {
-    if ($namespace != null) {
-        kubectl get secret --namespace $namespace $secret -ojson | _k_text true
-    } else {
-        kubectl get secret $secret -ojson | _k_text true
-    }
+    _k_data $secret --namespace $namespace | certs text
 }
 
 export def k_key_text [
     secret: string
     --namespace (-n): string
 ] {
-    if ($namespace != null) {
-        kubectl get secret --namespace $namespace $secret -ojson | _k_text
+    _k_data $secret --namespace $namespace --key | certs text --key
+}
+
+export def k_cert_key_verify [
+    secret: string
+    --namespace (-n): string
+] {
+    let cert_file = (mktemp)
+    let key_file = (mktemp)
+    let cert_data = _k_data $secret --namespace $namespace
+    let key_data = _k_data $secret --namespace $namespace --key
+    $cert_data | save --raw --force $cert_file
+    $key_data | save --raw --force $key_file
+    let result = (certs key_verify $cert_file $key_file)
+    rm $cert_file $key_file
+    $result
+}
+
+def _k_cert_cacert [
+    secret: string
+    func: closure
+    --namespace (-n): string
+] {
+    let cert_file = (mktemp)
+    let cert = _k_data $secret --namespace $namespace
+    $cert | save --raw --force $cert_file
+
+    let ca_cert = try {
+        _k_data $secret --namespace $namespace --ca-cert
+    } catch { null }
+
+    let cacert_file = if ($ca_cert != null) {
+        let aux_file = (mktemp)
+        $ca_cert | save --raw --force $aux_file
+        $aux_file
     } else {
-        kubectl get secret $secret -ojson | _k_text
+        null
     }
+
+    let result = do $func $cert_file $cacert_file
+    rm $cert_file $cacert_file
+    $result
 }
 
 export def k_cert_verify [
     secret: string
     --namespace (-n): string
 ] {
-    if ($namespace != null) {
-        kubectl get secret --namespace $namespace $secret -ojson | _k_verify
-    } else {
-        kubectl get secret $secret -ojson | _k_verify
-    }
+    _k_cert_cacert $secret --namespace $namespace  {|cert_file, cacert_file| certs verify $cert_file $cacert_file}
 }
 
 export def k_chain_text [
     secret: string
     --namespace (-n): string
 ] {
-    let temp = (mktemp)
-    if ($namespace != null) {
-        kubectl get secret --namespace $namespace $secret -ojsonpath='{.data.tls\.crt}' | base64 -d | save --raw --force $temp
-        echo "\n" | save --raw --append $temp
-        kubectl get secret --namespace $namespace $secret -ojsonpath='{.data.ca\.crt}' | base64 -d | save --raw --append $temp
-    } else {
-        kubectl get secret $secret -ojsonpath='{.data.tls\.crt}' | base64 -d | save --raw --force $temp
-        echo "\n" | save --raw --append $temp
-        kubectl get secret $secret -ojsonpath='{.data.ca\.crt}' | base64 -d | save --raw --append $temp
-    }
-
-    openssl crl2pkcs7 -nocrl -certfile $temp | openssl pkcs7 -print_certs -noout -text
-    rm $temp
-}
-
-export def kgpodep [
-    deployment: string
-    --namespace (-n): string
-] {
-    mut ns = $namespace
-    if ($ns == null) {
-      $ns = (kns -c | str replace (char newline) "")
-    }
-    let labels = (kubectl get deploy -n $ns $deployment -oyaml |
-        from yaml |
-        get spec.selector.matchLabels |
-        transpose |
-        each {|r| $"($r.column0)=($r.column1)"} | str join ","
-    )
-    kubectl get pods -n $ns -l $labels -ojson | from json | get items
+    _k_cert_cacert $secret --namespace $namespace  {|cert_file, cacert_file| certs chain_text $cert_file $cacert_file}
 }
 
 export def kshark [
@@ -265,20 +276,33 @@ export def ksharkdep [
   }
 }
 
+export def kgpo_from_deploy_with_labels [
+    deployment: string
+    --namespace (-n): string
+] {
+    let ns = (k_namespace $namespace)
+    let labels = (kubectl get deploy -n $ns $deployment -oyaml |
+        from yaml |
+        get spec.selector.matchLabels |
+        transpose key value |
+        utils table_2_string $in
+    )
+    kubectl get pods -n $ns -l $labels -ojson | from json | get items
+}
+
 # Get a random pod with a given label
-export def kgpofl [
-    label: string
+export def kgpo1_from_labels [
+    labels: string
     --namespace (-n): string
 ] {
 
     let ns = (k_namespace $namespace)
-    let pods = (kubectl get pod -n $ns -l $label | from ssv)
-    let selected_row = (((random float) * (($pods | length) - 1)) | math round)
-    $pods | get $selected_row | get NAME
+    let pods = (kubectl get pod -n $ns -l $labels | from ssv)
+    utils random_row $pods | get NAME
 }
 
 # Get current / active ReplicaSet of a given Deployment
-export def kdep2rs [
+export def kg_active_rs [
     deploy: string
     --namespace (-n): string
 ] {
@@ -294,7 +318,7 @@ export def kdep2rs [
 }
 
 # Label all the pods of a given deployment
-export def klabeldeppods [
+export def k_label_pods_from_deploy [
     deploy: string
     labels: string
     --namespace (-n): string
@@ -336,7 +360,7 @@ export def kpfsvc [
         $name
     }
 
-    let svc = if ($all_namespaces) {
+    let svc = if ($all_namespaces != null) {
         (kubectl get svc --all-namespaces
             | from ssv
             | where NAME == $service_name
@@ -359,7 +383,7 @@ export def kpfsvc [
     }
 }
 
-export def relabel_deploy [
+export def k_relabel_deploy [
     deploy: string
     labels: string
     --namespace (-n): string
@@ -391,11 +415,60 @@ export def relabel_deploy [
     [["deployment" "replicaset"]; [$deploy_file $rs_file]]
 }
 
-export def force_update_external_secret [
-    name: string
-    --namespace (-n): string
-] {
-    let ns = k_namespace $namespace
-    (kubectl annotate externalsecret -n $ns $name
-        $"force-sync=(date now | format date "%s")" --overwrite)
-}
+# export def k_force_update_external_secret [
+#     name: string
+#     --namespace (-n): string
+# ] {
+#     let ns = k_namespace $namespace
+#     (kubectl annotate externalsecret -n $ns $name
+#         $"force-sync=(date now | format date "%s")" --overwrite)
+# }
+
+# export def k_zombify_container [
+#     pod_name: string
+#     --namespace (-n): string
+#     --container-name (-c): string
+# ] {
+#     let ns = k_namespace $namespace
+#     let pod_manifest = (mktemp)
+#     log info $"Storing pod manifest in: ($pod_manifest)"
+#     kubectl get pod $pod_name -n $ns -oyaml | kubectl neat | save --raw -f $pod_manifest
+#     (cat $pod_manifest
+#         | CONTAINER_NAME=$container_name yq 'with(.spec.containers[] | select(.name == env(CONTAINER_NAME)); del(.readinessProbe), del(.startupProbe), del(.livenessProbe), .command = ["sleep", "1d"]) | with(.metadata; .name += "-zombie", del(.annotations), del(.labels))'
+#         | kubectl apply -n $ns -f-
+#     )
+# }
+
+# export def k_gpo_in_node_version [
+#     version: string
+# ] {
+#     let nodes = kgno_version $version
+#
+#     (kubectl get pods --all-namespaces -ojson
+#         | from json
+#         | get items
+#         | filter {|it| $it.spec.nodeName in ($nodes | get NAME)}
+#         | each {|it|
+#             {
+#                 name: $it.metadata.name,
+#                 namespace: $it.metadata.namespace,
+#                 node: $it.spec.nodeName,
+#             }
+#         }
+#     )
+# }
+
+# export def k_drain_nodes_version [
+#     version: string
+#     --timeout (-T): duration = 5min
+#     --sleep-duration (-s): duration = 30sec
+# ] {
+#     let timeout_secs = $"($timeout / 1sec)s"
+#     (kgno_version $version
+#         | each {|it|
+#             kubectl drain $it.NAME --ignore-daemonsets --delete-emptydir-data $"--timeout=($timeout_secs)"
+#             sleep $sleep_duration
+#         }
+#         | ignore
+#     )
+# }

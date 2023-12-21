@@ -21,6 +21,9 @@ lazy.setup('plugins', {
     defaults = { lazy = true },
     diff = { cmd = 'terminal_git' },
     lockfile = vim.fn.stdpath('data') .. '/lazy-lock.json',
+    change_detection = {
+        enabled = false,
+    },
     performance = {
         cache = {
             enabled = true,

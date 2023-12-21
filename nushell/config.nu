@@ -66,20 +66,6 @@ let menu_style = {
 }
 
 let carapace_completer = {|spans: list<string>|
-    let expanded_alias = (scope aliases
-        | where name == $spans.0
-        | get -i 0.expansion
-    )
-
-    let spans = if ($expanded_alias != null) {
-        ($spans
-            | skip 1
-            | prepend ($expanded_alias | split words)
-        )
-    } else {
-        $spans
-    }
-
     carapace $spans.0 nushell $spans
         | from json
         | if ($in | default [] | where value =~ '^-.*ERR$' | is-empty) {
@@ -95,17 +81,33 @@ let fish_completer = {|spans|
         | from tsv --flexible --no-infer
 }
 
-let multiple_completer = {|spans|
+let zoxide_completer = {|spans|
+    $spans | skip 1 | zoxide query -l $in | lines | where {|x| $x != $env.PWD}
+}
+
+let external_completer = {|spans|
+    let expanded_alias = scope aliases
+        | where name == $spans.0
+        | get -i 0.expansion
+
+    let spans = if $expanded_alias != null {
+        $spans
+            | skip 1
+            | prepend ($expanded_alias | split row ' ')
+    } else {
+        $spans
+    }
+
     match $spans.0 {
         nu => $fish_completer
         git => $fish_completer
         asdf => $fish_completer
+        istioctl => $fish_completer
+        __zoxide_z => $zoxide_completer
+        __zoxide_zi => $zoxide_completer
         _ => $carapace_completer
     } | do $in $spans
 }
-
-$env.PWD_STACK = []
-$env.PWD_POPPING = false
 
 $env.config = {
   ls: {
@@ -115,9 +117,9 @@ $env.config = {
   rm: {
     always_trash: false
   }
-  cd: {
-    abbreviations: true
-  }
+  # cd: {
+  #   abbreviations: true
+  # }
   table: {
       mode: rounded # basic, compact, compact_double, light, thin, with_love, rounded, reinforced, heavy, none, other
       index_mode: always # "always" show indexes, "never" show indexes, "auto" = show indexes when a table has "index" column
@@ -148,7 +150,7 @@ $env.config = {
     external: {
       enable: true
       max_results: 100 # setting it lower can improve completion performance at the cost of omitting some options
-      completer: $multiple_completer
+      completer: $external_completer
     }
   }
   cursor_shape: {
@@ -191,7 +193,7 @@ $env.config = {
     pre_execution: [{ null }]
     env_change: {
       PWD: [{|before, after|
-        $env.PWD_STACK = if $before != $nothing and $env.PWD_POPPING == false { ($env.PWD_STACK | append $before) } else { $env.PWD_STACK }
+        $env.PWD_STACK = if $before != null and $env.PWD_POPPING == false { ($env.PWD_STACK | append $before) } else { $env.PWD_STACK }
         $env.PWD_POPPING = false # must be here because of when the hook actually runs
       }]
     }
@@ -476,10 +478,10 @@ def nvim_client [...files: path] {
     }
 }
 
-def-env pop [] {
+def --env pop [] {
     $env.PWD_POPPING = true;
     cd ($env.PWD_STACK | last);
     $env.PWD_STACK = ($env.PWD_STACK | drop);
 }
 
-def-env mkcd [directory: string] {mkdir $directory; cd $directory}
+def --env mkcd [directory: string] {mkdir $directory; cd $directory}

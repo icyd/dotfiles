@@ -9,85 +9,173 @@ local M = {
     },
     cmd = 'Telescope',
     keys = {
-        { '<leader>ff', function()
-            require('telescope.builtin').find_files()
-        end, desc = 'Find files' },
-        { '<leader>fl', function()
-            require('telescope.builtin').find_files({
-                cwd = string.gsub(vim.fn.expand('%:p:h'), "oil://", "")
-            })
-        end, desc = 'Find files relative current file' },
-        { '<leader>fg', function()
-            require('telescope.builtin').current_buffer_fuzzy_find()
-        end, desc = 'Find in current buffer' },
-        { '<leader>fG', function()
-            require('telescope.builtin').live_grep()
-        end, desc = 'Live grep' },
-        { '<leader>fh', function()
-            require('telescope.builtin').help_tags()
-        end, desc = 'Help tags' },
-        { '<leader>fR', function()
-            require('telescope.builtin').oldfiles()
-        end, desc = 'Oldfiles' },
-        { '<leader>b', function()
-            require('telescope.builtin').buffers({
-                show_all_buffers = true,
-                sort_lastused = true,
-                ignore_current_buffer = true,
-                sort_mru = true,
-            })
-        end, desc = 'Buffers' },
-        { '<leader>fv', function()
-            require('utils.telescope').search_dotfiles()
-        end, desc = 'Search in dotfiles' },
-        { '<leader>fF', function()
-            require('utils.telescope').search_home()
-        end, desc = 'Search in home' },
-        { '<leader>fB', function()
-            require('utils.telescope').browse_home()
-        end, desc = 'Browse home' },
-        { '<leader>f/', function()
-            require('telescope.builtin').search_history()
-        end, desc = 'Search history' },
-        { '<leader>f:', function()
-            require('telescope.builtin').command_history()
-        end, desc = 'Command history' },
-        { '<leader>fs', function()
-            require('telescope.builtin').grep_string({ search = vim.fn.expand([[<cword>]]) })
-        end, desc = 'Grep current string' },
-        { '<leader>fS', function()
-            require('telescope.builtin').grep_string({ search = vim.fn.input('Grep for: ') })
-        end, desc = 'Grep string' },
-        { '<localleader>fR', function()
-            require('telescope.builtin').registers()
-        end, desc = 'Registers' },
-        { '<localleader>fm', function()
-            require('telescope.builtin').marks()
-        end, desc = 'Marks' },
-        { '<localleader>fj', function()
-            require('telescope.builtin').jumplist()
-        end, desc = 'Jumplint' },
-        { '<localleader>fx', function()
-            require('telescope.builtin').commands()
-        end, desc = 'Commands' },
-        { '<localleader>fn', function()
-            require('utils.telescope').find_notes()
-        end, desc = 'Find notes' },
-        { '<localleader>fk', function()
-            require('telescope.builtin').keymaps()
-        end, desc = 'Keymaps' },
-        { '<leader>gb', function()
-            require('telescope.builtin').git_branches()
-        end, desc = 'Git branches' },
-        { '<leader>gc', function()
-            require('telescope.builtin').git_commits()
-        end, desc = 'Git commits' },
-        { '<leader>gC', function()
-            require('telescope.builtin').git_bcommits()
-        end, desc = 'Git current buffer commits' },
-        { '<leader>fi', function()
-            require('telescope.builtin').treesitter()
-        end, desc = 'Treesitter' },
+        {
+            '<leader>ff',
+            function()
+                require('telescope.builtin').find_files()
+            end,
+            desc = 'Find files'
+        },
+        {
+            '<leader>fl',
+            function()
+                require('telescope.builtin').find_files({
+                    cwd = string.gsub(vim.fn.expand('%:p:h'), "oil://", "")
+                })
+            end,
+            desc = 'Find files relative current file'
+        },
+        {
+            '<leader>fg',
+            function()
+                require('telescope.builtin').current_buffer_fuzzy_find()
+            end,
+            desc = 'Find in current buffer'
+        },
+        {
+            '<leader>fG',
+            function()
+                require('telescope.builtin').live_grep()
+            end,
+            desc = 'Live grep'
+        },
+        {
+            '<leader>fh',
+            function()
+                require('telescope.builtin').help_tags()
+            end,
+            desc = 'Help tags'
+        },
+        {
+            '<leader>fR',
+            function()
+                require('telescope.builtin').oldfiles()
+            end,
+            desc = 'Oldfiles'
+        },
+        {
+            '<leader>b',
+            function()
+                require('telescope.builtin').buffers({
+                    show_all_buffers = true,
+                    sort_lastused = true,
+                    ignore_current_buffer = true,
+                    sort_mru = true,
+                })
+            end,
+            desc = 'Buffers'
+        },
+        {
+            '<leader>fv',
+            function()
+                require('utils.telescope').search_dotfiles()
+            end,
+            desc = 'Search in dotfiles'
+        },
+        {
+            '<leader>fF',
+            function()
+                require('utils.telescope').search_home()
+            end,
+            desc = 'Search in home'
+        },
+        {
+            '<leader>fB',
+            function()
+                require('utils.telescope').browse_home()
+            end,
+            desc = 'Browse home'
+        },
+        {
+            '<leader>f/',
+            function()
+                require('telescope.builtin').search_history()
+            end,
+            desc = 'Search history'
+        },
+        {
+            '<leader>f:',
+            function()
+                require('telescope.builtin').command_history()
+            end,
+            desc = 'Command history'
+        },
+        {
+            '<leader>fs',
+            function()
+                require('telescope.builtin').grep_string({ search = vim.fn.expand([[<cword>]]) })
+            end,
+            desc = 'Grep current string'
+        },
+        {
+            '<leader>fS',
+            function()
+                require('telescope.builtin').grep_string({ search = vim.fn.input('Grep for: ') })
+            end,
+            desc = 'Grep string'
+        },
+        {
+            '<localleader>fR',
+            function()
+                require('telescope.builtin').registers()
+            end,
+            desc = 'Registers'
+        },
+        {
+            '<localleader>fm',
+            function()
+                require('telescope.builtin').marks()
+            end,
+            desc = 'Marks'
+        },
+        {
+            '<localleader>fj',
+            function()
+                require('telescope.builtin').jumplist()
+            end,
+            desc = 'Jumplint'
+        },
+        {
+            '<localleader>fx',
+            function()
+                require('telescope.builtin').commands()
+            end,
+            desc = 'Commands'
+        },
+        {
+            '<localleader>fn',
+            function()
+                require('utils.telescope').find_notes()
+            end,
+            desc = 'Find notes'
+        },
+        {
+            '<localleader>fk',
+            function()
+                require('telescope.builtin').keymaps()
+            end,
+            desc = 'Keymaps'
+        },
+        -- { '<leader>gb', function()
+        --     require('telescope.builtin').git_branches()
+        -- end, desc = 'Git branches' },
+        -- { '<leader>gc', function()
+        --     require('telescope.builtin').git_commits()
+        -- end, desc = 'Git commits' },
+        {
+            '<leader>gC',
+            function()
+                require('telescope.builtin').git_bcommits()
+            end,
+            desc = 'Git current buffer commits'
+        },
+        {
+            '<leader>fi',
+            function()
+                require('telescope.builtin').treesitter()
+            end,
+            desc = 'Treesitter'
+        },
     },
 }
 
@@ -101,7 +189,7 @@ function M.config()
         extensions['aerial'] = {
             show_nesting = {
                 ['_'] = false, -- This key will be the default
-                json = true, -- You can set the option for specific filetypes
+                json = true,   -- You can set the option for specific filetypes
                 yaml = true,
             }
         }
@@ -174,12 +262,12 @@ function M.config()
         },
     }
 
-    local ok_tr, trouble = pcall(require, "trouble.providers.telescope")
-    if ok_tr then
-        telescope_mappings.i['<C-t>'] = trouble.open_with_trouble
-        telescope_mappings.n = {}
-        telescope_mappings.n['<C-t>'] = trouble.open_with_trouble
-    end
+    -- local ok_tr, trouble = pcall(require, "trouble.providers.telescope")
+    -- if ok_tr then
+    --     telescope_mappings.i['<C-t>'] = trouble.open_with_trouble
+    --     telescope_mappings.n = {}
+    --     telescope_mappings.n['<C-t>'] = trouble.open_with_trouble
+    -- end
 
     telescope.setup {
         defaults = {

@@ -11,7 +11,12 @@ local function cmp_config()
         ext_opts = {
             [types.choiceNode] = {
                 active = {
-                    virt_text = { { "⭅", "DiagnosticWarn" } },
+                    virt_text = { { "●", "DiagnosticWarn" } },
+                }
+            },
+            [types.insertNode] = {
+                active = {
+                    virt_text = { { "●", "DiagnosticSignInfo" } },
                 }
             }
         }
@@ -38,13 +43,21 @@ local function cmp_config()
     end
 
     local function next_prev_func(is_next, select_opts)
-        local key = '<Up>'
-        local select_func = cmp.select_prev_item
+        local select_func
+        local dir
+        local key
 
         if is_next then
             key = '<Down>'
+            dir = 1
             select_func = cmp.select_next_item
+        else
+            key = '<Up>'
+            dir = -1
+            select_func = cmp.select_prev_item
         end
+
+        if select_func == nil then return end
 
         return {
             c = function()
@@ -59,27 +72,33 @@ local function cmp_config()
                 end
             end,
             i = function(fallback)
-                if cmp.visible() then
+                if cmp.visible()  then
                     select_func(select_opts)
                 else
                     fallback()
                 end
             end,
+            s = function(fallback)
+                if ls.choice_active() then
+                    ls.change_choice(dir)
+                else
+                    fallback()
+                end
+            end,
         }
-
     end
 
     cmp.setup({
         formatting = {
             format = lspkind.cmp_format({
                 mode = "symbol_text",
-                menu = ({
-                    buffer = "[buf]",
-                    nvim_lsp = "[LSP]",
-                    nvim_lua = "[api]",
-                    path = "[path]",
-                    luasnip = "[snip]",
-                }),
+                -- menu = ({
+                --     buffer = "[buf]",
+                --     nvim_lsp = "[LSP]",
+                --     nvim_lua = "[api]",
+                --     path = "[path]",
+                --     luasnip = "[snip]",
+                -- }),
             }),
         },
         sources = cmp.config.sources({
@@ -87,9 +106,11 @@ local function cmp_config()
             { name = 'nvim_lua' },
             { name = 'luasnip' },
             { name = 'nvim_lsp' },
+            { name = 'crates' },
         }, {
             { name = 'path' },
             { name = 'buffer', keyword_length = 5 },
+        }, {
             { name = 'neorg' },
             { name = 'orgmode' },
         }),
@@ -101,14 +122,16 @@ local function cmp_config()
         mapping = {
             ['<C-y>']   = cmp.mapping(function()
                 if cmp.visible() then
-                    cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert,
-                        select = true })
+                    cmp.confirm({
+                        behavior = cmp.ConfirmBehavior.Insert,
+                        select = true
+                    })
                 elseif ls.choice_active() then
                     require('luasnip.extras.select_choice')()
                 else
                     cmp.complete()
                 end
-            end, { 'i', 'c' }),
+            end, { 'i', 'c', 's' }),
             ['<CR>']    = cmp.mapping({
                 i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
                 c = function(fallback)
@@ -141,6 +164,7 @@ local function cmp_config()
 
     cmp.setup.cmdline(':', {
         completion = { autocomplete = false },
+        mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
             { name = 'path' },
             { name = 'cmdline' },
@@ -154,7 +178,7 @@ local function cmp_config()
         sources = cmp.config.sources({
             { name = 'nvim_lsp_document_symbol' },
         }, {
-            { name = 'buffer', keyword_length = 5 },
+            { name = 'buffer',         keyword_length = 5 },
             { name = 'cmdline_history' },
         }),
     })
@@ -162,6 +186,7 @@ local function cmp_config()
     for _, cmd_type in ipairs({ '?', '@' }) do
         cmp.setup.cmdline(cmd_type, {
             completion = { autocomplete = false },
+            mapping = cmp.mapping.preset.cmdline(),
             sources = {
                 { name = 'cmdline_history' },
             },
@@ -177,22 +202,29 @@ end
 return {
     {
         'L3MON4D3/LuaSnip',
+        version = 'v2.*',
+        build = 'make install_jsregexp',
         dependencies = {
             { 'rafamadriz/friendly-snippets' },
             { 'saadparwaiz1/cmp_luasnip' },
+            { 'mrcjkb/haskell-snippets.nvim', ft = 'haskell' },
         },
         config = function()
             local snippets_dir = vim.fn.stdpath('config') .. '/lua/plugins/snippets/'
-            require('luasnip').filetype_extend('typescriptreact', { 'typescript' })
-            require('luasnip.loaders.from_lua').lazy_load { paths = snippets_dir }
+            local ls = require("luasnip")
+            local haskell_snippets = require("haskell-snippets").all
+            ls.filetype_extend('typescriptreact', { 'typescript' })
+            ls.add_snippets('haskell', haskell_snippets, { key = 'haskell' })
+            require('luasnip.loaders.from_lua').lazy_load({ paths = { snippets_dir } })
             require('luasnip.loaders.from_vscode').lazy_load()
-            vim.api.nvim_create_user_command('LuaSnipEdit', require('luasnip.loaders.from_lua').edit_snippet_files, {})
+            vim.api.nvim_create_user_command('LuaSnipEdit',
+                require('luasnip.loaders').edit_snippet_files, {}
+            )
         end,
     },
     {
         'hrsh7th/nvim-cmp',
         -- event = { 'CmdLineEnter', 'InsertEnter' },
-        event = { 'InsertEnter' },
         dependencies = {
             { 'hrsh7th/cmp-buffer' },
             { 'hrsh7th/cmp-path' },
@@ -203,7 +235,6 @@ return {
             { 'hrsh7th/cmp-nvim-lsp-signature-help' },
             { 'hrsh7th/cmp-nvim-lua' },
             { 'onsails/lspkind.nvim' },
-            'L3MON4D3/LuaSnip',
         },
         config = cmp_config,
     },

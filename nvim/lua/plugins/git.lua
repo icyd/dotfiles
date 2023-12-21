@@ -14,34 +14,33 @@ return {
             map('n', '<leader>gu', gitsigns.undo_stage_hunk, { desc = 'Undo stage Buffer' })
             map('n', '<leader>gd', gitsigns.diffthis, { desc = 'Diff' })
             map('n', '<leader>gD', function() gitsigns.diffthis('~') end, { desc = 'Diff' })
+            gitsigns.setup()
         end,
     },
-    {
-        'akinsho/git-conflict.nvim',
-        version = '*',
-        event = 'BufReadPre',
-        config = {},
-    },
-    {
-        'sindrets/diffview.nvim',
-        cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles' },
-        config = {},
-    },
-    {
-        "TimUntersberger/neogit",
-        cmd = 'Neogit',
-        keys = {
-            { '<leader>gn', '<cmd>Neogit<CR>', desc = 'Open Neogit' },
-        },
-        config = function()
-            require('neogit').setup({
-                integrations = { diffview = true }
-            })
-        end,
-        dependencies = {
-            'sindrets/diffview.nvim',
-        },
-    },
+    -- {
+    --     'akinsho/git-conflict.nvim',
+    --     version = '*',
+    --     event = 'BufReadPre',
+    --     config = true,
+    -- },
+    -- {
+    --     'sindrets/diffview.nvim',
+    --     cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles' },
+    --     config = true,
+    -- },
+    -- {
+    --     "TimUntersberger/neogit",
+    --     cmd = 'Neogit',
+    --     keys = {
+    --         { '<leader>gn', '<cmd>Neogit<CR>', desc = 'Open Neogit' },
+    --     },
+    --     opts = {
+    --         integrations = { diffview = true }
+    --     },
+    --     dependencies = {
+    --         'sindrets/diffview.nvim',
+    --     },
+    -- },
     {
         'ThePrimeagen/git-worktree.nvim',
         config = function()
@@ -57,12 +56,12 @@ return {
     {
         'tpope/vim-fugitive',
         keys = {
-            { '<leader>gs', '<cmd>Git<CR>', desc = 'Git status' },
-            { '<leader>gd', '<cmd>Gvdiffsplit!<CR>', desc = 'Git diff split' },
+            { '<leader>gs', '<cmd>Git<CR>',                               desc = 'Git status' },
+            { '<leader>gd', '<cmd>Gvdiffsplit!<CR>',                      desc = 'Git diff split' },
             { '<leader>gP', '<cmd>Git -c push.default=current push <CR>', desc = 'Git push to upstream' },
-            { '<leader>gp', '<cmd>Git pull<CR>', desc = 'Git pull from upstream' },
-            { '<leader>gh', '<cmd>diffget //2<CR>', desc = 'Git diff get left' },
-            { '<leader>gl', '<cmd>diffget //3<CR>', desc = 'Git diff get right' },
+            { '<leader>gp', '<cmd>Git pull<CR>',                          desc = 'Git pull from upstream' },
+            { '<leader>gh', '<cmd>diffget //2<CR>',                       desc = 'Git diff get left' },
+            { '<leader>gl', '<cmd>diffget //3<CR>',                       desc = 'Git diff get right' },
         },
         config = function()
             local fugitive_au = vim.api.nvim_create_augroup('fugitive_au', { clear = true })
@@ -77,13 +76,20 @@ return {
                 command = [[if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' ]] ..
                     [[nnoremap <buffer> .. :edit %:h<CR> | endif]]
             })
+            -- vim.api.nvim_create_autocmd('FugitiveIndex', {
+            --     group = fugitive_au,
+            --     buffer = bufnr,
+            --     command = function()
+            --         vim.keymap.set('n', '<localleader>pP', '<cmd>Git -c push.default=current push <CR>', { desc = 'Git force push', buffer =true })
+            --     end,
+            -- })
         end,
     },
-    {
-        'kdheepak/lazygit.nvim',
-        dependencies = { 'nvim-lua/plenary.nvim' },
-        keys = {
-            { '<leader>gg', '<cmd>LazyGit<CR>', desc = 'LazyGit' },
-        }
-    }
+    -- {
+    --     'kdheepak/lazygit.nvim',
+    --     dependencies = { 'nvim-lua/plenary.nvim' },
+    --     keys = {
+    --         { '<leader>gg', '<cmd>LazyGit<CR>', desc = 'LazyGit' },
+    --     }
+    -- }
 }

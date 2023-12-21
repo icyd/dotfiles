@@ -17,7 +17,7 @@ in {
     autocd = true;
     enableAutosuggestions = false;
     enableCompletion = false;
-    enableSyntaxHighlighting = false;
+    syntaxHighlighting.enable = false;
     defaultKeymap = "viins";
     dirHashes = {
         docs  = "$HOME/Documents";

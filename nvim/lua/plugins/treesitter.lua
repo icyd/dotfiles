@@ -60,6 +60,7 @@ return {
                     'cpp',
                     'go',
                     'hcl',
+                    'haskell',
                     'java',
                     'json',
                     'latex',
@@ -92,10 +93,6 @@ return {
                     enable = true,
                     extended_mode = true,
                     max_file_lines = 1000
-                },
-                context_commentstring = {
-                    enable = true,
-                    enable_autocmd = false,
                 },
                 textsubjects = {
                     enable = true,
@@ -157,12 +154,19 @@ return {
             { 'p00f/nvim-ts-rainbow' },
             { 'RRethy/nvim-treesitter-textsubjects' },
             { 'nvim-treesitter/nvim-treesitter-textobjects' },
-            { 'JoosepAlviste/nvim-ts-context-commentstring' },
-            { 'm-demare/hlargs.nvim',                       config = {} },
+            {
+                'JoosepAlviste/nvim-ts-context-commentstring',
+                opts = {
+                    enable_autocmd = false,
+                },
+            },
+            { 'm-demare/hlargs.nvim', opts = true },
             -- {
             --     'nvim-treesitter/nvim-treesitter-context',
-            --     config = {},
             --     cmd = { 'TSContextEnable', 'TSContextDisable', 'TSContextToggle' },
+            --     opts = {
+            --         enable = false,
+            --     },
             -- },
         },
     },

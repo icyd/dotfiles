@@ -5,7 +5,7 @@ g.maplocalleader = [[\]]
 -- Delete and paste
 map('v', '<localleader>P', '"_dP', { desc = 'Delete & paste' })
 map('n', '<localleader>P', '"_ddP', { desc = 'Delete & paste' })
-map('i', '<C-c>', '<ESC>', { desc = 'Escape' })
+-- map('i', '<C-c>', '<ESC>', { desc = 'Escape' })
 
 -- Disable arrows
 map('n', '<Up>', '<Nop>')
@@ -102,8 +102,8 @@ map('n', '<leader>cd',
 map('n', '<leader>ew', [[:e <C-r>=expand("%:p:h")."/"<CR>]],
     { desc = 'Open relative to current file' })
 
-map('n', '<localleader>cc', require('utils').reload,
-    { desc = 'Reload current module' })
+-- map('n', '<localleader>cc', require('utils').reload,
+--     { desc = 'Reload current module' })
 
 map('n', '<localleader>ss', '<cmd>GrabServer<CR>',
     { desc = 'Grab server', silent = false })

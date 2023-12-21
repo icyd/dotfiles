@@ -1,4 +1,5 @@
-vim.opt.shadafile = 'NONE'
+-- vim.opt.shadafile = 'NONE'
+vim.opt.shadafile = ''
 vim.g.mapleader = ' '
 local ok_lazy = pcall(require, 'config.lazy')
 require('config.options')
@@ -15,9 +16,9 @@ else
         end,
     })
 end
-
-if root then
-    set.shada = ''
-else
-    vim.opt.shadafile = ''
-end
+--
+-- if root then
+--     set.shada = ''
+-- else
+--     vim.opt.shadafile = ''
+-- end

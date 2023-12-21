@@ -52,7 +52,7 @@
         ccls
         dive
         docker
-        (pkgs.callPackage ../../modules/go/gig/default.nix {})
+        # (pkgs.callPackage ../../modules/go/gig/default.nix {})
         gcc
         gcc-arm-embedded
       # gdb

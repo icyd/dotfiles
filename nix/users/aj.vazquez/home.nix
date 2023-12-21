@@ -8,11 +8,12 @@ in {
     home.sessionVariables = {
         LANG = "en_US.UTF-8";
         LC_ALL = "en_US.UTF-8";
-        PATH = "${brewPrefix}/bin:${brewPrefix}/opt/coreutils/libexec/gnubin:$PATH";
+        PATH = "${brewPrefix}/bin:${brewPrefix}/opt/coreutils/libexec/gnubin:$CARGO_HOME/bin:$PATH";
         MANPATH = "${brewPrefix}/opt/coreutils/libexec/gnuman:$MANPATH";
     };
 
-    programs.alacritty = import ../../modules/alacritty.nix { inherit config; startup_mode = "Fullscreen"; };
+    programs.alacritty = import ../../modules/alacritty.nix { inherit config; };
+    # programs.alacritty = import ../../modules/alacritty.nix { inherit config; startup_mode = "Fullscreen"; };
     programs.bat = {
         enable = true;
         config = { theme = "base16"; };
@@ -24,6 +25,7 @@ in {
     programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
     programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs config; };
     xdg.configFile = {
+        amethyst.source = ../../../amethyst;
         nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/nvim";
         tmuxp.source = ../../../tmux/tmuxp;
         wezterm.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/wezterm";
@@ -35,20 +37,16 @@ in {
 
     home.packages = with pkgs; [
         awscli2
-        checkov
+        # checkov
+        crane
         dive
-        (pkgs.callPackage ../../modules/go/gig/default.nix {})
+        # (pkgs.callPackage ../../modules/go/gig/default.nix {})
         faas-cli
-        go_1_18
+        go
         gopass
         gopass-jsonapi
         luajit
         luajitPackages.luarocks
-        # haskell
-        ghc-unstable
-        stack-unstable
-        cabal-install-unstable
-        hsl-unstable
         istioctl
         kind
         krew
@@ -57,11 +55,13 @@ in {
         nodejs
         helmfile
         mosh
-        pueue-unstable
+        unstable.pueue
+        regclient
         rustup
         # rust-analyzer
         reattach-to-user-namespace
         saml2aws
+        skopeo
         stern
         wget
     ];

@@ -83,7 +83,7 @@ keybinds {
 //   - true
 //   - false (Default)
 //
-simplified_ui false
+//simplified_ui false
 
 // Choose the path to the default shell that zellij will use for opening new panes
 // Default: $SHELL
@@ -105,12 +105,12 @@ theme "kanagawa"
 // The name of the default layout to load on startup
 // Default: "default"
 //
-default_layout "editor"
+// default_layout "default"
 
 // Choose the mode that zellij uses when starting up.
 // Default: normal
 //
-default_mode "locked"
+// default_mode "locked"
 
 // Toggle enabling the mouse mode.
 // On certain configurations, or terminals this could

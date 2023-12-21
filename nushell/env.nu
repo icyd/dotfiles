@@ -47,4 +47,6 @@
     ]
 
     $env.ENV_CONVERSIONS = {}
+    $env.PWD_STACK = []
+    $env.PWD_POPPING = false
 # }
