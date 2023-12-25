@@ -1,46 +1,29 @@
-{ config, startup_mode ? "Maximized", ... }: let
-  colors = config.colorScheme.colors;
+{ config, shell, font, startup_mode ? "Maximized", ... }:
+let colors = config.colorScheme.colors;
 in {
   enable = true;
   settings = {
-    # shell = {
-    #     program = "~/.nix-profile/bin/nu";
-    #     args = ["--login" "--interactive"];
-    # };
+    inherit font;
     bell = {
-        animation = "EaseOutExpo";
-        duration = 10;
-        color = "#${colors.base07}";
+      animation = "EaseOutExpo";
+      color = "#${colors.base07}";
+      duration = 10;
     };
     colors = {
-      primary = {
-          background = "0x${colors.base00}";
-          foreground = "0x${colors.base05}";
-      };
-      cursor = {
-          text = "0x${colors.base00}";
-          cursor = "0x${colors.base05}";
-      };
-      normal = {
-          black = "0x${colors.base00}";
-          red = "0x${colors.base08}";
-          green = "0x${colors.base0B}";
-          yellow = "0x${colors.base0A}";
-          blue = "0x${colors.base0D}";
-          magenta = "0x${colors.base0E}";
-          cyan = "0x${colors.base0C}";
-          white = "0x${colors.base05}";
-      };
       # bright = {
       #     black = "0x665c54";
-      #     red = "0xfb4934";
-      #     green = "0xb8bb26";
-      #     yellow = "0xfabd2f";
       #     blue = "0x83a598";
-      #     magenta = "0xd3869b";
       #     cyan = "0x8ec07c";
+      #     green = "0xb8bb26";
+      #     magenta = "0xd3869b";
+      #     red = "0xfb4934";
       #     white = "0xfbf1c7";
+      #     yellow = "0xfabd2f";
       # };
+      cursor = {
+        cursor = "0x${colors.base05}";
+        text = "0x${colors.base00}";
+      };
       # indexed_colors = [
       #     { index = 16; color = "0xfe8019"; }
       #     { index = 17; color = "0xd65d0e"; }
@@ -49,14 +32,22 @@ in {
       #     { index = 20; color = "0xbdae93"; }
       #     { index = 21; color = "0xebdbb2"; }
       # ];
+      normal = {
+        black = "0x${colors.base00}";
+        blue = "0x${colors.base0D}";
+        cyan = "0x${colors.base0C}";
+        green = "0x${colors.base0B}";
+        magenta = "0x${colors.base0E}";
+        red = "0x${colors.base08}";
+        white = "0x${colors.base05}";
+        yellow = "0x${colors.base0A}";
+      };
+      primary = {
+        background = "0x${colors.base00}";
+        foreground = "0x${colors.base05}";
+      };
     };
     cursor.style = "Block";
-    # font = let fontname = "MesloLGS Nerd Font"; in {
-    # font = let fontname = "Hack Nerd Font"; in {
-    font = let fontname = "AnonymicePro Nerd Font"; in {
-        normal = { family = fontname; };
-        size = 15;
-    };
     key_bindings = [
       {
         key = "Copy";
@@ -67,107 +58,111 @@ in {
         action = "Paste";
       }
       {
-          key = "L";
-          mods = "Command";
-          chars = "\\x1b\\x6c";
+        key = "L";
+        mods = "Command";
+        chars = "\\x1b\\x6c";
       }
       {
-          key = "H";
-          mods = "Command";
-          chars = "\\x1b\\x68";
+        key = "H";
+        mods = "Command";
+        chars = "\\x1b\\x68";
       }
       {
-          key = "K";
-          mods = "Command";
-          chars = "\\x1b\\x6b";
+        key = "K";
+        mods = "Command";
+        chars = "\\x1b\\x6b";
       }
       {
-          key = "J";
-          mods = "Command";
-          chars = "\\x1b\\x6a";
+        key = "J";
+        mods = "Command";
+        chars = "\\x1b\\x6a";
       }
       {
-          key = "L";
-          mods = "Alt";
-          chars = "\\x1b\\x6c";
+        key = "L";
+        mods = "Alt";
+        chars = "\\x1b\\x6c";
       }
       {
-          key = "H";
-          mods = "Alt";
-          chars = "\\x1b\\x68";
+        key = "H";
+        mods = "Alt";
+        chars = "\\x1b\\x68";
       }
       {
-          key = "K";
-          mods = "Alt";
-          chars = "\\x1b\\x6b";
+        key = "K";
+        mods = "Alt";
+        chars = "\\x1b\\x6b";
       }
       {
-          key = "J";
-          mods = "Alt";
-          chars = "\\x1b\\x6a";
+        key = "J";
+        mods = "Alt";
+        chars = "\\x1b\\x6a";
       }
       {
-          key = "C";
-          mods = "Alt";
-          chars = "\\x1b\\x63";
+        key = "C";
+        mods = "Alt";
+        chars = "\\x1b\\x63";
       }
       {
-          key = "B";
-          mods = "Command";
-          chars = "\\x1b\\x62";
+        key = "B";
+        mods = "Command";
+        chars = "\\x1b\\x62";
       }
       {
-          key = "A";
-          mods = "Command";
-          chars = "\\x1b\\x61";
+        key = "A";
+        mods = "Command";
+        chars = "\\x1b\\x61";
       }
       {
-          key = "X";
-          mods = "Command";
-          chars = "\\x1b\\x78";
+        key = "X";
+        mods = "Command";
+        chars = "\\x1b\\x78";
       }
       {
-          key = "P";
-          mods = "Command";
-          chars = "\\x1b\\x70";
+        key = "P";
+        mods = "Command";
+        chars = "\\x1b\\x70";
       }
       {
-          key = "D";
-          mods = "Command";
-          chars = "\\x1b\\x64";
+        key = "D";
+        mods = "Command";
+        chars = "\\x1b\\x64";
       }
       {
-          key = "U";
-          mods = "Command";
-          chars = "\\x1b\\x75";
+        key = "U";
+        mods = "Command";
+        chars = "\\x1b\\x75";
       }
       {
-          key = "Key9";
-          mods = "Command";
-          chars = "\\x1d";
+        key = "Key9";
+        mods = "Command";
+        chars = "\\x1d";
       }
       {
-          key = "RBracket";
-          mods = "Control";
-          chars = "\\x1d";
+        key = "RBracket";
+        mods = "Control";
+        chars = "\\x1d";
       }
       {
-          key = "E";
-          mods = "Command";
-          chars = "\\x1b\\x65";
+        key = "E";
+        mods = "Command";
+        chars = "\\x1b\\x65";
       }
     ];
     live_config_reload = true;
     mouse = { hide_when_typing = true; };
     scrolling = {
-        history = 1000;
-        multiplier = 3;
+      history = 1000;
+      multiplier = 3;
     };
+    shell.program = shell;
     window = {
-        inherit startup_mode;
-        decorations = "none";
-        padding = { x = 5; y = 5; };
-        option_as_alt = "Both";
+      inherit startup_mode;
+      decorations = "none";
+      option_as_alt = "Both";
+      padding = {
+        x = 5;
+        y = 5;
+      };
     };
   };
 }

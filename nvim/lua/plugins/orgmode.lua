@@ -3,7 +3,10 @@ local heading_config = {
     fat_headline_lower_string = "▀"
 }
 
-local vimwiki_dir = os.getenv('VIMWIKI_HOME')
+local orgmode_dir = os.getenv('ORGMODE_HOME')
+if orgmode_dir == nil or orgmode_dir == '' then
+    orgmode_dir = os.getenv('HOME') .. '/.org'
+end
 
 return {
     'nvim-orgmode/orgmode',
@@ -26,17 +29,12 @@ return {
         {
             'ranjithshegde/orgWiki.nvim',
             opts = {
-                wiki_path = { vimwiki_dir .. '/vimwiki' },
-                diary_path = vimwiki_dir .. '/vimwiki/diary',
+                wiki_path = { orgmode_dir .. '/orgwiki' },
+                diary_path = orgmode_dir .. '/orgwiki/diary',
             }
         }
     },
     config = function()
-        local orgmode_dir = os.getenv('ORGMODE_HOME')
-        if orgmode_dir == nil or orgmode_dir == '' then
-            orgmode_dir = os.getenv('HOME') .. '/.org'
-        end
-
         local orgmode = require('orgmode')
         orgmode.setup_ts_grammar()
         orgmode.setup({

@@ -1,7 +1,7 @@
 # Change directory to current git repository root directory.
 # If `path` is specidied, change to it instead.
 #
-export def-env cd-gitroot [
+export def --env cd-gitroot [
     path?: string # Relative path from git root directory
 ] {
     let is_inside_worktree = (do -i { git rev-parse --is-inside-work-tree | complete })

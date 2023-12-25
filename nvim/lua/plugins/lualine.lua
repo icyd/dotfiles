@@ -65,6 +65,12 @@ function M.config()
                     "NvimTree",
                     "Trouble",
                     "toggleterm",
+                    "dapui_scopes",
+                    "dapui_breakpoints",
+                    "dapui_stacks",
+                    "dapui_console",
+                    "dap-repl",
+                    "dapui_watches",
                 },
             }
         },

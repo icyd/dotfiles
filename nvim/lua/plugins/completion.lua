@@ -212,9 +212,11 @@ return {
         config = function()
             local snippets_dir = vim.fn.stdpath('config') .. '/lua/plugins/snippets/'
             local ls = require("luasnip")
-            local haskell_snippets = require("haskell-snippets").all
+            local ok, haskell_snippets = pcall(require, "haskell_snippets")
+            if ok then
+                ls.add_snippets('haskell', haskell_snippets.all, { key = 'haskell' })
+            end
             ls.filetype_extend('typescriptreact', { 'typescript' })
-            ls.add_snippets('haskell', haskell_snippets, { key = 'haskell' })
             require('luasnip.loaders.from_lua').lazy_load({ paths = { snippets_dir } })
             require('luasnip.loaders.from_vscode').lazy_load()
             vim.api.nvim_create_user_command('LuaSnipEdit',
@@ -224,7 +226,7 @@ return {
     },
     {
         'hrsh7th/nvim-cmp',
-        -- event = { 'CmdLineEnter', 'InsertEnter' },
+        event = { 'CmdLineEnter', 'InsertEnter' },
         dependencies = {
             { 'hrsh7th/cmp-buffer' },
             { 'hrsh7th/cmp-path' },

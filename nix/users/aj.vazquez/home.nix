@@ -1,68 +1,43 @@
-{ pkgs, lib, config, email, ... }: let
-    brewPrefix = if pkgs.stdenv.hostPlatform.isAarch64 then "/opt/homebrew" else "/usr/local";
-    zellijConfigDir = if pkgs.stdenv.isDarwin then
-        "${config.home.homeDirectory}/Library/Application Support/org.Zellij-Contributors.Zellij"
-    else
-        "${config.xdg.configHome}/zellij";
+args@{ pkgs, lib, config, stateVersion, username, email, homeDirectory
+, nix-colors, ... }:
+let
+  brewPrefix = if pkgs.stdenv.hostPlatform.isAarch64 then
+    "/opt/homebrew"
+  else
+    "/usr/local";
+  alacrittyFont = let fontname = "AnonymicePro Nerd Font";
+  in {
+    normal = { family = fontname; };
+    size = 15;
+  };
 in {
-    home.sessionVariables = {
-        LANG = "en_US.UTF-8";
-        LC_ALL = "en_US.UTF-8";
-        PATH = "${brewPrefix}/bin:${brewPrefix}/opt/coreutils/libexec/gnubin:$CARGO_HOME/bin:$PATH";
-        MANPATH = "${brewPrefix}/opt/coreutils/libexec/gnuman:$MANPATH";
-    };
-
-    programs.alacritty = import ../../modules/alacritty.nix { inherit config; };
-    # programs.alacritty = import ../../modules/alacritty.nix { inherit config; startup_mode = "Fullscreen"; };
-    programs.bat = {
-        enable = true;
-        config = { theme = "base16"; };
-    };
-    programs.broot.enable = true;
-    programs.fzf = import ../../modules/fzf.nix { inherit lib; };
-    programs.git = import ../../modules/git.nix { inherit email; };
-    programs.home-manager.enable = true;
-    programs.tmux = import ../../modules/tmux.nix { inherit lib pkgs; };
-    programs.zsh = import ../../modules/zsh.nix { inherit lib pkgs config; };
-    xdg.configFile = {
-        amethyst.source = ../../../amethyst;
-        nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/nvim";
-        tmuxp.source = ../../../tmux/tmuxp;
-        wezterm.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/wezterm";
-    };
-
-    home.file = {
-        "${zellijConfigDir}".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/zellij";
-    };
-
-    home.packages = with pkgs; [
-        awscli2
-        # checkov
-        crane
-        dive
-        # (pkgs.callPackage ../../modules/go/gig/default.nix {})
-        faas-cli
-        go
-        gopass
-        gopass-jsonapi
-        luajit
-        luajitPackages.luarocks
-        istioctl
-        kind
-        krew
-        kubectl
-        kubernetes-helm
-        nodejs
-        helmfile
-        mosh
-        unstable.pueue
-        regclient
-        rustup
-        # rust-analyzer
-        reattach-to-user-namespace
-        saml2aws
-        skopeo
-        stern
-        wget
-    ];
+  imports = [
+    (import ../../modules/home-common.nix (args // { inherit alacrittyFont; }))
+  ];
+  home.sessionVariables = {
+    LANG = "en_US.UTF-8";
+    LC_ALL = "en_US.UTF-8";
+    MANPATH = "${brewPrefix}/opt/coreutils/libexec/gnuman:$MANPATH";
+    PATH = "${brewPrefix}/bin:${brewPrefix}/opt/coreutils/libexec/gnubin:$PATH";
+  };
+  home.packages = with pkgs; [
+    awscli2
+    crane
+    dive
+    faas-cli
+    helmfile
+    istioctl
+    krew
+    kubectl
+    kubernetes-helm
+    nodejs
+    reattach-to-user-namespace
+    regclient
+    rustup
+    saml2aws
+    skopeo
+    stern
+    unstable.pueue
+  ];
+  xdg.configFile = { amethyst.source = ../../../amethyst; };
 }

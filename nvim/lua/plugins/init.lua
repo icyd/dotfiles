@@ -369,7 +369,6 @@ return {
         "neomake/neomake",
         event = "VeryLazy",
     },
-    { "/tpope/vim-dispatch" },
     { "skywind3000/asyncrun.vim", event = "VeryLazy" },
     {
         "nvim-neotest/neotest",
@@ -379,37 +378,76 @@ return {
             "antoinemadec/FixCursorHold.nvim",
             "rouge8/neotest-rust",
             "mrcjkb/neotest-haskell",
+            "nvim-neotest/neotest-go",
+            "nvim-neotest/neotest-python",
         },
         keys = {
-            "<localleader>tt",
-            "<localleader>tf",
-            "<localleader>tw",
-            "<localleader>ts",
-            "<localleader>to",
+            {
+                "<localleader>tt",
+                function() require("neotest").run.run() end,
+                desc = "Run nearest test"
+            },
+            {
+                "<localleader>tf",
+                function() require("neotest").run.run(vim.fn.expand("%")) end,
+                desc = "Run test in current file"
+            },
+            {
+                "<localleader>tw",
+                function()
+                    require("neotest").watch.toggle(vim.fn.expand("%"))
+                end,
+                desc = "Toggle test watch in current file"
+            },
+
+            {
+                "<localleader>td",
+                function()
+                    require('neotest').run.run(vim.fn.getcwd())
+                end,
+                desc = "Run tests in current directory",
+            },
+            {
+                "<localleader>ts",
+                function() require("neotest").summary.toggle() end,
+                desc = "Toggle test summary window"
+            },
+            {
+                "<localleader>to",
+                function() require("neotest").output_panel.toggle() end,
+                desc = "Toggle test output pane window"
+            },
         },
         config = function()
-            local map = vim.keymap.set
-            local neotest = require("neotest")
-            ---@diagnostic disable-next-line: missing-fields
-            neotest.setup({
+            require("neotest").setup({
+                library = { plugins = { "neotest" }, types = true },
                 adapters = {
-                    require("neotest-rust"),
+                    require("neotest-go"),
                     require("neotest-haskell"),
+                    require("neotest-python"),
+                    require("neotest-rust"),
                 },
                 quickfix = {
                     enabled = true,
                     open = true,
                 },
+                icons = {
+                    running_animated = { "/", "|", "\\", "-", "/", "|", "\\", "-" },
+                    passed = "",
+                    running = "",
+                    failed = "",
+                    skipped = "",
+                    unknown = "",
+                    non_collapsible = "─",
+                    collapsed = "─",
+                    expanded = "╮",
+                    child_prefix = "├",
+                    final_child_prefix = "╰",
+                    child_indent = "│",
+                    final_child_indent = " ",
+                    watching = "",
+                },
             })
-            map("n", "<localleader>tt", neotest.run.run, { desc = "Run nearest tests" })
-            map("n", "<localleader>tf", function()
-                neotest.run.run(vim.fn.expand("%"))
-            end, { desc = "Run tests in current file" })
-            map("n", "<localleader>tw", function()
-                neotest.watch.toggle(vim.fn.expand("%"))
-            end, { desc = "Toggle test watch current file" })
-            map("n", "<localleader>ts", neotest.summary.toggle, { desc = "Toggle test summary window" })
-            map("n", "<localleader>to", neotest.output_panel.toggle, { desc = "Toggle test output pane window" })
         end,
     },
     -- Improved folding
@@ -474,6 +512,10 @@ return {
         config = function()
             vim.g.slime_target = "tmux"
         end,
+    },
+    {
+        "tpope/vim-dispatch",
+        event = "VeryLazy",
     },
     {
         "michaelb/sniprun",

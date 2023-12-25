@@ -30,9 +30,9 @@ if ok then
 
     _G.luasnip = {}
     _G.luasnip.vars = {
-        username = 'beto',
-        email = 'avazquez@contractor.ea.com',
-        real_name = 'Alberto Vázquez',
+        username = 'username',
+        email = 'email',
+        real_name = 'realname',
     }
 
     --- Options for marks to be used in a TODO comment

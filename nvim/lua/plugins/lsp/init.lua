@@ -1,4 +1,5 @@
 local linters_by_ft = {
+    css = { "stylelint", },
     dockerfile = { "hadolint" },
     go = { "golangcilint" },
     haskell = { "hlint" },
@@ -32,9 +33,9 @@ local formatters_by_ft = {
 local function tools_to_autoinstall(tools_by_ft, tools, excluded)
     local tools1 = vim.tbl_flatten(vim.tbl_values(tools_by_ft))
     local result = vim.fn.uniq(vim.list_extend(tools, tools1))
-    ---@diagnostic disable-next-line: param-type-mismatch
     result = vim.tbl_filter(function(tool)
         return not vim.tbl_contains(excluded, tool)
+        ---@diagnostic disable-next-line: param-type-mismatch
     end, result)
     table.sort(result)
 
@@ -90,14 +91,14 @@ local common_flags = {
 
 local servers = {
     bashls = {},
-    clangd = {},
+    -- clangd = {},
     cssls = {},
     -- dotls = {},
     dockerls = {},
     gopls = {},
     -- hls = {},
     -- graphql = {},
-    jdtls = {},
+    -- jdtls = {},
     jsonls = {
         on_new_config = function(new_config)
             new_config.settings.json.schemas = new_config.settings.json.schemas or {}
@@ -116,14 +117,10 @@ local servers = {
     pyright = {},
     rust_analyzer = {
         tools = {
-            -- executor = require("rust-tools.executors").toggleterm,
             hover_actions = {
                 auto_focus = true,
             },
         },
-        -- dap = {
-        -- adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path),
-        -- },
         server = {
             standalone = true,
             settings = {
@@ -151,9 +148,10 @@ local servers = {
             },
         },
     },
+    nil_ls = {},
     terraformls = {},
     -- vimls = {},
-    tsserver = {},
+    -- tsserver = {},
     yamlls = {
         on_attach = function(_, bufnr)
             if vim.bo[bufnr].buftype ~= "" or vim.bo[bufnr].filetype == "helm" then
@@ -173,7 +171,6 @@ local servers = {
                     enable = false,
                     url = "",
                 },
-                --         schemas = require('schemastore').yaml.schemas(),
             },
         },
     },
@@ -191,85 +188,31 @@ by_ft = require("utils").table_of_array_merge(by_ft, formatters_by_ft)
 local tools_to_install = tools_to_autoinstall(by_ft, to_install, to_exclude)
 
 return {
-    -- {
-    --     'ojroques/nvim-lspfuzzy',
-    --     event = 'VeryLazy',
-    --     config = true,
-    --     dependencies = {
-    --         'junegunn/fzf.vim',
-    --     },
-    -- },
     {
         "williamboman/mason.nvim",
-        cmd = "Mason",
+        opts = {},
+        event = "VeryLazy",
         keys = {
             { "<localleader>cm", "<cmd>Mason<CR>", desc = "Mason" },
         },
         dependencies = {
             {
                 "WhoIsSethDaniel/mason-tool-installer.nvim",
+                dependencies = { "mason.nvim" },
                 opts = {
                     ensure_installed = tools_to_install,
                 },
             },
+            {
+                "williamboman/mason-lspconfig.nvim",
+                dependencies = { "mason.nvim" },
+                opts = { automatic_installation = true },
+            },
         },
-        config = true,
-        --     require('mason').setup()
-        --     local mr = require('mason-registry')
-        --     for _, tool in ipairs(plugin.ensure_installed) do
-        --         local p = mr.get_package(tool)
-        --         if not p:is_installed() then
-        --             p:install()
-        --         end
-        --     end
-        -- end,
     },
-    -- {
-    --     'jose-elias-alvarez/null-ls.nvim',
-    --     enabled = false,
-    --     event = 'BufReadPre',
-    --     dependencies = { 'mason.nvim' },
-    --     config = function()
-    --         local nls = require('null-ls')
-    --         local builtins = nls.builtins
-    --         local nls_au = vim.api.nvim_create_augroup('LspFormatting', {})
-    --         nls.setup({
-    --             sources = {
-    --                 builtins.code_actions.eslint,
-    --                 -- builtins.code_actions.gitsigns,
-    --                 builtins.code_actions.shellcheck,
-    --
-    --                 builtins.diagnostics.commitlint.with({
-    --                     filetypes = { 'gitcommit', 'NeogitCommitMessage' },
-    --                     extra_args = { '--config', vim.fn.expand('~/.commitlintrc.js') }
-    --                 }),
-    --                 builtins.diagnostics.eslint,
-    --                 builtins.diagnostics.flake8,
-    --                 builtins.diagnostics.mypy.with({
-    --                     prefer_local = '.venv/bin',
-    --                 }),
-    --                 -- builtins.diagnostics.golangci_lint,
-    --                 -- builtins.diagnostics.jsonlint,
-    --                 -- builtins.diagnostics.luacheck,
-    --                 builtins.diagnostics.shellcheck,
-    --                 -- builtins.diagnostics.yamllint,
-    --                 -- openapi
-    --                 builtins.diagnostics.vacuum,
-    --                 builtins.formatting.eslint,
-    --                 builtins.formatting.clang_format,
-    --                 builtins.formatting.black,
-    --                 builtins.formatting.isort,
-    --                 builtins.formatting.gofmt,
-    --                 builtins.formatting.goimports,
-    --                 builtins.formatting.rustfmt,
-    --                 builtins.formatting.terraform_fmt,
-    --             },
-    --         })
-    --     end,
-    -- },
     {
         "mfussenegger/nvim-lint",
-        event = "BufReadPre",
+        event = "BufWritePre",
         dependencies = { "mason.nvim" },
         config = function()
             require("lint").linters_by_ft = linters_by_ft
@@ -282,7 +225,7 @@ return {
     },
     {
         "stevearc/conform.nvim",
-        event = "BufReadPost",
+        event = "BufWritePre",
         dependencies = { "mason.nvim" },
         opts = {
             formatters_by_ft = formatters_by_ft,
@@ -298,7 +241,6 @@ return {
         config = function()
             require("utils.lsp").on_attach(function(client, buffer)
                 lsp_keymaps(client, buffer)
-                -- require('utils.lsp').format_on_attach(client, buffer)
             end)
 
             local ok_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
@@ -318,6 +260,15 @@ return {
                 server_opts.flags = common_flags
                 server_opts.capabilities = capabilities
                 if server == "rust_analyzer" then
+                    local install_root_dir = os.getenv("HOME") .. "/.nix-profile/share/vscode/extensions/vadimcn.vscode-lldb/"
+                    local codelldb_path = install_root_dir .. 'adapter/codelldb'
+                    local liblldb_path = install_root_dir .. 'lldb/lib/liblldb'
+                    local this_os = vim.loop.os_uname().sysname
+                    liblldb_path = liblldb_path .. (this_os == "Linux" and ".so" or ".dylib")
+                    server_opts.dap = {
+                        adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path)
+                    }
+
                     require("rust-tools").setup(server_opts)
                 else
                     require("lspconfig")[server].setup(server_opts)
@@ -325,8 +276,8 @@ return {
             end
         end,
         dependencies = {
-            { "folke/neodev.nvim", opts = {} },
-            { "j-hui/fidget.nvim", opts = {} },
+            { "folke/neodev.nvim",       opts = {} },
+            { "j-hui/fidget.nvim",       opts = {} },
             { "smjonas/inc-rename.nvim", opts = {} },
             { "b0o/SchemaStore.nvim" },
             {
@@ -353,22 +304,16 @@ return {
                     }
                 end,
             },
-            "mason.nvim",
-            {
-                "SmiteshP/nvim-navic",
-                init = function()
-                    vim.g.navic_silence = true
-                    require("utils.lsp").on_attach(function(client, buffer)
-                        require("nvim-navic").attach(client, buffer)
-                    end)
-                end,
-                opts = { depth_limit = 3 },
-            },
-            {
-                "williamboman/mason-lspconfig.nvim",
-                opts = { Eautomatic_installation = false },
-            },
+            -- {
+            -- "SmiteshP/nvim-navic",
+            -- init = function()
+            --     vim.g.navic_silence = true
+            --     require("utils.lsp").on_attach(function(client, buffer)
+            --         require("nvim-navic").attach(client, buffer)
+            --     end)
+            -- end,
+            -- opts = { depth_limit = 3 },
+            -- },
         },
-        "hrsh7th/cmp-nvim-lsp",
     },
 }

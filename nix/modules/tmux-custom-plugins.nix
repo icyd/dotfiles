@@ -1,35 +1,22 @@
-{ fetchgit
-, lib
-, pkgs
-, stdenv
-}:
-
+{ fetchgit, lib, pkgs, stdenv }:
 let
   rtpPath = "share/tmux-plugins";
-
   addRtp = path: rtpFilePath: attrs: derivation:
-    derivation // { rtp = "${derivation}/${path}/${rtpFilePath}"; } // {
+    derivation // {
+      rtp = "${derivation}/${path}/${rtpFilePath}";
+    } // {
       overrideAttrs = f: mkTmuxPlugin (attrs // f attrs);
     };
-
-  mkTmuxPlugin = a@{
-    pluginName,
-    rtpFilePath ? (builtins.replaceStrings ["-"] ["_"] pluginName) + ".tmux",
-    namePrefix ? "tmuxplugin-",
-    src,
-    unpackPhase ? "",
-    configurePhase ? ":",
-    buildPhase ? ":",
-    addonInfo ? null,
-    preInstall ? "",
-    postInstall ? "",
-    path ? lib.getName pluginName,
-    ...
-  }:
+  mkTmuxPlugin = a@{ pluginName, rtpFilePath ?
+      (builtins.replaceStrings [ "-" ] [ "_" ] pluginName) + ".tmux"
+    , namePrefix ? "tmuxplugin-", src, unpackPhase ? "", configurePhase ? ":"
+    , buildPhase ? ":", addonInfo ? null, preInstall ? "", postInstall ? ""
+    , path ? lib.getName pluginName, ... }:
     addRtp "${rtpPath}/${path}" rtpFilePath a (stdenv.mkDerivation (a // {
       pname = namePrefix + pluginName;
 
-      inherit pluginName unpackPhase configurePhase buildPhase addonInfo preInstall postInstall;
+      inherit pluginName unpackPhase configurePhase buildPhase addonInfo
+        preInstall postInstall;
 
       installPhase = ''
         runHook preInstall
@@ -42,9 +29,7 @@ let
         runHook postInstall
       '';
     }));
-
-in
-{
+in {
   inherit mkTmuxPlugin;
 
   tmux-gopass = mkTmuxPlugin rec {

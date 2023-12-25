@@ -1,60 +1,53 @@
-{ config, pkgs, lib, username, stateVersion, ... }: {
-  imports = [ ./hardware-configuration.nix ];
-  boot = {
-    blacklistedKernelModules = [ "nouveau" "intel" ];
-    initrd = {
-      kernelModules = [ "amdgpu" ];
-      # postDeviceCommands = pkgs.lib.mkBefore ''
-      #     mkdir -p /mnt
-      #     mount -o subvol=/ /dev/mapper/cryptroot /mnt
-      #     btrfs subvolume list -o /mnt/nix/@root |
-      #     cut -f9 -d' ' |
-      #     while read subvolume; do
-      #     echo "deleting /$subvolume subvolume..."
-      #     btrfs subvolume delete "/mnt/$subvolume"
-      #     done &&
-      #     echo "deleting /root subvolume..." &&
-      #     btrfs subvolume delete /mnt/nix/@root
-      #
-      #     echo "restoring blank /root subvolume..."
-      #     btrfs subvolume snapshot /mnt/nix/@root-blank /mnt/nix/@root
-      #     umount /mnt
-      # '';
-    };
-    tmpOnTmpfs = true;
+{ config, pkgs, lib, username, stateVersion, ... }:
+let
+  configure-gtk = pkgs.writeTextFile {
+    name = "configure-gtk";
+    destination = "/bin/configure-gtk";
+    executable = true;
+    text = let
+      schema = pkgs.gsettings-desktop-schemas;
+      datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+    in ''
+      export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+      gnome_schema=org.gnome.desktop.interface
+      gsettings set $gnome_schema gtk-theme 'Dracula'
+    '';
   };
+  dbus-sway-environment = pkgs.writeTextFile {
+    name = "dbus-sway-environment";
+    destination = "/bin/dbus-sway-environment";
+    executable = true;
+
+    text = ''
+      dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+      systemctl --user stop pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
+      systemctl --user start pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
+    '';
+  };
+in {
   console = {
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
-  fonts = {
-    enableDefaultFonts = true;
-    fonts = with pkgs; [
-      eb-garamond
-      fira-code
-      liberation_ttf
-      noto-fonts
-      roboto
-      (nerdfonts.override { fonts = [ "SourceCodePro" "Meslo" ]; })
-    ];
-    fontconfig.enable = true;
-  };
   environment.persistence."/persist" = {
-    hideMounts = true;
-    files = [ "/etc/machine-id" "/etc/adjtime" ];
     directories = [ "/etc/nixos" "/etc/NetworkManager/system-connections" ];
+    files = [ "/etc/machine-id" "/etc/adjtime" ];
+    hideMounts = true;
   };
   environment.systemPackages = with pkgs; [
-    binutils
-    dnsutils
-    evince
-    gcc
-    gnumake
-    google-chrome
-    cmake
+    arc-theme
     autogen
-    sqlite
+    binutils
+    breeze-icons
+    capitaine-cursors
+    cmake
+    configure-gtk
+    dnsutils
+    dropbox
+    evince
+    firefox
     ffmpegthumbnailer
+    gcc
     git
     gst_all_1.gstreamer
     gst_all_1.gst-vaapi
@@ -62,59 +55,62 @@
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
     gst_all_1.gst-plugins-bad
-    firefox
-    arc-theme
-    papirus-icon-theme
-    capitaine-cursors
+    gnumake
+    google-chrome
     openssl
-    breeze-icons
-    nextcloud-client
-    pavucontrol
     okular
+    papirus-icon-theme
+    pavucontrol
     smplayer
+    sqlite
     unzip
     usbutils
-    wget
     vim
+    wget
     zip
   ];
-  i18n.defaultLocale = "en_US.UTF-8";
+  fonts = {
+    enableDefaultPackages = true;
+    packages = with pkgs; [
+      cantarell-fonts
+      eb-garamond
+      fira-code
+      liberation_ttf
+      roboto
+      (nerdfonts.override { fonts = [ "SourceCodePro" "Meslo" "Noto" ]; })
+    ];
+    fontconfig.enable = true;
+  };
   hardware = {
     bluetooth.enable = true;
     enableAllFirmware = true;
     opengl = {
-      enable = true;
       driSupport = true;
       driSupport32Bit = true;
+      enable = true;
       extraPackages = with pkgs; [
-        vaapiVdpau
         libvdpau-va-gl
         rocm-opencl-icd
         rocm-opencl-runtime
+        vaapiVdpau
       ];
     };
-    pulseaudio.enable = true;
-    # nvidia.prime = {
-    #     offload.enable = true;
-    #     nvidiaBusId = "PCI:1:0:0";
-    #     amdgpuBusId = "PCI:6:0:0";
-    # };
   };
+  i18n.defaultLocale = "en_US.UTF-8";
+  imports = [ ./hardware-configuration.nix ];
   networking = {
+    dhcpcd.extraConfig = "nohook resolv.conf";
     firewall.enable = true;
     hostName = "legionix5";
     interfaces.eno1.useDHCP = true;
     interfaces.wlp4s0.useDHCP = true;
+    nameservers = [ "208.67.222.222" "208.67.220.220" ];
     networkmanager.enable = true;
     networkmanager.dns = "none";
     resolvconf.dnsExtensionMechanism = false;
-    dhcpcd.extraConfig = "nohook resolv.conf";
-    nameservers = [ "192.168.1.8" ];
-    # nameservers = [ "127.0.0.1" "::1" ];
     useDHCP = false;
   };
   nix = {
-    package = pkgs.nixFlakes;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
@@ -123,28 +119,139 @@
       dates = "weekly";
       options = "--delete-older-than 30d";
     };
+    package = pkgs.nixFlakes;
     settings = {
+      substituters = [ "https://nix-community.cachix.org" ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
-      substituters = [ "https://nix-community.cachix.org" ];
     };
+  };
+  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
+  programs.adb.enable = true;
+  programs.gamemode.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
+  programs.light.enable = true;
+  programs.sway = {
+    enable = true;
+    extraPackages = with pkgs; [
+      acpi
+      alacritty
+      brightnessctl
+      dbus-sway-environment
+      dracula-theme # gtk theme
+      ffmpeg
+      gammastep
+      glib
+      gnome3.adwaita-icon-theme # default gnome cursors  gnome.nautilus
+      grim
+      haruna
+      kanshi
+      mako
+      mediainfo
+      networkmanagerapplet
+      slurp
+      swayidle
+      swaylock
+      vimiv-qt
+      waybar
+      wayland
+      wl-clipboard
+      wlogout
+      wdisplays
+      wofi
+      xdg-utils
+      xfce.ristretto
+      xwayland
+    ];
+    extraOptions = [ "--unsupported-gpu" ];
+    extraSessionCommands = ''
+      export SDL_VIDEODRIVER=wayland
+      export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+      export _JAVA_AWT_WM_NONREPARENTING=1
+      export MOZ_ENABLE_WAYLAND=1
+      export MOZ_DISABLE_RDD_SANDBOX=1
+      export WLR_DRM_DEVICES="/dev/dri/card0:/dev/dri/card1"
+    '';
+    wrapperFeatures.gtk = true;
+  };
+  programs.tmux.enable = true;
+  programs.xwayland.enable = true;
+  programs.zsh.enable = true;
+  security = {
+    pam.services.gdm.enableGnomeKeyring = true;
+    pam.services.swaylock = { };
+    pam.loginLimits = [{
+      domain = "@users";
+      item = "rtprio";
+      type = "-";
+      value = 1;
+    }];
+    sudo.extraConfig = ''
+      # rollback results in sudo lectures after each reboot
+      Defaults lecture = never
+    '';
   };
   services = {
     blueman.enable = true;
+    # dnscrypt-proxy2 = {
+    #   enable = true;
+    #   settings = {
+    #     ipv6_servers = true;
+    #     require_dnssec = true;
+    #     sources.public-resolvers = {
+    #       cache_file = "/var/lib/dnscrypt-proxy2/public-resolvers.md";
+    #       minisign_key =
+    #         "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
+    #       urls = [
+    #         "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md"
+    #         "https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md"
+    #       ];
+    #     };
+    #   };
+    # };
+    btrbk = {
+      instances."btrbk" = {
+        onCalendar = "daily";
+        settings = {
+          timestamp_format = "long";
+          snapshot_dir = "_snapshots";
+          snapshot_preserve = "3d 1w 1m";
+          snapshot_preserve_min = "2d";
+          target_preserve = "1d 1w 1m";
+          target_preserve_min = "latest";
+          volume."/mnt/btrfs-pool/" = {
+            target = "/run/media/beto/seagate-backup/LEGION5";
+            subvolume = { "@home" = { snapshot_create = "always"; }; };
+          };
+        };
+      };
+    };
+    dbus.enable = true;
     gvfs.enable = true;
     gnome.at-spi2-core.enable = true;
+    pipewire = {
+      alsa.enable = true;
+      enable = true;
+      pulse.enable = true;
+    };
+    udev.extraRules = (builtins.readFile ./udev.rules);
     xserver = {
       enable = true;
-      videoDrivers = [ "amdgpu" ];
+      desktopManager = { xterm.enable = false; };
       displayManager = {
         defaultSession = "sway";
         lightdm = {
-          enable = true;
+          enable = false;
           greeter.enable = false;
-          autoLogin.timeout = 0;
-          # wayland = true;
-          # autoSuspend = false;
+        };
+        sddm = {
+          autoLogin.relogin = true;
+          enable = true;
+          wayland.enable = true;
         };
         autoLogin = {
           enable = true;
@@ -152,96 +259,12 @@
         };
       };
       libinput.enable = true;
-    };
-    udev.extraRules = (builtins.readFile ./udev.rules);
-    dnscrypt-proxy2 = {
-      enable = true;
-      settings = {
-        ipv6_servers = true;
-        require_dnssec = true;
-
-        sources.public-resolvers = {
-          urls = [
-            "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md"
-            "https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md"
-          ];
-          cache_file = "/var/lib/dnscrypt-proxy2/public-resolvers.md";
-          minisign_key =
-            "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
-        };
-
-        # You can choose a specific set of servers from https://github.com/DNSCrypt/dnscrypt-resolvers/blob/master/v3/public-resolvers.md
-        # server_names = [ ... ];
-      };
+      videoDrivers = [ "displaylink" "nvidia" ];
     };
   };
-
+  sound.enable = true;
   systemd.services.dnscrypt-proxy2.serviceConfig = {
     StateDirectory = "dnscrypt-proxy";
-  };
-
-  sound.enable = true;
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-  users = {
-    mutableUsers = false;
-    groups.${username}.gid = 1000;
-    users.${username} = {
-      isNormalUser = true;
-      uid = 1000;
-      shell = pkgs.zsh;
-      extraGroups =
-        [ "wheel" "${username}" "networkmanager" "video" "dialout" "adbusers" ];
-      passwordFile = "/persist/passwords/${username}";
-    };
-  };
-  time.timeZone = "Europe/Madrid";
-  programs.adb.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
-  programs.sway = {
-    enable = true;
-    wrapperFeatures.gtk = true;
-    extraPackages = with pkgs; [
-      acpi
-      alacritty
-      brightnessctl
-      swaylock
-      swayidle
-      ffmpeg
-      gammastep
-      gnome.nautilus
-      haruna
-      kanshi
-      mako
-      mediainfo
-      networkmanagerapplet
-      vimiv-qt
-      xfce.ristretto
-      xwayland
-      waybar
-      wlogout
-      wl-clipboard
-      wofi
-    ];
-    extraSessionCommands = ''
-      export SDL_VIDEODRIVER=wayland
-      export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-      export _JAVA_AWT_WM_NONREPARENTING=1
-      export MOZ_ENABLE_WAYLAND=1
-      export MOZ_DISABLE_RDD_SANDBOX=1
-    '';
-  };
-  programs.tmux.enable = true;
-  programs.xwayland.enable = true;
-  programs.zsh.enable = true;
-  security = {
-    sudo.extraConfig = ''
-      # rollback results in sudo lectures after each reboot
-      Defaults lecture = never
-    '';
-    pam.services.gdm.enableGnomeKeyring = true;
   };
   system.stateVersion = stateVersion;
   systemd.tmpfiles.rules = [
@@ -249,4 +272,36 @@
     "L /var/lib/NetworkManager/seen-bssids - - - - /persist/var/lib/NetworkManager/seen-bssids"
     "L /var/lib/NetworkManager/timestamps - - - - /persist/var/lib/NetworkManager/timestamps"
   ];
+  systemd.user.services.kanshi = {
+    description = "kanshi daemon";
+    serviceConfig = {
+      ExecStart = "${pkgs.kanshi}/bin/kanshi -c kanshi_config_file";
+      Type = "simple";
+    };
+  };
+  time.timeZone = "Europe/Madrid";
+  users = {
+    groups.${username}.gid = 1000;
+    mutableUsers = false;
+    users.${username} = {
+      extraGroups = [
+        "wheel"
+        "${username}"
+        "networkmanager"
+        "video"
+        "dialout"
+        "plugdev"
+        "adbusers"
+      ];
+      hashedPasswordFile = "/persist/passwords/${username}";
+      isNormalUser = true;
+      shell = pkgs.zsh;
+      uid = 1000;
+    };
+  };
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
 }

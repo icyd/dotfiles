@@ -111,6 +111,14 @@ map('n', '<localleader>ss', '<cmd>GrabServer<CR>',
 map('c', '%%', "getcmdtype() == ':' ? expand('%:h').'/' : '%%'",
     { desc = 'Expand to current path', silent = false, expr = true })
 
+map('n', '<leader>q', function()
+    for _, ui in pairs(vim.api.nvim_list_uis()) do
+      if ui.chan and not ui.stdout_tty then
+        vim.fn.chanclose(ui.chan)
+      end
+    end
+  end, { noremap = true })
+
 -- netrw
 -- map('n', '<leader>dd', '<cmd>Lexplore %:p:h<CR>', { desc = 'Open netrw in current file directory' })
 -- map('n', '<leader>da', '<cmd>Lexplore<CR>', { desc = 'Open netrw in current directory' })
