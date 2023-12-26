@@ -6,6 +6,10 @@ let
     "${config.home.homeDirectory}/Library/Application Support/org.Zellij-Contributors.Zellij"
   else
     "${config.xdg.configHome}/zellij";
+  alacrittyShell =
+    if pkgs.stdenv.isDarwin then "${pkgs.zsh}/bin/zsh" else "${nushell}/bin/nu";
+  alacrittyShellArgs =
+    if pkgs.stdenv.isDarwin then [ "-c" "${nushell}/bin/nu" ] else [ ];
 in {
   colorScheme = nix-colors.colorSchemes.gruvbox-dark-medium;
   fonts.fontconfig.enable = true;
@@ -63,6 +67,7 @@ in {
       (nerdfonts.override {
         fonts = [ "AnonymousPro" "Hack" "Inconsolata" "Meslo" "SourceCodePro" ];
       })
+      unstable.nix-your-shell
       nixfmt
       pandoc
       procs
@@ -109,10 +114,7 @@ in {
       NVIM_SERVER = "/tmp/nvimsocket";
       ORGMODE_HOME = "$HOME/Dropbox";
       PAGER = "less";
-      # PATH = "$CARGO_HOME/bin:$PATH";
-      # PATH = "$ASDF_DATA_DIR/shims:$HOME/.npm-global/bin:$PATH";
       PASSWORD_STORE_GENERATED_LENGTH = 12;
-      PATH = "$ASDF_DATA_DIR/shims:$PATH";
       PY_VENV = "$HOME/.venv";
       RUSTUP_HOME = "$HOME/.rustup";
       VISUAL = editor;
@@ -131,7 +133,8 @@ in {
   };
   programs.alacritty = import ./alacritty.nix {
     inherit config;
-    shell = "${nushell}/bin/nu";
+    shell = alacrittyShell;
+    shellArgs = alacrittyShellArgs;
     font = alacrittyFont;
   };
   programs.bat = {

@@ -18,7 +18,8 @@ in {
     LANG = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
     MANPATH = "${brewPrefix}/opt/coreutils/libexec/gnuman:$MANPATH";
-    PATH = "${brewPrefix}/bin:${brewPrefix}/opt/coreutils/libexec/gnubin:$PATH";
+    PATH =
+      "$ASDF_DATA_DIR/shims:${brewPrefix}/bin:${brewPrefix}/opt/coreutils/libexec/gnubin:$PATH";
   };
   home.packages = with pkgs; [
     awscli2
@@ -33,7 +34,6 @@ in {
     nodejs
     reattach-to-user-namespace
     regclient
-    rustup
     saml2aws
     skopeo
     stern

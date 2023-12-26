@@ -1,4 +1,4 @@
-{ config, shell, font, startup_mode ? "Maximized", ... }:
+{ config, shell, shellArgs ? [ ], font, startup_mode ? "Maximized", ... }:
 let colors = config.colorScheme.colors;
 in {
   enable = true;
@@ -155,6 +155,7 @@ in {
       multiplier = 3;
     };
     shell.program = shell;
+    shell.args = shellArgs;
     window = {
       inherit startup_mode;
       decorations = "none";
