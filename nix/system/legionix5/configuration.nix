@@ -146,7 +146,8 @@ in {
       ffmpeg
       gammastep
       glib
-      gnome3.adwaita-icon-theme # default gnome cursors  gnome.nautilus
+      gnome3.adwaita-icon-theme
+      gnome.nautilus
       grim
       haruna
       kanshi

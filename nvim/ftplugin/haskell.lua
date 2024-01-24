@@ -1,4 +1,4 @@
-local ok, ht = pcall(require, "haskell_tools")
+local ok, ht = pcall(require, "haskell-tools")
 if ok then
     -- Suggested keymaps that do not depend on haskell-language-server:
     local bufnr = vim.api.nvim_get_current_buf()

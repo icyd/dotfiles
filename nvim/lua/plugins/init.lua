@@ -31,7 +31,7 @@ return {
             wk.setup({
                 -- triggers = { '<leader>', '<localleader>' },
                 triggers_blacklist = {
-                    n = { "i" },
+                    n = { "i", '"' },
                 },
             })
             local uwk = require("unimpaired-which-key")
