@@ -21,14 +21,14 @@
       stateVersion = "22.05";
       nix-colors = inputs.nix-colors;
       linux = {
-        email = "email";
-        host = "hostame";
-        user = "user";
+        email = "beto.v25@gmail.com";
+        host = "legionix5";
+        user = "beto";
       };
       darwin = {
-        email = "email";
-        host = "hostname";
-        user = "username";
+        email = "aj.vazquez@globant.com";
+        host = "ES-IT00385";
+        user = "aj.vazquez";
       };
       nixpkgsConfig = { system }:
         let

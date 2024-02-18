@@ -1,6 +1,6 @@
 def _text [
     data: string
-    --key (-k): bool = false
+    --key (-k) = false
 ] {
   if ($key) {
       return ($data | openssl rsa -noout -text)

@@ -9,6 +9,13 @@ def table_2_record [T: table] {
 }
 
 export def gen_functions [] {
+    if ("./kubernetes_base.nu" | path exists) {
+        cp -f ./kubernetes_base.nu ./kubernetes.nu
+        _gen_functions | save -a -f ./kubernetes.nu
+    }
+}
+
+def _gen_functions [] {
     let operations: table<abbr: string, operation: string> = (
         [["abbr" "operation"];
             ["g" "get"]
@@ -16,7 +23,6 @@ export def gen_functions [] {
             ["d" "describe"]
         ]
     )
-
 
     let resources: table<abbr: string, resource: string, operations: list<string>> = (
         [["abbr" "resource" "operations"];
@@ -51,7 +57,7 @@ export def gen_functions [] {
         $env.KUBERNETES_SCHEMA_URL = $\"file:///\($env.HOME\)/.config/kubernetes-json-schema/all.json\"
         $env.KUBERNETES_RESOURCE_ABBR = (table_2_record ($resources | compact))
         $env.KUBERNETES_OPERATIONS_ABBR = ($operations)
-}"
+    }"
 
     let commands = $resources
         | each {|res|
@@ -72,7 +78,7 @@ export def gen_functions [] {
 ### Environment variables
 ($envs)
 
-### Genetared comands
+### Genetared commands
 ($commands)
 "
 }
@@ -99,8 +105,17 @@ export def kg($abbr) [
     --neat \(-N\) # only with `--yaml` or `--json`
     --all \(-A\)
 ] {
-    let output = \(_kg ($kind) $name -n \$namespace -l $selector -v $verbose -W $wide
-        -p $jsonpath -j $json -y $yaml -N $neat -A $all -w $watch
+    let output = \(_kg ($kind) $name
+        --namespace \$namespace
+        --selector $selector
+        --verbose=$verbose
+        --wide=$wide
+        --jsonpath $jsonpath
+        --json=$json
+        --yaml=$yaml
+        --neat=$neat
+        --all=$all
+        --watch=$watch
     \)
 
     if \($watch\) {
@@ -108,7 +123,11 @@ export def kg($abbr) [
         return
     }
 
-    $output
+    if ($kind == "namespace") {
+        $output | reject "namespace"
+    } else {
+        $output
+    }
 }"}
 }
 
@@ -130,8 +149,13 @@ export def kdel($abbr) [
     --force \(-f\)
     --no-wait \(-N\)
 ] {
-    \(_kdel ($kind) $name -n $namespace -l $selector --cascade $cascade
-        --dry-run $dry_run --no-wait $no_wait -f $force
+    \(_kdel ($kind) $name
+        --namespace $namespace
+        --selector $selector
+        --cascade $cascade
+        --dry-run $dry_run
+        --no-wait=$no_wait
+        --force=$force
     \)
 }"}
 }
@@ -149,6 +173,6 @@ export def kd($abbr) [
     name: string@\"nu-complete kube res via name\"
     --namespace \(-n\): string@\"nu-complete kube ns\"
 ] {
-    _kd ($kind) $name -n $namespace
+    _kd ($kind) $name --namespace $namespace
 }"}
 }

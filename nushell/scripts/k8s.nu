@@ -5,7 +5,7 @@ use utils.nu
 def _kcmd [
     command: string
     query_text?: string
-    --current: bool = false
+    --current = false
 ] {
     if ($current) {
         kubectl $command --current
@@ -44,7 +44,7 @@ export def kns [
 
 def k_namespace [
     namespace?: string
-    --verify (-v): bool
+    --verify (-v)
 ] {
     let ns = if ($namespace == null) {
         let current_context = (kubectl config get-contexts
@@ -74,7 +74,7 @@ def k_namespace [
 
 def _k_data [
     secret: string
-    --namespace (-n): bool = false
+    --namespace (-n): string
     --key
     --ca-cert
 ] {
@@ -352,7 +352,7 @@ export def kpfsvc [
     name: string
     ports: string
     --namespace (-n): string
-    --all-namespaces (-A): bool
+    --all-namespaces (-A)
 ] {
     let service_name = if ($name =~ '-\d+$') {
        $name | str replace --regex '-\d+$' ''
