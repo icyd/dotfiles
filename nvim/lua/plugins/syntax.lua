@@ -1,40 +1,40 @@
 return {
     {
-        'towolf/vim-helm',
-        ft = 'helm',
+        "towolf/vim-helm",
+        ft = "helm",
     },
     {
-        'LnL7/vim-nix',
-        ft = 'nix',
+        "LnL7/vim-nix",
+        ft = "nix",
     },
     {
-        'hashivim/vim-terraform',
-        ft = { 'terraform', 'terragrunt' },
+        "hashivim/vim-terraform",
+        ft = { "terraform", "terragrunt" },
     },
     {
-        'ledger/vim-ledger',
-        ft = 'ledger',
+        "ledger/vim-ledger",
+        ft = "ledger",
     },
     {
-        'dix75/jira.vim',
-        ft = 'confluencewiki'
+        "dix75/jira.vim",
+        ft = "confluencewiki",
     },
     {
-        'Glench/Vim-Jinja2-Syntax',
-        ft = 'jinja',
+        "Glench/Vim-Jinja2-Syntax",
+        ft = "jinja",
     },
     {
-        'imsnif/kdl.vim',
-        ft = 'kdl',
+        "imsnif/kdl.vim",
+        ft = "kdl",
     },
-    {
-        'LhKipp/nvim-nu',
-        ft = 'nu',
-        build = ':TSInstall nu',
-        -- enabled = false,
-        opts = {
-            use_lsp_features = false,
-            all_cmd_names = [[nu -c 'help command | get name| str join "\n"']],
-        },
-    }
+    -- {
+    --     'LhKipp/nvim-nu',
+    --     ft = 'nu',
+    --     build = ':TSInstall nu',
+    --     -- enabled = false,
+    --     opts = {
+    --         use_lsp_features = false,
+    --         all_cmd_names = [[nu -c 'help command | get name| str join "\n"']],
+    --     },
+    -- }
 }

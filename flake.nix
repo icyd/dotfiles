@@ -15,6 +15,7 @@
     nixpkgs.url = "github:NixOs/nixpkgs/nixos-23.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nur.url = "github:nix-community/NUR";
+    lldb-nix-fix.url = "github:mstone/nixpkgs/darwin-fix-vscode-lldb";
   };
   outputs = { self, ... }@inputs:
     let
@@ -36,11 +37,12 @@
             inherit system;
             config.allowUnfree = true;
           };
+          lldb-nix-fix = import inputs.lldb-nix-fix { inherit system; };
         in {
           inherit system;
           config.allowUnfree = true;
           overlays = [
-            (self: super: { inherit unstable; })
+            (self: super: { inherit unstable lldb-nix-fix; })
             inputs.neovim-nightly-overlay.overlay
             inputs.nur.overlay
           ];

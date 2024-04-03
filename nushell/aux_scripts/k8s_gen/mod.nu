@@ -8,13 +8,6 @@ def table_2_record [T: table] {
     })
 }
 
-export def gen_functions [] {
-    if ("./kubernetes_base.nu" | path exists) {
-        cp -f ./kubernetes_base.nu ./kubernetes.nu
-        _gen_functions | save -a -f ./kubernetes.nu
-    }
-}
-
 def _gen_functions [] {
     let operations: table<abbr: string, operation: string> = (
         [["abbr" "operation"];
@@ -25,24 +18,26 @@ def _gen_functions [] {
     )
 
     let resources: table<abbr: string, resource: string, operations: list<string>> = (
-        [["abbr" "resource" "operations"];
-            ["" "" [g d del]]
-            [no node [g]]
-            [po pod [g d del]]
-            [svc service [g d del]]
-            [cm configmap [g d del]]
-            [sec secret [g d del]]
-            [dep deployment [g d del]]
-            [rs replicaset [g d del]]
-            [ds daemonset [g d del]]
-            [sts statefulset [g d del]]
-            [ing ingress [g d del]]
-            [iop istiooperator [g d del]]
-            [gw gateway [g d del]]
-            [vs virtualservice [g d del]]
-            [se serviceentry [g d del]]
-            [dr destinationrule [g d del]]
-            [es externalsecret [g d del]]
+        [["abbr" "resource" "operations" "clusterwide"];
+            ["" "" [g d del] false]
+            [no node [g] true]
+            [po pod [g d del] false]
+            [svc service [g d del] false]
+            [cm configmap [g d del] false]
+            [sec secret [g d del] false]
+            [dep deployment [g d del] false]
+            [rs replicaset [g d del] false]
+            [ds daemonset [g d del] false]
+            [sts statefulset [g d del] false]
+            [ing ingress [g d del] false]
+            [pv persistentvolume [g d del] true]
+            [pvc persistentvolumeclaim [g d del] false]
+            [iop istiooperator [g d del] false]
+            [gw gateway [g d del] false]
+            [vs virtualservice [g d del] false]
+            [se serviceentry [g d del] false]
+            [dr destinationrule [g d del] false]
+            [es externalsecret [g d del] false]
         ]
     )
 
@@ -68,7 +63,7 @@ def _gen_functions [] {
                     "delete" => { delete },
                     _ => null,
                 }
-                do $func $res.abbr $res.resource
+                do $func $res.abbr $res.resource $res.clusterwide
 
             }
     } | flatten | str join "\n\n"
@@ -84,26 +79,28 @@ def _gen_functions [] {
 }
 
 def get [] {
-    return {|abbr, resource|
+    return {|abbr, resource, clusterwide|
     let kind = if ($resource | is-empty) { "$kind" } else { $resource }
     let kind_param = if ($resource | is-empty) {
         "kind: string@\"nu-complete kube kind\""
     } else { null }
+    let abbr_len = $abbr | str length
+    let completion = if ($abbr_len == 0) {""} else {$" via name($abbr_len)"}
 
     $"# kubectl get ($resource)
 export def kg($abbr) [
     ($kind_param)
-    name?: string@\"nu-complete kube res via name\"
-    --namespace \(-n\): string@\"nu-complete kube ns\"
-    --selector\(-l\): string@\"nu-complete kube labels\"
-    --verbose \(-v\)
-    --wide \(-W\)
-    --watch \(-w\)
-    --jsonpath \(-p\): string@\"nu-complete kube jsonpath\"
-    --json \(-j\)
-    --yaml \(-y\)
-    --neat \(-N\) # only with `--yaml` or `--json`
-    --all \(-A\)
+    name?: string@\"nu-complete kube res($completion)\"
+    --namespace \(-n\): string@\"nu-complete kube ns\" # namespace
+    --selector\(-l\): string@\"nu-complete kube labels\" # select by labels
+    --verbose \(-v\) # verbose output
+    --wide \(-W\) # output as wide format
+    --watch \(-w\) # watch resources
+    --jsonpath \(-p\): string@\"nu-complete kube jsonpath\" # jsonpath
+    --json \(-j\) # output as json
+    --yaml \(-y\) # output as yaml
+    --neat \(-N\) # remove k8s metadata \(only with `--yaml` or `--json`\)
+    --all \(-A\) # get all
 ] {
     let output = \(_kg ($kind) $name
         --namespace \$namespace
@@ -123,31 +120,33 @@ export def kg($abbr) [
         return
     }
 
-    if ($kind == "namespace") {
-        $output | reject "namespace"
-    } else {
-        $output
+    if ($clusterwide or ($kind == "namespace")) {
+        let output = $output | reject "namespace"
     }
+
+    $output
 }"}
 }
 
 def delete [] {
-    return {|abbr, resource|
+    return {|abbr, resource, clusterwide|
     let kind = if ($resource | is-empty) { "$kind" } else { $resource }
     let kind_param = if ($resource | is-empty) {
         "kind: string@\"nu-complete kube kind\""
     } else { null }
+    let abbr_len = $abbr | str length
+    let completion = if ($abbr_len == 0) {""} else {$" via name($abbr_len)"}
 
     $"# kubectl delete ($resource)
 export def kdel($abbr) [
     ($kind_param)
-    name?: string@\"nu-complete kube res via name\"
-    --namespace \(-n\): string@\"nu-complete kube ns\"
-    --selector\(-l\): string@\"nu-complete kube labels\"
-    --cascade: string@\"nu-complete cascade\" = \"background\"
-    --dry-run: string@\"nu-complete dry-run\" = \"none\"
-    --force \(-f\)
-    --no-wait \(-N\)
+    name?: string@\"nu-complete kube res($completion)\"
+    --namespace \(-n\): string@\"nu-complete kube ns\" # namespace
+    --selector\(-l\): string@\"nu-complete kube labels\" # select by labels
+    --cascade: string@\"nu-complete cascade\" = \"background\" # type of delete
+    --dry-run: string@\"nu-complete dry-run\" = \"none\" # whether to dry-run
+    --force \(-f\) # force delete
+    --no-wait \(-N\) # skip waiting for deletion
 ] {
     \(_kdel ($kind) $name
         --namespace $namespace
@@ -161,18 +160,32 @@ export def kdel($abbr) [
 }
 
 def describe [] {
-    return {|abbr, resource|
+    return {|abbr, resource, clusterwide|
     let kind = if ($resource | is-empty) { "$kind" } else { $resource }
     let kind_param = if ($resource | is-empty) {
         "kind: string@\"nu-complete kube kind\""
     } else { null }
+    let abbr_len = $abbr | str length
+    let completion = if ($abbr_len == 0) {""} else {$" via name($abbr_len)"}
 
     $"# kubectl describe ($resource)
 export def kd($abbr) [
     ($kind_param)
-    name: string@\"nu-complete kube res via name\"
-    --namespace \(-n\): string@\"nu-complete kube ns\"
+    name: string@\"nu-complete kube res($completion)\"
+    --namespace \(-n\): string@\"nu-complete kube ns\" # namespace
 ] {
     _kd ($kind) $name --namespace $namespace
 }"}
 }
+
+def main [output: path = ./kubernetes.nu] {
+    let base = $"($env.FILE_PWD)/base.nu"
+    $base | path exists
+    print $output
+
+}
+#     # if ("./kubernetes_base.nu" | path exists) {
+#     #     cp -f ./kubernetes_base.nu ./kubernetes.nu
+#     #     _gen_functions | save -a -f ./kubernetes.nu
+#     # }
+# }

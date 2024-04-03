@@ -2,6 +2,11 @@ return {
     -- Core
     "nvim-tree/nvim-web-devicons",
     "nvim-lua/plenary.nvim",
+    {
+        "vhyrro/luarocks.nvim",
+        priority = 1000,
+        config = true,
+    },
     -- Colorscheme
     {
         "rebelot/kanagawa.nvim",
@@ -37,7 +42,6 @@ return {
             local uwk = require("unimpaired-which-key")
             wk.register(uwk.normal_mode)
             wk.register(uwk.normal_mode_and_visual_mode, { mode = { "n", "v" } })
-            -- wk.register({ ['?'] = { '<cmd>WhichKey<cr>' } }, { prefix = '<leader>' })
             vim.keymap.set("n", "<leader>?", "<cmd>WhichKey<CR>")
         end,
     },
@@ -76,8 +80,12 @@ return {
     {
         "folke/flash.nvim",
         event = "VeryLazy",
-        -- enabled = false,
-        opts = {},
+        enabled = false,
+        opts = {
+            search = {
+                incremental = true,
+            },
+        },
     },
     -- Editorconfig
     {
@@ -250,22 +258,6 @@ return {
         },
         config = true,
     },
-    -- Fuzzy finder
-    -- {
-    --     'junegunn/fzf.vim',
-    --     -- cmd = 'Rg',
-    --     -- event = 'VeryLazy',
-    --     dependencies = {
-    --         { 'junegunn/fzf' },
-    --     },
-    --     config = function()
-    --         vim.opt.runtimepath:append(os.getenv('HOME') .. '/.nix-profile/bin/fzf')
-    --         vim.cmd([[command! -bang -nargs=* Rg call ]] ..
-    --             [[fzf#vim#grep('rg --column --line-number --no-heading ]] ..
-    --             [[--color=always --smart-case -- ]] ..
-    --             [['.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
-    --     end,
-    -- },
     {
         "airblade/vim-rooter",
         event = "BufReadPost",
@@ -370,86 +362,6 @@ return {
         event = "VeryLazy",
     },
     { "skywind3000/asyncrun.vim", event = "VeryLazy" },
-    {
-        "nvim-neotest/neotest",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "nvim-treesitter/nvim-treesitter",
-            "antoinemadec/FixCursorHold.nvim",
-            "rouge8/neotest-rust",
-            "mrcjkb/neotest-haskell",
-            "nvim-neotest/neotest-go",
-            "nvim-neotest/neotest-python",
-        },
-        keys = {
-            {
-                "<localleader>tt",
-                function() require("neotest").run.run() end,
-                desc = "Run nearest test"
-            },
-            {
-                "<localleader>tf",
-                function() require("neotest").run.run(vim.fn.expand("%")) end,
-                desc = "Run test in current file"
-            },
-            {
-                "<localleader>tw",
-                function()
-                    require("neotest").watch.toggle(vim.fn.expand("%"))
-                end,
-                desc = "Toggle test watch in current file"
-            },
-
-            {
-                "<localleader>td",
-                function()
-                    require('neotest').run.run(vim.fn.getcwd())
-                end,
-                desc = "Run tests in current directory",
-            },
-            {
-                "<localleader>ts",
-                function() require("neotest").summary.toggle() end,
-                desc = "Toggle test summary window"
-            },
-            {
-                "<localleader>to",
-                function() require("neotest").output_panel.toggle() end,
-                desc = "Toggle test output pane window"
-            },
-        },
-        config = function()
-            require("neotest").setup({
-                library = { plugins = { "neotest" }, types = true },
-                adapters = {
-                    require("neotest-go"),
-                    require("neotest-haskell"),
-                    require("neotest-python"),
-                    require("neotest-rust"),
-                },
-                quickfix = {
-                    enabled = true,
-                    open = true,
-                },
-                icons = {
-                    running_animated = { "/", "|", "\\", "-", "/", "|", "\\", "-" },
-                    passed = "",
-                    running = "",
-                    failed = "",
-                    skipped = "",
-                    unknown = "",
-                    non_collapsible = "─",
-                    collapsed = "─",
-                    expanded = "╮",
-                    child_prefix = "├",
-                    final_child_prefix = "╰",
-                    child_indent = "│",
-                    final_child_indent = " ",
-                    watching = "",
-                },
-            })
-        end,
-    },
     -- Improved folding
     {
         "kevinhwang91/nvim-ufo",
@@ -471,7 +383,7 @@ return {
             ---@diagnostic disable-next-line: missing-fields
             ufo.setup({
                 open_fold_hl_timeout = 150,
-                close_fold_kinds = { "imports", "comment" },
+                close_fold_kinds_for_ft = { "imports", "comment" },
                 preview = {
                     win_config = {
                         border = { "", "─", "", "", "", "─", "", "" },

@@ -62,7 +62,7 @@ in {
       luajit
       luajitPackages.luarocks
       mosh
-      nodejs
+      nodejs_20
       neovim-nightly
       (nerdfonts.override {
         fonts = [ "AnonymousPro" "Hack" "Inconsolata" "Meslo" "SourceCodePro" ];
@@ -86,7 +86,7 @@ in {
       unstable.yq-go
       unstable.zellij
       unstable.zoxide
-      vscode-extensions.vadimcn.vscode-lldb
+      # vscode-extensions.vadimcn.vscode-lldb
       zenith
     ];
     sessionPath = [
@@ -133,6 +133,7 @@ in {
   };
   programs.alacritty = import ./alacritty.nix {
     inherit config;
+    package = pkgs.unstable.alacritty;
     shell = alacrittyShell;
     shellArgs = alacrittyShellArgs;
     font = alacrittyFont;
@@ -163,6 +164,7 @@ in {
       "~nix" = ''cd $"($env.HOME)/.dotfiles/nix"'';
       "~pj" = ''cd $"($env.HOME)/Projects"'';
       a = "enter";
+      b64d = "base64 -d";
       cat = "bat";
       cl = "clear";
       d = "shells";
@@ -180,6 +182,7 @@ in {
       llm = "eza -la --sort=modified";
       lx = "eza -lbhHigUmuSa@";
       la = "eza -lbhHigUmuSa";
+      lg = "lazygit";
       mini-ci =
         "zellij action start-or-reload-plugin `file:${zellijConfigDir}/plugins/multitask.wasm`";
       nv = "nvim_client";
@@ -194,12 +197,13 @@ in {
       xat = "bat -lxml";
       zj = "zellij";
       zr = "zellij-runner";
+      xssh = "TERM=xterm-256color ssh";
     };
     configFile.text = with lib;
       mkMerge [
         (concatStringsSep "\n"
           (mapAttrsToList (k: v: ''let ${toLower k} = "#${v}"'')
-            config.colorScheme.colors))
+            config.colorScheme.palette))
 
         (builtins.readFile ../../nushell/config.nu)
       ];
@@ -213,8 +217,7 @@ in {
       use modules/weather/get-weather.nu *
       use git-gone.nu *
       use cd-root.nu *
-      use kubernetes *
-      use k8s.nu *
+      use kubernetes.nu *
       use ~/.local.nu *
     '';
     extraEnv = ''
@@ -227,6 +230,8 @@ in {
     package = pkgs.unstable.starship;
     settings = {
       add_newline = true;
+      haskell.disabled = true;
+      nodejs.disabled = true;
       # format = "$character";
       # right_format = "$all";
     };

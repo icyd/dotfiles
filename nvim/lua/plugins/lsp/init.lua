@@ -1,5 +1,5 @@
 local linters_by_ft = {
-    css = { "stylelint", },
+    css = { "stylelint" },
     dockerfile = { "hadolint" },
     go = { "golangcilint" },
     haskell = { "hlint" },
@@ -21,7 +21,7 @@ local formatters_by_ft = {
     python = { "black", "isort" },
     -- rust = { 'rustfmt', },
     sh = { "shellcheck" },
-    terraform = { "terraform_fmt" },
+    -- terraform = { "terraform_fmt" },
     ["*"] = { "codespell" },
     ["_"] = { "trim_whitespace", "trim_newlines", "squeeze_blanks" },
 }
@@ -114,6 +114,7 @@ local servers = {
         },
     },
     html = {},
+    nushell = {},
     pyright = {},
     rust_analyzer = {
         tools = {
@@ -260,13 +261,14 @@ return {
                 server_opts.flags = common_flags
                 server_opts.capabilities = capabilities
                 if server == "rust_analyzer" then
-                    local install_root_dir = os.getenv("HOME") .. "/.nix-profile/share/vscode/extensions/vadimcn.vscode-lldb/"
-                    local codelldb_path = install_root_dir .. 'adapter/codelldb'
-                    local liblldb_path = install_root_dir .. 'lldb/lib/liblldb'
+                    local install_root_dir = os.getenv("HOME")
+                        .. "/.nix-profile/share/vscode/extensions/vadimcn.vscode-lldb/"
+                    local codelldb_path = install_root_dir .. "adapter/codelldb"
+                    local liblldb_path = install_root_dir .. "lldb/lib/liblldb"
                     local this_os = vim.loop.os_uname().sysname
                     liblldb_path = liblldb_path .. (this_os == "Linux" and ".so" or ".dylib")
                     server_opts.dap = {
-                        adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path)
+                        adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
                     }
 
                     require("rust-tools").setup(server_opts)
@@ -276,8 +278,8 @@ return {
             end
         end,
         dependencies = {
-            { "folke/neodev.nvim",       opts = {} },
-            { "j-hui/fidget.nvim",       opts = {} },
+            { "folke/neodev.nvim", opts = {} },
+            { "j-hui/fidget.nvim", opts = {} },
             { "smjonas/inc-rename.nvim", opts = {} },
             { "b0o/SchemaStore.nvim" },
             {

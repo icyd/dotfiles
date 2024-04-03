@@ -12,18 +12,15 @@
       "gpgme"
       "pinentry-mac"
       "podman"
-      "skhd"
       "saml2aws"
-      "yabai"
       "watch"
     ];
-    casks = [ "gpg-suite" "amethyst" "wireshark" "wezterm" ];
+    casks = [ "gpg-suite" "amethyst" "wireshark" ];
     enable = true;
     onActivation = {
       autoUpdate = true;
       upgrade = true;
     };
-    taps = [ "homebrew/cask" "koekeishiya/formulae" ];
   };
   nix = {
     extraOptions = ''

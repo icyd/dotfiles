@@ -1,5 +1,5 @@
 { config, shell, shellArgs ? [ ], font, startup_mode ? "Maximized", ... }:
-let colors = config.colorScheme.colors;
+let colors = config.colorScheme.palette;
 in {
   enable = true;
   settings = {

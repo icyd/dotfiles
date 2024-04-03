@@ -1,14 +1,14 @@
 local swap_next, swap_prev = (function()
     local swap_objects = {
-        p = '@parameter.inner',
-        f = '@function.outer',
-        c = '@class.outer',
+        p = "@parameter.inner",
+        f = "@function.outer",
+        c = "@class.outer",
     }
 
     local n, p = {}, {}
     for key, obj in pairs(swap_objects) do
-        n[string.format('<leader>x%s', key)] = obj
-        p[string.format('<leader>x%s', string.upper(key))] = obj
+        n[string.format("<leader>x%s", key)] = obj
+        p[string.format("<leader>x%s", string.upper(key))] = obj
     end
 
     return n, p
@@ -27,14 +27,14 @@ end)()
 --
 return {
     {
-        'nvim-treesitter/playground',
-        cmd = 'TSPlaygroundToggle',
+        "nvim-treesitter/playground",
+        cmd = "TSPlaygroundToggle",
     },
     {
-        'mfussenegger/nvim-treehopper',
+        "mfussenegger/nvim-treehopper",
         keys = { { "m", mode = { "o", "x" } } },
         dependencies = {
-            'phaazon/hop.nvim',
+            "phaazon/hop.nvim",
         },
         config = function()
             vim.cmd([[
@@ -44,49 +44,50 @@ return {
         end,
     },
     {
-        'nvim-treesitter/nvim-treesitter',
-        build = ':TSUpdate',
+        "nvim-treesitter/nvim-treesitter",
+        build = ":TSUpdate",
         -- build = function()
         --    local ts_install = require("nvim-treesitter.install")
         --    ts_install.compilers({ "gcc" })
         --    ts_install.update({ with_sync = true })
         -- end,
-        event = 'BufReadPost',
+        event = "BufReadPost",
         config = function()
-            require('nvim-treesitter.configs').setup({
+            require("nvim-treesitter.configs").setup({
                 ensure_installed = {
-                    'bash',
-                    'c',
-                    'css',
-                    'cpp',
-                    'go',
-                    'hcl',
-                    'haskell',
-                    'html',
-                    'java',
-                    'json',
-                    'latex',
-                    'lua',
-                    'make',
-                    'markdown',
-                    'nix',
-                    'org',
-                    'python',
-                    'query',
-                    'regex',
-                    'ruby',
-                    'rust',
-                    'toml',
-                    'yaml',
+                    "bash",
+                    "c",
+                    "css",
+                    "cpp",
+                    "go",
+                    "hcl",
+                    "haskell",
+                    "html",
+                    "java",
+                    "json",
+                    "latex",
+                    "lua",
+                    "make",
+                    "markdown",
+                    "nix",
+                    "nu",
+                    "org",
+                    "python",
+                    "query",
+                    "regex",
+                    "ruby",
+                    "rust",
+                    "toml",
+                    "yaml",
                 },
                 indent = {
                     enable = true,
-                    disable = { 'org' },
+                    disable = { "org" },
                 },
                 highlight = {
                     enable = true,
-                    disable = { 'markdown' },
-                    additional_vim_regex_highlighting = { 'org' },
+                    disable = { "markdown" },
+                    additional_vim_regex_highlighting = { "org" },
                 },
                 matchup = {
                     enable = true,
@@ -95,15 +96,15 @@ return {
                 rainbow = {
                     enable = true,
                     extended_mode = true,
-                    max_file_lines = 1000
+                    max_file_lines = 1000,
                 },
                 textsubjects = {
                     enable = true,
-                    prev_selection = ',', -- (Optional) keymap to select the previous selection
+                    prev_selection = ",", -- (Optional) keymap to select the previous selection
                     keymaps = {
-                        ['.'] = 'textsubjects-smart',
-                        [';'] = 'textsubjects-container-outer',
-                        ['i;'] = 'textsubjects-container-inner',
+                        ["."] = "textsubjects-smart",
+                        [";"] = "textsubjects-container-outer",
+                        ["i;"] = "textsubjects-container-inner",
                     },
                 },
                 textobjects = {
@@ -120,29 +121,29 @@ return {
                         },
                     },
                     selection_modes = {
-                        ['@parameter.outer'] = 'v', -- charwise
-                        ['@function.outer'] = 'V',  -- linewise
-                        ['@class.outer'] = '<c-v>', -- blockwise
+                        ["@parameter.outer"] = "v", -- charwise
+                        ["@function.outer"] = "V", -- linewise
+                        ["@class.outer"] = "<c-v>", -- blockwise
                     },
                     move = {
                         enable = true,
                         set_jumps = true,
                         goto_next_start = {
-                            [']m'] = '@function.outer',
-                            [']]'] = '@class.outer'
+                            ["]m"] = "@function.outer",
+                            ["]]"] = "@class.outer",
                         },
                         goto_next_end = {
-                            [']M'] = '@function.outer',
-                            [']['] = '@class.outer'
+                            ["]M"] = "@function.outer",
+                            ["]["] = "@class.outer",
                         },
                         goto_previous_start = {
-                            ['[m'] = '@function.outer',
-                            ['[['] = '@class.outer'
+                            ["[m"] = "@function.outer",
+                            ["[["] = "@class.outer",
                         },
                         goto_previous_end = {
-                            ['[M'] = '@function.outer',
-                            ['[]'] = '@class.outer'
-                        }
+                            ["[M"] = "@function.outer",
+                            ["[]"] = "@class.outer",
+                        },
                     },
                     swap = {
                         enable = true,
@@ -154,16 +155,17 @@ return {
             })
         end,
         dependencies = {
-            { 'p00f/nvim-ts-rainbow' },
-            { 'RRethy/nvim-treesitter-textsubjects' },
-            { 'nvim-treesitter/nvim-treesitter-textobjects' },
+            { "p00f/nvim-ts-rainbow" },
+            { "RRethy/nvim-treesitter-textsubjects" },
+            { "nvim-treesitter/nvim-treesitter-textobjects" },
+            { "nushell/tree-sitter-nu" },
             {
-                'JoosepAlviste/nvim-ts-context-commentstring',
+                "JoosepAlviste/nvim-ts-context-commentstring",
                 opts = {
                     enable_autocmd = false,
                 },
             },
-            { 'm-demare/hlargs.nvim', opts = true },
+            { "m-demare/hlargs.nvim", opts = true },
             -- {
             --     'nvim-treesitter/nvim-treesitter-context',
             --     cmd = { 'TSContextEnable', 'TSContextDisable', 'TSContextToggle' },

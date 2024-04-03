@@ -1,31 +1,28 @@
 local all_snippets = {
     s(
-        "dt", f(function()
-            return os.date "%D - %H:%M"
+        "dt",
+        f(function()
+            return os.date("%D - %H:%M")
         end)
     ),
-    s(
-        "choice", { c(1,
-            { t "choice 1", t "choice 2", t "choice 3", }
-        ) }
-    ),
+    s("choice", { c(1, { t("choice 1"), t("choice 2"), t("choice 3") }) }),
 }
 
-local ok = pcall(require, 'Comment')
+local ok = pcall(require, "Comment")
 if ok then
-    local calculate_comment_string = require('Comment.ft').calculate
-    local utils = require('Comment.utils')
+    local calculate_comment_string = require("Comment.ft").calculate
+    local utils = require("Comment.utils")
 
     --- Get the comment string {beg,end} table
     ---@param ctype integer 1 for `line`-comment and 2 for `block`-comment
     ---@return table comment_strings {begcstring, endcstring}
     local get_cstring = function(ctype)
         -- use the `Comments.nvim` API to fetch the comment string for the region (eq. '--%s' or '--[[%s]]' for `lua`)
-        local cstring = calculate_comment_string { ctype = ctype, range = utils.get_region() } or vim.bo.commentstring
+        local cstring = calculate_comment_string({ ctype = ctype, range = utils.get_region() }) or vim.bo.commentstring
         -- as we want only the strings themselves and not strings ready for using `format` we want to split the left and right side
         local left, right = utils.unwrap_cstr(cstring)
         -- either parts can be nil that's why we check that to return empty string and lastly, create a `{left, right}` table for it
-        return { left or '', right or '' }
+        return { left or "", right or "" }
     end
 
     _G.luasnip = {}
@@ -38,31 +35,28 @@ if ok then
     --- Options for marks to be used in a TODO comment
     local marks = {
         date_signature_with_email = function()
-            return fmt(
-                '<{}{}>',
-                { i(1, os.date '%d-%m-%y'), i(2, ', ' .. _G.luasnip.vars.email) }
-            )
+            return fmt("<{}{}>", { i(1, os.date("%d-%m-%y")), i(2, ", " .. _G.luasnip.vars.email) })
         end,
         signature = function()
-            return fmt('<{}>', i(1, _G.luasnip.vars.username))
+            return fmt("<{}>", i(1, _G.luasnip.vars.username))
         end,
         signature_with_email = function()
-            return fmt('<{}{}>', { i(1, _G.luasnip.vars.username), i(2, ' ' .. _G.luasnip.vars.email) })
+            return fmt("<{}{}>", { i(1, _G.luasnip.vars.username), i(2, " " .. _G.luasnip.vars.email) })
         end,
         date_signature_with_username_and_email = function()
             return fmt(
-                '<{}{}{}>',
-                { i(1, os.date '%d-%m-%y'), i(2, ', ' .. _G.luasnip.vars.username), i(3, ' ' .. _G.luasnip.vars.email) }
+                "<{}{}{}>",
+                { i(1, os.date("%d-%m-%y")), i(2, ", " .. _G.luasnip.vars.username), i(3, " " .. _G.luasnip.vars.email) }
             )
         end,
         date_signature = function()
-            return fmt('<{}{}>', { i(1, os.date '%d-%m-%y'), i(2, ', ' .. _G.luasnip.vars.username) })
+            return fmt("<{}{}>", { i(1, os.date("%d-%m-%y")), i(2, ", " .. _G.luasnip.vars.username) })
         end,
         date = function()
-            return fmt('<{}>', i(1, os.date '%d-%m-%y'))
+            return fmt("<{}>", i(1, os.date("%d-%m-%y")))
         end,
         empty = function()
-            return t ''
+            return t("")
         end,
     }
 
@@ -75,13 +69,13 @@ if ok then
             table.insert(sigmark_nodes, mark())
         end
         -- format them into the actual snippet
-        local comment_node = fmta('<> <>: <> <> <><>', {
+        local comment_node = fmta("<> <>: <> <> <><>", {
             f(function()
                 return get_cstring(opts.ctype)[1] -- get <comment-string[1]>
             end),
-            c(1, aliases_nodes),                  -- [name-of-comment]
-            i(3),                                 -- {comment-text}
-            c(2, sigmark_nodes),                  -- [comment-mark]
+            c(1, aliases_nodes), -- [name-of-comment]
+            i(3), -- {comment-text}
+            c(2, sigmark_nodes), -- [comment-mark]
             f(function()
                 return get_cstring(opts.ctype)[2] -- get <comment-string[2]>
             end),
@@ -96,39 +90,34 @@ if ok then
     ---@param opts table merged with the snippet opts table
     local todo_snippet = function(context, aliases, opts)
         opts = opts or {}
-        aliases = type(aliases) == 'string' and { aliases } or
-            aliases -- if we do not have aliases, be smart about the function parameters
+        aliases = type(aliases) == "string" and { aliases } or aliases -- if we do not have aliases, be smart about the function parameters
         context = context or {}
         if not context.trig then
             return error("context doesn't include a `trig` key which is mandatory", 2) -- all we need from the context is the trigger
         end
-        opts.ctype = opts.ctype or
-            1                                                       -- comment type can be passed in the `opts` table, but if it is not, we have to ensure, it is defined
-        local alias_string = table.concat(aliases, '|')             -- `choice_node` documentation
-        context.name = context.name or
-        (alias_string .. ' comment')                                -- generate the `name` of the snippet if not defined
-        context.dscr = context.dscr or
-            (alias_string .. ' comment with a signature-mark')      -- generate the `dscr` if not defined
-        context.docstring = context.docstring or
-            (' {1:' .. alias_string .. '}: {3} <{2:mark}>{0} ')     -- generate the `docstring` if not defined
-        local comment_node = todo_snippet_nodes(aliases, opts)      -- nodes from the previously defined function for their generation
-        return s(context, comment_node, opts)                       -- the final todo-snippet constructed from our parameters
+        opts.ctype = opts.ctype or 1 -- comment type can be passed in the `opts` table, but if it is not, we have to ensure, it is defined
+        local alias_string = table.concat(aliases, "|") -- `choice_node` documentation
+        context.name = context.name or (alias_string .. " comment") -- generate the `name` of the snippet if not defined
+        context.dscr = context.dscr or (alias_string .. " comment with a signature-mark") -- generate the `dscr` if not defined
+        context.docstring = context.docstring or (" {1:" .. alias_string .. "}: {3} <{2:mark}>{0} ") -- generate the `docstring` if not defined
+        local comment_node = todo_snippet_nodes(aliases, opts) -- nodes from the previously defined function for their generation
+        return s(context, comment_node, opts) -- the final todo-snippet constructed from our parameters
     end
 
     local todo_snippet_specs = {
-        { { trig = 'todo' },  'TODO' },
-        { { trig = 'fix' },   { 'FIX', 'BUG', 'ISSUE', 'FIXIT' } },
-        { { trig = 'hack' },  'HACK' },
-        { { trig = 'warn' },  { 'WARN', 'WARNING', 'XXX' } },
-        { { trig = 'perf' },  { 'PERF', 'PERFORMANCE', 'OPTIM', 'OPTIMIZE' } },
-        { { trig = 'note' },  { 'NOTE', 'INFO' } },
+        { { trig = "todo" }, "TODO" },
+        { { trig = "fix" }, { "FIX", "BUG", "ISSUE", "FIXIT" } },
+        { { trig = "hack" }, "HACK" },
+        { { trig = "warn" }, { "WARN", "WARNING", "XXX" } },
+        { { trig = "perf" }, { "PERF", "PERFORMANCE", "OPTIM", "OPTIMIZE" } },
+        { { trig = "note" }, { "NOTE", "INFO" } },
         -- NOTE: Block commented todo-comments <kunzaatko>
-        { { trig = 'todob' }, 'TODO',                                         { ctype = 2 } },
-        { { trig = 'fixb' },  { 'FIX', 'BUG', 'ISSUE', 'FIXIT' },             { ctype = 2 } },
-        { { trig = 'hackb' }, 'HACK',                                         { ctype = 2 } },
-        { { trig = 'warnb' }, { 'WARN', 'WARNING', 'XXX' },                   { ctype = 2 } },
-        { { trig = 'perfb' }, { 'PERF', 'PERFORMANCE', 'OPTIM', 'OPTIMIZE' }, { ctype = 2 } },
-        { { trig = 'noteb' }, { 'NOTE', 'INFO' },                             { ctype = 2 } },
+        { { trig = "todob" }, "TODO", { ctype = 2 } },
+        { { trig = "fixb" }, { "FIX", "BUG", "ISSUE", "FIXIT" }, { ctype = 2 } },
+        { { trig = "hackb" }, "HACK", { ctype = 2 } },
+        { { trig = "warnb" }, { "WARN", "WARNING", "XXX" }, { ctype = 2 } },
+        { { trig = "perfb" }, { "PERF", "PERFORMANCE", "OPTIM", "OPTIMIZE" }, { ctype = 2 } },
+        { { trig = "noteb" }, { "NOTE", "INFO" }, { ctype = 2 } },
     }
 
     local todo_comment_snippets = {}
@@ -137,8 +126,9 @@ if ok then
         table.insert(todo_comment_snippets, todo_snippet(v[1], v[2], v[3]))
     end
 
-    for k, v in pairs(todo_comment_snippets) do all_snippets[k] = v end
+    for k, v in pairs(todo_comment_snippets) do
+        all_snippets[k] = v
+    end
 end
-
 
 return all_snippets, nil

@@ -66,7 +66,7 @@ let menu_style = {
 }
 
 let carapace_completer = {|spans: list<string>|
-    carapace $spans.0 nushell $spans
+    carapace $spans.0 nushell ...$spans
         | from json
         | if ($in | default [] | where value =~ '^-.*ERR$' | is-empty) {
             $in
@@ -93,7 +93,7 @@ let external_completer = {|spans|
     let spans = if $expanded_alias != null {
         $spans
             | skip 1
-            | prepend ($expanded_alias | split row ' ')
+            | prepend ($expanded_alias | split row ' ' | take 1)
     } else {
         $spans
     }
@@ -103,8 +103,7 @@ let external_completer = {|spans|
         git => $fish_completer
         asdf => $fish_completer
         istioctl => $fish_completer
-        __zoxide_z => $zoxide_completer
-        __zoxide_zi => $zoxide_completer
+        __zoxide_z | __zoxide_zi => $zoxide_completer
         _ => $carapace_completer
     } | do $in $spans
 }
@@ -203,7 +202,7 @@ $env.config = {
 
   menus: [
       # Configuration for default nushell menus
-      # Note the lack of souce parameter
+      # Note the lack of source parameter
       {
         name: completion_menu
         only_buffer_difference: false

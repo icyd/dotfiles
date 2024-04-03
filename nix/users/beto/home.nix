@@ -20,6 +20,7 @@ in {
     libreoffice-fresh
     lutris
     openocd
+    vscode-extensions.vadimcn.vscode-lldb
     winetricks
     wineWowPackages.waylandFull
   ];
