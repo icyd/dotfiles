@@ -166,13 +166,13 @@ return {
                 },
             },
             { "m-demare/hlargs.nvim", opts = true },
-            -- {
-            --     'nvim-treesitter/nvim-treesitter-context',
-            --     cmd = { 'TSContextEnable', 'TSContextDisable', 'TSContextToggle' },
-            --     opts = {
-            --         enable = false,
-            --     },
-            -- },
+            {
+                "nvim-treesitter/nvim-treesitter-context",
+                cmd = { "TSContextEnable", "TSContextDisable", "TSContextToggle" },
+                opts = {
+                    enable = false,
+                },
+            },
         },
     },
 }

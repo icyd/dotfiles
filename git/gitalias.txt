@@ -3,7 +3,7 @@
 
 ##
 # GitAlias.com collection of many git alias items, including shortcuts,
-# helpers, workflows, utilties, visualizers, reports, etc.
+# helpers, workflows, utilities, visualizers, reports, etc.
 #
 #
 # ## Usage
@@ -178,7 +178,7 @@
   # Show changes not yet staged
   dc = diff --cached
 
-  # Show changes about to be commited
+  # Show changes about to be committed
   ds = diff --staged
 
   # Show changes but by word, not line
@@ -554,7 +554,7 @@
 
   ### init-* aliases ###
 
-  # Initalize a repo and immediately add an empty rebaseable commit.
+  # Initialize a repo and immediately add an empty rebaseable commit.
   # This initialization makes it easier to do later git rebase commands,
   # because it enables a rebase to go all the way back to the first commit.
   init-empty = !"f() { git init && git commit --allow-empty --allow-empty-message --message ''; }; f"
@@ -1066,7 +1066,6 @@
   #
   commit-message-key-lines = "!f(){ echo \"Commit: $1\"; git log \"$1\" --format=fuller | grep \"^[[:blank:]]*[[:alnum:]][-[:alnum:]]*:\" | sed \"s/^[[:blank:]]*//; s/:[[:blank:]]*/: /\"; }; f"
 
-
   ### Workflow aliases ###
 
   # Init a repo using our recommended way i.e. with an empty rebaseable commit
@@ -1163,6 +1162,10 @@
   # Do a push/pull for just one branch
   push1 = "!git push origin $(git current-branch)"
   pushf = "!git push origin $(git current-branch) --force"
+  pushmr = "!git push -o merge_request.create origin $(git current-branch)"
+  pushmrf = "!git push -o merge_request.create origin $(git current-branch) --force"
+  pushmrt = "!f(){ branch=$(git current-branch); git push -o merge_request.create -o merge_request.target=$1 origin $branch; }; f"
+  pushmrtf = "!f(){ branch=$(git current-branch); git push -o merge_request.create -o merge_request.target=$1 origin $branch --force; }; f"
   pull1 = "!git pull origin $(git current-branch)"
   pullf = "!git pull origin $(git current-branch) --force"
 
@@ -1392,7 +1395,6 @@
   stl = stash list
   sts = stash show --text
 
-
   ### Shell scripting aliases ###
 
   # Show the top level directory name
@@ -1411,7 +1413,6 @@
   # Execute shell scripts. Git always runs scripts in the top directory.
   # For example "git exec pwd" will always show you the top directory.
   exec = ! exec
-
 
   ### MAINTENANCE ALIASES ###
 
@@ -1464,7 +1465,6 @@
   # then one step (that may be unnecessary) calling `git prune-packed`.
   #
   optimizer = !git pruner; git repacker; git prune-packed
-
 
   ### ADVANCED ALIASES ###
 
@@ -1742,7 +1742,6 @@
     git branch --move \"$old_branch\" \"$new_branch\"; \
     git push origin \":$old_branch\" \"$new_branch\"; \
   };f"
-
 
   ########################################################################
   ### Integration aliases

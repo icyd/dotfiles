@@ -4,7 +4,7 @@ local linters_by_ft = {
     go = { "golangcilint" },
     haskell = { "hlint" },
     json = { "jsonlint" },
-    -- lua = { 'luacheck', },
+    lua = { "luacheck" },
     markdown = { "vale" },
     nix = { "nix" },
     python = { "mypy", "flake8", "pylint" },
@@ -143,6 +143,18 @@ local servers = {
     lua_ls = {
         settings = {
             Lua = {
+                runtime = {
+                    version = "LuaJIT",
+                },
+                diagnostics = {
+                    globals = { "vim" },
+                },
+                workspace = {
+                    checkThirdParty = true,
+                    library = {
+                        vim.env.RUNTIME,
+                    },
+                },
                 completion = {
                     callSnippet = "Replace",
                 },
@@ -191,14 +203,15 @@ local tools_to_install = tools_to_autoinstall(by_ft, to_install, to_exclude)
 return {
     {
         "williamboman/mason.nvim",
-        opts = {},
-        event = "VeryLazy",
+        config = true,
+        event = "BufReadPre",
         keys = {
             { "<localleader>cm", "<cmd>Mason<CR>", desc = "Mason" },
         },
         dependencies = {
             {
                 "WhoIsSethDaniel/mason-tool-installer.nvim",
+                cmd = { "MasonToolsInstall", "MasonToolsUpdate", "MasonToolsClean" },
                 dependencies = { "mason.nvim" },
                 opts = {
                     ensure_installed = tools_to_install,
@@ -206,6 +219,7 @@ return {
             },
             {
                 "williamboman/mason-lspconfig.nvim",
+                cmd = { "LspInstall" },
                 dependencies = { "mason.nvim" },
                 opts = { automatic_installation = true },
             },
@@ -238,7 +252,7 @@ return {
     },
     {
         "neovim/nvim-lspconfig",
-        event = "BufReadPost",
+        event = "BufReadPre",
         config = function()
             require("utils.lsp").on_attach(function(client, buffer)
                 lsp_keymaps(client, buffer)

@@ -5,15 +5,26 @@ return {
     {
         "vhyrro/luarocks.nvim",
         priority = 1000,
-        config = true,
+        opts = {
+            rocks = { "magick" },
+        },
     },
     -- Colorscheme
     {
         "rebelot/kanagawa.nvim",
+        -- enabled = false,
+        lazy = false,
+        priority = 1000,
+        -- config = function()
+        --     vim.cmd([[colorscheme kanagawa-wave]])
+        -- end,
+    },
+    {
+        "ellisonleao/gruvbox.nvim",
         lazy = false,
         priority = 1000,
         config = function()
-            vim.cmd([[colorscheme kanagawa-wave]])
+            vim.cmd([[colorscheme gruvbox]])
         end,
     },
     -- UI
@@ -60,6 +71,28 @@ return {
                 return vim.ui.input(...)
             end
         end,
+    },
+    {
+        "folke/twilight.nvim",
+        cmd = { "Twilight" },
+        config = true,
+    },
+    {
+        "folke/zen-mode.nvim",
+        cmd = { "ZenMode" },
+        opts = {
+            plugins = {
+                gitsigns = { enabled = true },
+                alacritty = {
+                    enabled = true,
+                    font = "16",
+                },
+                wezterm = {
+                    enabled = true,
+                    font = "+2",
+                },
+            },
+        },
     },
     { "kevinhwang91/nvim-bqf", ft = "qf" },
     -- Easy motion
@@ -367,6 +400,7 @@ return {
         "kevinhwang91/nvim-ufo",
         dependencies = { "kevinhwang91/promise-async" },
         event = "BufRead",
+        enabled = false,
         -- keys = { }
         config = function()
             local ufo = require("ufo")
@@ -474,5 +508,10 @@ return {
         config = function()
             vim.g.user_emmet_install_global = 0
         end,
+    },
+    {
+        "3rd/image.nvim",
+        dependencies = { "luarocks.nvim" },
+        opts = true,
     },
 }

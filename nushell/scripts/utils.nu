@@ -5,6 +5,22 @@ export def table_2_string [
     $table | each {|it| $"($it.key)=($it.value)"} | str join ','
 }
 
+# Convert table<string, string> to record, using col0 as key and col1 as value
+export def to_record [
+    table?: table
+] {
+    let stdin = $in
+    let table = if ($stdin | is-empty) {
+        $table
+    } else {
+        $stdin
+    }
+    let cols = $table | columns
+    $table | reduce -f {} {|it, acc|
+        $acc | upsert ($it | get $cols.0) ($it | get $cols.1)
+    }
+}
+
 # Split text separated by null character into rows
 export def split_0 [
 ] {

@@ -1,7 +1,8 @@
 local M = {
     "nvim-neorg/neorg",
     dependencies = { "luarocks.nvim" },
-    lazy = false,
+    cmd = { "Neorg" },
+    ft = { "norg" },
     version = "*",
 }
 
@@ -15,6 +16,9 @@ function M.config()
                 config = {
                     icon_preset = "basic",
                     icons = {
+                        code_block = {
+                            spell_check = false,
+                        },
                         todo = {
                             cancelled = { icon = "" },
                             done = { icon = "" },
@@ -27,10 +31,16 @@ function M.config()
                     },
                 },
             },
+            ["core.esupports.metagen"] = {
+                config = {
+                    author = "Alberto Vázquez",
+                },
+            },
             ["core.dirman"] = {
                 config = {
                     workspaces = {
                         notes = vimwiki_dir .. "/org",
+                        work = vimwiki_dir .. "/org/work",
                     },
                     default_workspace = "notes",
                 },
@@ -46,8 +56,21 @@ function M.config()
                 },
             },
             ["core.export"] = {
+                config = {},
+            },
+            ["core.export.markdown"] = {
                 config = {
-                    extensions = "all",
+                    -- extensions = "all",
+                },
+            },
+            ["core.presenter"] = {
+                config = {
+                    zen_mode = "zen-mode",
+                },
+            },
+            ["core.summary"] = {
+                config = {
+                    strategy = "default",
                 },
             },
         },

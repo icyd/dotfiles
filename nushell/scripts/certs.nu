@@ -213,7 +213,17 @@ export def key_verify [
     cert: path
     key: path
 ] {
-    _key_verify (cat $cert) (cat $key)
+    let cert_data = if (($cert | str length) <= 63) and ($cert | path exists) {
+        cat $cert
+    } else {
+        $cert
+    }
+    let key_data = if (($key | str length) <= 63) and ($key | path exists) {
+        cat $key
+    } else {
+        $key
+    }
+    _key_verify $cert_data $key_data
 }
 
 export def k_key_verify [
@@ -276,7 +286,7 @@ export def k_verify [
 }
 
 export def chain_text [
-    cert: path
+    cert?: path
     --cacert: path
 ] {
     let stdin = $in

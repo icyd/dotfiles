@@ -1,170 +1,170 @@
 local M = {
-    'mfussenegger/nvim-dap',
+    "mfussenegger/nvim-dap",
     keys = {
         {
-            '<leader>dR',
+            "<leader>dR",
             function()
-                require('dap').run_to_cursor()
+                require("dap").run_to_cursor()
             end,
-            desc = 'Run to cursor'
+            desc = "Run to cursor",
         },
         {
-            '<leader>dE',
+            "<leader>dE",
             function()
-                require('dapui').eval(vim.fn.input '[Expression] > ')
+                require("dapui").eval(vim.fn.input("[Expression] > "))
             end,
-            desc = 'Evaluate input'
+            desc = "Evaluate input",
         },
         {
-            '<leader>dC',
+            "<leader>dC",
             function()
-                require('dap').set_breakpoint(vim.fn.input '[Condition] > ')
+                require("dap").set_breakpoint(vim.fn.input("[Condition] > "))
             end,
-            desc = 'Conditional breakpoint'
+            desc = "Conditional breakpoint",
         },
         {
-            '<leader>dU',
+            "<leader>dU",
             function()
-                require('dapui').toggle()
+                require("dapui").toggle()
             end,
-            desc = 'Toggle ui'
+            desc = "Toggle ui",
         },
         {
-            '<leader>db',
+            "<leader>db",
             function()
-                require('dap').step_back()
+                require("dap").step_back()
             end,
-            desc = 'Step back'
+            desc = "Step back",
         },
         {
-            '<leader>dc',
+            "<leader>dc",
             function()
-                require('dap').continue()
+                require("dap").continue()
             end,
-            desc = 'Continue'
+            desc = "Continue",
         },
         -- { '<leader>dd', function()
         --         require('dap').disconnect()
         --     end, desc = 'Disconnect' },
         {
-            '<leader>de',
+            "<leader>de",
             function()
-                require('dapui').eval()
+                require("dapui").eval()
             end,
-            desc = 'Evaluate'
+            desc = "Evaluate",
         },
         {
-            '<leader>dg',
+            "<leader>dg",
             function()
-                require('dap').session()
+                require("dap").session()
             end,
-            desc = 'Get session'
+            desc = "Get session",
         },
         {
-            '<leader>dh',
+            "<leader>dh",
             function()
-                require('dap.ui.widgets').hover()
+                require("dap.ui.widgets").hover()
             end,
-            desc = 'Hover variable'
+            desc = "Hover variable",
         },
         {
-            '<leader>dS',
+            "<leader>dS",
             function()
-                local widgets = require('dap.ui.widgets')
+                local widgets = require("dap.ui.widgets")
                 widgets.sidebar(widgets.scopes).open()
             end,
-            desc = 'Scopes'
+            desc = "Scopes",
         },
         {
-            '<leader>dF',
+            "<leader>dF",
             function()
-                local widgets = require('dap.ui.widgets')
+                local widgets = require("dap.ui.widgets")
                 widgets.sidebar(widgets.frames).open()
             end,
-            desc = 'Frames'
+            desc = "Frames",
         },
         {
-            '<leader>dE',
+            "<leader>dE",
             function()
-                local widgets = require('dap.ui.widgets')
+                local widgets = require("dap.ui.widgets")
                 widgets.sidebar(widgets.expression).open()
             end,
-            desc = 'Expression'
+            desc = "Expression",
         },
         {
-            '<leader>dT',
+            "<leader>dT",
             function()
-                local widgets = require('dap.ui.widgets')
+                local widgets = require("dap.ui.widgets")
                 widgets.sidebar(widgets.threads).open()
             end,
-            desc = 'Threads'
+            desc = "Threads",
         },
         {
-            '<leader>di',
+            "<leader>di",
             function()
-                require('dap').step_into()
+                require("dap").step_into()
             end,
-            desc = 'Step into'
+            desc = "Step into",
         },
         {
-            '<leader>do',
+            "<leader>do",
             function()
-                require('dap').step_over()
+                require("dap").step_over()
             end,
-            desc = 'Step over'
+            desc = "Step over",
         },
         {
-            '<leader>dp',
+            "<leader>dp",
             function()
-                require('dap').pause()
+                require("dap").pause()
             end,
-            desc = 'Pause'
+            desc = "Pause",
         },
         -- { '<leader>dq', function()
         --         require('dap').close()
         --     end, desc = 'Quit' },
         {
-            '<leader>dr',
+            "<leader>dr",
             function()
-                require('dap').repl.toggle()
+                require("dap").repl.toggle()
             end,
-            desc = 'Toggle Repl'
+            desc = "Toggle Repl",
         },
         {
-            '<leader>ds',
+            "<leader>ds",
             function()
-                require('dap').continue()
+                require("dap").continue()
             end,
-            desc = 'Continue/Start'
+            desc = "Continue/Start",
         },
         {
-            '<leader>dt',
+            "<leader>dt",
             function()
-                require('dap').toggle_breakpoint()
+                require("dap").toggle_breakpoint()
             end,
-            desc = 'Toggle breakpoint'
+            desc = "Toggle breakpoint",
         },
         {
-            '<leader>dq',
+            "<leader>dq",
             function()
-                require('dap').terminate()
+                require("dap").terminate()
             end,
-            desc = 'Terminate'
+            desc = "Terminate",
         },
         {
-            '<leader>du',
+            "<leader>du",
             function()
-                require('dap').step_out()
+                require("dap").step_out()
             end,
-            desc = 'Step out'
+            desc = "Step out",
         },
     },
     dependencies = {
-        { 'theHamsta/nvim-dap-virtual-text' },
-        { 'rcarriga/nvim-dap-ui' },
-        { 'mfussenegger/nvim-dap-python' },
-        { 'leoluz/nvim-dap-go', },
-        { 'jbyuki/one-small-step-for-vimkind', },
+        { "theHamsta/nvim-dap-virtual-text" },
+        { "rcarriga/nvim-dap-ui", dependencies = { "nvim-neotest/nvim-nio" } },
+        { "mfussenegger/nvim-dap-python" },
+        { "leoluz/nvim-dap-go" },
+        { "jbyuki/one-small-step-for-vimkind" },
     },
 }
 
@@ -196,11 +196,11 @@ local function configure()
 end
 
 local function configure_exts()
-    require("nvim-dap-virtual-text").setup {
+    require("nvim-dap-virtual-text").setup({
         commented = true,
-    }
+    })
 
-    local dap, dapui = require('dap'), require('dapui')
+    local dap, dapui = require("dap"), require("dapui")
     dapui.setup() -- use default
 
     dap.listeners.after.event_initialized["dapui_config"] = function()
@@ -215,17 +215,17 @@ local function configure_exts()
 end
 
 local function configure_debuggers()
-    require('config.dap.go').setup()
-    require('config.dap.haskell').setup()
-    require('config.dap.javascript').setup()
-    require('config.dap.lua').setup()
-    require('config.dap.python').setup()
-    require('config.dap.rust').setup()
+    require("config.dap.go").setup()
+    require("config.dap.haskell").setup()
+    require("config.dap.javascript").setup()
+    require("config.dap.lua").setup()
+    require("config.dap.python").setup()
+    require("config.dap.rust").setup()
 end
 
 function M.config()
-    configure()           -- Configuration
-    configure_exts()      -- Extensions
+    configure() -- Configuration
+    configure_exts() -- Extensions
     configure_debuggers() -- Debugger
 end
 

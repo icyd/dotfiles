@@ -238,9 +238,12 @@ in {
   };
   programs.tmux = import ./tmux.nix { inherit lib pkgs; };
   programs.zsh = import ./zsh.nix { inherit lib pkgs config; };
+  xdg.enable = true;
   xdg.configFile = {
     nvim.source = config.lib.file.mkOutOfStoreSymlink
       "${config.home.homeDirectory}/.dotfiles/nvim";
+    wezterm.source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/.dotfiles/wezterm";
     tmuxp.source = ../../tmux/tmuxp;
   };
 }

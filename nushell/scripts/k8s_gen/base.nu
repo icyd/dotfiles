@@ -560,6 +560,7 @@ def _kg_cmd [
     --namespace (-n): string
     --selector (-l): string
     --output (-o): string
+    --show-labels (-S)
     --all (-A)
     --as-str
 ] {
@@ -569,13 +570,14 @@ def _kg_cmd [
         $namespace | with-flag -n
     }
     let selector = $selector | with-flag -l
+    let show_labels = $show_labels | as-str-flag --show-labels
     let name = $name | with-flag
 
     if ($as_str) {
-        return $"kubectl get ($kind) ([...$name ...$namespace ...$selector] | str join (char space))"
+        return $"kubectl get ($kind) ([...$name ...$namespace ...$selector ...$show_labels] | str join (char space))"
     }
 
-    kubectl get $kind ...$name ...$namespace ...$selector ...($output | with-flag -o)
+    kubectl get $kind ...$name ...$namespace ...$selector ...($output | with-flag -o) ...$show_labels
 }
 
 def _kg [
@@ -590,6 +592,7 @@ def _kg [
     --json (-j)
     --yaml (-y)
     --neat (-N)
+    --show-labels
     --all (-A)
 ] {
     let output = if ($verbose) {
@@ -610,6 +613,7 @@ def _kg [
         --namespace $namespace
         --selector $selector
         --output $output
+        --show-labels=$show_labels
         --all=$all
         --as-str=$watch
     )
@@ -983,7 +987,7 @@ export def kshark [
   ssh -i $key $"($user)@($ip)" "if ! rpm -qa | grep -qw tcpdump; then sudo yum install tcpdump -y; fi"
 
   log info "Executing command..."
-  if ((uname -o) == "Darwin") {
+  if ((^uname -o) == "Darwin") {
       ssh -i $key $"($user)@($ip)" $"sudo tcpdump -i ($eni) -U -s0 -w - 'not port 22'" | /Applications/Wireshark.app/Contents/MacOS/Wireshark -k -i -
   } else {
       ssh -i $key $"($user)@($ip)" $"sudo tcpdump -i ($eni) -U -s0 -w - 'not port 22'" | wireshark -k -i -
@@ -1013,7 +1017,7 @@ export def --wrapped kex [
     let n = $namespace | with-flag -n
     let pod = if ($selector | is-empty) { $pod } else {
         let pods = (
-            kubectl get pods $n -o wide -l $selector
+            kubectl get pods ...$n -o wide -l $selector
             | from ssv -a
             | where STATUS == Running
             | select NAME IP NODE
@@ -1029,7 +1033,7 @@ export def --wrapped kex [
     }
     let c = if ($container | is-empty) {
         if ($selector | is-empty)  { [] } else {
-            let cs = (kgp -n $n $pod -p '.spec.containers[*].name' | split row ' ')
+            let cs = (kubectl get pod ...$n $pod -ojsonpath='{.spec.containers[*].name}' | split row ' ')
             let ctn = if ($cs | length) == 1 {
                 $cs.0
             } else {
@@ -1239,6 +1243,16 @@ export def kwatch [
 ] {
     let lib_dirs = $env.NU_LIB_DIRS | str join (char record_sep)
     hwatch -c -t -s $"nu -n -I ($lib_dirs) -c" $"use ($env.CURRENT_FILE) *; ($command)"
+}
+
+# kubectl api-resources
+export def k_api_res [] {
+    kubectl api-resources | from ssv -a | normalize-column-names
+}
+
+# kubectl api-versions
+export def k_api_vers [] {
+    kubectl api-versions | from ssv -n | rename version
 }
 
 # watch logs with stern

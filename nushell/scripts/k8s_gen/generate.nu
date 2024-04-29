@@ -101,6 +101,7 @@ export def kg($abbr) [
     --yaml \(-y\) # output as yaml
     --neat \(-N\) # remove k8s metadata \(only with `--yaml` or `--json`\)
     --all \(-A\) # get all
+    --show-labels \(-S\) # show labels
 ] {
     let output = \(_kg ($kind) $name
         --namespace \$namespace
@@ -113,6 +114,7 @@ export def kg($abbr) [
         --neat=$neat
         --all=$all
         --watch=$watch
+        --show-labels=$show_labels
     \)
 
     if \($watch\) {

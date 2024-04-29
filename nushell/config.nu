@@ -466,7 +466,7 @@ $env.config = {
 }
 
 def nvim_client [...files: path] {
-    if ((uname -s) == "Darwin") {
+    if ((^uname -s) == "Darwin") {
         for $f in $files {
             nvim --server $env.NVIM_SERVER --remote (greadlink -mq $f)
         }
@@ -477,10 +477,37 @@ def nvim_client [...files: path] {
     }
 }
 
+def _rotate [
+    array: list<any>
+    idx: int
+] {
+    let len = $array | length
+    let idx = $idx mod $len
+    let first = $array | first $idx
+    let remain = $array | last ($len - $idx)
+    $remain | append $first
+}
+
+def dirs [] {
+    $env.PWD_STACK | reverse
+}
+
 def --env pop [] {
-    $env.PWD_POPPING = true;
-    cd ($env.PWD_STACK | last);
-    $env.PWD_STACK = ($env.PWD_STACK | drop);
+    if (($env.PWD_STACK | length) > 0) {
+        $env.PWD_POPPING = true;
+        cd ($env.PWD_STACK | last);
+        $env.PWD_STACK = ($env.PWD_STACK | drop);
+    }
+}
+
+def --env dirup [idx: int = 1] {
+    let len = $env.PWD_STACK | length
+   if (($len > 0) and ($idx > 0)) {
+        let idx = $len - ($idx mod $len)
+        $env.PWD_POPPING = true;
+        $env.PWD_STACK = (_rotate $env.PWD_STACK $idx)
+        cd ($env.PWD_STACK | last)
+   }
 }
 
 def --env mkcd [directory: string] {mkdir $directory; cd $directory}

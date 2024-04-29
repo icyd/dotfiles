@@ -1,14 +1,14 @@
 local M = {
-    'nvim-lualine/lualine.nvim',
-    event = 'VeryLazy',
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
 }
 
 local utils = require("utils")
 
-aux_color = '#ff9e64'
-ok, colors = pcall(require, 'kanagawa.colors')
+aux_color = "#ff9e64"
+ok, colors = pcall(require, "kanagawa.colors")
 if ok then
-    aux_color = colors.setup({ theme = 'wave' }).co
+    aux_color = colors.setup({ theme = "wave" }).co
 end
 
 local function get_modified()
@@ -24,36 +24,37 @@ local function get_modified()
     --     end
     --
     --     local ret_string = '%#' .. hl_group .. '#' .. icon .. '%*' .. ' ' .. file_name
-    if utils.get_buf_option('mod') then
-        return '' .. ' '
+    if utils.get_buf_option("mod") then
+        return "" .. " "
     end
 
-    return ''
+    return ""
 end
 
 local function get_location()
-    local location = require('nvim-navic').get_location()
+    local location = require("nvim-navic").get_location()
     if not utils.is_empty(location) then
-        return ' ' .. '>' .. ' ' .. location
+        return " " .. ">" .. " " .. location
     end
 
-    return ''
+    return ""
 end
 
 function M.config()
     local function maximize_status()
-        return vim.t.maximized and '   ' or ''
+        return vim.t.maximized and "   " or ""
     end
 
     -- local lazy = require("lazy")
     local status = require("lazy.status")
 
-    require('lualine').setup {
+    require("lualine").setup({
         options = {
             icons_enabled = true,
-            theme = 'kanagawa',
-            component_separators = { '', '' },
-            section_separators = { '', '' },
+            -- theme = 'kanagawa',
+            theme = "gruvbox_dark",
+            component_separators = { "", "" },
+            section_separators = { "", "" },
             disabled_filetypes = {
                 statusline = {},
                 winbar = {
@@ -72,11 +73,11 @@ function M.config()
                     "dap-repl",
                     "dapui_watches",
                 },
-            }
+            },
         },
         sections = {
-            lualine_a = { 'mode' },
-            lualine_b = { 'branch', 'diff' },
+            lualine_a = { "mode" },
+            lualine_b = { "branch", "diff" },
             lualine_c = {
                 -- {
                 --     'filename',
@@ -90,9 +91,9 @@ function M.config()
                 --     'diagnostics',
                 --     sources = { 'nvim_diagnostic' }
                 -- },
-                'encoding',
-                'fileformat',
-                'filetype',
+                "encoding",
+                "fileformat",
+                "filetype",
                 maximize_status,
                 {
                     function()
@@ -110,16 +111,16 @@ function M.config()
                 --     color = { fg = aux_color },
                 -- },
             },
-            lualine_y = { 'progress' },
-            lualine_z = { 'location' }
+            lualine_y = { "progress" },
+            lualine_z = { "location" },
         },
         inactive_sections = {
             lualine_a = {},
             lualine_b = {},
-            lualine_c = { 'filename' },
-            lualine_x = { 'location' },
+            lualine_c = { "filename" },
+            lualine_x = { "location" },
             lualine_y = {},
-            lualine_z = {}
+            lualine_z = {},
         },
         tabline = {},
         extensions = { "nvim-tree", "toggleterm", "quickfix" },
@@ -127,14 +128,14 @@ function M.config()
             lualine_a = {},
             lualine_b = {
                 {
-                    'diagnostics',
-                    sources = { 'nvim_diagnostic' },
+                    "diagnostics",
+                    sources = { "nvim_diagnostic" },
                 },
                 {
                     get_location,
                     cond = function()
-                        if package.loaded['nvim-navic'] then
-                            return require('nvim-navic').is_available()
+                        if package.loaded["nvim-navic"] then
+                            return require("nvim-navic").is_available()
                         end
                     end,
                     color = { fg = aux_color },
@@ -144,10 +145,10 @@ function M.config()
             lualine_x = {
                 {
                     get_modified,
-                    color = { fg = aux_color }
+                    color = { fg = aux_color },
                 },
                 {
-                    'filename',
+                    "filename",
                     file_status = false,
                     newfile_status = true,
                     path = 3,
@@ -155,8 +156,8 @@ function M.config()
             },
             lualine_y = {},
             lualine_z = {},
-        }
-    }
+        },
+    })
 end
 
 return M
