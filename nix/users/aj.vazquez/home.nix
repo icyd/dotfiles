@@ -38,7 +38,6 @@ in {
     skopeo
     stern
     unstable.pueue
-    lldb-nix-fix.vscode-extensions.vadimcn.vscode-lldb
   ];
   xdg.configFile = { amethyst.source = ../../../amethyst; };
 }

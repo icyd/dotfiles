@@ -288,6 +288,10 @@ export def "nu-complete top" [] {
     [node pod]
 }
 
+export def "nu-complete kube nodes" [] {
+    kubectl get nodes | from ssv -a | get NAME
+}
+
 export def `kcache flush` [] {
     rm -rf ~/.cache/nu-complete/k8s/
     nu-complete kube ctx
@@ -1238,11 +1242,23 @@ export def k_zombify_container [
     )
 }
 
-export def kwatch [
+export def --wrapped kwatch [
     command: string
+    --use (-u): string = "use kubernetes.nu *" # command to use / include library
+    --additional-libraries (-l): string # comma separated list of libraries to include
+    ...$args
 ] {
-    let lib_dirs = $env.NU_LIB_DIRS | str join (char record_sep)
-    hwatch -c -t -s $"nu -n -I ($lib_dirs) -c" $"use ($env.CURRENT_FILE) *; ($command)"
+    let lib_dirs = (if ($additional_libraries | is-empty) {
+        $env.NU_LIB_DIRS
+    } else {
+        ($env.NU_LIB_DIRS
+            | append ($additional_libraries
+                | split row ","
+                | each {|it| $it | path expand}
+              )
+        )
+    }) | str join (char record_sep)
+    hwatch ...$args -c -t -s $"nu -n -I ($lib_dirs) -c" $"($use); ($command)"
 }
 
 # kubectl api-resources
@@ -1273,4 +1289,16 @@ export def slog [
     let exc = $exclude | with-flag -E
     let exc_pod = $exclude_pod | with-flag --exclude-pod
     stern ...$pod ...$ns ...$cont ...$exc_cont ...$inc ...$exc ...$exc_pod
+}
+
+# Get all pods running in a given node
+export def kgpo_on_node [
+    node: string@"nu-complete kube nodes"
+] {
+    (kubectl get pod -A -owide
+        | from ssv -a
+        | normalize-column-names
+        | where node == $node
+        | select namespace name
+    )
 }

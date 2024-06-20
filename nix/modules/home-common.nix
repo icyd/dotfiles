@@ -13,6 +13,7 @@ let
 in {
   colorScheme = nix-colors.colorSchemes.gruvbox-dark-medium;
   fonts.fontconfig.enable = true;
+  # imports = [ nix-colors.homeManagerModule ./nushell.nix ];
   imports = [ nix-colors.homeManagerModule ];
   home = {
     inherit stateVersion username homeDirectory;
@@ -61,14 +62,15 @@ in {
       ledger
       luajit
       luajitPackages.luarocks
+      luajitPackages.magick
       mosh
       nodejs_20
-      neovim-nightly
       (nerdfonts.override {
         fonts = [ "AnonymousPro" "Hack" "Inconsolata" "Meslo" "SourceCodePro" ];
       })
       unstable.nix-your-shell
       nixfmt
+      nix-index
       pandoc
       procs
       python310
@@ -87,6 +89,9 @@ in {
       unstable.zellij
       unstable.zoxide
       # vscode-extensions.vadimcn.vscode-lldb
+      ueberzugpp
+      unstable.wezterm
+      imagemagick
       zenith
     ];
     sessionPath = [
@@ -158,6 +163,8 @@ in {
       "~docs" = ''cd $"($env.HOME)/Documents"'';
       "~dot" = ''cd $"($env.HOME)/.dotfiles"'';
       "~drop" = ''cd $"($env.HOME)/Dropbox"'';
+      "~org" = ''cd $"($env.HOME)/Dropbox/org"'';
+      "~work" = ''cd $"($env.HOME)/Dropbox/org/work"'';
       "~dw" = ''cd $"($env.HOME)/Downloads"'';
       "~ea" = ''cd $"($env.HOME)/Projects/ea"'';
       "~nex" = ''cd $"($env.HOME)/Nextcloud"'';
@@ -170,6 +177,7 @@ in {
       d = "shells";
       fj = "from json";
       fy = "from yaml";
+      g = "git";
       gi = "git";
       gig = "utils gitignore_template";
       gpw = "gopass";

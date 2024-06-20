@@ -44,10 +44,6 @@ end
 local function bind_if(cond, key, mods, action, mods_alt)
     local sendkey_mods = mods_alt or mods
     local function callback(win, pane)
-        wezterm.log_error(win)
-        wezterm.log_error(pane)
-        wezterm.log_error(pane:get_tty_name())
-        wezterm.log_error(pane:get_foreground_process_name())
         if cond(pane) then
             win:perform_action(action, pane)
         else
@@ -58,8 +54,6 @@ local function bind_if(cond, key, mods, action, mods_alt)
     return { key = key, mods = mods, action = wezterm.action_callback(callback) }
 end
 
--- config.color_scheme = "Gruvbox dark, medium (base16)"
--- config.notification_handling = "AlwaysShow"
 config.color_scheme = "Gruvbox Dark (Gogh)"
 config.leader = { key = "a", mods = "CTRL" }
 config.default_cwd = wezterm.home_dir .. "/Projects/ea"
@@ -72,7 +66,8 @@ config.default_prog = {
 config.disable_default_key_bindings = true
 config.keys = {
     -- Send "CTRL-A" to the terminal when pressing CTRL-A, CTRL-A
-    { key = "a", mods = "LEADER|CTRL", action = act({ SendString = "\x01" }) },
+    -- { key = "a", mods = "LEADER", action = act({ SendString = "\x01" }) },
+    { key = "a", mods = "LEADER|CTRL", action = act.SendKey({ key = "a", mods = "CTRL" }) },
     { key = "-", mods = "LEADER", action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
     { key = "\\", mods = "LEADER", action = act({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
     { key = "z", mods = "LEADER", action = "TogglePaneZoomState" },
@@ -228,7 +223,6 @@ config.unix_domains = {
     },
 }
 -- config.default_gui_startup_args = { "connect", "unix" }
--- config.use_fancy_tab_bar = false
 -- config.tab_max_width = 24
 
 local battery_icon = function(info)
@@ -250,22 +244,79 @@ end
 wezterm.on("update-right-status", function(window, action)
     local cells = {}
     table.insert(cells, { Text = "󰥔 " .. wezterm.strftime("%Y-%m-%d %H:%M") })
-    table.insert(cells, { Text = "    " })
-    -- "󰂂"
-    -- "󰂁"
-    -- "󰂀"
-    -- "󰁿"
-    -- "󰁽"
-    -- "󰁼"
-    -- "󰁻"
-    -- "󰁺"
-    -- "󰂄"
+    table.insert(cells, { Text = "  " })
+    --     -- "󰂂"
+    --     -- "󰂁"
+    --     -- "󰂀"
+    --     -- "󰁿"
+    --     -- "󰁽"
+    --     -- "󰁼"
+    --     -- "󰁻"
+    --     -- "󰁺"
+    --     -- "󰂄"
     for _, b in ipairs(wezterm.battery_info()) do
         table.insert(cells, { Text = battery_icon(b) .. string.format("%.0f%%", b.state_of_charge * 100) })
     end
     window:set_right_status(wezterm.format(cells))
 end)
 
+config.use_fancy_tab_bar = false
+config.tab_max_width = 24
+
+local function tab_title(tab_info)
+    local title = tab_info.tab_title
+    if not (title and #title > 0) then
+        title = tab_info.active_pane.title
+    end
+
+    return string.gsub(title, ".*>%s+(.*)", "%1")
+end
+
+config.colors = {
+    tab_bar = {
+        background = "#282828",
+        new_tab = {
+            bg_color = "#282828",
+            fg_color = "#ebdbb2",
+        },
+    },
+}
+
+wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
+    local title = tab_title(tab)
+    local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_left_hard_divider
+    local edge_background = "#282828"
+    local background = "#665c54"
+    local foreground = "#928374"
+
+    if tab.is_active then
+        background = "#b8bb26"
+        foreground = "#282828"
+    elseif hover then
+        background = "#fabd2f"
+        foreground = "#665c54"
+    end
+
+    local edge_foreground = background
+    local width = max_width - 4
+    if #title > width then
+        local title_left = wezterm.truncate_right(title, 6)
+        local title_right = wezterm.truncate_left(title, width - 9)
+        title = title_left .. "..." .. title_right
+    end
+    return {
+        { Background = { Color = edge_foreground } },
+        { Foreground = { Color = edge_background } },
+        { Text = SOLID_LEFT_ARROW },
+        { Background = { Color = background } },
+        { Foreground = { Color = foreground } },
+        { Text = " " .. title .. " " },
+
+        { Background = { Color = edge_background } },
+        { Foreground = { Color = edge_foreground } },
+        { Text = SOLID_LEFT_ARROW },
+    }
+end)
 -- wezterm.on("gui-startup", function(cmd)
 --     local _, _, window = mux.spawn_window(cmd or {})
 --     window:gui_window():toggle_fullscreen()

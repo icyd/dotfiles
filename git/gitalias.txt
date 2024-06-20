@@ -1162,6 +1162,7 @@
   # Do a push/pull for just one branch
   push1 = "!git push origin $(git current-branch)"
   pushf = "!git push origin $(git current-branch) --force"
+  pusht = "!git push --tags"
   pushmr = "!git push -o merge_request.create origin $(git current-branch)"
   pushmrf = "!git push -o merge_request.create origin $(git current-branch) --force"
   pushmrt = "!f(){ branch=$(git current-branch); git push -o merge_request.create -o merge_request.target=$1 origin $branch; }; f"

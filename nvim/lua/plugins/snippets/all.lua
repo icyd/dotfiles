@@ -44,10 +44,11 @@ if ok then
             return fmt("<{}{}>", { i(1, _G.luasnip.vars.username), i(2, " " .. _G.luasnip.vars.email) })
         end,
         date_signature_with_username_and_email = function()
-            return fmt(
-                "<{}{}{}>",
-                { i(1, os.date("%d-%m-%y")), i(2, ", " .. _G.luasnip.vars.username), i(3, " " .. _G.luasnip.vars.email) }
-            )
+            return fmt("<{}{}{}>", {
+                i(1, os.date("%d-%m-%y")),
+                i(2, ", " .. _G.luasnip.vars.username),
+                i(3, " " .. _G.luasnip.vars.email),
+            })
         end,
         date_signature = function()
             return fmt("<{}{}>", { i(1, os.date("%d-%m-%y")), i(2, ", " .. _G.luasnip.vars.username) })
@@ -126,8 +127,8 @@ if ok then
         table.insert(todo_comment_snippets, todo_snippet(v[1], v[2], v[3]))
     end
 
-    for k, v in pairs(todo_comment_snippets) do
-        all_snippets[k] = v
+    for _, v in pairs(todo_comment_snippets) do
+        table.insert(all_snippets, v)
     end
 end
 

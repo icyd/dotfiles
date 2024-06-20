@@ -10,12 +10,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence.url = "github:nix-community/impermanence";
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     nix-colors.url = "github:misterio77/nix-colors";
     nixpkgs.url = "github:NixOs/nixpkgs/nixos-23.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nur.url = "github:nix-community/NUR";
-    lldb-nix-fix.url = "github:mstone/nixpkgs/darwin-fix-vscode-lldb";
   };
   outputs = { self, ... }@inputs:
     let
@@ -37,15 +39,11 @@
             inherit system;
             config.allowUnfree = true;
           };
-          lldb-nix-fix = import inputs.lldb-nix-fix { inherit system; };
         in {
           inherit system;
           config.allowUnfree = true;
-          overlays = [
-            (self: super: { inherit unstable lldb-nix-fix; })
-            inputs.neovim-nightly-overlay.overlay
-            inputs.nur.overlay
-          ];
+          overlays =
+            [ (self: super: { inherit unstable; }) inputs.nur.overlay ];
         };
     in {
       darwinConfigurations = let
@@ -54,7 +52,13 @@
       in {
         "${host}" = inputs.darwin.lib.darwinSystem {
           inherit system;
-          modules = [ ./nix/system/darwin/darwin-configuration.nix ];
+          modules = [
+            ./nix/system/darwin/darwin-configuration.nix
+            ({
+              environment.systemPackages =
+                [ inputs.neovim-nightly-overlay.packages.${system}.default ];
+            })
+          ];
         };
       };
       homeConfigurations = {

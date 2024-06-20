@@ -1,15 +1,15 @@
 local function make(trig, name)
-  return s(
-    trig,
-    fmt("{} {}\n\n{}", {
-      c(1, {
-        t(name .. ":"),
-        sn(nil, fmt("{}({}):", { t(name), i(1, "scope") })),
-      }),
-      i(2, "title"),
-      i(0),
-    })
-  )
+    return s(
+        trig,
+        fmt("{} {}\n\n{}", {
+            c(1, {
+                t(name .. ":"),
+                sn(nil, fmt("{}({}):", { t(name), i(1, "scope") })),
+            }),
+            i(2, "title"),
+            i(0),
+        })
+    )
 end
 
 local function mapmake(tbl)
@@ -34,4 +34,11 @@ local types = {
     ["test"] = "test",
 }
 
-return mapmake(types)
+local snippets = mapmake(types)
+local all_snippets = {}
+
+for _, v in pairs(snippets) do
+    table.insert(all_snippets, v)
+end
+
+return all_snippets
