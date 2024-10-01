@@ -99,6 +99,8 @@ config.keys = {
     { key = "L", mods = "LEADER|SHIFT", action = act({ AdjustPaneSize = { "Right", 5 } }) },
     { key = "n", mods = "LEADER", action = act.ActivateTabRelative(1) },
     { key = "p", mods = "LEADER", action = act.ActivateTabRelative(-1) },
+    { key = "^", mods = "LEADER", action = act({ ActivateTab = 0 }) },
+    { key = "$", mods = "LEADER", action = act({ ActivateTab = -1 }) },
     { key = "1", mods = "LEADER", action = act({ ActivateTab = 0 }) },
     { key = "2", mods = "LEADER", action = act({ ActivateTab = 1 }) },
     { key = "3", mods = "LEADER", action = act({ ActivateTab = 2 }) },
@@ -120,15 +122,15 @@ config.keys = {
     { key = "d", mods = "LEADER", action = act.DetachDomain("CurrentPaneDomain") },
     { key = "L", mods = "CTRL", action = act.ShowDebugOverlay },
     -- { key = "w", mods = "LEADER", action = act.ToggleAlwaysOnTop },
-    {
-        key = "$",
-        mods = "LEADER",
-        action = prompt("Enter new name for current workspace", function(window, _, line)
-            if line then
-                window:perform_action(mux.rename_workspace(mux.get_active_workspace(), line))
-            end
-        end),
-    },
+    -- {
+    --     key = "$",
+    --     mods = "LEADER",
+    --     action = prompt("Enter new name for current workspace", function(window, _, line)
+    --         if line then
+    --             window:perform_action(mux.rename_workspace(mux.get_active_workspace(), line))
+    --         end
+    --     end),
+    -- },
     {
         key = "C",
         mods = "LEADER",

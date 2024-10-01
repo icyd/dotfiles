@@ -34,31 +34,31 @@ if ok then
 
     --- Options for marks to be used in a TODO comment
     local marks = {
-        date_signature_with_email = function()
-            return fmt("<{}{}>", { i(1, os.date("%d-%m-%y")), i(2, ", " .. _G.luasnip.vars.email) })
-        end,
-        signature = function()
-            return fmt("<{}>", i(1, _G.luasnip.vars.username))
-        end,
-        signature_with_email = function()
-            return fmt("<{}{}>", { i(1, _G.luasnip.vars.username), i(2, " " .. _G.luasnip.vars.email) })
-        end,
-        date_signature_with_username_and_email = function()
-            return fmt("<{}{}{}>", {
-                i(1, os.date("%d-%m-%y")),
-                i(2, ", " .. _G.luasnip.vars.username),
-                i(3, " " .. _G.luasnip.vars.email),
-            })
-        end,
+        -- date_signature_with_email = function()
+        --     return fmt("<{}{}>", { i(1, os.date("%d-%m-%y")), i(2, ", " .. _G.luasnip.vars.email) })
+        -- end,
+        -- signature = function()
+        --     return fmt("<{}>", i(1, _G.luasnip.vars.username))
+        -- end,
+        -- signature_with_email = function()
+        --     return fmt("<{}{}>", { i(1, _G.luasnip.vars.username), i(2, " " .. _G.luasnip.vars.email) })
+        -- end,
+        -- date_signature_with_username_and_email = function()
+        --     return fmt("<{}{}{}>", {
+        --         i(1, os.date("%d-%m-%y")),
+        --         i(2, ", " .. _G.luasnip.vars.username),
+        --         i(3, " " .. _G.luasnip.vars.email),
+        --     })
+        -- end,
         date_signature = function()
-            return fmt("<{}{}>", { i(1, os.date("%d-%m-%y")), i(2, ", " .. _G.luasnip.vars.username) })
+            return fmt("<{}{}>", { i(1, os.date("%y-%m-%d")), i(2, ", " .. _G.luasnip.vars.email) })
         end,
-        date = function()
-            return fmt("<{}>", i(1, os.date("%d-%m-%y")))
-        end,
-        empty = function()
-            return t("")
-        end,
+        -- date = function()
+        --     return fmt("<{}>", i(1, os.date("%d-%m-%y")))
+        -- end,
+        -- empty = function()
+        --     return t("")
+        -- end,
     }
 
     local todo_snippet_nodes = function(aliases, opts)

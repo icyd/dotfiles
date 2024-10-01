@@ -31,7 +31,7 @@ local formatters_by_ft = {
 ---@param excluded string[]
 ---@return string[] tools
 local function tools_to_autoinstall(tools_by_ft, tools, excluded)
-    local tools1 = vim.tbl_flatten(vim.tbl_values(tools_by_ft))
+    local tools1 = vim.iter(vim.tbl_values(tools_by_ft)):flatten():totable()
     local result = vim.fn.uniq(vim.list_extend(tools, tools1))
     result = vim.tbl_filter(function(tool)
         return not vim.tbl_contains(excluded, tool)
@@ -98,8 +98,9 @@ local servers = {
     gopls = {},
     -- hls = {},
     -- graphql = {},
-    -- jdtls = {},
+    jdtls = {},
     jsonls = {
+        cmd = { "json-languageserver", "--stdio" },
         on_new_config = function(new_config)
             new_config.settings.json.schemas = new_config.settings.json.schemas or {}
             vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
@@ -114,6 +115,7 @@ local servers = {
         },
     },
     html = {},
+    lemminx = {},
     nushell = {},
     pyright = {},
     rust_analyzer = {

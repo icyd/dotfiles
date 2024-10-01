@@ -1,6 +1,10 @@
 return {
     -- Core
     "nvim-tree/nvim-web-devicons",
+    {
+        "echasnovski/mini.icons",
+        version = "*",
+    },
     "nvim-lua/plenary.nvim",
     {
         "vhyrro/luarocks.nvim",
@@ -29,10 +33,36 @@ return {
     },
     -- UI
     {
-        "rcarriga/nvim-notify",
-        config = function()
-            vim.notify = require("notify")
-        end,
+        "folke/noice.nvim",
+        event = "VeryLazy",
+        dependencies = {
+            "MunifTanjim/nui.nvim",
+            "rcarriga/nvim-notify",
+        },
+        opts = {
+            cmdline = {
+                view = "cmdline",
+            },
+            lsp = {
+                override = {
+                    ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+                    ["vim.lsp.util.stylize_markdown"] = true,
+                    ["cmp.entry.get_documentation"] = true,
+                },
+            },
+            presets = {
+                bottom_search = true,
+                long_message_to_split = true,
+                inc_rename = false,
+                lsp_doc_border = false,
+            },
+            routes = {
+                {
+                    filter = { event = "notify", find = "^.*WARNING.*vim.treesitter.get_parser.*$" },
+                    opts = { skip = true },
+                },
+            },
+        },
     },
     {
         "folke/which-key.nvim",
@@ -46,13 +76,8 @@ return {
             local wk = require("which-key")
             wk.setup({
                 -- triggers = { '<leader>', '<localleader>' },
-                triggers_blacklist = {
-                    n = { "i", '"' },
-                },
             })
-            local uwk = require("unimpaired-which-key")
-            wk.register(uwk.normal_mode)
-            wk.register(uwk.normal_mode_and_visual_mode, { mode = { "n", "v" } })
+            wk.add(require("unimpaired-which-key"))
             vim.keymap.set("n", "<leader>?", "<cmd>WhichKey<CR>")
         end,
     },
@@ -159,22 +184,22 @@ return {
         cmd = { "TodoTrouble", "TodoTelescope", "TodoLocList", "TodoQuickFix" },
         event = "BufReadPost",
         config = true,
-        keys = {
-            {
-                "]c",
-                function()
-                    require("todo-comments").jump_next()
-                end,
-                desc = "Next todo comment",
-            },
-            {
-                "[c",
-                function()
-                    require("todo-comments").jump_prev()
-                end,
-                desc = "Previous todo comment",
-            },
-        },
+        -- keys = {
+        --     {
+        --         "]c",
+        --         function()
+        --             require("todo-comments").jump_next()
+        --         end,
+        --         desc = "Next todo comment",
+        --     },
+        --     {
+        --         "[c",
+        --         function()
+        --             require("todo-comments").jump_prev()
+        --         end,
+        --         desc = "Previous todo comment",
+        --     },
+        -- },
     },
     -- Autopairs
     {

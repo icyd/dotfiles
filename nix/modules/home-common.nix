@@ -1,16 +1,33 @@
-{ pkgs, lib, config, stateVersion, username, email, homeDirectory, nix-colors
-, alacrittyFont, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  stateVersion,
+  username,
+  email,
+  homeDirectory,
+  nix-colors,
+  alacrittyFont,
+  ...
+}:
 let
   nushell = pkgs.unstable.nushell;
-  zellijConfigDir = if pkgs.stdenv.isDarwin then
-    "${config.home.homeDirectory}/Library/Application Support/org.Zellij-Contributors.Zellij"
-  else
-    "${config.xdg.configHome}/zellij";
-  alacrittyShell =
-    if pkgs.stdenv.isDarwin then "${pkgs.zsh}/bin/zsh" else "${nushell}/bin/nu";
+  zellijConfigDir =
+    if pkgs.stdenv.isDarwin then
+      "${config.home.homeDirectory}/Library/Application Support/org.Zellij-Contributors.Zellij"
+    else
+      "${config.xdg.configHome}/zellij";
+  alacrittyShell = if pkgs.stdenv.isDarwin then "${pkgs.zsh}/bin/zsh" else "${nushell}/bin/nu";
   alacrittyShellArgs =
-    if pkgs.stdenv.isDarwin then [ "-c" "${nushell}/bin/nu" ] else [ ];
-in {
+    if pkgs.stdenv.isDarwin then
+      [
+        "-c"
+        "${nushell}/bin/nu"
+      ]
+    else
+      [ ];
+in
+{
   colorScheme = nix-colors.colorSchemes.gruvbox-dark-medium;
   fonts.fontconfig.enable = true;
   # imports = [ nix-colors.homeManagerModule ./nushell.nix ];
@@ -28,8 +45,9 @@ in {
       ".scripts".source = ../../nushell/scripts;
       # "${config.xdg.dataHome}/nushell/nix-your-shell.nu".source =
       #   pkgs.nix-your-shell.generate-config "nu";
-      "${zellijConfigDir}".source = config.lib.file.mkOutOfStoreSymlink
-        "${config.home.homeDirectory}/.dotfiles/zellij";
+      "${
+        zellijConfigDir
+      }".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/zellij";
     };
     packages = with pkgs; [
       binutils
@@ -60,16 +78,23 @@ in {
       jq
       lazygit
       ledger
-      luajit
-      luajitPackages.luarocks
-      luajitPackages.magick
+      lua-language-server
+      lua51Packages.lua
+      lua51Packages.luarocks
+      # lua51Packages.magick
       mosh
       nodejs_20
       (nerdfonts.override {
-        fonts = [ "AnonymousPro" "Hack" "Inconsolata" "Meslo" "SourceCodePro" ];
+        fonts = [
+          "AnonymousPro"
+          "Hack"
+          "Inconsolata"
+          "Meslo"
+          "SourceCodePro"
+        ];
       })
       unstable.nix-your-shell
-      nixfmt
+      nixfmt-rfc-style
       nix-index
       pandoc
       procs
@@ -84,7 +109,6 @@ in {
       skim
       tree-sitter
       universal-ctags
-      nushell
       unstable.yq-go
       unstable.zellij
       unstable.zoxide
@@ -104,37 +128,40 @@ in {
       "${config.xdg.dataHome}/cabal/bin"
       "$HOME/.npm-global/bin"
     ];
-    sessionVariables = let editor = "nvim";
-    in {
-      ASDF_DATA_DIR = "$HOME/.asdf";
-      BROWSER = "firefox";
-      # CABAL_DIR = "${config.xdg.dataHome}/cabal";
-      CARGO_HOME = "$HOME/.cargo";
-      DOTFILES = "$HOME/.dotfiles";
-      EDITOR = editor;
-      GOPATH = "$HOME/go";
-      LEDGER_HOME = "$HOME/Dropbox/ledger";
-      LEDGER_DATE_FORMAT = "%Y/%m/%d";
-      KUBE_EDITOR = editor;
-      NVIM_SERVER = "/tmp/nvimsocket";
-      ORGMODE_HOME = "$HOME/Dropbox";
-      PAGER = "less";
-      PASSWORD_STORE_GENERATED_LENGTH = 12;
-      PY_VENV = "$HOME/.venv";
-      RUSTUP_HOME = "$HOME/.rustup";
-      VISUAL = editor;
-      VIMWIKI_HOME = "$HOME/Dropbox";
-      WINEDLLOVERRIDES = "winemenubuilder.exe=d";
-      XDG_CONFIG_HOME = "${config.xdg.configHome}";
-      ZELLIJ_CONFIG = "${zellijConfigDir}";
-      ZELLIJ_RUNNER_BANNERS_DIR = "${zellijConfigDir}/banners";
-      ZELLIJ_RUNNER_LAYOUTS_DIR = "${zellijConfigDir}/layouts";
-      ZELLIJ_RUNNER_ROOT_DIR = "Projects";
-      ZELLIJ_RUNNER_IGNORE_DIRS = "node_modules,target";
-      ZELLIJ_RUNNER_MAX_DIRS_DEPTH = "2";
-      ZSH_CACHE_DIR = "$HOME/.cache/zsh";
-      ZSH_CONFIG = "${config.xdg.configHome}/zsh";
-    };
+    sessionVariables =
+      let
+        editor = "nvim";
+      in
+      {
+        ASDF_DATA_DIR = "$HOME/.asdf";
+        BROWSER = "firefox";
+        # CABAL_DIR = "${config.xdg.dataHome}/cabal";
+        CARGO_HOME = "$HOME/.cargo";
+        DOTFILES = "$HOME/.dotfiles";
+        EDITOR = editor;
+        GOPATH = "$HOME/go";
+        LEDGER_HOME = "$HOME/Dropbox/ledger";
+        LEDGER_DATE_FORMAT = "%Y/%m/%d";
+        KUBE_EDITOR = editor;
+        NVIM_SERVER = "/tmp/nvimsocket";
+        ORGMODE_HOME = "$HOME/Dropbox";
+        PAGER = "less";
+        PASSWORD_STORE_GENERATED_LENGTH = 12;
+        PY_VENV = "$HOME/.venv";
+        RUSTUP_HOME = "$HOME/.rustup";
+        VISUAL = editor;
+        VIMWIKI_HOME = "$HOME/Dropbox";
+        WINEDLLOVERRIDES = "winemenubuilder.exe=d";
+        XDG_CONFIG_HOME = "${config.xdg.configHome}";
+        ZELLIJ_CONFIG = "${zellijConfigDir}";
+        ZELLIJ_RUNNER_BANNERS_DIR = "${zellijConfigDir}/banners";
+        ZELLIJ_RUNNER_LAYOUTS_DIR = "${zellijConfigDir}/layouts";
+        ZELLIJ_RUNNER_ROOT_DIR = "Projects";
+        ZELLIJ_RUNNER_IGNORE_DIRS = "node_modules,target";
+        ZELLIJ_RUNNER_MAX_DIRS_DEPTH = "2";
+        ZSH_CACHE_DIR = "$HOME/.cache/zsh";
+        ZSH_CONFIG = "${config.xdg.configHome}/zsh";
+      };
   };
   programs.alacritty = import ./alacritty.nix {
     inherit config;
@@ -144,7 +171,9 @@ in {
     font = alacrittyFont;
   };
   programs.bat = {
-    config = { theme = "base16"; };
+    config = {
+      theme = "base16";
+    };
     enable = true;
   };
   programs.direnv = {
@@ -174,6 +203,8 @@ in {
       b64d = "base64 -d";
       cat = "bat";
       cl = "clear";
+      cby = "clipboard copy";
+      cbp = "clipboard paste";
       d = "shells";
       fj = "from json";
       fy = "from yaml";
@@ -191,8 +222,7 @@ in {
       lx = "eza -lbhHigUmuSa@";
       la = "eza -lbhHigUmuSa";
       lg = "lazygit";
-      mini-ci =
-        "zellij action start-or-reload-plugin `file:${zellijConfigDir}/plugins/multitask.wasm`";
+      mini-ci = "zellij action start-or-reload-plugin `file:${zellijConfigDir}/plugins/multitask.wasm`";
       nv = "nvim_client";
       nvr = "nvim --listen $env.NVIM_SERVER";
       pw = "gopass show -c";
@@ -207,11 +237,12 @@ in {
       zr = "zellij-runner";
       xssh = "TERM=xterm-256color ssh";
     };
-    configFile.text = with lib;
+    configFile.text =
+      with lib;
       mkMerge [
-        (concatStringsSep "\n"
-          (mapAttrsToList (k: v: ''let ${toLower k} = "#${v}"'')
-            config.colorScheme.palette))
+        (concatStringsSep "\n" (
+          mapAttrsToList (k: v: ''let ${toLower k} = "#${v}"'') config.colorScheme.palette
+        ))
 
         (builtins.readFile ../../nushell/config.nu)
       ];
@@ -221,12 +252,13 @@ in {
       source ~/.zoxide.nu
       use utils.nu
       use certs.nu
-      use modules/background_task/task.nu *
+      use modules/background_task/task.nu
       use modules/weather/get-weather.nu *
       use git-gone.nu *
       use cd-root.nu *
       use kubernetes.nu *
       use ~/.local.nu *
+      overlay use solr --prefix
     '';
     extraEnv = ''
       $env.LANG = "en_US.UTF-8"
@@ -238,20 +270,37 @@ in {
     package = pkgs.unstable.starship;
     settings = {
       add_newline = true;
+      command_timeout = 1200;
       haskell.disabled = true;
       nodejs.disabled = true;
-      # format = "$character";
-      # right_format = "$all";
+      kubernetes = {
+        disabled = false;
+        contexts = [
+          {
+            context_pattern = ".*-prod(?<version>-v[^-]+)?-.*";
+            context_alias = "Prod";
+            style = "red bold";
+          }
+          {
+            context_pattern = ".*-load(?<version>-v[^-]+)?-.*";
+            context_alias = "Load$version";
+            style = "orange";
+          }
+          {
+            context_pattern = ".*-nonprod(?<version>-v[^-]+)?-.*";
+            context_alias = "Nonprod$version";
+            style = "green";
+          }
+        ];
+      };
     };
   };
   programs.tmux = import ./tmux.nix { inherit lib pkgs; };
   programs.zsh = import ./zsh.nix { inherit lib pkgs config; };
   xdg.enable = true;
   xdg.configFile = {
-    nvim.source = config.lib.file.mkOutOfStoreSymlink
-      "${config.home.homeDirectory}/.dotfiles/nvim";
-    wezterm.source = config.lib.file.mkOutOfStoreSymlink
-      "${config.home.homeDirectory}/.dotfiles/wezterm";
+    nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/nvim";
+    wezterm.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/wezterm";
     tmuxp.source = ../../tmux/tmuxp;
   };
 }

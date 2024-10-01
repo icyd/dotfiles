@@ -13,7 +13,7 @@ let
 in {
   autocd = true;
   enable = true;
-  enableAutosuggestions = false;
+  autosuggestion.enable = false;
   enableCompletion = false;
   defaultKeymap = "viins";
   dirHashes = {

@@ -6,7 +6,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence.url = "github:nix-community/impermanence";
@@ -15,7 +15,7 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nix-colors.url = "github:misterio77/nix-colors";
-    nixpkgs.url = "github:NixOs/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOs/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nur.url = "github:nix-community/NUR";
   };
@@ -33,6 +33,8 @@
         host = "ES-IT00385";
         user = "aj.vazquez";
       };
+      inputsToPin = let lib = inputs.nixpkgs.lib;
+      in lib.filterAttrs (k: v: lib.strings.hasPrefix "nixpkgs" k) inputs;
       nixpkgsConfig = { system }:
         let
           unstable = import inputs.nixpkgs-unstable {
@@ -59,6 +61,7 @@
                 [ inputs.neovim-nightly-overlay.packages.${system}.default ];
             })
           ];
+          specialArgs = { inputs = inputsToPin; };
         };
       };
       homeConfigurations = {

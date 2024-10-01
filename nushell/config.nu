@@ -158,14 +158,17 @@ $env.config = {
     vi_normal: underscore # block, underscore, line, blink_block, blink_underscore, blink_line (underscore is the default)
   }
   color_config: $base16_theme
-  use_grid_icons: true
+  display_errors: {
+    exit_code: false
+    termination_signal: true
+  }
   footer_mode: "25" # always, never, number_of_rows, auto
   float_precision: 2
   buffer_editor: ""
   use_ansi_coloring: true
   bracketed_paste: true # enable bracketed paste, currently useless on windows
   edit_mode: vi
-  shell_integration: true # enables terminal markers and a workaround to arrow keys stop working issue
+  # shell_integration: true # enables terminal markers and a workaround to arrow keys stop working issue
   show_banner: false
   render_right_prompt_on_last_line: false # true or false to enable or disable right prompt to be rendered on last line of the prompt.
 

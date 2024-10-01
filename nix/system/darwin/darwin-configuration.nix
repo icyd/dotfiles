@@ -1,5 +1,22 @@
-{ config, pkgs, ... }: {
-  environment.systemPackages = with pkgs; [ gnupg home-manager vim ];
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
+let
+  attrsKeys = lib.mapAttrsToList (k: _: k);
+  attrsVals = lib.mapAttrsToList (_: v: v);
+in
+{
+  environment = {
+    systemPackages = with pkgs; [
+      gnupg
+      home-manager
+      vim
+    ];
+  };
   homebrew = {
     brews = [
       "asdf"
@@ -15,7 +32,11 @@
       "saml2aws"
       "watch"
     ];
-    casks = [ "gpg-suite" "amethyst" "wireshark" ];
+    casks = [
+      "gpg-suite"
+      "amethyst"
+      "wireshark"
+    ];
     enable = true;
     onActivation = {
       autoUpdate = true;
@@ -27,19 +48,29 @@
       experimental-features = nix-command flakes
       extra-platforms = x86_64-darwin aarch64-darwin
     '';
+    nixPath = lib.mapAttrsToList (key: _: "${key}=flake:${key}") config.nix.registry;
     package = pkgs.nixFlakes;
-    settings = let
-      substituters =
-        [ "https://nix-community.cachix.org" "https://cache.iog.io" ];
-    in {
-      inherit substituters;
-      trusted-public-keys = [
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-      ];
-      trusted-substituters = substituters;
-      trusted-users = [ "root" "@admin" ];
-    };
+    # registry = lib.mapAttrs (_: flake: { inherit flake; }) inputs;
+    settings =
+      let
+        cache = {
+          "https://nix-community.cachix.org" = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
+          "https://cache.iog.io" = "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=";
+          "https://devenv.cachix.org" = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
+        };
+        substituters = attrsKeys cache;
+        trusted-public-keys = attrsVals cache;
+      in
+      {
+        inherit substituters trusted-public-keys;
+        trusted-substituters = substituters;
+        trusted-users = [
+          "root"
+          "@admin"
+          "@staff"
+          "@localaccounts"
+        ];
+      };
   };
   programs.gnupg.agent = {
     enable = true;

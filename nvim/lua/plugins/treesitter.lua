@@ -93,11 +93,6 @@ return {
                     enable = true,
                     disable = {},
                 },
-                rainbow = {
-                    enable = true,
-                    extended_mode = true,
-                    max_file_lines = 1000,
-                },
                 textsubjects = {
                     enable = true,
                     prev_selection = ",", -- (Optional) keymap to select the previous selection
@@ -155,7 +150,7 @@ return {
             })
         end,
         dependencies = {
-            { "p00f/nvim-ts-rainbow" },
+            { "HiPhish/rainbow-delimiters.nvim" },
             { "RRethy/nvim-treesitter-textsubjects" },
             { "nvim-treesitter/nvim-treesitter-textobjects" },
             { "nushell/tree-sitter-nu" },

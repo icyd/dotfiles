@@ -1,5 +1,5 @@
 use std log
-use modules/argx/argx.nu
+use modules/argx
 use utils.nu
 
 def ensure-cache-by-lines [cache path action] {
@@ -51,6 +51,54 @@ def upsert_row [table col mask id value] {
         }
     } else {
         $table | append $value
+    }
+}
+
+def parse_unit [unit: string] {
+    $unit
+        | str replace -r '^(\d+(?:\.\d+)?)(((P|T|G|M|K|k)i?)|m)?$' '${1}_${2}'
+        | parse '{value}_{unit}'
+        | into float value
+        | first
+}
+
+def parse_cpu [column_name: string] {
+    {|it|
+        let parsed = parse_unit ($it | get $column_name)
+        match $parsed.unit {
+            "m" => ($parsed.value / 1000),
+            _ => $parsed.value
+        }
+    }
+}
+
+def parse_mem [column_name: string] {
+    {|it|
+        let parsed = parse_unit ($it | get $column_name)
+        match $parsed.unit {
+            "P" => ($parsed.value * 1pb),
+            "Pi" => ($parsed.value * 1pib),
+            "T" => ($parsed.value * 1tb),
+            "Ti" => ($parsed.value * 1tib),
+            "G" => ($parsed.value * 1gb),
+            "Gi" => ($parsed.value * 1gib),
+            "M" => ($parsed.value * 1mb),
+            "Mi" => ($parsed.value * 1mib),
+            "k" => ($parsed.value * 1kb),
+            "K" => ($parsed.value * 1kb),
+            "Ki" => ($parsed.value * 1kib),
+            "ki" => ($parsed.value * 1kib),
+            _ => ($parsed.value * 1b),
+        }
+    }
+}
+
+def parse_percentage [column_name: string] {
+    {|it| $it
+        | get $column_name
+        | str substring ..-2
+        | into float
+        | $in / 100
     }
 }
 
@@ -789,10 +837,10 @@ export def kgpo_with_node_version [
     --namespace (-n): string@"nu-complete kube ns"
     --all (-A)
 ] {
-    let ns = if $all { [--all-namespaces] } else { ...($namespace | with-flag -n) }
-    let nodes = kgno -v $version | get NAME
+    let ns = if $all { [--all-namespaces] } else { ($namespace | with-flag -n) }
+    let nodes = kg no | where version =~ $version | get name
 
-    (kubectl get pods $ns -ojson
+    (kubectl get pods ...$ns -ojson
         | from json
         | get items
         | filter {|pod| $pod.spec.nodeName in $nodes}
@@ -806,19 +854,34 @@ export def kgpo_with_node_version [
     )
 }
 
+def _duration_to_secs_str [
+    time: duration
+] {
+    $"($time / 1sec)s"
+}
+# kubectl drain nodes from given list
+export def k_drain_nodes [
+    nodes: table<name: string>
+    --timeout (-T): duration = 5min
+    --sleep-duration (-s): duration = 30sec
+] {
+    ($nodes
+        | each {|it|
+            log debug $"--- Draining node: ($it.name) ---"
+            kubectl drain $it.name --ignore-daemonsets --delete-emptydir-data $"--timeout=(_duration_to_secs_str $timeout)"
+            sleep $sleep_duration
+        }
+        | ignore
+    )
+}
 # kubectl drain nodes with given version
 export def k_drain_nodes_version [
     version: string
     --timeout (-T): duration = 5min
     --sleep-duration (-s): duration = 30sec
 ] {
-    let timeout_secs = $"($timeout / 1sec)s"
-    (kgno_with_version $version
-        | each {|it|
-            kubectl drain $it.NAME --ignore-daemonsets --delete-emptydir-data $"--timeout=($timeout_secs)"
-            sleep $sleep_duration
-        }
-        | ignore
+    (kg nodes | where version =~ $version
+        | k_drain_nodes $in --timeout $timeout  --sleep-duration $sleep_duration
     )
 }
 
@@ -1048,7 +1111,7 @@ export def --wrapped kex [
     } else {
         [-c $container]
     }
-    kubectl exec ...$n -it $pod ...$c -- ...(if ($args|is-empty) { ['bash'] } else { $args })
+    kubectl exec ...$n -it $pod ...$c -- ...(if ($args|is-empty) { ['sh'] } else { $args })
 }
 
 # kubectl logs
@@ -1122,39 +1185,34 @@ def ktp [
     --namespace (-n): string@"nu-complete kube ns"
     --all(-A)
 ] {
-    if $all {
-        kubectl top pod -A | from ssv -a | rename namespace name cpu mem
-        | each {|x|
-            {
-                namespace: $x.namespace
-                name: $x.name
-                cpu: ($x.cpu| str substring ..-1 | into float)
-                mem: ($x.mem | str substring ..-2 | into float)
-            }
-        }
+    let ns = if $all {
+        [-A]
     } else {
-        let ns = $namespace | with-flag -n
-        kubectl top pod ...$ns | from ssv -a | rename name cpu mem
-        | each {|x|
-            {
-                name: $x.name
-                cpu: ($x.cpu| str substring ..-1 | into float)
-                mem: ($x.mem | str substring ..-2 | into float)
-            }
-        }
+        $namespace | with-flag -n
     }
+
+    let top = kubectl top pod ...$ns | from ssv -a | normalize-column-names
+    let cpu_col = "cpu(cores)"
+    let mem_col = "memory(bytes)"
+
+    $top
+        | upsert $cpu_col (parse_cpu $cpu_col)
+        | upsert $mem_col (parse_mem $mem_col)
 }
 
 # kubectl top node
 export def ktno [] {
-    kubectl top node | from ssv -a | rename name cpu pcpu mem pmem
-    | each {|x| {
-        name: $x.name
-        cpu: ($x.cpu| str substring ..-1 | into float)
-        cpu%: (($x.pcpu| str substring ..-1 | into float) / 100)
-        mem: ($x.mem | str substring ..-2 | into float)
-        mem%: (($x.pmem | str substring ..-1 | into float) / 100)
-    } }
+    let top = kubectl top node | from ssv -a | normalize-column-names
+    let cpu_col = "cpu(cores)"
+    let cpu_per_col = "cpu%"
+    let mem_col = "memory(bytes)"
+    let mem_per_col = "memory%"
+
+    $top
+        | upsert $cpu_col (parse_cpu $cpu_col)
+        | upsert $cpu_per_col (parse_percentage $cpu_per_col)
+        | upsert $mem_col (parse_mem $mem_col)
+        | upsert $mem_per_col (parse_percentage $mem_per_col)
 }
 
 # kubectl top
@@ -1195,6 +1253,18 @@ export def kgcert [] {
     kubectl get certificaterequests -o wide | from ssv | rename certificaterequests
     kubectl get order.acme -o wide | from ssv | rename order.acme
     kubectl get challenges.acme -o wide | from ssv | rename challenges.acme
+}
+
+# kubectl annotate with time
+export def kannotatetime [
+    kind: string@"nu-complete kube kind"
+    name: string@"nu-complete kube res"
+    --namespace (-n): string@"nu-complete kube ns"
+] {
+    let ns = $namespace | with-flag -n
+    (kubectl annotate $kind ...$ns $name
+        $"force-sync=(date now | format date "%s")" --overwrite
+    )
 }
 
 # kubectl update externalsecret

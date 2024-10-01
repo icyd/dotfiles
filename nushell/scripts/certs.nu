@@ -6,6 +6,7 @@ def _openssl [
     --no-trim
 ] {
     let result = $data | do $cmd | complete
+    log debug $"($result)"
     if ($result.exit_code == 0) {
         return $result.stdout
     }
@@ -66,12 +67,14 @@ def _key_verify [
     cert: string
     key: string
 ] {
-  let cert_md5 = (_base $cert -modulus | openssl md5)
-  let key_md5 = (_base $key --key -modulus | openssl md5)
+  let cert_md5 = (_base $cert -noout -modulus | openssl md5)
+  let cert_md52 = (_base $cert -noout -modulus | openssl md5)
+  let key_md5 = (_base $key --key -noout -modulus | openssl md5)
   if ($cert_md5 == $key_md5) {
     return "OK"
   }
 
+  log debug $"cert modulus: ($cert_md5), key modulus: ($key_md5)"
   "ERROR"
 }
 
@@ -213,16 +216,18 @@ export def key_verify [
     cert: path
     key: path
 ] {
-    let cert_data = if (($cert | str length) <= 63) and ($cert | path exists) {
+    let cert_data = if ($cert | path exists) {
         cat $cert
     } else {
         $cert
     }
-    let key_data = if (($key | str length) <= 63) and ($key | path exists) {
+    log debug $"($cert_data)"
+    let key_data = if ($key | path exists) {
         cat $key
     } else {
         $key
     }
+    log debug $"($key_data)"
     _key_verify $cert_data $key_data
 }
 
