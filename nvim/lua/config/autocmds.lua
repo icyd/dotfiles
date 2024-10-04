@@ -105,7 +105,19 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     end,
 })
 
--- Neovim-remote inside nvim when installed inside pyenv
+-- Function for ft=ledger
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+    pattern = 'ledger',
+    -- command = [[ %s/^\(\d\{4}[\/-]\d\{2}[\/-]\d\{2}\)\ze\s\+\w/\1 */c ]],
+    command = [[
+        function! CompleteTx()
+            execute '%s/^\(\d\{4}[\/-]\d\{2}[\/-]\d\{2}\)\ze\s\+\w/\1 */c'
+        endfunction
+
+        command! -nargs=0 CompleteTx call CompleteTx()
+    ]],
+})
+
 local pyenv = os.getenv("PY_ENV")
 local nvr = pyenv and pyenv .. "/nvr/bin/nvr" or nil
 if nvr and vim.fn.has('nvim') and vim.fn.executable(nvr) then

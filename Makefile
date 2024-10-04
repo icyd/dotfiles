@@ -3,7 +3,6 @@ host ?= .\#
 standalone-channel ?= master
 uname_s := $(shell uname -s)
 uname_m := $(shell uname -m)
-
 all: nixos hm
 
 nixos:

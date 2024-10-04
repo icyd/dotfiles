@@ -1,0 +1,58 @@
+partial alphanumeric_keys
+xkb_symbols "basic" {
+
+    name[Group1]= "English (Engram)";
+
+    key <TLDE> {[ bracketleft, braceleft ]};
+    key <AE01> {[ 1, bar ]};
+    key <AE02> {[ 2, equal ]};
+    key <AE03> {[ 3, asciitilde ]};
+    key <AE04> {[ 4, plus ]};
+    key <AE05> {[ 5, less ]};
+    key <AE06> {[ 6, greater ]};
+    key <AE07> {[ 7, asciicircum ]};
+    key <AE08> {[ 8, ampersand ]};
+    key <AE09> {[ 9, percent ]};
+    key <AE10> {[ 0, asterisk ]};
+    key <AE11> {[ bracketright, braceright,  dead_tilde]};
+    key <AE12> {[ slash, backslash ]};
+    key <BKSP> {[ BackSpace, BackSpace ]};
+
+    key <AD01> {[ b, B, odiaeresis, Odiaeresis ]};
+    key <AD02> {[ y, Y, udiaresis, Udiaeresis ]};
+    key <AD03> {[ o, O, oacute, Oacute ]};
+    key <AD04> {[ u, U, uacute, Uacute ]};
+    key <AD05> {[ apostrophe, parenleft, bracketleft, braceleft ]};
+    key <AD06> {[ quotedbl, parenright, bracketright, braceright ]};
+    key <AD07> {[ l, L ]};
+    key <AD08> {[ d, D, ediaeresis, Ediaeresis ]};
+    key <AD09> {[ w, W ]};
+    key <AD10> {[ v, V ]};
+    key <AD11> {[ z, Z, ae, AE ]};
+    key <AD12> {[ numbersign, dollar ]};
+    key <BKSL> {[ at, grave ]};
+
+    key <AC01> {[ c, C, ccedilla, Ccedilla ]};
+    key <AC02> {[ i, I, iacute, Iacute ]};
+    key <AC03> {[ e, E, eacute, Eacute ]};
+    key <AC04> {[ a, A, aacute, Aacute ]};
+    key <AC05> {[ comma, semicolon, numbersign ]};
+    key <AC06> {[ period, colon, dollar ]};
+    key <AC07> {[ h, H ]};
+    key <AC08> {[ t, T, thorn, THORN ]};
+    key <AC09> {[ s, S, ssharp, section ]};
+    key <AC10> {[ n, N, ntilde, Ntilde ]};
+    key <AC11> {[ q, Q, adiaeresis, Adiaeresis ]};
+
+    // key <LSGT> {[ backslash, bar, notsign, brokenbar ]};
+    key <AB01> {[ g, G ]};
+    key <AB02> {[ x, X, idiaeresis, Idiaeresis ]};
+    key <AB03> {[ j, J ]};
+    key <AB04> {[ k, K, oe, OE ]};
+    key <AB05> {[ minus, underscore, at, grave ]};
+    key <AB06> {[ question, exclam, questiondown, exclamdown ]};
+    key <AB07> {[ r, R, registered, trademark ]};
+    key <AB08> {[ m, M, mu ]};
+    key <AB09> {[ f, F ]};
+    key <AB10> {[ p, P, paragraph, section ]};
+};

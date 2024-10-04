@@ -54,9 +54,10 @@ local function bind_if(cond, key, mods, action, mods_alt)
     return { key = key, mods = mods, action = wezterm.action_callback(callback) }
 end
 
+config.front_end = "WebGpu"
+config.enable_wayland = false
 config.color_scheme = "Gruvbox Dark (Gogh)"
 config.leader = { key = "a", mods = "CTRL" }
-config.default_cwd = wezterm.home_dir .. "/Projects/ea"
 config.default_prog = {
     "zsh",
     "-c",
@@ -113,8 +114,8 @@ config.keys = {
     { key = "&", mods = "LEADER|SHIFT", action = act({ CloseCurrentTab = { confirm = true } }) },
     { key = "x", mods = "LEADER", action = act({ CloseCurrentPane = { confirm = true } }) },
     { key = "n", mods = "SHIFT|CTRL", action = "ToggleFullScreen" },
-    { key = "v", mods = "SUPER", action = act.PasteFrom("Clipboard") },
-    { key = "c", mods = "SUPER", action = act.CopyTo("Clipboard") },
+    { key = "V", mods = "CTRL", action = act.PasteFrom("PrimarySelection") },
+    { key = "C", mods = "CTRL", action = act.CopyTo("PrimarySelection") },
     { key = "[", mods = "LEADER", action = act.ActivateCopyMode },
     { key = "s", mods = "LEADER", action = act.ShowLauncher },
     { key = "(", mods = "LEADER", action = act.SwitchWorkspaceRelative(1) },
@@ -212,8 +213,9 @@ config.key_tables = {
 }
 config.font = wezterm.font_with_fallback({
     { family = "AnonymicePro Nerd Font", weight = "Bold" },
-    "Hack Nerd Font Mono",
-    "MesloLGS Nerd Font Mono",
+    "Hack Nerd Font",
+    "SauceCodePro Nerd Font Mono",
+    "MesloLGS Nerd Font",
 })
 config.freetype_load_target = "Light"
 config.freetype_load_flags = "NO_HINTING|NO_AUTOHINT"
@@ -224,8 +226,12 @@ config.unix_domains = {
         name = "unix",
     },
 }
--- config.default_gui_startup_args = { "connect", "unix" }
+config.default_gui_startup_args = { "connect", "unix" }
+config.hide_tab_bar_if_only_one_tab = true
+config.adjust_window_size_when_changing_font_size = false
+config.warn_about_missing_glyphs = false
 -- config.tab_max_width = 24
+config.audible_bell = "Disabled"
 
 local battery_icon = function(info)
     if info.state == "Charging" then
@@ -319,19 +325,20 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
         { Text = SOLID_LEFT_ARROW },
     }
 end)
--- wezterm.on("gui-startup", function(cmd)
---     local _, _, window = mux.spawn_window(cmd or {})
---     window:gui_window():toggle_fullscreen()
--- end)
---
--- wezterm.on("gui-attached", function(domain)
---     local workspace = mux.get_active_workspace()
---     for _, window in ipairs(mux.all_windows()) do
---         if window:get_workspace() == workspace then
---             window:gui_window():toggle_fullscreen()
---         end
---     end
--- end)
+
+wezterm.on("gui-startup", function(cmd)
+    local _, _, window = mux.spawn_window(cmd or {})
+    window:gui_window():maximize()
+end)
+
+wezterm.on("gui-attached", function()
+    local workspace = mux.get_active_workspace()
+    for _, window in ipairs(mux.all_windows()) do
+        if window:get_workspace() == workspace then
+            window:gui_window():maximize()
+        end
+    end
+end)
 
 wezterm.on("user-var-changed", function(window, pane, name, value)
     local overrides = window:get_config_overrides() or {}
@@ -385,7 +392,6 @@ wezterm.on("gopass", function(window, pane)
                     "-c",
                     [[gopass show -c ]] .. label,
                 })
-                -- window:toast_notification("wezterm", "configuration", nil, 4000)
             end),
             fuzzy = true,
             title = "Title",
@@ -393,11 +399,6 @@ wezterm.on("gopass", function(window, pane)
         }),
         pane
     )
-    -- window:toast_notification("wezterm", "configuration", nil, 4000)
-end)
-
-wezterm.on("window-config-reloaded", function(window, pane)
-    window:toast_notification("wezterm", "configuration reloaded!", nil, 4000)
 end)
 
 return config

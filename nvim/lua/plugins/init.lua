@@ -119,7 +119,7 @@ return {
             },
         },
     },
-    { "kevinhwang91/nvim-bqf", ft = "qf" },
+    { "kevinhwang91/nvim-bqf",    ft = "qf" },
     -- Easy motion
     {
         "phaazon/hop.nvim",
@@ -128,10 +128,10 @@ return {
             winblend = 0.85,
         },
         keys = {
-            { "<localleader>w", "<cmd>HopWord<CR>", desc = "Hop to word" },
-            { "<localleader>l", "<cmd>HopLine<CR>", desc = "Hop to line" },
-            { "<localleader>x", "<cmd>HopChar1<CR>", desc = "Hop to char" },
-            { "<localleader>w", "<cmd>HopChar2<CR>", desc = "Hop to bigram" },
+            { "<localleader>w", "<cmd>HopWord<CR>",    desc = "Hop to word" },
+            { "<localleader>l", "<cmd>HopLine<CR>",    desc = "Hop to line" },
+            { "<localleader>x", "<cmd>HopChar1<CR>",   desc = "Hop to char" },
+            { "<localleader>w", "<cmd>HopChar2<CR>",   desc = "Hop to bigram" },
             { "<localleader>n", "<cmd>HopPattern<CR>", desc = "Hop to pattern" },
         },
     },
@@ -268,7 +268,7 @@ return {
         "moll/vim-bbye",
         event = "BufEnter",
         keys = {
-            { "<localleader>q", "<cmd>Bdelete<CR>", desc = "Remove buffer" },
+            { "<localleader>q", "<cmd>Bdelete<CR>",  desc = "Remove buffer" },
             { "<localleader>Q", "<cmd>Bdelete!<CR>", desc = "Remove buffer without saving" },
         },
     },
@@ -342,15 +342,15 @@ return {
             filetypes = { "*", "!lazy" },
             buftype = { "*", "!prompt", "!nofile" },
             user_default_options = {
-                RGB = true, -- #RGB hex codes
-                RRGGBB = true, -- #RRGGBB hex codes
-                names = false, -- 'Name' codes like Blue
-                RRGGBBAA = true, -- #RRGGBBAA hex codes
+                RGB = true,       -- #RGB hex codes
+                RRGGBB = true,    -- #RRGGBB hex codes
+                names = false,    -- 'Name' codes like Blue
+                RRGGBBAA = true,  -- #RRGGBBAA hex codes
                 AARRGGBB = false, -- 0xAARRGGBB hex codes
-                rgb_fn = true, -- CSS rgb() and rgba() functions
-                hsl_fn = true, -- CSS hsl() and hsla() functions
-                css = false, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-                css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+                rgb_fn = true,    -- CSS rgb() and rgba() functions
+                hsl_fn = true,    -- CSS hsl() and hsla() functions
+                css = false,      -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+                css_fn = true,    -- Enable all CSS *functions*: rgb_fn, hsl_fn
                 mode = "virtualtext",
                 virtualtext = "■",
             },
@@ -425,7 +425,7 @@ return {
         "kevinhwang91/nvim-ufo",
         dependencies = { "kevinhwang91/promise-async" },
         event = "BufRead",
-        enabled = false,
+        -- enabled = false,
         -- keys = { }
         config = function()
             local ufo = require("ufo")
@@ -442,7 +442,7 @@ return {
             ---@diagnostic disable-next-line: missing-fields
             ufo.setup({
                 open_fold_hl_timeout = 150,
-                close_fold_kinds_for_ft = { "imports", "comment" },
+                close_fold_kinds_for_ft = { default = { "imports", "comment" }},
                 preview = {
                     win_config = {
                         border = { "", "─", "", "", "", "─", "", "" },
@@ -493,7 +493,7 @@ return {
         cmd = { "SnipRun", "SnipInfo" },
         build = "bash install.sh",
         keys = {
-            { "<C-c>", "<Plug>SnipRun", desc = "SnipRun", mode = "v" },
+            { "<C-c>",  "<Plug>SnipRun", desc = "SnipRun", mode = "v" },
             -- { '<C-c>',  '<Plug>SnipRunOperator', desc = 'SnipRunOperator' },
             { "<C-c>c", "<Plug>SnipRun", desc = "SnipRun" },
         },

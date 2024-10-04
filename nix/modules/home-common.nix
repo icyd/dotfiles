@@ -55,7 +55,9 @@ in
       carapace
       cargo
       ccls
+      clang-tools
       cmake
+      devenv
       direnv
       eza
       fd
@@ -67,12 +69,13 @@ in
       haskellPackages.cabal-install
       haskellPackages.fast-tags
       haskellPackages.ghci-dap
-      haskellPackages.haskell-language-server
-      haskellPackages.haskell-debug-adapter
+      # haskellPackages.haskell-language-server
+      # haskellPackages.haskell-debug-adapter
       haskellPackages.hlint
       haskellPackages.hoogle
       haskellPackages.stack
       hledger
+      hwatch
       hyperfine
       jdk11
       jq
@@ -95,6 +98,7 @@ in
       })
       unstable.nix-your-shell
       nixfmt-rfc-style
+      nil
       nix-index
       pandoc
       procs
@@ -224,7 +228,7 @@ in
       lg = "lazygit";
       mini-ci = "zellij action start-or-reload-plugin `file:${zellijConfigDir}/plugins/multitask.wasm`";
       nv = "nvim_client";
-      nvr = "nvim --listen $env.NVIM_SERVER";
+      nvr = "nvim_server";
       pw = "gopass show -c";
       svim = "sudo -E $env.EDITOR";
       tcp = "utils trimcopy";
@@ -258,7 +262,6 @@ in
       use cd-root.nu *
       use kubernetes.nu *
       use ~/.local.nu *
-      overlay use solr --prefix
     '';
     extraEnv = ''
       $env.LANG = "en_US.UTF-8"

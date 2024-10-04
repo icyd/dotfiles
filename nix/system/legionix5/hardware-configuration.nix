@@ -1,4 +1,11 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  modulesPath,
+  ...
+}:
 let
   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
     export __NV_PRIME_RENDER_OFFLOAD=1
@@ -7,17 +14,77 @@ let
     export __VK_LAYER_NV_optimus=NVIDIA_only
     exec "$@"
   '';
-in {
+  userMountOpts = [
+    "uid=1000"
+    "gid=1000"
+  ];
+  nvme0n1p2 = "a1e85fe0-0d91-40c0-ba67-b784fe163998";
+  cryptroot = "62abb064-54c0-4c02-b5f0-5ca57ee8004a";
+  nvme1n1p2 = "c432588b-cfa3-448a-86ff-546936cc6eff";
+  cryptdata = "a0330967-771a-4303-9750-172d571dee0c";
+  bootDrive = "5610-7908";
+in
+{
   boot = {
-    blacklistedKernelModules = [ "nouveau" "intel" ];
+    blacklistedKernelModules = [
+      "nouveau"
+      "intel"
+    ];
     extraModulePackages = with config.boot.kernelPackages; [ evdi ];
     initrd = {
-      availableKernelModules = [ "xhci_pci" "nvme" "ahci" "usbhid" ];
-      kernelModules = [ "amdgpu" ];
-      luks.devices."cryptroot".device =
-        "/dev/disk/by-uuid/a1e85fe0-0d91-40c0-ba67-b784fe163998";
+      availableKernelModules = [
+        "xhci_pci"
+        "nvme"
+        "ahci"
+        "usbhid"
+      ];
+      kernelModules = [
+        "amdgpu"
+        "kvm-amd"
+      ];
+      luks.devices."cryptroot" = {
+        device = "/dev/disk/by-uuid/${nvme0n1p2}";
+        allowDiscards = true;
+      };
+      postDeviceCommands = lib.mkAfter ''
+        mkdir -p /mnt
+        mount /dev/disk/by-uuid/"${cryptroot}" /mnt
+        if [ -e "/mnt/@root_tmp" ]; then
+          mkdir -p /mnt/old_roots
+          timestamp=$(date --date="@$(stat -c %Y /mnt/@root_tmp)" "+%Y-%m-%-d_%H:%M:%S")
+          mv /mnt/@root_tmp "/mnt/old_roots/$timestamp"
+        fi
+
+        delete_subvolume_recursively() {
+            IFS=$'\n'
+            for i in $(btrfs subvolume list -o "$1" | cut -f 9- -d ' '); do
+                delete_subvolume_recursively "/mnt/$i"
+            done
+            printf "Deleting subvolume %s\n" "$1"
+            btrfs subvolume delete "$1"
+        }
+
+        TMP="$(mktemp)"
+        trap  'rm "$TMP"' EXIT
+        find /mnt/old_roots -maxdepth 1 -mtime +30 > "$TMP"
+        while IFS= read -r i; do
+            printf "Deleting old root %s\n" "$i"
+            delete_subvolume_recursively "$i"
+        done < "$TMP"
+
+        btrfs subvolume create /mnt/@root_tmp
+        umount /mnt
+      '';
+      # systemd.enable = false;
     };
-    kernelParams = [ "ipv6.disable=1" ];
+    kernel.sysctl = {
+      "net.ipv4.ip_forward" = true;
+      "net.ipv6.conf.all.forwarding" = true;
+    };
+    kernelParams = [
+      "acpi_backlight=native"
+      "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
+    ];
     loader = {
       systemd-boot.enable = false;
       efi = {
@@ -25,8 +92,8 @@ in {
         efiSysMountPoint = "/boot";
       };
       grub = {
-        configurationLimit = 6;
-        default = "5";
+        configurationLimit = 12;
+        # default = "5";
         device = "nodev";
         efiSupport = true;
         enable = true;
@@ -39,7 +106,7 @@ in {
               insmod fat
               search --no-floppy --fs-uuid --set=root 4ECB-CF02
               echo    'Loading Linux linux-lts ...'
-              linux   /vmlinuz-linux-lts root=UUID=62abb064-54c0-4c02-b5f0-5ca57ee8004a rw rootflags=subvol=@ nvidia-drm.modeset=1 luks.name=a1e85fe0-0d91-40c0-ba67-b784fe163998=cryptroot luks.options=discard root=/dev/mapper/cryptroot quiet loglevel=4
+              linux   /vmlinuz-linux-lts root=UUID=${cryptroot} rw rootflags=subvol=arch/@ nvidia-drm.modeset=1 luks.name=${nvme0n1p2}=cryptroot luks.options=discard root=/dev/mapper/cryptroot quiet loglevel=4
               echo    'Loading initial ramdisk ...'
               initrd  /amd-ucode.img /initramfs-linux-lts.img
           }
@@ -48,17 +115,19 @@ in {
         useOSProber = true;
       };
     };
-    supportedFilesystems = [ "ntfs" ];
     tmp.useTmpfs = true;
   };
   environment.systemPackages = [ nvidia-offload ];
+  environment.etc.crypttab.text = ''
+    cryptdata UUID=${nvme1n1p2} /legion5_skhynix.key discard
+  '';
   hardware = {
-    cpu.amd.updateMicrocode =
-      lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     nvidia = {
       modesetting.enable = true;
       nvidiaSettings = true;
       open = false;
+      package = config.boot.kernelPackages.nvidiaPackages.production;
       powerManagement.enable = false;
       powerManagement.finegrained = false;
       prime = {
@@ -68,63 +137,116 @@ in {
         amdgpuBusId = "PCI:6:0:0";
       };
     };
+    pulseaudio.enable = false;
   };
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
   fileSystems = {
     "/" = {
-      device = "none";
-      fsType = "tmpfs";
-      options = [ "defaults" "size=1G" "mode=775" ];
+      device = "/dev/disk/by-uuid/${cryptroot}";
+      fsType = "btrfs";
+      options = [
+        "subvol=@root_tmp"
+        "ssd"
+        "noatime"
+        "compress=zstd"
+      ];
     };
     "/boot" = {
-      device = "/dev/disk/by-uuid/4ECB-CF02";
+      device = "/dev/disk/by-uuid/${bootDrive}";
       fsType = "vfat";
     };
     "/home" = {
-      device = "/dev/disk/by-uuid/62abb064-54c0-4c02-b5f0-5ca57ee8004a";
+      device = "/dev/disk/by-uuid/${cryptdata}";
       fsType = "btrfs";
-      options = [ "subvol=nix/@home" "noatime" "compress=zstd" ];
+      options = [
+        "subvol=nix/@home"
+        "noatime"
+        "compress=zstd"
+      ];
     };
     "/mnt/btrfs-pool" = {
-      device = "/dev/disk/by-uuid/62abb064-54c0-4c02-b5f0-5ca57ee8004a";
+      device = "/dev/disk/by-uuid/${cryptroot}";
       fsType = "btrfs";
-      options = [ "ssd" "noatime" "compress=zstd" ];
+      options = [
+        "ssd"
+        "noatime"
+        "compress=zstd"
+      ];
     };
-    "/mnt/lutris" = {
-      device = "/dev/disk/by-uuid/62abb064-54c0-4c02-b5f0-5ca57ee8004a";
+    "/mnt/btrfs-data" = {
+      device = "/dev/disk/by-uuid/${cryptdata}";
       fsType = "btrfs";
-      options = [ "subvol=@lutris" "noatime" "compress=zstd" "nodatacow" ];
+      options = [
+        "ssd"
+        "noatime"
+        "compress=zstd"
+      ];
     };
-    "/mnt/win10" = {
-      device = "/dev/disk/by-uuid/D096A4B796A49F88";
-      fsType = "ntfs";
-      options =
-        [ "defaults" "users" "uid=1000" "gid=1000" "fmask=0022" "dmask=0022" ];
+    "/mnt/vms" = {
+      device = "/dev/disk/by-uuid/${cryptdata}";
+      fsType = "btrfs";
+      options = [
+        "subvol=@vms"
+        "noatime"
+        "compress=zstd"
+        "nodatacow"
+      ];
     };
+    # "/mnt/win10" = {
+    #   device = "/dev/disk/by-uuid/D096A4B796A49F88";
+    #   fsType = "ntfs";
+    #   options =
+    #     [ "defaults" "users" "uid=1000" "gid=1000" "fmask=0022" "dmask=0022" ];
+    # };
     "/nix" = {
-      device = "/dev/disk/by-uuid/62abb064-54c0-4c02-b5f0-5ca57ee8004a";
+      device = "/dev/disk/by-uuid/${cryptroot}";
       fsType = "btrfs";
-      options = [ "subvol=nix/@nix" "noatime" "compress=zstd" ];
+      options = [
+        "subvol=nix/@nix"
+        "noatime"
+        "compress=zstd"
+      ];
     };
     "/persist" = {
-      device = "/dev/disk/by-uuid/62abb064-54c0-4c02-b5f0-5ca57ee8004a";
+      device = "/dev/disk/by-uuid/${cryptroot}";
       fsType = "btrfs";
-      options = [ "subvol=nix/@persist" "noatime" "compress=zstd" ];
+      options = [
+        "subvol=nix/@persist"
+        "noatime"
+        "compress=zstd"
+      ];
       neededForBoot = true;
     };
-    "/persist/home" = {
-      device = "/dev/disk/by-uuid/62abb064-54c0-4c02-b5f0-5ca57ee8004a";
+    "/home/${username}/.containers" = {
+      device = "/dev/disk/by-uuid/${cryptroot}";
       fsType = "btrfs";
-      options = [ "subvol=@home" "noatime" "compress=zstd" ];
+      options = [
+        "subvol=@containers"
+        "noatime"
+        "compress=zstd"
+        "nodatacow"
+      ];
+    };
+    "/persist/home" = {
+      device = "/dev/disk/by-uuid/${cryptdata}";
+      fsType = "btrfs";
+      options = [
+        "subvol=arch/@home"
+        "noatime"
+        "compress=zstd"
+      ];
     };
     "/var/log" = {
-      device = "/dev/disk/by-uuid/62abb064-54c0-4c02-b5f0-5ca57ee8004a";
+      device = "/dev/disk/by-uuid/${cryptroot}";
       fsType = "btrfs";
-      options = [ "subvol=nix/@logs" "noatime" "compress=zstd" ];
+      options = [
+        "subvol=nix/@logs"
+        "noatime"
+        "compress=zstd"
+      ];
       neededForBoot = true;
     };
   };
-  networking.enableIPv6 = false;
   powerManagement = {
     enable = true;
     cpuFreqGovernor = lib.mkDefault "powersave";

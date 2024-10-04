@@ -468,15 +468,29 @@ $env.config = {
   ]
 }
 
-def nvim_client [...files: path] {
-    if ((^uname -s) == "Darwin") {
-        for $f in $files {
-            nvim --server $env.NVIM_SERVER --remote (greadlink -mq $f)
-        }
+def nvim_get_server [] {
+    if (("NVIM_SERVER" in ($env | columns)) and (not ($env.NVIM_SERVER | is-empty))) {
+        $env.NVIM_SERVER
+    } else if ("/tmp/nvim-server" | path exists) {
+        open /tmp/nvim-server
     } else {
-        for $f in $files {
-            nvim --server $env.NVIM_SERVER --remote (readlink -mq $f)
-        }
+        "/tmp/nvimsocket"
+    }
+}
+
+def nvim_server [] {
+    nvim --listen (nvim_get_server)
+}
+
+def nvim_client [...files: path] {
+    let readlink = if ((^uname -s) == "Darwin") {
+        {|it| greadlink -mq $it}
+    } else {
+        {|it| readlink -mq $it}
+    }
+
+    for $f in ($files | each $readlink) {
+        nvim --server (nvim_get_server) --remote-silent $f
     }
 }
 

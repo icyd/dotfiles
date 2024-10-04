@@ -1,4 +1,5 @@
 local linters_by_ft = {
+    c = { "clangtidy" },
     css = { "stylelint" },
     dockerfile = { "hadolint" },
     go = { "golangcilint" },
@@ -13,6 +14,7 @@ local linters_by_ft = {
 }
 
 local formatters_by_ft = {
+    c = { "clang-format" },
     go = { "gofmt", "goimports" },
     haskell = { "fourmolu" },
     json = { "jq" },
@@ -42,7 +44,7 @@ local function tools_to_autoinstall(tools_by_ft, tools, excluded)
     return result
 end
 
-local function lsp_keymaps(client, bufnr)
+local function lsp_keymaps(_, bufnr)
     local function rename()
         if pcall(require, "inc_rename") then
             return ":IncRename " .. vim.fn.expand("<cword>")
@@ -54,7 +56,7 @@ local function lsp_keymaps(client, bufnr)
     local map = vim.keymap.set
     map("n", "K", function()
         local ok, ufo = pcall(require, "ufo")
-        if ok and not ufo.peekFoldedLinesUnderCursor() then
+        if (not ok) or (ok and not ufo.peekFoldedLinesUnderCursor()) then
             vim.lsp.buf.hover()
         end
     end, { desc = "lsp:hover" })
@@ -71,18 +73,18 @@ local function lsp_keymaps(client, bufnr)
         vim.lsp.buf.format({ async = true })
     end, { desc = "lsp:formatting", buffer = bufnr })
     map("n", "gI", vim.lsp.buf.implementation, { desc = "lsp:implementation", buffer = bufnr })
-    map("n", "[d", vim.diagnostic.goto_prev, { desc = "diag:goto_prev", buffer = bufnr })
-    map("n", "]d", vim.diagnostic.goto_next, { desc = "diag:goto_next", buffer = bufnr })
+    map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, { desc = "diag:goto_prev", buffer = bufnr })
+    map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, { desc = "diag:goto_next", buffer = bufnr })
     map("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", { desc = "diag:telescope", buffer = bufnr })
     map("n", "<leader>lq", vim.diagnostic.setqflist, { desc = "diag:set_to_quicklist", buffer = bufnr })
     map("n", "<leader>ll", vim.diagnostic.setloclist, { desc = "diag:set_to_loclist", buffer = bufnr })
     map("n", "<leader>lg", vim.diagnostic.open_float, { desc = "diag:open_float", buffer = bufnr })
 
-    if client.name == "rust_analyzer" then
-        map("n", "gK", function()
-            require("rust-tools").hover_actions.hover_actions()
-        end, { desc = "rt:hover_actions", buffer = bufnr })
-    end
+    -- if client.name == "rust_analyzer" then
+    --     map("n", "gK", function()
+    --         require("rust-tools").hover_actions.hover_actions()
+    --     end, { desc = "rt:hover_actions", buffer = bufnr })
+    -- end
 end
 
 local common_flags = {
@@ -91,7 +93,7 @@ local common_flags = {
 
 local servers = {
     bashls = {},
-    -- clangd = {},
+    clangd = {},
     cssls = {},
     -- dotls = {},
     dockerls = {},
@@ -118,29 +120,29 @@ local servers = {
     lemminx = {},
     nushell = {},
     pyright = {},
-    rust_analyzer = {
-        tools = {
-            hover_actions = {
-                auto_focus = true,
-            },
-        },
-        server = {
-            standalone = true,
-            settings = {
-                ["rust-analyzer"] = {
-                    checkOnSave = {
-                        command = "clippy",
-                        allFeatures = true,
-                    },
-                    diagnostics = {
-                        disabled = {
-                            "unresolved-proc-macro",
-                        },
-                    },
-                },
-            },
-        },
-    },
+    -- rust_analyzer = {
+    --     tools = {
+    --         hover_actions = {
+    --             auto_focus = true,
+    --         },
+    --     },
+    --     server = {
+    --         standalone = true,
+    --         settings = {
+    --             ["rust-analyzer"] = {
+    --                 checkOnSave = {
+    --                     command = "clippy",
+    --                     allFeatures = true,
+    --                 },
+    --                 diagnostics = {
+    --                     disabled = {
+    --                         "unresolved-proc-macro",
+    --                     },
+    --                 },
+    --             },
+    --         },
+    --     },
+    -- },
     -- solargraph = {},
     lua_ls = {
         settings = {
@@ -170,7 +172,7 @@ local servers = {
     yamlls = {
         on_attach = function(_, bufnr)
             if vim.bo[bufnr].buftype ~= "" or vim.bo[bufnr].filetype == "helm" then
-                vim.diagnostic.disable(bufnr)
+                vim.diagnostic.enable(true, { bufnr })
                 vim.defer_fn(function()
                     vim.diagnostic.reset(nil, bufnr)
                 end, 1000)
@@ -194,7 +196,7 @@ local servers = {
 
 local to_install = { "golangci-lint" }
 local to_exclude = vim.list_extend(
-    { "golangcilint", "hlint", "nix", "nixfmt", "gofmt", "terraform_fmt" },
+    { "golangcilint", "hlint", "nix", "nixfmt", "gofmt", "terraform_fmt", "clang-format", "clangtidy" },
     vim.tbl_get(formatters_by_ft, "_")
 )
 local by_ft = {}
@@ -276,38 +278,49 @@ return {
                 local server_opts = opts
                 server_opts.flags = common_flags
                 server_opts.capabilities = capabilities
-                if server == "rust_analyzer" then
-                    local install_root_dir = os.getenv("HOME")
-                        .. "/.nix-profile/share/vscode/extensions/vadimcn.vscode-lldb/"
-                    local codelldb_path = install_root_dir .. "adapter/codelldb"
-                    local liblldb_path = install_root_dir .. "lldb/lib/liblldb"
-                    local this_os = vim.loop.os_uname().sysname
-                    liblldb_path = liblldb_path .. (this_os == "Linux" and ".so" or ".dylib")
-                    server_opts.dap = {
-                        adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
-                    }
-
-                    require("rust-tools").setup(server_opts)
-                else
-                    require("lspconfig")[server].setup(server_opts)
-                end
+                -- if server == "rust_analyzer" then
+                --     local install_root_dir = os.getenv("HOME")
+                --         .. "/.nix-profile/share/vscode/extensions/vadimcn.vscode-lldb/"
+                --     local codelldb_path = install_root_dir .. "adapter/codelldb"
+                --     local liblldb_path = install_root_dir .. "lldb/lib/liblldb"
+                --     local this_os = vim.loop.os_uname().sysname
+                --     liblldb_path = liblldb_path .. (this_os == "Linux" and ".so" or ".dylib")
+                --     server_opts.dap = {
+                --         adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
+                --     }
+                --
+                --     require("rust-tools").setup(server_opts)
+                -- else
+                require("lspconfig")[server].setup(server_opts)
+                -- end
             end
         end,
         dependencies = {
-            { "folke/neodev.nvim", opts = {} },
-            { "j-hui/fidget.nvim", opts = {} },
+            { "folke/neodev.nvim",       opts = {} },
+            { "j-hui/fidget.nvim",       opts = {} },
             { "smjonas/inc-rename.nvim", opts = {} },
             { "b0o/SchemaStore.nvim" },
             {
-                "simrat39/rust-tools.nvim",
+                "mrcjkb/rustaceanvim",
+                version = "^4",
+                lazy = false,
                 dependencies = {
                     "saecki/crates.nvim",
                     tag = "stable",
-                    dependencies = { "nvim-lua/plenary.nvim" },
                     event = { "BufRead Cargo.toml" },
                     opts = {},
                 },
             },
+            -- {
+            --     "simrat39/rust-tools.nvim",
+            --     dependencies = {
+            --         "saecki/crates.nvim",
+            --         tag = "stable",
+            --         dependencies = { "nvim-lua/plenary.nvim" },
+            --         event = { "BufRead Cargo.toml" },
+            --         opts = {},
+            --     },
+            -- },
             {
                 "mrcjkb/haskell-tools.nvim",
                 version = "^3", -- Recommended

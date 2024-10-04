@@ -33,8 +33,6 @@
         host = "ES-IT00385";
         user = "aj.vazquez";
       };
-      inputsToPin = let lib = inputs.nixpkgs.lib;
-      in lib.filterAttrs (k: v: lib.strings.hasPrefix "nixpkgs" k) inputs;
       nixpkgsConfig = { system }:
         let
           unstable = import inputs.nixpkgs-unstable {
@@ -47,67 +45,74 @@
           overlays =
             [ (self: super: { inherit unstable; }) inputs.nur.overlay ];
         };
+      neovim-override = { system }: ({
+        environment.systemPackages =
+          [ inputs.neovim-nightly-overlay.packages.${system}.default ];
+      });
+      inputsToPin = let lib = inputs.nixpkgs.lib;
+      in lib.filterAttrs (key: _: lib.strings.hasPrefix "nixpkgs" key) inputs;
+
     in {
-      darwinConfigurations = let
-        host = darwin.host;
-        system = "aarch64-darwin";
-      in {
-        "${host}" = inputs.darwin.lib.darwinSystem {
+      darwinConfigurations = builtins.mapAttrs (name:
+        { system, additionalModules ? [ ] }:
+        inputs.darwin.lib.darwinSystem {
           inherit system;
           modules = [
             ./nix/system/darwin/darwin-configuration.nix
-            ({
-              environment.systemPackages =
-                [ inputs.neovim-nightly-overlay.packages.${system}.default ];
-            })
-          ];
-          specialArgs = { inputs = inputsToPin; };
-        };
-      };
-      homeConfigurations = {
-        "${linux.user}" = let
-          email = linux.email;
-          homeDirectory = "/home/${username}";
-          system = "x86_64-linux";
-          username = linux.user;
+            (neovim-override { inherit system; })
+          ] ++ additionalModules;
+        }) { "${darwin.host}" = { system = "aarch64-darwin"; }; };
+
+      homeConfigurations = builtins.mapAttrs (name:
+        { email, system, additionalModules ? [ ] }:
+        let
+          username = name;
+          homeDirectory =
+            if builtins.isList (builtins.match ".*(darwin).*" system) then
+              "/Users/${name}"
+            else
+              "/home/${name}";
         in inputs.home-manager.lib.homeManagerConfiguration {
           pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
-          modules = [
-            inputs.impermanence.nixosModules.home-manager.impermanence
-            ./nix/users/${username}/home.nix
-          ];
+          modules = [ ./nix/users/${name}/home.nix ] ++ additionalModules;
           extraSpecialArgs = {
             inherit stateVersion username homeDirectory email nix-colors;
+          };
+        }) {
+          "${linux.user}" = {
+            email = linux.email;
+            system = "x86_64-linux";
+            additionalModules =
+              [ inputs.impermanence.nixosModules.home-manager.impermanence ];
+          };
+          "${darwin.user}" = {
+            email = darwin.email;
+            system = "aarch64-darwin";
           };
         };
 
-        "${darwin.user}" = let
-          email = darwin.email;
-          homeDirectory = "/Users/${username}";
-          system = "aarch64-darwin";
-          username = darwin.user;
-        in inputs.home-manager.lib.homeManagerConfiguration {
-          pkgs = import inputs.nixpkgs (nixpkgsConfig { inherit system; });
-          modules = [ ./nix/users/${username}/home.nix ];
-          extraSpecialArgs = {
-            inherit stateVersion username homeDirectory email nix-colors;
-          };
-        };
-      };
-      nixosConfigurations = let
-        host = linux.host;
-        system = "x86_64-linux";
-        username = linux.user;
-      in {
-        ${host} = inputs.nixpkgs.lib.nixosSystem {
+      nixosConfigurations = builtins.mapAttrs (name:
+        { system, username, additionalModules ? [ ] }:
+        inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
-            ({ nixpkgs.config.allowUnfree = true; })
-            inputs.impermanence.nixosModules.impermanence
-            ./nix/system/${host}/configuration.nix
-          ];
-          specialArgs = { inherit username stateVersion; };
+            ({ nixpkgs = (nixpkgsConfig { inherit system; }); })
+            (neovim-override { inherit system; })
+            ./nix/system/${name}/configuration.nix
+          ] ++ additionalModules;
+          specialArgs = {
+            inherit username stateVersion;
+            inputs = inputsToPin;
+          };
+        }) {
+          ${linux.host} = {
+            system = "x86_64-linux";
+            username = linux.user;
+            additionalModules = [
+              # (inputs.nixpkgs.outPath + "/nixos/modules/profiles/perlless.nix")
+              inputs.impermanence.nixosModules.impermanence
+            ];
+          };
         };
-      };
     };
 }
