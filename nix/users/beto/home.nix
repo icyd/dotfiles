@@ -38,11 +38,11 @@ in
       sources = [
         (mkTuple [
           "xkb"
-          "icyd"
+          "icydvorak"
         ])
         (mkTuple [
           "xkb"
-          "engrammer"
+          "icydengram"
         ])
         (mkTuple [
           "xkb"
@@ -52,7 +52,8 @@ in
       xkb-options = [
         "lv3:ralt_switch"
         "compose:102"
-        "caps:swapescape"
+        # "caps:swapescape"
+        "caps:escape_shifted_capslock"
         "shift:breaks_caps"
         "grp:alt_space_toggle"
       ];
@@ -231,6 +232,5 @@ in
     waybar.source = ../../../sway/waybar;
     wlogout.source = ../../../sway/wlogout;
     wofi.source = ../../../sway/wofi;
-    xkb.source = ../../../xkb;
   };
 }

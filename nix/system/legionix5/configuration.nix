@@ -4,6 +4,7 @@
   inputs,
   username,
   stateVersion,
+  xkb,
   ...
 }:
 let
@@ -367,20 +368,20 @@ in
         "nvidia"
       ];
       xkb.extraLayouts = {
-        icyd = {
-          description = "Icyd US Dvorak layout";
+        icydvorak = {
+          description = "IcyDvorak";
           languages = [ "eng" ];
-          symbolsFile = ../../../xkb/symbols/icyd;
+          symbolsFile = "${xkb.outPath}/linux/symbols/IcydDvorak.xkb";
         };
         engram = {
-          description = "Icyd's Engram layout";
+          description = "Engram";
           languages = [ "eng" ];
-          symbolsFile = ../../../xkb/symbols/engram;
+          symbolsFile = "${xkb.outPath}/linux/symbols/Engram.xkb";
         };
-        engrammer = {
-          description = "Icyd's Engrammer layout";
+        icydengram = {
+          description = "IcydEngram";
           languages = [ "eng" ];
-          symbolsFile = ../../../xkb/symbols/engrammer;
+          symbolsFile = "${xkb.outPath}/linux/symbols/IcydEngram.xkb";
         };
       };
     };
