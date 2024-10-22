@@ -87,6 +87,9 @@ in
       # lua51Packages.magick
       mosh
       nodejs_20
+      nodePackages.bash-language-server
+      nodePackages.jsonlint
+      nodePackages.vscode-json-languageserver-bin
       (nerdfonts.override {
         fonts = [
           "AnonymousPro"

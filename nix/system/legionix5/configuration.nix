@@ -346,7 +346,14 @@ in
       enable = true;
       pulse.enable = true;
     };
-    udev.extraRules = (builtins.readFile ./udev.rules);
+    # udev.extraRules = (builtins.readFile ./udev.rules);
+    udev.packages = lib.lists.singleton (
+      pkgs.writeTextFile {
+        name = "qmk-rules";
+        destination = "/etc/udev/rules.d/50-qmk.rules";
+        text = builtins.readFile ./qmk.rules;
+      }
+    );
     xserver = {
       enable = true;
       desktopManager = {
