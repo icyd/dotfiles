@@ -254,21 +254,20 @@ in
         (builtins.readFile ../../nushell/config.nu)
       ];
     envFile.source = ../../nushell/env.nu;
+    loginFile.source = ../../nushell/login.nu;
     extraConfig = ''
-      source ${config.xdg.dataHome}/nushell/nix-your-shell.nu
-      source ~/.zoxide.nu
       use utils.nu
       use certs.nu
       use modules/background_task/task.nu
-      use modules/weather/get-weather.nu *
-      use git-gone.nu *
-      use cd-root.nu *
       use kubernetes.nu *
       use ~/.local.nu *
     '';
-    extraEnv = ''
-      $env.LANG = "en_US.UTF-8"
-      $env.LC_ALL = "en_US.UTF-8"
+    extraLogin = ''
+      source ${config.xdg.dataHome}/nushell/nix-your-shell.nu
+      source ~/.zoxide.nu
+      use modules/weather/get-weather.nu *
+      use git-gone.nu *
+      use cd-root.nu *
     '';
   };
   programs.starship = {

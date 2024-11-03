@@ -81,6 +81,8 @@ in
       "/etc/machine-id"
       "/etc/adjtime"
       "/legion5_skhynix.key"
+      "/legionix5_veracrypt.key"
+      "/legionix5_veracrypt.pwd"
     ];
     hideMounts = true;
   };
@@ -237,6 +239,7 @@ in
       mako
       mediainfo
       networkmanagerapplet
+      ntfs3g
       slurp
       swayidle
       swaylock
@@ -278,51 +281,53 @@ in
       }
     ];
     rtkit.enable = true;
-    sudo.extraConfig = ''
-      # rollback results in sudo lectures after each reboot
-      Defaults lecture = never
-    '';
+    sudo = {
+      enable = true;
+      extraConfig = ''
+        # rollback results in sudo lectures after each reboot
+        Defaults lecture = never
+      '';
+    };
   };
   services = {
     blueman.enable = true;
-    # dnscrypt-proxy2 = {
-    #   enable = true;
-    #   settings = {
-    #     ipv6_servers = true;
-    #     require_dnssec = true;
-    #     sources.public-resolvers = {
-    #       cache_file = "/var/lib/dnscrypt-proxy2/public-resolvers.md";
-    #       minisign_key =
-    #         "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
-    #       urls = [
-    #         "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md"
-    #         "https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md"
-    #       ];
-    #     };
-    #   };
-    # };
-    btrfs.autoScrub.enable = true;
-    btrbk = {
-      instances."btrbk" = {
-        onCalendar = "daily";
-        settings = {
-          timestamp_format = "long";
-          snapshot_dir = "_snapshots";
-          snapshot_preserve = "3d 1w 1m";
-          snapshot_preserve_min = "2d";
-          target_preserve = "1d 1w 1m";
-          target_preserve_min = "latest";
-          volume."/mnt/btrfs-data/" = {
-            target = "/run/media/beto/seagate-backup/LEGION5";
-            subvolume = {
-              "arch/@home" = {
-                snapshot_create = "always";
-              };
-            };
-          };
+    dnscrypt-proxy2 = {
+      enable = true;
+      settings = {
+        ipv6_servers = true;
+        require_dnssec = true;
+        sources.public-resolvers = {
+          cache_file = "/var/lib/dnscrypt-proxy2/public-resolvers.md";
+          minisign_key = "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
+          urls = [
+            "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md"
+            "https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md"
+          ];
         };
       };
     };
+    # btrfs.autoScrub.enable = true;
+    # btrbk = {
+    #   instances."btrbk" = {
+    #     onCalendar = "daily";
+    #     settings = {
+    #       timestamp_format = "long";
+    #       snapshot_dir = "_snapshots";
+    #       snapshot_preserve = "3d 1w 1m";
+    #       snapshot_preserve_min = "2d";
+    #       target_preserve = "1d 1w 1m";
+    #       target_preserve_min = "latest";
+    #       volume."/mnt/btrfs-data/" = {
+    #         target = "/run/media/beto/seagate-backup/LEGION5";
+    #         subvolume = {
+    #           "arch/@home" = {
+    #             snapshot_create = "always";
+    #           };
+    #         };
+    #       };
+    #     };
+    #   };
+    # };
     dbus.enable = true;
     displayManager = {
       defaultSession = "gnome";
@@ -394,6 +399,7 @@ in
     };
   };
   sound.enable = false;
+  systemd.enableEmergencyMode = false;
   systemd.services.dnscrypt-proxy2.serviceConfig = {
     StateDirectory = "dnscrypt-proxy";
   };

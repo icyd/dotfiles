@@ -17,3 +17,5 @@ $env.NU_LIB_DIRS = [
 $env.ENV_CONVERSIONS = {}
 $env.PWD_STACK = []
 $env.PWD_POPPING = false
+$env.LANG = "en_US.UTF-8"
+$env.LC_ALL = "es_US.UTF-8"

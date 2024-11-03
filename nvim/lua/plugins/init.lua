@@ -14,26 +14,30 @@ return {
         },
     },
     -- Colorscheme
-    {
-        "rebelot/kanagawa.nvim",
-        -- enabled = false,
-        lazy = false,
-        priority = 1000,
-        -- config = function()
-        --     vim.cmd([[colorscheme kanagawa-wave]])
-        -- end,
-    },
+    -- {
+    --     "rebelot/kanagawa.nvim",
+    --     lazy = false,
+    --
+    --     priority = 1000,
+    --     config = function()
+    --         vim.cmd([[colorscheme kanagawa-wave]])
+    --     end,
+    -- },
     {
         "ellisonleao/gruvbox.nvim",
         lazy = false,
         priority = 1000,
         config = function()
+            require("gruvbox").setup({
+                    inverse = false,
+                })
             vim.cmd([[colorscheme gruvbox]])
         end,
     },
     -- UI
     {
         "folke/noice.nvim",
+        enabled = false,
         event = "VeryLazy",
         dependencies = {
             "MunifTanjim/nui.nvim",

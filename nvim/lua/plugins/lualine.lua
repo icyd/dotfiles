@@ -50,9 +50,8 @@ function M.config()
 
     require("lualine").setup({
         options = {
+            theme = "auto",
             icons_enabled = true,
-            -- theme = 'kanagawa',
-            theme = "gruvbox_dark",
             component_separators = { "", "" },
             section_separators = { "", "" },
             disabled_filetypes = {

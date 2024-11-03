@@ -110,21 +110,23 @@ in
     libreoffice-fresh
     lutris
     openocd
+    synapse
     # unstable.quickemu
     # unstable.quickgui
     vscode-extensions.vadimcn.vscode-lldb
     winetricks
     wineWowPackages.waylandFull
   ];
-  home.persistence."/mnt/containers" = {
-    allowOther = false;
-  };
-  home.persistence."/mnt/vms" = {
+  # home.persistence."/mnt/containers" = {
+  #   allowOther = false;
+  # };
+  home.persistence."/mnt/nodatacow" = {
     allowOther = false;
     directories = [
-      ".containers"
+      # ".containers"
       ".qemu"
-      ".VirtualBox"
+      ".wine"
+      "VirtualBox VMs"
       "Games"
     ];
   };
@@ -135,7 +137,6 @@ in
         directory = ".dotfiles";
         method = "symlink";
       }
-      ".local/share/gopass"
       "Backups"
       "Calibre Library"
       "Desktop"

@@ -22,7 +22,9 @@ let
   cryptroot = "62abb064-54c0-4c02-b5f0-5ca57ee8004a";
   nvme1n1p2 = "c432588b-cfa3-448a-86ff-546936cc6eff";
   cryptdata = "a0330967-771a-4303-9750-172d571dee0c";
-  bootDrive = "5610-7908";
+  veracryptdata = "3251-F49B";
+  # bootDrive = "5610-7908";
+  bootDrive = "12D2-6261";
 in
 {
   boot = {
@@ -76,6 +78,9 @@ in
         umount /mnt
       '';
       # systemd.enable = false;
+      supportedFilesystems = {
+        ntfs = true;
+      };
     };
     kernel.sysctl = {
       "net.ipv4.ip_forward" = true;
@@ -97,20 +102,20 @@ in
         device = "nodev";
         efiSupport = true;
         enable = true;
-        extraEntries = ''
-          menuentry 'Arch Linux' --class arch --class gnu-linux --class gnu --class os {
-              load_video
-              set gfxpayload=keep
-              insmod gzio
-              insmod part_gpt
-              insmod fat
-              search --no-floppy --fs-uuid --set=root 4ECB-CF02
-              echo    'Loading Linux linux-lts ...'
-              linux   /vmlinuz-linux-lts root=UUID=${cryptroot} rw rootflags=subvol=arch/@ nvidia-drm.modeset=1 luks.name=${nvme0n1p2}=cryptroot luks.options=discard root=/dev/mapper/cryptroot quiet loglevel=4
-              echo    'Loading initial ramdisk ...'
-              initrd  /amd-ucode.img /initramfs-linux-lts.img
-          }
-        '';
+        # extraEntries = ''
+        #   menuentry 'Arch Linux' --class arch --class gnu-linux --class gnu --class os {
+        #       load_video
+        #       set gfxpayload=keep
+        #       insmod gzio
+        #       insmod part_gpt
+        #       insmod fat
+        #       search --no-floppy --fs-uuid --set=root 4ECB-CF02
+        #       echo    'Loading Linux linux-lts ...'
+        #       linux   /vmlinuz-linux-lts root=UUID=${cryptroot} rw rootflags=subvol=arch/@ nvidia-drm.modeset=1 luks.name=${nvme0n1p2}=cryptroot luks.options=discard root=/dev/mapper/cryptroot quiet loglevel=4
+        #       echo    'Loading initial ramdisk ...'
+        #       initrd  /amd-ucode.img /initramfs-linux-lts.img
+        #   }
+        # '';
         memtest86.enable = true;
         useOSProber = true;
       };
@@ -118,8 +123,11 @@ in
     tmp.useTmpfs = true;
   };
   environment.systemPackages = [ nvidia-offload ];
+  # environment.etc.crypttab.text = ''
+  #   cryptdata UUID=${nvme1n1p2} /legion5_skhynix.key discard
+  # '';
   environment.etc.crypttab.text = ''
-    cryptdata UUID=${nvme1n1p2} /legion5_skhynix.key discard
+    cryptdata /dev/nvme0n1p5 /legionix5_veracrypt.pwd discard,tcrypt-veracrypt,tcrypt-keyfile=/legionix5_veracrypt.key
   '';
   hardware = {
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
@@ -156,10 +164,10 @@ in
       fsType = "vfat";
     };
     "/home" = {
-      device = "/dev/disk/by-uuid/${cryptdata}";
+      device = "/dev/disk/by-uuid/${cryptroot}";
       fsType = "btrfs";
       options = [
-        "subvol=nix/@home"
+        "subvol=@home"
         "noatime"
         "compress=zstd"
       ];
@@ -173,20 +181,20 @@ in
         "compress=zstd"
       ];
     };
-    "/mnt/btrfs-data" = {
-      device = "/dev/disk/by-uuid/${cryptdata}";
+    # "/mnt/btrfs-data" = {
+    #   device = "/dev/disk/by-uuid/${cryptdata}";
+    #   fsType = "btrfs";
+    #   options = [
+    #     "ssd"
+    #     "noatime"
+    #     "compress=zstd"
+    #   ];
+    # };
+    "/mnt/nodatacow" = {
+      device = "/dev/disk/by-uuid/${cryptroot}";
       fsType = "btrfs";
       options = [
-        "ssd"
-        "noatime"
-        "compress=zstd"
-      ];
-    };
-    "/mnt/vms" = {
-      device = "/dev/disk/by-uuid/${cryptdata}";
-      fsType = "btrfs";
-      options = [
-        "subvol=@vms"
+        "subvol=@nodatacow"
         "noatime"
         "compress=zstd"
         "nodatacow"
@@ -228,12 +236,24 @@ in
       ];
     };
     "/persist/home" = {
-      device = "/dev/disk/by-uuid/${cryptdata}";
+      device = "/dev/disk/by-uuid/${cryptroot}";
       fsType = "btrfs";
       options = [
-        "subvol=arch/@home"
+        "subvol=@data"
         "noatime"
         "compress=zstd"
+      ];
+    };
+    "/persist/data" = {
+      device = "/dev/disk/by-uuid/${veracryptdata}";
+      fsType = "exfat";
+      options = [
+        "defaults"
+        "users"
+        "uid=1000"
+        "gid=1000"
+        "fmask=0022"
+        "dmask=0022"
       ];
     };
     "/var/log" = {
