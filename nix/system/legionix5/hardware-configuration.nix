@@ -14,14 +14,10 @@ let
     export __VK_LAYER_NV_optimus=NVIDIA_only
     exec "$@"
   '';
-  userMountOpts = [
-    "uid=1000"
-    "gid=1000"
-  ];
   nvme0n1p2 = "a1e85fe0-0d91-40c0-ba67-b784fe163998";
   cryptroot = "62abb064-54c0-4c02-b5f0-5ca57ee8004a";
-  nvme1n1p2 = "c432588b-cfa3-448a-86ff-546936cc6eff";
-  cryptdata = "a0330967-771a-4303-9750-172d571dee0c";
+  # nvme1n1p2 = "c432588b-cfa3-448a-86ff-546936cc6eff";
+  # cryptdata = "a0330967-771a-4303-9750-172d571dee0c";
   veracryptdata = "3251-F49B";
   # bootDrive = "5610-7908";
   bootDrive = "12D2-6261";
@@ -127,10 +123,30 @@ in
   #   cryptdata UUID=${nvme1n1p2} /legion5_skhynix.key discard
   # '';
   environment.etc.crypttab.text = ''
-    cryptdata /dev/nvme0n1p5 /legionix5_veracrypt.pwd discard,tcrypt-veracrypt,tcrypt-keyfile=/legionix5_veracrypt.key
+    cryptdata /dev/nvme1n1p5 /legionix5_veracrypt.pwd discard,tcrypt-veracrypt,tcrypt-keyfile=/legionix5_veracrypt.key
   '';
+  environment.persistence."/persist" = {
+    directories = [
+      "/etc/nixos"
+      "/var/lib/bluetooth"
+      "/var/lib/systemd/coredump"
+      "/var/lib/nixos"
+      "/etc/NetworkManager/system-connections"
+    ];
+    files = [
+      "/etc/machine-id"
+      "/etc/adjtime"
+      "/legion5_skhynix.key"
+      "/legionix5_veracrypt.key"
+      "/legionix5_veracrypt.pwd"
+    ];
+    hideMounts = true;
+  };
+
   hardware = {
+    bluetooth.enable = true;
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    enableAllFirmware = true;
     nvidia = {
       modesetting.enable = true;
       nvidiaSettings = true;
@@ -144,6 +160,15 @@ in
         nvidiaBusId = "PCI:1:0:0";
         amdgpuBusId = "PCI:6:0:0";
       };
+    };
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+      extraPackages = with pkgs; [
+        libvdpau-va-gl
+        libva-vdpau-driver
+        rocmPackages.clr.icd
+      ];
     };
     pulseaudio.enable = false;
   };
@@ -267,18 +292,39 @@ in
       neededForBoot = true;
     };
   };
+  networking = {
+    bridges.br0.interfaces = [ "eno1" ];
+    dhcpcd.extraConfig = "nohook resolv.conf";
+    enableIPv6 = true;
+    firewall.enable = true;
+    hostName = "legionix5";
+    interfaces.eno1.useDHCP = true;
+    interfaces.wlp4s0.useDHCP = true;
+    nameservers = [
+      "208.67.222.222"
+      "208.67.220.220"
+    ];
+    nat.enable = true;
+    nat.enableIPv6 = true;
+    nftables.enable = true;
+    networkmanager.enable = true;
+    networkmanager.dns = "none";
+    resolvconf.dnsExtensionMechanism = false;
+    useDHCP = false;
+  };
   powerManagement = {
     enable = true;
     cpuFreqGovernor = lib.mkDefault "powersave";
   };
   specialisation = {
     nvidia-sync-mode.configuration = {
-      system.nixos.tags = [ "nvidia-sync-mode" ];
+      environment.etc."specialisation".text = "nvidia-sync-mode";
       hardware.nvidia.prime = {
         allowExternalGpu = lib.mkForce false;
         reverseSync.enable = lib.mkForce false;
         sync.enable = lib.mkForce true;
       };
+      system.nixos.tags = [ "nvidia-sync-mode" ];
     };
   };
   swapDevices = [ ];

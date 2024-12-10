@@ -3,12 +3,9 @@
   lib,
   inputs,
   username,
-  stateVersion,
-  xkb,
   ...
 }:
 let
-  mylib = import ../../mylib.nix { inherit lib; };
   configure-gtk = pkgs.writeTextFile {
     name = "configure-gtk";
     destination = "/bin/configure-gtk";
@@ -49,13 +46,12 @@ in
   #     (pkgs.callPackage ../../modules/dnie.nix { })
   #   }/usr/lib/libpkcs11-dnie.so
   # '';
-  environment.gnome.excludePackages =
-    (with pkgs; [
+  environment.gnome.excludePackages = (
+    with pkgs;
+    [
       gedit
       gnome-photos
       gnome-tour
-    ])
-    ++ (with pkgs.gnome; [
       cheese # webcam tool
       gnome-music
       epiphany # web browser
@@ -68,24 +64,8 @@ in
       yelp # Help view
       gnome-contacts
       gnome-initial-setup
-    ]);
-  environment.persistence."/persist" = {
-    directories = [
-      "/etc/nixos"
-      "/var/lib/bluetooth"
-      "/var/lib/systemd/coredump"
-      "/var/lib/nixos"
-      "/etc/NetworkManager/system-connections"
-    ];
-    files = [
-      "/etc/machine-id"
-      "/etc/adjtime"
-      "/legion5_skhynix.key"
-      "/legionix5_veracrypt.key"
-      "/legionix5_veracrypt.pwd"
-    ];
-    hideMounts = true;
-  };
+    ]
+  );
   environment.systemPackages = with pkgs; [
     arc-theme
     autogen
@@ -101,16 +81,19 @@ in
     ffmpegthumbnailer
     gcc
     git
-    gnome.eog
+    kitty
+    eog
     gst_all_1.gstreamer
     gst_all_1.gst-vaapi
     gst_all_1.gst-plugins-base
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
     gst_all_1.gst-plugins-bad
-    gnome.gnome-tweaks
+    gnome-tweaks
     gnumake
     google-chrome
+    nix-output-monitor
+    nvd
     openssl
     okular
     papirus-icon-theme
@@ -144,43 +127,15 @@ in
     ];
     fontconfig.enable = true;
   };
-  hardware = {
-    bluetooth.enable = true;
-    enableAllFirmware = true;
-    opengl = {
-      driSupport = true;
-      driSupport32Bit = true;
-      enable = true;
-      extraPackages = with pkgs; [
-        libvdpau-va-gl
-        rocm-opencl-icd
-        rocm-opencl-runtime
-        vaapiVdpau
-      ];
-    };
-  };
   i18n.defaultLocale = "en_US.UTF-8";
-  imports = [ ./hardware-configuration.nix ];
-  networking = {
-    bridges.br0.interfaces = [ "eno1" ];
-    dhcpcd.extraConfig = "nohook resolv.conf";
-    enableIPv6 = true;
-    firewall.enable = true;
-    hostName = "legionix5";
-    interfaces.eno1.useDHCP = true;
-    interfaces.wlp4s0.useDHCP = true;
-    nameservers = [
-      "208.67.222.222"
-      "208.67.220.220"
-    ];
-    nat.enable = true;
-    nat.enableIPv6 = true;
-    nftables.enable = true;
-    networkmanager.enable = true;
-    networkmanager.dns = "none";
-    resolvconf.dnsExtensionMechanism = false;
-    useDHCP = false;
+  i18n.extraLocaleSettings = rec {
+    LC_MONETARY = "en_IE.UTF-8";
+    LC_TIME = LC_MONETARY;
   };
+  imports = [
+    ./hardware-configuration.nix
+    ../../registry.nix
+  ];
   nix = {
     extraOptions = ''
       experimental-features = nix-command flakes
@@ -190,28 +145,14 @@ in
       dates = "weekly";
       options = "--delete-older-than 30d";
     };
-    nixPath = mylib.nixPath inputs;
-    package = pkgs.nixFlakes;
-    registry = mylib.nixRegistry inputs;
-    settings =
-      let
-        cache = {
-          "https://nix-community.cachix.org" = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
-          "https://cache.iog.io" = "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=";
-        };
-        substituters = mylib.attrsKeys cache;
-        trusted-public-keys = mylib.attrsVals cache;
-      in
-      {
-        inherit substituters trusted-public-keys;
-        trusted-substituters = substituters;
-        trusted-users = [
-          "root"
-          "@wheel"
-        ];
-      };
+    package = pkgs.nixVersions.stable;
+    settings = {
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
+    };
   };
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   programs.adb.enable = true;
   programs.dconf.enable = true;
   programs.gamemode.enable = true;
@@ -219,7 +160,12 @@ in
     enable = true;
     enableSSHSupport = true;
   };
+  programs.hyprland.enable = true;
   programs.light.enable = true;
+  programs.nh = {
+    enable = true;
+    flake = "/persist/home/${username}/.dotfiles";
+  };
   programs.sway = {
     enable = true;
     extraPackages = with pkgs; [
@@ -231,8 +177,8 @@ in
       ffmpeg
       gammastep
       glib
-      gnome3.adwaita-icon-theme
-      gnome.nautilus
+      adwaita-icon-theme
+      nautilus
       grim
       haruna
       kanshi
@@ -383,28 +329,27 @@ in
         icydvorak = {
           description = "IcyDvorak";
           languages = [ "eng" ];
-          symbolsFile = "${xkb.outPath}/linux/symbols/IcydDvorak.xkb";
+          symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydDvorak.xkb";
         };
         engram = {
           description = "Engram";
           languages = [ "eng" ];
-          symbolsFile = "${xkb.outPath}/linux/symbols/Engram.xkb";
+          symbolsFile = "${inputs.xkb.outPath}/linux/symbols/Engram.xkb";
         };
         icydengram = {
           description = "IcydEngram";
           languages = [ "eng" ];
-          symbolsFile = "${xkb.outPath}/linux/symbols/IcydEngram.xkb";
+          symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEngram.xkb";
         };
       };
     };
   };
-  sound.enable = false;
   systemd.enableEmergencyMode = false;
   systemd.services.dnscrypt-proxy2.serviceConfig = {
     StateDirectory = "dnscrypt-proxy";
   };
   systemd.services."systemd-backlight@backlight:ideapad".wantedBy = lib.mkForce [ ];
-  system.stateVersion = stateVersion;
+  system.stateVersion = "22.05";
   systemd.tmpfiles.rules = [
     "L /var/lib/NetworkManager/secret_key - - - - /persist/var/lib/NetworkManager/secret_key"
     "L /var/lib/NetworkManager/seen-bssids - - - - /persist/var/lib/NetworkManager/seen-bssids"
@@ -419,6 +364,7 @@ in
   };
   time.timeZone = "Europe/Madrid";
   users = {
+    extraGroups.vboxusers.members = [ "${username}" ];
     groups.${username}.gid = 1000;
     mutableUsers = false;
     users = {
@@ -480,7 +426,14 @@ in
       dockerCompat = true;
       defaultNetwork.settings.dns_enabled = true;
     };
-    # virtualbox.host.enable = true;
-
+    virtualbox = {
+      host = {
+        enable = true;
+        # addNetworkInterface = false;
+        enableExtensionPack = true;
+        # enableKvm = true;
+      };
+      # guest.enable = true;
+    };
   };
 }
