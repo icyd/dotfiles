@@ -145,7 +145,7 @@ in
     '';
     loginExtra = ''
         # Compile zcompdump, if modified, to increase startup speed.
-        zcompdump="$HOME"}/.zplug/zcompdump"
+        zcompdump="$HOME"/.zplug/zcompdump"
         if [[ -s "$zcompdump" && (! -s "''${zcompdump}.zwc" || "$zcompdump" -nt "''${zcompdump}.zwc") ]]; then
           zcompile "$zcompdump"
         fi

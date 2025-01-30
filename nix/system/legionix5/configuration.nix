@@ -17,20 +17,9 @@ let
       in
       ''
         export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
-        gnome_schema=org.gnome.desktop.interface
+        /* gnome_schema=org.gnome.desktop.interface
         gsettings set $gnome_schema gtk-theme 'Dracula'
       '';
-  };
-  dbus-sway-environment = pkgs.writeTextFile {
-    name = "dbus-sway-environment";
-    destination = "/bin/dbus-sway-environment";
-    executable = true;
-
-    text = ''
-      dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-      systemctl --user stop pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
-      systemctl --user start pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
-    '';
   };
 in
 {
@@ -46,27 +35,11 @@ in
   #     (pkgs.callPackage ../../modules/dnie.nix { })
   #   }/usr/lib/libpkcs11-dnie.so
   # '';
-  environment.gnome.excludePackages = (
-    with pkgs;
-    [
-      gedit
-      gnome-photos
-      gnome-tour
-      cheese # webcam tool
-      gnome-music
-      epiphany # web browser
-      geary # email reader
-      gnome-characters
-      tali # poker game
-      iagno # go game
-      hitori # sudoku game
-      atomix # puzzle game
-      yelp # Help view
-      gnome-contacts
-      gnome-initial-setup
-    ]
-  );
+  environment.sessionVariables = {
+    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/${username}/.steam/root/compatibilitytools.d";
+  };
   environment.systemPackages = with pkgs; [
+    adwaita-icon-theme
     arc-theme
     autogen
     binutils
@@ -78,21 +51,26 @@ in
     dnsutils
     dropbox
     evince
+    ffmpeg
     ffmpegthumbnailer
     gcc
     git
-    kitty
     eog
+    glib
     gst_all_1.gstreamer
     gst_all_1.gst-vaapi
     gst_all_1.gst-plugins-base
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
     gst_all_1.gst-plugins-bad
-    gnome-tweaks
     gnumake
     google-chrome
+    mangohud
+    mediainfo
+    networkmanagerapplet
+    nautilus
     nix-output-monitor
+    ntfs3g
     nvd
     openssl
     okular
@@ -100,12 +78,17 @@ in
     pavucontrol
     podman-compose
     podman-tui
+    protonup
+    sddm-astronaut
     smplayer
     sqlite
     unzip
     usbutils
     vim
+    vimiv-qt
     xclip
+    xdg-utils
+    xfce.ristretto
     wget
     zip
   ];
@@ -135,6 +118,11 @@ in
   imports = [
     ./hardware-configuration.nix
     ../../registry.nix
+    ../../modules/gnome.nix
+    ../../modules/hyprland.nix
+    ../../modules/stylix.nix
+    ../../modules/sway.nix
+    ../../modules/virtualisation.nix
   ];
   nix = {
     extraOptions = ''
@@ -154,70 +142,22 @@ in
     };
   };
   programs.adb.enable = true;
-  programs.dconf.enable = true;
   programs.gamemode.enable = true;
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
   };
-  programs.hyprland.enable = true;
-  programs.light.enable = true;
   programs.nh = {
     enable = true;
     flake = "/persist/home/${username}/.dotfiles";
   };
-  programs.sway = {
+  programs.steam = {
     enable = true;
-    extraPackages = with pkgs; [
-      acpi
-      alacritty
-      brightnessctl
-      dbus-sway-environment
-      dracula-theme # gtk theme
-      ffmpeg
-      gammastep
-      glib
-      adwaita-icon-theme
-      nautilus
-      grim
-      haruna
-      kanshi
-      mako
-      mediainfo
-      networkmanagerapplet
-      ntfs3g
-      slurp
-      swayidle
-      swaylock
-      vimiv-qt
-      waybar
-      wayland
-      wl-clipboard
-      wlogout
-      wdisplays
-      wofi
-      xdg-utils
-      xfce.ristretto
-      xwayland
-    ];
-    extraOptions = [ "--unsupported-gpu" ];
-    extraSessionCommands = ''
-      export SDL_VIDEODRIVER=wayland
-      export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-      export _JAVA_AWT_WM_NONREPARENTING=1
-      export MOZ_ENABLE_WAYLAND=1
-      export MOZ_DISABLE_RDD_SANDBOX=1
-      export WLR_DRM_DEVICES="/dev/dri/card0:/dev/dri/card1"
-    '';
-    wrapperFeatures.gtk = true;
+    gamescopeSession.enable = true;
   };
-  programs.tmux.enable = true;
-  programs.virt-manager.enable = true;
   programs.xwayland.enable = true;
   programs.zsh.enable = true;
   security = {
-    pam.services.gdm.enableGnomeKeyring = true;
-    pam.services.swaylock = { };
     pam.loginLimits = [
       {
         domain = "@users";
@@ -278,19 +218,34 @@ in
     displayManager = {
       defaultSession = "gnome";
       sddm = {
-        autoLogin.relogin = true;
-        enable = false;
+        enable = true;
+        autoNumlock = true;
         wayland.enable = true;
+        extraPackages = [ pkgs.sddm-astronaut ];
+        package = pkgs.kdePackages.sddm;
+        theme = "sddm-astronaut-theme";
       };
       autoLogin = {
-        enable = true;
-        user = "${username}";
+        enable = false;
+        user = username;
       };
     };
     gvfs.enable = true;
-    gnome.at-spi2-core.enable = true;
+    kmonad = {
+      enable = true;
+      keyboards = {
+        myKMonadOutput = {
+          device = "/dev/input/by-id/usb-ITE_Tech._Inc._ITE_Device_8910_-event-kbd";
+          defcfg = {
+            enable = true;
+            fallthrough = true;
+          };
+          config = builtins.readFile ../../../kmonad/config.kbd;
+        };
+      };
+    };
     libinput.enable = true;
-    # pcscd.enable = true;
+# pcscd.enable = true;
     pipewire = {
       alsa.enable = true;
       alsa.support32Bit = true;
@@ -314,32 +269,42 @@ in
       displayManager = {
         lightdm = {
           enable = false;
-          greeter.enable = false;
+          greeter.enable = true;
         };
         gdm = {
-          enable = true;
+          enable = false;
           wayland = true;
         };
       };
       videoDrivers = [
         "displaylink"
-        "nvidia"
+            "nvidia"
       ];
-      xkb.extraLayouts = {
-        icydvorak = {
-          description = "IcyDvorak";
-          languages = [ "eng" ];
-          symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydDvorak.xkb";
-        };
-        engram = {
-          description = "Engram";
-          languages = [ "eng" ];
-          symbolsFile = "${inputs.xkb.outPath}/linux/symbols/Engram.xkb";
-        };
-        icydengram = {
-          description = "IcydEngram";
-          languages = [ "eng" ];
-          symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEngram.xkb";
+      xkb = {
+        layout = "us";
+        variant = "altgr-intl";
+        options = "lv3:ralt_switch,shift:breaks_caps,grp:alt_space_toggle";
+        extraLayouts = {
+            icydvorak = {
+              description = "IcyDvorak";
+              languages = [ "eng" ];
+              symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydDvorak.xkb";
+            };
+            engram = {
+              description = "Engram";
+              languages = [ "eng" ];
+              symbolsFile = "${inputs.xkb.outPath}/linux/symbols/Engram.xkb";
+            };
+            icydengram = {
+              description = "IcydEngram";
+              languages = [ "eng" ];
+              symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEngram.xkb";
+            };
+            icydenthium = {
+              description = "IcydEnthium";
+              languages = [ "eng" ];
+              symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEnthium.xkb";
+            };
         };
       };
     };
@@ -355,16 +320,8 @@ in
     "L /var/lib/NetworkManager/seen-bssids - - - - /persist/var/lib/NetworkManager/seen-bssids"
     "L /var/lib/NetworkManager/timestamps - - - - /persist/var/lib/NetworkManager/timestamps"
   ];
-  systemd.user.services.kanshi = {
-    description = "kanshi daemon";
-    serviceConfig = {
-      ExecStart = "${pkgs.kanshi}/bin/kanshi -c kanshi_config_file";
-      Type = "simple";
-    };
-  };
   time.timeZone = "Europe/Madrid";
   users = {
-    extraGroups.vboxusers.members = [ "${username}" ];
     groups.${username}.gid = 1000;
     mutableUsers = false;
     users = {
@@ -372,6 +329,8 @@ in
         extraGroups = [
           "wheel"
           "${username}"
+          "input"
+          "uinput"
           "networkmanager"
           "video"
           "dialout"
@@ -388,52 +347,6 @@ in
         hashedPassword = "$y$j9T$ttfF0hwJU50Sgn5VgxD/J/$m27oLpo5xQTN/6Lzdulqj72GRFGX9ixLLN8q.I7LS25";
         isNormalUser = true;
       };
-    };
-  };
-  virtualisation = {
-    containers = {
-      enable = true;
-      storage.settings =
-        let
-          storagePath = "$HOME/.containers";
-        in
-        {
-          storage = {
-            driver = "btrfs";
-            rootless_storage_path = storagePath;
-          };
-        };
-    };
-    libvirtd = {
-      enable = true;
-      qemu = {
-        package = pkgs.qemu_kvm;
-        swtpm.enable = true;
-        ovmf = {
-          enable = true;
-          packages = [
-            (pkgs.unstable.OVMF.override {
-              secureBoot = true;
-              tpmSupport = true;
-            }).fd
-          ];
-        };
-      };
-    };
-    oci-containers.backend = "podman";
-    podman = {
-      enable = true;
-      dockerCompat = true;
-      defaultNetwork.settings.dns_enabled = true;
-    };
-    virtualbox = {
-      host = {
-        enable = true;
-        # addNetworkInterface = false;
-        enableExtensionPack = true;
-        # enableKvm = true;
-      };
-      # guest.enable = true;
     };
   };
 }

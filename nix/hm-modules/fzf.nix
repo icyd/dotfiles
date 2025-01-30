@@ -1,6 +1,6 @@
 { lib, config, ... }:
 let
-  cfg = config.fzf;
+  cfg = config.my.fzf;
   fzfCtrlTOpts = [
     "--preview={}"
     "--preview-window=:hidden"
@@ -23,7 +23,7 @@ let
   ];
 in
 {
-  options = {
+  options.my = {
     fzf.enable = lib.mkEnableOption "Enable module";
   };
 

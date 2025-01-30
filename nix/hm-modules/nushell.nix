@@ -6,7 +6,9 @@
 }:
 {
   programs.carapace.enable = true;
-  programs.nushell = {
+  programs.nushell = let
+      buf_editor = pkgs.lib.getExe pkgs.nixvimin;
+  in {
     enable = true;
     package = pkgs.unstable.nushell;
     shellAliases = {
@@ -57,14 +59,28 @@
       zr = "zellij-runner";
       xssh = "TERM=xterm-256color ssh";
     };
+    # configFile.text =
+    #   with lib;
+    #   mkMerge [
+    #     (concatStringsSep "\n" (
+    #       mapAttrsToList (k: v: ''let ${toLower k} = "#${v}"'') config.colorScheme.palette
+    #     ))
+    #
+    #     (builtins.readFile ../../nushell/config.nu)
+    #   ];
     configFile.text =
-      with lib;
-      mkMerge [
-        (concatStringsSep "\n" (
-          mapAttrsToList (k: v: ''let ${toLower k} = "#${v}"'') config.colorScheme.palette
-        ))
+      with config.lib.stylix.colors.withHashtag;
+      lib.mkMerge [
+        ''
+          let menu_style = {
+              text: "${base06}"
+              selected_text: {fg: "${base0D}" attr: b}
+              description_text: "${base04}"
+          }
+          let buf_editor = "${buf_editor}"
+        ''
 
-        (builtins.readFile ../../nushell/config.nu)
+      (builtins.readFile ../../nushell/config.nu)
       ];
     envFile.source = ../../nushell/env.nu;
     extraConfig = ''
@@ -77,4 +93,7 @@
       use cd-root.nu *
     '';
   };
+  home.packages = with pkgs.unstable; [
+    nushellPlugins.skim
+  ];
 }

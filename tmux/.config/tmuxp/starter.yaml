@@ -1,5 +1,0 @@
-session_name: starter 
-windows:
-  - window_name: window_1 
-    panes:
-      - blank

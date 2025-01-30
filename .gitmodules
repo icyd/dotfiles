@@ -1,6 +1,3 @@
 [submodule "vifm/colors"]
 	path = vifm/colors
 	url = https://github.com/vifm/vifm-colors
-[submodule "icyd-layouts"]
-	path = icyd-layouts
-	url = git@github.com:icyd/icyd-layouts.git

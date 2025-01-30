@@ -1,4 +1,5 @@
 {
+  lib,
   config,
   pkgs,
   inputs,
@@ -8,12 +9,18 @@
 let
   nix-colors = inputs.nix-colors;
   homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${username}" else "/home/${username}";
+  dotfiles =
+    if pkgs.stdenv.isDarwin then
+      "${homeDirectory}/.dotfiles"
+    else
+      "/persist/home/${username}/.dotfiles";
 in
 {
   colorScheme = nix-colors.colorSchemes.gruvbox-dark-medium;
   fonts.fontconfig.enable = true;
   imports = [
     nix-colors.homeManagerModule
+    ./alacritty.nix
     ./editorconfig.nix
     ./fzf.nix
     ./git.nix
@@ -21,9 +28,32 @@ in
     ./nix-your-shell.nix
     ./nushell.nix
     ./starship.nix
+    ../modules/stylix.nix
+    ./zellij.nix
     ./zsh.nix
   ];
-  fzf.enable = true;
+  my = {
+    fzf.enable = true;
+    zellij = {
+      configFile = ../../zellij/config.kdl;
+      settings = {
+        copy_on_select = true;
+        default_shell = "nu";
+        pane_frames = false;
+        simplified_ui = true;
+        theme = "stylix";
+      };
+    };
+  };
+  stylix = {
+    image = ../../assets/wallpaper.jpg;
+    iconTheme = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
+  };
   home = {
     inherit username homeDirectory;
     stateVersion = "22.05";
@@ -61,6 +91,7 @@ in
       gopass-jsonapi
       git-credential-gopass
       hadolint
+      haruna
       haskellPackages.cabal-install
       haskellPackages.fast-tags
       haskellPackages.ghci-dap
@@ -144,14 +175,14 @@ in
     ];
     sessionVariables =
       let
-        editor = "nvim";
+        editor = pkgs.lib.getExe pkgs.nixvimin;
       in
       {
         ASDF_DATA_DIR = "$HOME/.asdf";
         BROWSER = "firefox";
         CARGO_HOME = "$HOME/.cargo";
         DOTFILES = "$FLAKE";
-        EDITOR = editor;
+        EDITOR = "${editor}";
         GOPATH = "$HOME/go";
         LEDGER_HOME = "$HOME/Dropbox/ledger";
         LEDGER_DATE_FORMAT = "%Y/%m/%d";
@@ -162,7 +193,7 @@ in
         PASSWORD_STORE_GENERATED_LENGTH = 12;
         PY_VENV = "$HOME/.venv";
         RUSTUP_HOME = "$HOME/.rustup";
-        VISUAL = editor;
+        VISUAL = "${editor}";
         VIMWIKI_HOME = "$HOME/Dropbox";
         WINEDLLOVERRIDES = "winemenubuilder.exe=d";
         XDG_CONFIG_HOME = "${config.xdg.configHome}";
@@ -170,9 +201,18 @@ in
         ZSH_CONFIG = "${config.xdg.configHome}/zsh";
       };
   };
+  programs.alacritty = {
+    settings.terminal.shell = with config.programs; {
+      program = "${zsh.package}/bin/zsh";
+      args = [
+        "-c"
+        "${nushell.package}/bin/nu"
+      ];
+    };
+  };
   programs.bat = {
     enable = true;
-    config.theme = "base16";
+    # config.theme = "base16";
   };
   programs.direnv = {
     enable = true;
@@ -182,11 +222,19 @@ in
   programs.wezterm = {
     enable = true;
     package = pkgs.unstable.wezterm;
-    extraConfig = builtins.readFile ../../wezterm/wezterm.lua;
+    extraConfig =
+      with config.lib.stylix.colors.withHashtag;
+      lib.mkMerge [
+        ''
+          local tab_active_color = "${base0B}"
+          local tab_hover_color = "${base0A}"
+        ''
+        (builtins.readFile ../../wezterm/wezterm.lua)
+      ];
   };
   programs.zoxide.enable = true;
   xdg.enable = true;
-  xdg.configFile = {
-    nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/nvim";
+  xdg.configFile = with config.lib.file; {
+    nvim.source = mkOutOfStoreSymlink "${dotfiles}/nvim";
   };
 }

@@ -32,3 +32,4 @@ kitty/theme.conf
 **/*.xk[mb]
 result
 **/local.*
+**/.luarc.json

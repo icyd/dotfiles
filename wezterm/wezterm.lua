@@ -1,9 +1,8 @@
-local wezterm = require("wezterm")
 local act = wezterm.action
 local mux = wezterm.mux
 local config = wezterm.config_builder()
-local color_scheme = "Gruvbox Dark (Gogh)"
-local colors = wezterm.color.get_builtin_schemes()[color_scheme]
+-- local color_scheme = "Gruvbox Dark (Gogh)"
+-- local colors = wezterm.color.get_builtin_schemes()[color_scheme]
 
 -- Helper functions
 local battery_icon = function(info)
@@ -78,22 +77,23 @@ local prompt = function(title, cb)
 end
 
 -- Wezterm event handlers
-wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
+wezterm.on("format-tab-title", function(tab, _, _, cfg, hover, max_width)
     local title = tab_title(tab)
     local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_left_hard_divider
-    local edge_background = colors.background
-    local background = colors.selection_bg
-    local foreground = colors.brights[1]
-
+    local edge_background = cfg.colors.tab_bar.inactive_tab_edge
+    local background = cfg.colors.tab_bar.inactive_tab.bg_color
+    local foreground = cfg.colors.tab_bar.inactive_tab.fg_color
+    --
     if tab.is_active then
-        background = colors.brights[3]
-        foreground = colors.background
+        background = tab_active_color
+        foreground = edge_background
     elseif hover then
-        background = colors.brights[4]
-        foreground = colors.selection_bg
+        background = tab_hover_color
+        foreground = edge_background
     end
 
     local edge_foreground = background
+
     local width = max_width - 4
     if #title > width then
         local title_left = wezterm.truncate_right(title, 6)
@@ -125,19 +125,19 @@ wezterm.on("update-right-status", function(window, _)
     window:set_right_status(wezterm.format(cells))
 end)
 
-wezterm.on("gui-startup", function(cmd)
-    local _, _, window = mux.spawn_window(cmd or {})
-    window:gui_window():maximize()
-end)
-
-wezterm.on("gui-attached", function()
-    local workspace = mux.get_active_workspace()
-    for _, window in ipairs(mux.all_windows()) do
-        if window:get_workspace() == workspace then
-            window:gui_window():maximize()
-        end
-    end
-end)
+-- wezterm.on("gui-startup", function(cmd)
+--     local _, _, window = mux.spawn_window(cmd or {})
+--     window:gui_window():maximize()
+-- end)
+--
+-- wezterm.on("gui-attached", function()
+--     local workspace = mux.get_active_workspace()
+--     for _, window in ipairs(mux.all_windows()) do
+--         if window:get_workspace() == workspace then
+--             window:gui_window():maximize()
+--         end
+--     end
+-- end)
 
 wezterm.on("gopass", function(window, pane)
     local success, stdout, _ = wezterm.run_child_process({
@@ -178,24 +178,30 @@ wezterm.on("gopass", function(window, pane)
 end)
 
 -- Options
-config.front_end = "WebGpu"
-config.enable_wayland = false
-config.color_scheme = color_scheme
+-- config.front_end = "WebGpu"
+-- config.enable_wayland = false
+-- config.color_scheme = color_scheme
 config.default_prog = {
     "zsh",
     "-c",
     "nu",
 }
-config.font = wezterm.font_with_fallback({
-    { family = "AnonymicePro Nerd Font", weight = "Bold" },
-    "Hack Nerd Font",
-    "SauceCodePro Nerd Font Mono",
-    "MesloLGS Nerd Font",
-})
-config.freetype_load_target = "Light"
-config.freetype_load_flags = "NO_HINTING|NO_AUTOHINT"
-config.font_size = 16.0
-config.default_gui_startup_args = { "connect", "unix" }
+-- config.font = wezterm.font_with_fallback({
+--     { family = "AnonymicePro Nerd Font", weight = "Bold" },
+--     "Hack Nerd Font",
+--     "SauceCodePro Nerd Font Mono",
+--     "MesloLGS Nerd Font",
+-- })
+-- config.dpi = 192.0
+-- config.freetype_load_target = "Light"
+-- config.freetype_load_flags = "NO_HINTING|NO_AUTOHINT"
+-- config.font_size = 12.0
+-- config.unix_domains = {
+--     {
+--         name = "unix",
+--     },
+-- }
+-- config.default_gui_startup_args = { "connect", "unix" }
 config.adjust_window_size_when_changing_font_size = false
 config.warn_about_missing_glyphs = false
 -- config.tab_max_width = 24
@@ -204,17 +210,18 @@ config.scrollback_lines = 5000
 config.audible_bell = "Disabled"
 config.use_fancy_tab_bar = false
 config.tab_and_split_indices_are_zero_based = true
+config.show_new_tab_button_in_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = true
 config.tab_max_width = 24
-config.colors = {
-    tab_bar = {
-        background = colors.background,
-        new_tab = {
-            bg_color = colors.background,
-            fg_color = colors.foreground,
-        },
-    },
-}
+-- config.colors = {
+--     tab_bar = {
+--         background = colors.background,
+--         new_tab = {
+--             bg_color = colors.background,
+--             fg_color = colors.foreground,
+--         },
+--     },
+-- }
 
 -- Keybindings
 config.leader = { key = "a", mods = "CTRL" }

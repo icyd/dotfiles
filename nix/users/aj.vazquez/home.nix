@@ -4,9 +4,7 @@ let
 in
 {
   imports = [ ../../hm-modules/home.nix ];
-  home.sessionVariables = rec {
-    LC_ALL = "en_US.UTF-8";
-    LANG = LC_ALL;
+  home.sessionVariables = {
     MANPATH = "${brewPrefix}/opt/coreutils/libexec/gnuman:$MANPATH";
     PATH = "$ASDF_DATA_DIR/shims:${brewPrefix}/bin:${brewPrefix}/opt/coreutils/libexec/gnubin:$PATH";
   };

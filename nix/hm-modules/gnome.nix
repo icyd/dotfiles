@@ -3,10 +3,10 @@
   dconf.settings = with lib.hm.gvariant; {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
-      cursor-theme = "capitaine-cursors-white";
+      # cursor-theme = "capitaine-cursors-white";
       enable-hot-corners = true;
-      gtk-theme = "Arc-Dark";
-      icon-theme = "Papirus-Dark";
+      # gtk-theme = "Arc-Dark";
+      # icon-theme = "Papirus-Dark";
     };
     "org/gnome/desktop/peripherals/touchpad" = {
       tap-to-click = true;
@@ -20,7 +20,11 @@
         ])
         (mkTuple [
           "xkb"
-          "us+intl"
+          "icydenthium"
+        ])
+        (mkTuple [
+          "xkb"
+          "us+altgr-intl"
         ])
       ];
       xkb-options = [
@@ -58,9 +62,6 @@
     "org/gnome/shell/extensions/dash-to-panel" = {
       panel-positions = ''{"0":"TOP"}'';
       panel-sizes = ''{"0":32}'';
-    };
-    "system/locale" = {
-      region = "es_ES.UTF-8";
     };
   };
   home.packages = with pkgs; [

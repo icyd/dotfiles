@@ -1,69 +1,69 @@
-# Nushell Config File
-let base16_theme = {
-    separator: $base03
-    leading_trailing_space_bg: $base04
-    header: $base0b
-    empty: $base0d
-    bool: $base08
-    int: $base0b
-    filesize: $base0d
-    duration: $base08
-    date: $base0e
-    range: $base08
-    float: $base08
-    string: $base04
-    nothing: $base08
-    binary: $base08
-    cellpath: $base08
-    row_index: $base0c
-    record: $base0d
-    list: $base0d
-    block: $base0d
-    hints: $base02
+# # Nushell Config File
+# let base16_theme = {
+#     separator: $base03
+#     leading_trailing_space_bg: $base04
+#     header: $base0b
+#     empty: $base0d
+#     bool: $base08
+#     int: $base0b
+#     filesize: $base0d
+#     duration: $base08
+#     date: $base0e
+#     range: $base08
+#     float: $base08
+#     string: $base04
+#     nothing: $base08
+#     binary: $base08
+#     cellpath: $base08
+#     row_index: $base0c
+#     record: $base0d
+#     list: $base0d
+#     block: $base0d
+#     hints: $base02
+#
+#     search_result: {bg: $base08 fg: $base04}
+#     shape_and: {fg: $base0e attr: b}
+#     shape_binary: {fg: $base0e attr: b}
+#     shape_block: {fg: $base0d attr: b}
+#     shape_bool: $base0d
+#     shape_closure: {fg: $base0c attr: b}
+#     shape_custom: {attr: b}
+#     shape_datetime: {fg: $base0d attr: b}
+#     shape_directory: $base0d
+#     shape_external: $base0c
+#     shape_externalarg: {fg: $base0b attr: b}
+#     shape_filepath: $base0d
+#     shape_flag: {fg: $base0d attr: b}
+#     shape_float: {fg: $base0e attr: b}
+#
+#     shape_garbage: {fg: $base07 bg: $base08 attr: b}
+#     shape_globpattern: {fg: $base0d attr: b}
+#     shape_int: {fg: $base0e attr: b}
+#     shape_internalcall: {fg: $base0c attr: b}
+#     shape_list: {fg: $base0d attr: b}
+#     shape_literal: $base0d
+#     shape_match_pattern: $base0c
+#     shape_matching_brackets: { attr: u }
+#     shape_nothing: $base0d
+#     shape_operator: $base0a
+#     shape_or: {fg: $base0e attr: b}
+#     shape_pipe: {fg: $base0e attr: b}
+#     shape_range: {fg: $base0a attr: b}
+#     shape_record: {fg: $base0d attr: b}
+#     shape_redirection: {fg: $base0e attr: b}
+#     shape_signature: {fg: $base0b attr: b}
+#     shape_string: $base0b
+#     shape_string_interpolation: {fg: $base0d attr: b}
+#     shape_table: {fg: $base0d attr: b}
+#     shape_variable: $base0e
+#     shape_vardecl: $base0e
+# }
 
-    search_result: {bg: $base08 fg: $base04}
-    shape_and: {fg: $base0e attr: b}
-    shape_binary: {fg: $base0e attr: b}
-    shape_block: {fg: $base0d attr: b}
-    shape_bool: $base0d
-    shape_closure: {fg: $base0c attr: b}
-    shape_custom: {attr: b}
-    shape_datetime: {fg: $base0d attr: b}
-    shape_directory: $base0d
-    shape_external: $base0c
-    shape_externalarg: {fg: $base0b attr: b}
-    shape_filepath: $base0d
-    shape_flag: {fg: $base0d attr: b}
-    shape_float: {fg: $base0e attr: b}
-
-    shape_garbage: {fg: $base07 bg: $base08 attr: b}
-    shape_globpattern: {fg: $base0d attr: b}
-    shape_int: {fg: $base0e attr: b}
-    shape_internalcall: {fg: $base0c attr: b}
-    shape_list: {fg: $base0d attr: b}
-    shape_literal: $base0d
-    shape_match_pattern: $base0c
-    shape_matching_brackets: { attr: u }
-    shape_nothing: $base0d
-    shape_operator: $base0a
-    shape_or: {fg: $base0e attr: b}
-    shape_pipe: {fg: $base0e attr: b}
-    shape_range: {fg: $base0a attr: b}
-    shape_record: {fg: $base0d attr: b}
-    shape_redirection: {fg: $base0e attr: b}
-    shape_signature: {fg: $base0b attr: b}
-    shape_string: $base0b
-    shape_string_interpolation: {fg: $base0d attr: b}
-    shape_table: {fg: $base0d attr: b}
-    shape_variable: $base0e
-    shape_vardecl: $base0e
-}
-
-let menu_style = {
-    text: $base06
-    selected_text: {fg: $base0d attr: b}
-    description_text: $base04
-}
+# let menu_style = {
+#     text: $base06
+#     selected_text: {fg: $base0d attr: b}
+#     description_text: $base04
+# }
 
 let carapace_completer = {|spans: list<string>|
     carapace $spans.0 nushell ...$spans
@@ -157,14 +157,13 @@ $env.config = {
     vi_insert: block # block, underscore, line , blink_block, blink_underscore, blink_line (block is the default)
     vi_normal: underscore # block, underscore, line, blink_block, blink_underscore, blink_line (underscore is the default)
   }
-  color_config: $base16_theme
   display_errors: {
     exit_code: false
     termination_signal: true
   }
   footer_mode: 25 # always, never, number_of_rows, auto
   float_precision: 2
-  buffer_editor: ""
+  buffer_editor: $buf_editor
   use_ansi_coloring: true
   bracketed_paste: true # enable bracketed paste, currently useless on windows
   edit_mode: vi
@@ -197,6 +196,7 @@ $env.config = {
       PWD: [{|before, after|
         $env.PWD_STACK = if $before != null and $env.PWD_POPPING == false { ($env.PWD_STACK | append $before) } else { $env.PWD_STACK }
         $env.PWD_POPPING = false # must be here because of when the hook actually runs
+        zellij_update_tabname $after
       }]
     }
     display_output: "if (term size).columns >= 100 { table -e } else { table }" # run to display the output of a pipeline
@@ -466,6 +466,23 @@ $env.config = {
       event: { edit: CutWordLeft }
     }
   ]
+}
+
+def zellij_update_tabname [
+    PWD: string
+] {
+    if ("ZELLIJ" in ($env | columns)) {
+        let tab_name = if ((git rev-parse --is-inside-work-tree | complete).exit_code == 0) {
+            $"(git rev-parse --show-toplevel | basename $in)/(git rev-parse --show-prefix)"
+                | str trim -c '/'
+        } else if ($PWD == $env.HOME) {
+            "~"
+        } else {
+            $PWD | path basename
+        }
+
+        nohup zellij action rename-tab $tab_name out+err> /dev/null
+    }
 }
 
 def nvim_get_server [] {

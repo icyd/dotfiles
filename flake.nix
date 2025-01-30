@@ -2,7 +2,7 @@
   description = "IcyD NixOS configuration";
   inputs = {
     xkb = {
-      url = "git+file:icyd-layouts";
+      url = "github:icyd/icyd-layouts/dev";
       flake = false;
     };
     darwin = {
@@ -14,6 +14,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence.url = "github:nix-community/impermanence";
+    kmonad = {
+      url = "git+https://github.com/kmonad/kmonad?submodules=1&dir=nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -22,9 +26,24 @@
     nixpkgs.url = "github:NixOs/nixpkgs/nixos-24.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nur.url = "github:nix-community/NUR";
+    stylix = {
+      url = "github:danth/stylix/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixvim.url = "github:icyd/nixvim";
+    zjstatus = {
+      url = "github:dj95/zjstatus";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
-    { self, ... }@inputs:
+    { ... }@inputs:
     let
       definitions = import ./nix/definitions.nix { inherit inputs; };
       users = definitions.users;
@@ -46,6 +65,7 @@
               modules = [
                 ./nix/system/darwin/darwin-configuration.nix
                 (neovim-override { inherit system; })
+                inputs.stylix.darwinModules.stylix
               ] ++ additionalModules;
               specialArgs = {
                 inherit username inputs;
@@ -72,7 +92,10 @@
               pkgs = import inputs.nixpkgs (nixpkgsConfig {
                 inherit system;
               });
-              modules = [ ./nix/users/${username}/home.nix ] ++ additionalModules;
+              modules = [
+                inputs.stylix.homeManagerModules.stylix
+                ./nix/users/${username}/home.nix
+              ] ++ additionalModules;
               extraSpecialArgs = {
                 inherit username email inputs;
               };
@@ -102,8 +125,10 @@
             inputs.nixpkgs.lib.nixosSystem {
               inherit system;
               modules = [
-                ({ nixpkgs = (nixpkgsConfig { inherit system; }); })
+                { nixpkgs = (nixpkgsConfig { inherit system; }); }
                 (neovim-override { inherit system; })
+                inputs.stylix.nixosModules.stylix
+                inputs.kmonad.nixosModules.default
                 ./nix/system/${name}/configuration.nix
               ] ++ additionalModules;
               specialArgs = {
@@ -115,7 +140,10 @@
             "legionix5" = {
               system = "x86_64-linux";
               username = users.linux.username;
-              additionalModules = [ inputs.impermanence.nixosModules.impermanence ];
+              additionalModules = [
+                inputs.impermanence.nixosModules.impermanence
+                inputs.nixos-hardware.nixosModules.lenovo-legion-15arh05h
+              ];
             };
           };
     };

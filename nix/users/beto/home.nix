@@ -5,31 +5,43 @@
   ...
 }:
 {
+  dconf.settings = {
+    "org/virt-manager/virt-manager/connections" = {
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
+    };
+  };
   imports = [
     ../../hm-modules/gnome.nix
     ../../hm-modules/firefox.nix
     ../../hm-modules/home.nix
+    ../../hm-modules/hyprland.nix
     ../../hm-modules/neovim-server.nix
   ];
-  services.neovim-server.enable = true;
-  home.packages = with pkgs; [
-    calibre
-    celluloid
-    chromium
-    discord
-    dropbox
-    gcc
-    gcc-arm-embedded
-    glibc
-    kicad-small
-    libreoffice-fresh
-    lutris
-    openocd
-    synapse
-    winetricks
-    wineWowPackages.waylandFull
-    zathura
-  ];
+  my.services.neovim-server.enable = true;
+  home.packages =
+    with pkgs;
+    [
+      calibre
+      celluloid
+      chromium
+      discord
+      dropbox
+      gcc
+      gcc-arm-embedded
+      glibc
+      kicad-small
+      libreoffice-fresh
+      lutris
+      minikube
+      nixvim
+      docker-machine-kvm2
+      openocd
+      synapse
+      winetricks
+      wineWowPackages.waylandFull
+      zathura
+    ];
   home.persistence."/mnt/nodatacow" = {
     allowOther = false;
     directories = [
@@ -80,8 +92,8 @@
     mako.source = ../../../sway/mako;
     sway.source = ../../../sway/sway;
     swaylock.source = ../../../sway/swaylock;
-    waybar.source = ../../../sway/waybar;
-    wlogout.source = ../../../sway/wlogout;
-    wofi.source = ../../../sway/wofi;
+    # waybar.source = ../../../sway/waybar;
+    # wlogout.source = ../../../sway/wlogout;
+    # wofi.source = ../../../sway/wofi;
   };
 }

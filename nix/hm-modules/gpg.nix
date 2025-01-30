@@ -1,9 +1,9 @@
 { lib, config, ... }:
 let
-  cfg = config.gpg;
+  cfg = config.my.gpg;
 in
 {
-  options = {
+  options.my = {
     gpg.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;

@@ -38,7 +38,6 @@ in
       ];
       kernelModules = [
         "amdgpu"
-        "kvm-amd"
       ];
       luks.devices."cryptroot" = {
         device = "/dev/disk/by-uuid/${nvme0n1p2}";
@@ -130,6 +129,7 @@ in
       "/etc/nixos"
       "/var/lib/bluetooth"
       "/var/lib/systemd/coredump"
+      "/var/lib/libvirt/"
       "/var/lib/nixos"
       "/etc/NetworkManager/system-connections"
     ];
@@ -157,8 +157,6 @@ in
       prime = {
         reverseSync.enable = true;
         allowExternalGpu = false;
-        nvidiaBusId = "PCI:1:0:0";
-        amdgpuBusId = "PCI:6:0:0";
       };
     };
     graphics = {
@@ -296,7 +294,10 @@ in
     bridges.br0.interfaces = [ "eno1" ];
     dhcpcd.extraConfig = "nohook resolv.conf";
     enableIPv6 = true;
-    firewall.enable = true;
+    firewall = {
+      enable = false;
+      checkReversePath = "loose";
+    };
     hostName = "legionix5";
     interfaces.eno1.useDHCP = true;
     interfaces.wlp4s0.useDHCP = true;
@@ -323,6 +324,7 @@ in
         allowExternalGpu = lib.mkForce false;
         reverseSync.enable = lib.mkForce false;
         sync.enable = lib.mkForce true;
+        offload.enable = lib.mkForce false;
       };
       system.nixos.tags = [ "nvidia-sync-mode" ];
     };

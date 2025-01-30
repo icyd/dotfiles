@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.services.neovim-server;
+  cfg = config.my.services.neovim-server;
 in
 {
-  options.services.neovim-server.enable = lib.mkEnableOption "neovim server";
+  options.my.services.neovim-server.enable = lib.mkEnableOption "neovim server";
 
   config = lib.mkIf cfg.enable {
     systemd.user = {

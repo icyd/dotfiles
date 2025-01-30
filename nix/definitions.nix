@@ -24,9 +24,16 @@
       overlays = [
         (self: super: { inherit unstable; })
         inputs.nur.overlays.default
+        (self: super: {
+          zjstatus = inputs.zjstatus.packages.${super.system}.default;
+        })
+        (self: super: with inputs.nixvim.packages.${system}; {
+          nixvim = default;
+          nixvimin = nvimin;
+        })
       ];
     };
   neovim-override =
     { system }:
-    ({ environment.systemPackages = [ inputs.neovim-nightly-overlay.packages.${system}.default ]; });
+    { environment.systemPackages = [ inputs.neovim-nightly-overlay.packages.${system}.default ]; };
 }
