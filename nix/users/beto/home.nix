@@ -1,5 +1,6 @@
 {
   lib,
+  config,
   pkgs,
   username,
   ...
@@ -12,36 +13,34 @@
     };
   };
   imports = [
+    ../../hm-modules/alacritty.nix
     ../../hm-modules/gnome.nix
     ../../hm-modules/firefox.nix
     ../../hm-modules/home.nix
     ../../hm-modules/hyprland.nix
     ../../hm-modules/neovim-server.nix
+    ../../hm-modules/zellij.nix
   ];
   my.services.neovim-server.enable = true;
-  home.packages =
-    with pkgs;
-    [
-      calibre
-      celluloid
-      chromium
-      discord
-      dropbox
-      gcc
-      gcc-arm-embedded
-      glibc
-      kicad-small
-      libreoffice-fresh
-      lutris
-      minikube
-      nixvim
-      docker-machine-kvm2
-      openocd
-      synapse
-      winetricks
-      wineWowPackages.waylandFull
-      zathura
-    ];
+  home.packages = with pkgs; [
+    calibre
+    celluloid
+    chromium
+    discord
+    dropbox
+    gcc
+    gcc-arm-embedded
+    glibc
+    kicad-small
+    libreoffice-fresh
+    lutris
+    minikube
+    docker-machine-kvm2
+    openocd
+    synapse
+    winetricks
+    wineWowPackages.waylandFull
+  ];
   home.persistence."/mnt/nodatacow" = {
     allowOther = false;
     directories = [
@@ -73,6 +72,28 @@
   home.stateVersion = "22.05";
   home.sessionVariables = {
     NVIM_SERVER = lib.mkForce "::1:9090";
+    WINEDLLOVERRIDES = "winemenubuilder.exe=d";
+  };
+  my = {
+    zellij = {
+      configFile = ../../zellij/config.kdl;
+      settings = {
+        copy_on_select = true;
+        default_shell = "nu";
+        pane_frames = false;
+        simplified_ui = true;
+        theme = "stylix";
+      };
+    };
+  };
+  programs.alacritty = {
+    settings.terminal.shell = with config.programs; {
+      program = "${zsh.package}/bin/zsh";
+      args = [
+        "-c"
+        "${nushell.package}/bin/nu"
+      ];
+    };
   };
   programs.gpg = {
     enable = true;
@@ -86,6 +107,12 @@
         shared.use_unix_socket = true;
       };
     };
+  };
+  stylix.iconTheme = {
+    enable = true;
+    package = pkgs.papirus-icon-theme;
+    dark = "Papirus-Dark";
+    light = "Papirus-Light";
   };
   xdg.configFile = {
     gammastep.source = ../../../sway/gammastep;

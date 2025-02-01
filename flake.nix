@@ -1,33 +1,13 @@
 {
   description = "IcyD NixOS configuration";
   inputs = {
-    xkb = {
-      url = "github:icyd/icyd-layouts/dev";
-      flake = false;
-    };
     darwin = {
-      url = "github:lnl7/nix-darwin/master";
+      url = "github:lnl7/nix-darwin/nix-darwin-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flox.url = "github:flox/flox/v1.3.11";
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    impermanence.url = "github:nix-community/impermanence";
-    kmonad = {
-      url = "git+https://github.com/kmonad/kmonad?submodules=1&dir=nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    nix-colors.url = "github:misterio77/nix-colors";
-    nixpkgs.url = "github:NixOs/nixpkgs/nixos-24.11";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nur.url = "github:nix-community/NUR";
-    stylix = {
-      url = "github:danth/stylix/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland.url = "github:hyprwm/Hyprland";
@@ -35,8 +15,26 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+    impermanence.url = "github:nix-community/impermanence";
+    kmonad = {
+      url = "git+https://github.com/kmonad/kmonad?submodules=1&dir=nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nh_plus.url = "github:ToyVo/nh_plus";
+    nix-colors.url = "github:misterio77/nix-colors";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixpkgs.url = "github:NixOs/nixpkgs/nixos-24.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixvim.url = "github:icyd/nixvim";
+    nur.url = "github:nix-community/NUR";
+    stylix = {
+      url = "github:danth/stylix/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    xkb = {
+      url = "github:icyd/icyd-layouts/dev";
+      flake = false;
+    };
     zjstatus = {
       url = "github:dj95/zjstatus";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -48,7 +46,6 @@
       definitions = import ./nix/definitions.nix { inherit inputs; };
       users = definitions.users;
       nixpkgsConfig = definitions.nixpkgsConfig;
-      neovim-override = definitions.neovim-override;
     in
     {
       darwinConfigurations =
@@ -61,10 +58,13 @@
               additionalModules ? [ ],
             }:
             inputs.darwin.lib.darwinSystem {
-              inherit system;
+              pkgs = import inputs.nixpkgs (nixpkgsConfig {
+                inherit system;
+              });
               modules = [
                 ./nix/system/darwin/darwin-configuration.nix
-                (neovim-override { inherit system; })
+                inputs.nh_plus.nixDarwinModules.prebuiltin
+                # inputs.nh_plus.nixDarwinModules.default
                 inputs.stylix.darwinModules.stylix
               ] ++ additionalModules;
               specialArgs = {
@@ -126,7 +126,6 @@
               inherit system;
               modules = [
                 { nixpkgs = (nixpkgsConfig { inherit system; }); }
-                (neovim-override { inherit system; })
                 inputs.stylix.nixosModules.stylix
                 inputs.kmonad.nixosModules.default
                 ./nix/system/${name}/configuration.nix

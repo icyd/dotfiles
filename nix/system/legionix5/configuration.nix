@@ -35,6 +35,7 @@ in
   #     (pkgs.callPackage ../../modules/dnie.nix { })
   #   }/usr/lib/libpkcs11-dnie.so
   # '';
+  documentation.man.generateCaches = true;
   environment.sessionVariables = {
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/${username}/.steam/root/compatibilitytools.d";
   };

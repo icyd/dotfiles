@@ -1,74 +1,7 @@
-# # Nushell Config File
-# let base16_theme = {
-#     separator: $base03
-#     leading_trailing_space_bg: $base04
-#     header: $base0b
-#     empty: $base0d
-#     bool: $base08
-#     int: $base0b
-#     filesize: $base0d
-#     duration: $base08
-#     date: $base0e
-#     range: $base08
-#     float: $base08
-#     string: $base04
-#     nothing: $base08
-#     binary: $base08
-#     cellpath: $base08
-#     row_index: $base0c
-#     record: $base0d
-#     list: $base0d
-#     block: $base0d
-#     hints: $base02
-#
-#     search_result: {bg: $base08 fg: $base04}
-#     shape_and: {fg: $base0e attr: b}
-#     shape_binary: {fg: $base0e attr: b}
-#     shape_block: {fg: $base0d attr: b}
-#     shape_bool: $base0d
-#     shape_closure: {fg: $base0c attr: b}
-#     shape_custom: {attr: b}
-#     shape_datetime: {fg: $base0d attr: b}
-#     shape_directory: $base0d
-#     shape_external: $base0c
-#     shape_externalarg: {fg: $base0b attr: b}
-#     shape_filepath: $base0d
-#     shape_flag: {fg: $base0d attr: b}
-#     shape_float: {fg: $base0e attr: b}
-#
-#     shape_garbage: {fg: $base07 bg: $base08 attr: b}
-#     shape_globpattern: {fg: $base0d attr: b}
-#     shape_int: {fg: $base0e attr: b}
-#     shape_internalcall: {fg: $base0c attr: b}
-#     shape_list: {fg: $base0d attr: b}
-#     shape_literal: $base0d
-#     shape_match_pattern: $base0c
-#     shape_matching_brackets: { attr: u }
-#     shape_nothing: $base0d
-#     shape_operator: $base0a
-#     shape_or: {fg: $base0e attr: b}
-#     shape_pipe: {fg: $base0e attr: b}
-#     shape_range: {fg: $base0a attr: b}
-#     shape_record: {fg: $base0d attr: b}
-#     shape_redirection: {fg: $base0e attr: b}
-#     shape_signature: {fg: $base0b attr: b}
-#     shape_string: $base0b
-#     shape_string_interpolation: {fg: $base0d attr: b}
-#     shape_table: {fg: $base0d attr: b}
-#     shape_variable: $base0e
-#     shape_vardecl: $base0e
-# }
-
-# let menu_style = {
-#     text: $base06
-#     selected_text: {fg: $base0d attr: b}
-#     description_text: $base04
-# }
-
 let carapace_completer = {|spans: list<string>|
     carapace $spans.0 nushell ...$spans
         | from json
-        | if ($in | default [] | where value =~ '^-.*ERR$' | is-empty) {
+        | if ($in | default [] | where value == $"($spans | last)ERR" | is-empty) {
             $in
         } else {
             null
@@ -77,12 +10,12 @@ let carapace_completer = {|spans: list<string>|
 
 let fish_completer = {|spans|
     fish --command $'complete "--do-complete=($spans | str join " ")"'
-        | $"value(char tab)description(char newline)" + $in
-        | from tsv --flexible --no-infer
+        | from tsv --flexible --noheaders --no-infer
+        | rename value description
 }
 
 let zoxide_completer = {|spans|
-    $spans | skip 1 | zoxide query -l $in | lines | where {|x| $x != $env.PWD}
+    $spans | skip 1 | zoxide query -l ...$in | lines | where {|x| $x != $env.PWD}
 }
 
 let external_completer = {|spans|
@@ -99,10 +32,13 @@ let external_completer = {|spans|
     }
 
     match $spans.0 {
-        nu => $fish_completer
-        git => $fish_completer
         asdf => $fish_completer
+        devbox => $fish_completer
+        eksctl => $fish_completer
+        flox => $fish_completer
+        gopass => $fish_completer
         istioctl => $fish_completer
+        stern => $fish_completer
         __zoxide_z | __zoxide_zi => $zoxide_completer
         _ => $carapace_completer
     } | do $in $spans
@@ -135,7 +71,7 @@ $env.config = {
   history: {
     max_size: 100_000 # Session has to be reloaded for this to take effect
     sync_on_enter: true # Enable to share the history between multiple sessions, else you have to close the session to persist history to file
-    file_format: "plaintext" # "sqlite" or "plaintext"
+    file_format: "sqlite" # "sqlite" or "plaintext"
   }
   filesize: {
     metric: false # true => (KB, MB, GB), false => (KiB, MiB, GiB)
@@ -495,12 +431,12 @@ def nvim_get_server [] {
     }
 }
 
-def nvim_server [] {
-    nvim --listen (nvim_get_server)
+def --wrapped nvim_server [...args] {
+    nvim --listen (nvim_get_server) ...$args
 }
 
 def nvim_client [...files: path] {
-    let readlink = if ((^uname -s) == "Darwin") {
+    let readlink = if ((^uname -s) == "Darwin") and ((command -v greadlink | complete).exit_code == 0) {
         {|it| greadlink -mq $it}
     } else {
         {|it| readlink -mq $it}

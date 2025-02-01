@@ -12,7 +12,7 @@
         package = pkgs.dejavu_fonts;
       in
       {
-        sizes.terminal = 12;
+        sizes.terminal = 15;
         serif = {
           inherit package;
           name = "DejaVu Serif";

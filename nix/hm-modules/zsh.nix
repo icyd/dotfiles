@@ -14,6 +14,13 @@ let
   '';
 in
 {
+  home.sessionVariables = with config.xdg; {
+    ZSH_CACHE_DIR = "${cacheHome}/zsh";
+    ZSH_CONFIG = "${configHome}/zsh";
+  };
+  home.file = {
+    ".k8s_aliases.zsh".source = ../../zsh/kubectl_aliases.zsh;
+  };
   programs.zsh = {
     autocd = true;
     enable = true;
@@ -22,13 +29,10 @@ in
     defaultKeymap = "viins";
     dirHashes = {
       docs = "$HOME/Documents";
-      dot = "$HOME/.dotfiles";
+      dot = "$DOTFILES";
       dw = "$HOME/Downloads";
-      ea = "$HOME/Projects/ea";
-      nex = "$HOME/Nextcloud";
-      drop = "$HOME/Dropbox";
-      nix = "$HOME/.dotfiles/nix";
       pj = "$HOME/Projects";
+      wk = "$HOME/Projects/work";
     };
     envExtra =
       ''
@@ -102,6 +106,7 @@ in
           )
       }
 
+      eval "$(${pkgs.flox}/bin/flox activate -m run)"
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
       autoload -Uz compinit
@@ -144,6 +149,7 @@ in
 
     '';
     loginExtra = ''
+      {
         # Compile zcompdump, if modified, to increase startup speed.
         zcompdump="$HOME"/.zplug/zcompdump"
         if [[ -s "$zcompdump" && (! -s "''${zcompdump}.zwc" || "$zcompdump" -nt "''${zcompdump}.zwc") ]]; then
@@ -158,11 +164,6 @@ in
       d = "dirs -v";
       dc = "dirs -c";
       gi = "git";
-      gpw = "gopass";
-      k = "kubectl";
-      krrdep = "kubectl rollout restart deployment";
-      krrds = "kubectl rollout restart daemonset";
-      krrsts = "kubectl rollout restart statefulset";
       l = "exa";
       l1 = "exa -1";
       lb = "exa -lb";
@@ -175,24 +176,18 @@ in
       nvr = "nvim --listen $NVIM_SERVER";
       o = "own_pop";
       p = "own_push";
-      svim = "sudo -E $EDITOR";
       tree = "exa --tree";
-      tx = "tmuxp_fzf";
-      zj = "zellij";
-      zr = "zellij-runner";
     };
     shellGlobalAliases = {
       AWK = "| awk ";
       B64D = "| base64 -d";
       G = "| grep -i";
       J = " | jq";
-      KN = " -oyaml | kubectl neat";
       RG = "| rg ";
       SED = "| sed -E";
       T = "| tee ";
       WC = "| wc -l";
       Y = " | yq";
-      YN = " -oyaml | kubectl neat | yq";
       X = "| xargs ";
     };
     syntaxHighlighting.enable = false;

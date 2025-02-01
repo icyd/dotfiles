@@ -22,18 +22,14 @@
       inherit system;
       config.allowUnfree = true;
       overlays = [
-        (self: super: { inherit unstable; })
-        inputs.nur.overlays.default
         (self: super: {
+          inherit unstable;
+          nixvim = inputs.nixvim.packages.${system}.default;
+          nixvimin = inputs.nixvim.packages.${system}.nvimin;
+          flox = inputs.flox.packages.${super.system}.default;
           zjstatus = inputs.zjstatus.packages.${super.system}.default;
         })
-        (self: super: with inputs.nixvim.packages.${system}; {
-          nixvim = default;
-          nixvimin = nvimin;
-        })
+        inputs.nur.overlays.default
       ];
     };
-  neovim-override =
-    { system }:
-    { environment.systemPackages = [ inputs.neovim-nightly-overlay.packages.${system}.default ]; };
 }

@@ -3,7 +3,6 @@
   environment.systemPackages = with pkgs; [
     gnupg
     home-manager
-    nh
     nix-output-monitor
     nvd
     vim
@@ -16,7 +15,6 @@
   };
   homebrew = {
     brews = [
-      "asdf"
       "binutils"
       "coreutils"
       "findutils"
@@ -44,19 +42,20 @@
     '';
     gc = {
       automatic = true;
-      dates = "weekly";
       options = "--delete-older-than 30d";
     };
     package = pkgs.nixVersions.stable;
     settings = {
+      substituters = [ "https://toyvo.cachix.org" ];
+      trusted-public-keys = [ "toyvo.cachix.org-1:s++CG1te6YaS9mjICre0Ybbya2o/S9fZIyDNGiD4UXs=" ];
       trusted-users = [
         "root"
-        "@admin"
-        "@staff"
+        "@wheel"
         "@localaccounts"
       ];
     };
   };
+  programs.nh.enable = true;
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;

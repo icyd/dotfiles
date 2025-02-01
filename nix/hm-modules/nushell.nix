@@ -5,6 +5,9 @@
   ...
 }:
 {
+  home.packages = with pkgs.unstable; [
+    nushellPlugins.skim
+  ];
   programs.carapace.enable = true;
   programs.nushell = let
       buf_editor = pkgs.lib.getExe pkgs.nixvimin;
@@ -15,12 +18,8 @@
       "~docs" = ''cd $"($env.HOME)/Documents"'';
       "~dot" = ''cd $env.DOTFILES'';
       "~drop" = ''cd $"($env.HOME)/Dropbox"'';
-      "~org" = ''cd $"($env.HOME)/Dropbox/org"'';
-      "~work" = ''cd $"($env.HOME)/Dropbox/org/work"'';
       "~dw" = ''cd $"($env.HOME)/Downloads"'';
-      "~ea" = ''cd $"($env.HOME)/Projects/ea"'';
-      "~nex" = ''cd $"($env.HOME)/Nextcloud"'';
-      "~nix" = ''cd $"($env.HOME)/.dotfiles/nix"'';
+      "~wk" = ''cd $"($env.HOME)/Projects/work"'';
       "~pj" = ''cd $"($env.HOME)/Projects"'';
       a = "enter";
       b64d = "base64 -d";
@@ -59,15 +58,6 @@
       zr = "zellij-runner";
       xssh = "TERM=xterm-256color ssh";
     };
-    # configFile.text =
-    #   with lib;
-    #   mkMerge [
-    #     (concatStringsSep "\n" (
-    #       mapAttrsToList (k: v: ''let ${toLower k} = "#${v}"'') config.colorScheme.palette
-    #     ))
-    #
-    #     (builtins.readFile ../../nushell/config.nu)
-    #   ];
     configFile.text =
       with config.lib.stylix.colors.withHashtag;
       lib.mkMerge [
@@ -84,6 +74,7 @@
       ];
     envFile.source = ../../nushell/env.nu;
     extraConfig = ''
+      use std/log
       use utils.nu
       use certs.nu
       use modules/background_task/task.nu
@@ -93,7 +84,4 @@
       use cd-root.nu *
     '';
   };
-  home.packages = with pkgs.unstable; [
-    nushellPlugins.skim
-  ];
 }
