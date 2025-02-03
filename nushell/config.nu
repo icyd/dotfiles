@@ -109,23 +109,14 @@ $env.config = {
 
   hooks: {
     pre_prompt: [{||
-        let direnv = (direnv export json | from json | default {})
-        if ($direnv | is-empty) {
+        if (which direnv | is-empty) {
             return
         }
-        $direnv
-            | items {|key, value|
-                {
-                    key: $key,
-                    value: (if ($key in $env.ENV_CONVERSIONS) {
-                        do ($env.ENV_CONVERSIONS | get $key | get from_string) $value
-                    } else {
-                        $value
-                    }),
-                }
-            }
-            | transpose -ird
-            | load-env
+
+        direnv export json | from json | default {} | load-env
+        if "ENV_CONVERSIONS" in $env and "PATH" in $env.ENV_CONVERSIONS {
+            $env.PATH = do $env.ENV_CONVERSIONS.PATH.from_string $env.PATH
+        }
     }]
     pre_execution: [{ null }]
     env_change: {

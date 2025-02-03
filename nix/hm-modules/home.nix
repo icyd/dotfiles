@@ -41,7 +41,6 @@ in
       eza
       fd
       fish
-      flox
       gopass
       gopass-jsonapi
       git-credential-gopass

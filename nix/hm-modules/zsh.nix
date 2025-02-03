@@ -106,7 +106,6 @@ in
           )
       }
 
-      eval "$(${pkgs.flox}/bin/flox activate -m run)"
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
       autoload -Uz compinit

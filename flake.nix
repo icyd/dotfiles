@@ -1,11 +1,20 @@
 {
   description = "IcyD NixOS configuration";
   inputs = {
+    bash-env-json = {
+      url = "github:tesujimath/bash-env-json/main";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
+    bash-env-nushell = {
+      url = "github:tesujimath/bash-env-nushell/main";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.bash-env-json.follows = "bash-env-json";
+    };
     darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flox.url = "github:flox/flox/v1.3.11";
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";

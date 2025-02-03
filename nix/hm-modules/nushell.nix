@@ -82,6 +82,25 @@
       use ~/.local.nu *
       use git-gone.nu *
       use cd-root.nu *
+      use ${pkgs.bash-env-nushell}/bash-env.nu
+
+      def --wrapped --env devbox_refresh [
+        --global (-g)
+        ...args
+      ] {
+        let devbox = if ($global) {
+          devbox global shellenv --pure ...$args
+        } else {
+          devbox shellenv --pure ...$args
+        } | bash-env
+
+        $devbox | reject "PATH" | load-env
+        $env.PATH = ($devbox.PATH | split row (char esep)) ++ $env.PATH | uniq
+      }
+
+      if (not ("DEVBOX_PURE_SHELL" in ($env | columns))) {
+        devbox_refresh --global
+      }
     '';
   };
 }
