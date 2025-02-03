@@ -1,11 +1,11 @@
-{ email, ... }:
+{ pkgs, email, ... }:
 {
   programs.git = {
     delta.enable = true;
     enable = true;
     extraConfig = {
       core = {
-        editor = "nvim";
+        editor = pkgs.lib.getExe pkgs.nixvimin;
       };
       credential = {
         helper = "gopass";
