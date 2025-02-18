@@ -8,7 +8,7 @@
     vim
   ];
   environment.variables = rec {
-    FLAKE = "/Users/${username}/.dotfiles";
+    NH_FLAKE = "/Users/${username}/.dotfiles";
     LANG = "en_US.UTF-8";
     LC_MONETARY = "en_IE.UTF-8";
     LC_TIME = LC_MONETARY;

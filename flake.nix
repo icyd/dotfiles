@@ -26,7 +26,7 @@
     };
     impermanence.url = "github:nix-community/impermanence";
     kmonad = {
-      url = "git+https://github.com/kmonad/kmonad?submodules=1&dir=nix";
+      url = "github:kmonad/kmonad?dir=nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nh_plus.url = "github:ToyVo/nh_plus";

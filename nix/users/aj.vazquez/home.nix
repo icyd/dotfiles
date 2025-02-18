@@ -1,6 +1,13 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   brewPrefix = if pkgs.stdenv.hostPlatform.isAarch64 then "/opt/homebrew" else "/usr/local";
+  nixvim = pkgs.nixvim.extend {
+    plugins.luasnip.fromLua = [
+      {
+        paths = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.lua_snippets.local";
+      }
+    ];
+  };
 in
 {
   imports = [ ../../hm-modules/home.nix ];
@@ -22,5 +29,5 @@ in
     skopeo
     stern
     pueue
-  ];
+  ] ++ [ nixvim ];
 }

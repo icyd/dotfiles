@@ -74,8 +74,8 @@ $env.config = {
     file_format: "sqlite" # "sqlite" or "plaintext"
   }
   filesize: {
-    metric: false # true => (KB, MB, GB), false => (KiB, MiB, GiB)
-    format: "auto" # b, kb, kib, mb, mib, gb, gib, tb, tib, pb, pib, eb, eib, zb, zib, auto
+    unit: "binary"
+    precision: 1
   }
   completions: {
     case_sensitive: false # set to true to enable case-sensitive completions

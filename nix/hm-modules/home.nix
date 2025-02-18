@@ -58,7 +58,6 @@ in
           "SourceCodePro"
         ];
       })
-      nixvim
       pandoc
       procs
       ripgrep
@@ -84,7 +83,7 @@ in
       rec {
         inherit DOTFILES EDITOR;
         BROWSER = "firefox";
-        FLAKE = DOTFILES;
+        NH_FLAKE = DOTFILES;
         LEDGER_DATE_FORMAT = "%Y/%m/%d";
         KUBE_EDITOR = EDITOR;
         NVIM_SERVER = "/tmp/nvimsocket";

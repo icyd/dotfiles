@@ -35,6 +35,7 @@
     libreoffice-fresh
     lutris
     minikube
+    nixvim
     docker-machine-kvm2
     openocd
     synapse
