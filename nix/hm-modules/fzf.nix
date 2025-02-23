@@ -1,5 +1,8 @@
-{ lib, config, ... }:
-let
+{
+  lib,
+  config,
+  ...
+}: let
   cfg = config.my.fzf;
   fzfCtrlTOpts = [
     "--preview={}"
@@ -21,8 +24,7 @@ let
     "--preview-window='right:66%'"
     "--bind='ctrl-d:page-down,ctrl-u:page-up,alt-u:preview-page-up,alt-d:preview-page-down'"
   ];
-in
-{
+in {
   options.my = {
     fzf.enable = lib.mkEnableOption "Enable module";
   };

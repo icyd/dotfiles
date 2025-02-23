@@ -4,25 +4,21 @@
   inputs,
   username,
   ...
-}:
-let
+}: let
   configure-gtk = pkgs.writeTextFile {
     name = "configure-gtk";
     destination = "/bin/configure-gtk";
     executable = true;
-    text =
-      let
-        schema = pkgs.gsettings-desktop-schemas;
-        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
-      in
-      ''
-        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
-        /* gnome_schema=org.gnome.desktop.interface
-        gsettings set $gnome_schema gtk-theme 'Dracula'
-      '';
+    text = let
+      schema = pkgs.gsettings-desktop-schemas;
+      datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+    in ''
+      export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+      /* gnome_schema=org.gnome.desktop.interface
+      gsettings set $gnome_schema gtk-theme 'Dracula'
+    '';
   };
-in
-{
+in {
   console = {
     font = "Lat2-Terminus16";
     keyMap = "us";
@@ -169,12 +165,13 @@ in
     ];
     rtkit.enable = true;
     sudo = {
-      enable = true;
+      enable = false;
       extraConfig = ''
         # rollback results in sudo lectures after each reboot
         Defaults lecture = never
       '';
     };
+    sudo-rs.enable = true;
   };
   services = {
     blueman.enable = true;
@@ -222,7 +219,7 @@ in
         enable = true;
         autoNumlock = true;
         wayland.enable = true;
-        extraPackages = [ pkgs.sddm-astronaut ];
+        extraPackages = [pkgs.sddm-astronaut];
         package = pkgs.kdePackages.sddm;
         theme = "sddm-astronaut-theme";
       };
@@ -246,7 +243,7 @@ in
       };
     };
     libinput.enable = true;
-# pcscd.enable = true;
+    # pcscd.enable = true;
     pipewire = {
       alsa.enable = true;
       alsa.support32Bit = true;
@@ -279,33 +276,18 @@ in
       };
       videoDrivers = [
         "displaylink"
-            "nvidia"
+        "nvidia"
       ];
       xkb = {
         layout = "us";
         variant = "altgr-intl";
         options = "lv3:ralt_switch,shift:breaks_caps,grp:alt_space_toggle";
         extraLayouts = {
-            icydvorak = {
-              description = "IcyDvorak";
-              languages = [ "eng" ];
-              symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydDvorak.xkb";
-            };
-            engram = {
-              description = "Engram";
-              languages = [ "eng" ];
-              symbolsFile = "${inputs.xkb.outPath}/linux/symbols/Engram.xkb";
-            };
-            icydengram = {
-              description = "IcydEngram";
-              languages = [ "eng" ];
-              symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEngram.xkb";
-            };
-            icydenthium = {
-              description = "IcydEnthium";
-              languages = [ "eng" ];
-              symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEnthium.xkb";
-            };
+          icydenthium = {
+            description = "IcydEnthium";
+            languages = ["eng"];
+            symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEnthium.xkb";
+          };
         };
       };
     };
@@ -314,7 +296,7 @@ in
   systemd.services.dnscrypt-proxy2.serviceConfig = {
     StateDirectory = "dnscrypt-proxy";
   };
-  systemd.services."systemd-backlight@backlight:ideapad".wantedBy = lib.mkForce [ ];
+  systemd.services."systemd-backlight@backlight:ideapad".wantedBy = lib.mkForce [];
   system.stateVersion = "22.05";
   systemd.tmpfiles.rules = [
     "L /var/lib/NetworkManager/secret_key - - - - /persist/var/lib/NetworkManager/secret_key"

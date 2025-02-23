@@ -1,5 +1,8 @@
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   dconf.settings = with lib.hm.gvariant; {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
@@ -14,10 +17,6 @@
     "org/gnome/desktop/input-sources" = {
       show-all-sources = true;
       sources = [
-        (mkTuple [
-          "xkb"
-          "icydengram"
-        ])
         (mkTuple [
           "xkb"
           "icydenthium"
@@ -44,7 +43,7 @@
       night-light-temperature = 3700;
     };
     "org/gnome/settings-daemon/plugins/media-keys" = {
-      search = [ "<Super>space" ];
+      search = ["<Super>space"];
     };
     "org/gnome/shell" = {
       disable-user-extensions = false;

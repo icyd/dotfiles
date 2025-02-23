@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   dbus-sway-environment = pkgs.writeTextFile {
     name = "dbus-sway-environment";
     destination = "/bin/dbus-sway-environment";
@@ -11,8 +10,7 @@ let
       systemctl --user start pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
     '';
   };
-in
-{
+in {
   programs.light.enable = true;
   programs.sway = {
     enable = true;
@@ -33,7 +31,7 @@ in
       wlogout
       wdisplays
     ];
-    extraOptions = [ "--unsupported-gpu" ];
+    extraOptions = ["--unsupported-gpu"];
     extraSessionCommands = ''
       export SDL_VIDEODRIVER=wayland
       export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
@@ -44,7 +42,7 @@ in
     '';
     wrapperFeatures.gtk = true;
   };
-  security.pam.services.swaylock = { };
+  security.pam.services.swaylock = {};
   systemd.user.services.kanshi = {
     description = "kanshi daemon";
     serviceConfig = {

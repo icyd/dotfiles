@@ -5,11 +5,12 @@
   inputs,
   username,
   ...
-}:
-let
-  homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${username}" else "/home/${username}";
-in
-{
+}: let
+  homeDirectory =
+    if pkgs.stdenv.isDarwin
+    then "/Users/${username}"
+    else "/home/${username}";
+in {
   colorScheme = inputs.nix-colors.colorSchemes.gruvbox-dark-medium;
   fonts.fontconfig.enable = true;
   imports = [
@@ -71,28 +72,25 @@ in
       "$HOME/.local/bin/"
       "$HOME/.krew/bin"
     ];
-    sessionVariables =
-      let
-       DOTFILES =
-         if pkgs.stdenv.isDarwin then
-           "${homeDirectory}/.dotfiles"
-         else
-           "/persist/${homeDirectory}/.dotfiles";
-        EDITOR = pkgs.lib.getExe pkgs.nixvimin;
-      in
-      rec {
-        inherit DOTFILES EDITOR;
-        BROWSER = "firefox";
-        NH_FLAKE = DOTFILES;
-        LEDGER_DATE_FORMAT = "%Y/%m/%d";
-        KUBE_EDITOR = EDITOR;
-        NVIM_SERVER = "/tmp/nvimsocket";
-        ORGMODE_HOME = "$HOME/Dropbox";
-        PAGER = "less";
-        PASSWORD_STORE_GENERATED_LENGTH = 12;
-        VISUAL = EDITOR;
-        VIMWIKI_HOME = ORGMODE_HOME;
-      };
+    sessionVariables = let
+      DOTFILES =
+        if pkgs.stdenv.isDarwin
+        then "${homeDirectory}/.dotfiles"
+        else "/persist/${homeDirectory}/.dotfiles";
+      EDITOR = pkgs.lib.getExe pkgs.nixvimin;
+    in rec {
+      inherit DOTFILES EDITOR;
+      BROWSER = "firefox";
+      NH_FLAKE = DOTFILES;
+      LEDGER_DATE_FORMAT = "%Y/%m/%d";
+      KUBE_EDITOR = EDITOR;
+      NVIM_SERVER = "/tmp/nvimsocket";
+      ORGMODE_HOME = "$HOME/Dropbox";
+      PAGER = "less";
+      PASSWORD_STORE_GENERATED_LENGTH = 12;
+      VISUAL = EDITOR;
+      VIMWIKI_HOME = ORGMODE_HOME;
+    };
   };
   programs.bat.enable = true;
   programs.direnv = {
@@ -105,8 +103,7 @@ in
   programs.wezterm = {
     enable = true;
     package = pkgs.unstable.wezterm;
-    extraConfig =
-      with config.lib.stylix.colors.withHashtag;
+    extraConfig = with config.lib.stylix.colors.withHashtag;
       lib.mkMerge [
         ''
           local tab_active_color = "${base0B}"

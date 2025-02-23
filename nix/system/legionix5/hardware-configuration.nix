@@ -5,8 +5,7 @@
   username,
   modulesPath,
   ...
-}:
-let
+}: let
   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
     export __NV_PRIME_RENDER_OFFLOAD=1
     export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
@@ -21,14 +20,13 @@ let
   veracryptdata = "3251-F49B";
   # bootDrive = "5610-7908";
   bootDrive = "12D2-6261";
-in
-{
+in {
   boot = {
     blacklistedKernelModules = [
       "nouveau"
       "intel"
     ];
-    extraModulePackages = with config.boot.kernelPackages; [ evdi ];
+    extraModulePackages = with config.boot.kernelPackages; [evdi];
     initrd = {
       availableKernelModules = [
         "xhci_pci"
@@ -117,7 +115,7 @@ in
     };
     tmp.useTmpfs = true;
   };
-  environment.systemPackages = [ nvidia-offload ];
+  environment.systemPackages = [nvidia-offload];
   # environment.etc.crypttab.text = ''
   #   cryptdata UUID=${nvme1n1p2} /legion5_skhynix.key discard
   # '';
@@ -170,7 +168,7 @@ in
     };
     pulseaudio.enable = false;
   };
-  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+  imports = [(modulesPath + "/installer/scan/not-detected.nix")];
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-uuid/${cryptroot}";
@@ -291,7 +289,7 @@ in
     };
   };
   networking = {
-    bridges.br0.interfaces = [ "eno1" ];
+    bridges.br0.interfaces = ["eno1"];
     dhcpcd.extraConfig = "nohook resolv.conf";
     enableIPv6 = true;
     firewall = {
@@ -326,8 +324,8 @@ in
         sync.enable = lib.mkForce true;
         offload.enable = lib.mkForce false;
       };
-      system.nixos.tags = [ "nvidia-sync-mode" ];
+      system.nixos.tags = ["nvidia-sync-mode"];
     };
   };
-  swapDevices = [ ];
+  swapDevices = [];
 }

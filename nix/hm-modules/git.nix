@@ -1,5 +1,8 @@
-{ pkgs, email, ... }:
 {
+  pkgs,
+  email,
+  ...
+}: {
   programs.git = {
     delta.enable = true;
     enable = true;
@@ -27,7 +30,7 @@
       };
       push.default = "current";
     };
-    includes = [ { path = ../../git/gitalias.txt; } ];
+    includes = [{path = ../../git/gitalias.txt;}];
     userName = "Alberto Vázquez";
     userEmail = email;
   };

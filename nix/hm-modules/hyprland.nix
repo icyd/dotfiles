@@ -1,10 +1,4 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
-}:
-let
+{pkgs, ...}: let
   swww-wallch = pkgs.writeScriptBin "swww-wallch" ''
     #!/bin/sh
     WALLPAPER_DIR="''${WALLPAPER_DIR:-"$HOME/wallpaper"}"
@@ -18,8 +12,7 @@ let
     PASS="$("$GOPASS" list -f | rofi -i -dmenu 2>/dev/null)"
     [ -n "$PASS" ] && "$GOPASS" show -c "$PASS"
   '';
-in
-{
+in {
   home.packages = with pkgs; [
     rofipass
     grim
@@ -28,17 +21,17 @@ in
     unstable.wezterm
     wl-clipboard
   ];
-  programs.hyprlock.enable = true;
+  programs.hyprlock.enable = false;
   programs.rofi = {
     enable = true;
     cycle = true;
     package = pkgs.rofi-wayland;
   };
   programs.waybar = {
-    enable = true;
+    enable = false;
     package = (
       pkgs.waybar.overrideAttrs (oldAttrs: {
-        mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+        mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
       })
     );
     settings.mainBar = {
@@ -229,9 +222,9 @@ in
     };
     systemd.enable = true;
   };
-  programs.wlogout.enable = true;
-  services.clipman.enable = true;
-  services.dunst.enable = true;
+  programs.wlogout.enable = false;
+  services.clipman.enable = false;
+  services.dunst.enable = false;
   services.gammastep = {
     enable = false;
     tray = true;
@@ -240,13 +233,13 @@ in
     # settings.general.adjustment-method = "randr";
   };
   services.redshift = {
-    enable = true;
+    enable = false;
     tray = true;
     latitude = 41.38;
     longitude = 2.16;
   };
   services.kanshi = {
-    enable = true;
+    enable = false;
     systemdTarget = "hyprland-session.target";
     settings = [
       {
@@ -264,7 +257,7 @@ in
     ];
   };
   services.hypridle = {
-    enable = true;
+    enable = false;
     settings = {
       general = {
         after_sleep_cmd = "hyprctl dispatch dpms on";
@@ -302,7 +295,7 @@ in
   systemd.user = {
     services = {
       swww-daemon = {
-        Install.WantedBy = [ "default.target" ];
+        Install.WantedBy = ["default.target"];
         Service.Environment = "RUST_BACKTRACE=1";
         Service.ExecStart = "${pkgs.swww}/bin/swww-daemon -f xrgb";
         Service.Restart = "on-failure";
@@ -319,7 +312,7 @@ in
     };
     timers = {
       change-wallpaper = {
-        Install.WantedBy = [ "timers.target" ];
+        Install.WantedBy = ["timers.target"];
         Timer.OnCalendar = "hourly";
         Timer.OnStartupSec = "1h";
         Unit.Description = "Change wallpaper with swww every hour";
@@ -328,40 +321,41 @@ in
   };
   wayland.windowManager.hyprland = {
     enable = true;
-    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
-      # borders-plus-plus
-      # hyprbars
-      # hyprexpo
-    ];
+    # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    package = pkgs.unstable.hyprland;
+    # plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
+    #   # borders-plus-plus
+    #   # hyprbars
+    #   # hyprexpo
+    # ];
     settings = {
-      decoration = {
-        rounding = 6;
-        blur = {
-          enabled = true;
-          size = 8;
-          passes = 2;
-        };
-      };
-      monitor = [
-        "DP-1, 1920x1080@144, 0x0, 2"
-      ];
-      input = {
-        kb_layout = "icydenthium, us";
-        kb_variant = " , intl";
-        kb_options = "lv3:ralt_switch, compose:102, caps:swapescape, shift:breaks_caps, grp:alt_space_toggle";
-        follow_mouse = 1;
-        sensitivity = 0;
-        touchpad.natural_scroll = false;
-      };
-      device = [
-        {
-          name = "keebio-iris-rev.-6b";
-          kb_layout = "us";
-          kb_variant = "altgr-intl";
-          kb_options = "lv3:ralt_switch, grp:alt_space_toggle";
-        }
-      ];
+      # decoration = {
+      #   rounding = 6;
+      #   blur = {
+      #     enabled = true;
+      #     size = 8;
+      #     passes = 2;
+      #   };
+      # };
+      # monitor = [
+      #   "DP-1, 1920x1080@144, 0x0, 2"
+      # ];
+      # input = {
+      #   kb_layout = "icydenthium, us";
+      #   kb_variant = " , intl";
+      #   kb_options = "lv3:ralt_switch, compose:102, caps:swapescape, shift:breaks_caps, grp:alt_space_toggle";
+      #   follow_mouse = 1;
+      #   sensitivity = 0;
+      #   touchpad.natural_scroll = false;
+      # };
+      # device = [
+      #   {
+      #     name = "keebio-iris-rev.-6b";
+      #     kb_layout = "us";
+      #     kb_variant = "altgr-intl";
+      #     kb_options = "lv3:ralt_switch, grp:alt_space_toggle";
+      #   }
+      # ];
       "$mod" = "SUPER";
       "$modShift" = "SUPER_SHIFT";
       "$left" = "H";
@@ -408,15 +402,17 @@ in
         ]
         ++ (builtins.concatLists (
           builtins.genList (
-            i:
-            let
-              ws = if i == 0 then 10 else i;
-            in
-            [
+            i: let
+              ws =
+                if i == 0
+                then 10
+                else i;
+            in [
               "$mod, ${toString i}, workspace, ${toString ws}"
               "$modShift, ${toString i}, movetoworkspace, ${toString ws}"
             ]
-          ) 10
+          )
+          10
         ));
       bindel = [
         ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"

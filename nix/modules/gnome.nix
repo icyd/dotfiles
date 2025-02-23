@@ -1,11 +1,9 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     gnome-tweaks
   ];
   environment.gnome.excludePackages = (
-    with pkgs;
-    [
+    with pkgs; [
       gedit
       gnome-photos
       gnome-tour

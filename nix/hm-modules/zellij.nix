@@ -4,16 +4,14 @@
   pkgs,
   ...
 }:
-with lib;
-let
+with lib; let
   cfg = config.my.zellij;
-  yamlFormat = pkgs.formats.yaml { };
-in
-{
+  yamlFormat = pkgs.formats.yaml {};
+in {
   options.my.zellij = {
     settings = mkOption {
       type = yamlFormat.type;
-      default = { };
+      default = {};
       description = "Options for Zellij's configuration";
     };
     configFile = mkOption {
@@ -24,10 +22,10 @@ in
   };
   config = {
     programs.zellij.enable = true;
-    xdg.configFile."zellij/config.kdl" = mkIf (cfg.settings != { } || cfg.configFile != null) {
+    xdg.configFile."zellij/config.kdl" = mkIf (cfg.settings != {} || cfg.configFile != null) {
       text = mkMerge [
         (mkIf (cfg.configFile != null) (builtins.readFile cfg.configFile))
-        (mkIf (cfg.settings != { }) (lib.hm.generators.toKDL { } cfg.settings))
+        (mkIf (cfg.settings != {}) (lib.hm.generators.toKDL {} cfg.settings))
       ];
     };
     xdg.configFile."zellij/layouts/default.kdl".text = with config.lib.stylix.colors.withHashtag; ''

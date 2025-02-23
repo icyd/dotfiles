@@ -1,35 +1,9 @@
-*.log
-*.pass
-*.orig
-alacritty/alacritty.yml
-gnupg/.gnupg/*
-nvim/autoload
-nvim/plugged
-nvim/thesaurus
-nvim/config/plug_server.vim
-**/nvim/spell
-nvim/.netrwhist
-nvim/package*.json
-nvim/node_modules
-qutebrowser/bookmarks
-qutebrowser/quickmarks
-qutebrowser/qsettings
-qutebrowser/autoconfig.yml
-mpd/pid
-mpd/state
-zsh/**/zsh_plugins.sh
-zsh/**/antibody
-zsh/**/local.zsh
-zsh/**/completions
-scripts/*
-tmux/plugins
-vifm/vifminfo
-tags
-kitty/kitty-themes
-kitty/theme.conf
-.tags
-**/keymaps
-**/*.xk[mb]
-result
-**/local.*
-**/.luarc.json
+# Created by https://www.toptal.com/developers/gitignore/api/direnv
+# Edit at https://www.toptal.com/developers/gitignore?templates=direnv
+
+### direnv ###
+.direnv
+.envrc
+.pre-commit-config.yaml
+
+# End of https://www.toptal.com/developers/gitignore/api/direnv

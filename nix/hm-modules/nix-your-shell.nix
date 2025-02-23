@@ -4,39 +4,39 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-let
-
+with lib; let
   cfg = config.programs.nix-your-shell;
-
-in
-{
-  meta.maintainers = [ maintainers.terlar ];
+in {
+  meta.maintainers = [maintainers.terlar];
 
   options.programs.nix-your-shell = {
     enable = mkEnableOption ''
       {command}`nix-your-shell`, a wrapper for `nix develop` or `nix-shell`
       to retain the same shell inside the new environment'';
 
-    package = mkPackageOption pkgs "nix-your-shell" { };
+    package = mkPackageOption pkgs "nix-your-shell" {};
 
-    enableFishIntegration = mkEnableOption "Fish integration" // {
-      default = true;
-    };
+    enableFishIntegration =
+      mkEnableOption "Fish integration"
+      // {
+        default = true;
+      };
 
-    enableNushellIntegration = mkEnableOption "Nushell integration" // {
-      default = true;
-    };
+    enableNushellIntegration =
+      mkEnableOption "Nushell integration"
+      // {
+        default = true;
+      };
 
-    enableZshIntegration = mkEnableOption "Zsh integration" // {
-      default = true;
-    };
+    enableZshIntegration =
+      mkEnableOption "Zsh integration"
+      // {
+        default = true;
+      };
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ cfg.package ];
+    home.packages = [cfg.package];
 
     programs = {
       fish.interactiveShellInit = mkIf cfg.enableFishIntegration ''

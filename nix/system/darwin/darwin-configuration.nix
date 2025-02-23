@@ -1,5 +1,8 @@
-{ pkgs, username, ... }:
 {
+  pkgs,
+  username,
+  ...
+}: {
   environment.systemPackages = with pkgs; [
     gnupg
     home-manager
@@ -34,7 +37,7 @@
       upgrade = true;
     };
   };
-  imports = [ ../../registry.nix ];
+  imports = [../../registry.nix];
   nix = {
     extraOptions = ''
       experimental-features = nix-command flakes
@@ -46,8 +49,8 @@
     };
     package = pkgs.nixVersions.stable;
     settings = {
-      substituters = [ "https://toyvo.cachix.org" ];
-      trusted-public-keys = [ "toyvo.cachix.org-1:s++CG1te6YaS9mjICre0Ybbya2o/S9fZIyDNGiD4UXs=" ];
+      substituters = ["https://toyvo.cachix.org"];
+      trusted-public-keys = ["toyvo.cachix.org-1:s++CG1te6YaS9mjICre0Ybbya2o/S9fZIyDNGiD4UXs="];
       trusted-users = [
         "root"
         "@wheel"

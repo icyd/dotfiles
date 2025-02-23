@@ -21,7 +21,7 @@ local function mapmake(tbl)
 end
 
 local types = {
-    ["bui"] = "build",
+    ["bui"] = "build", -- typos:disable-line
     ["chore"] = "chore",
     ["ci"] = "ci",
     ["docs"] = "docs",

@@ -2,8 +2,7 @@
   config,
   pkgs,
   ...
-}:
-let
+}: let
   envExtraGPG = ''
     # Bind gpg-agent to this TTY if gpg commands are used.
     export GPG_TTY=$(tty)
@@ -12,8 +11,7 @@ let
     ${pkgs.gnupg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null
     export SSH_AUTH_SOCK=$(${pkgs.gnupg}/bin/gpgconf --list-dirs agent-ssh-socket)
   '';
-in
-{
+in {
   home.sessionVariables = with config.xdg; {
     ZSH_CACHE_DIR = "${cacheHome}/zsh";
     ZSH_CONFIG = "${configHome}/zsh";
@@ -194,13 +192,13 @@ in
     zplug = {
       enable = true;
       plugins = [
-        { name = "mollifier/cd-gitroot"; }
-        { name = "hlissner/zsh-autopair"; }
+        {name = "mollifier/cd-gitroot";}
+        {name = "hlissner/zsh-autopair";}
         {
           name = "zdharma-continuum/fast-syntax-highlighting";
-          tags = [ "defer:2" ];
+          tags = ["defer:2"];
         }
-        { name = "zsh-users/zsh-completions"; }
+        {name = "zsh-users/zsh-completions";}
         {
           name = "zsh-users/zsh-history-substring-search";
           tags = [
@@ -209,7 +207,7 @@ in
         }
         {
           name = "zsh-users/zsh-autosuggestions";
-          tags = [ ''hook-load:"bindkey '^Y' autosuggest-accept"'' ];
+          tags = [''hook-load:"bindkey '^Y' autosuggest-accept"''];
         }
       ];
     };

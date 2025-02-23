@@ -1,8 +1,10 @@
-{ lib, config, ... }:
-let
-  cfg = config.my.gpg;
-in
 {
+  lib,
+  config,
+  ...
+}: let
+  cfg = config.my.gpg;
+in {
   options.my = {
     gpg.enable = lib.mkOption {
       type = lib.types.bool;
@@ -11,7 +13,7 @@ in
     };
     gpg.sshKeys = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "B7CDB0F8E860D6FE32986A446E986DE7FF13D8A2" ];
+      default = ["B7CDB0F8E860D6FE32986A446E986DE7FF13D8A2"];
       description = "List of SSH keys";
     };
   };

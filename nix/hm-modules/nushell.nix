@@ -3,14 +3,13 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   home.packages = with pkgs.unstable; [
     nushellPlugins.skim
   ];
   programs.carapace.enable = true;
   programs.nushell = let
-      buf_editor = pkgs.lib.getExe pkgs.nixvimin;
+    buf_editor = pkgs.lib.getExe pkgs.nixvimin;
   in {
     enable = true;
     package = pkgs.unstable.nushell;
@@ -58,8 +57,7 @@
       zr = "zellij-runner";
       xssh = "TERM=xterm-256color ssh";
     };
-    configFile.text =
-      with config.lib.stylix.colors.withHashtag;
+    configFile.text = with config.lib.stylix.colors.withHashtag;
       lib.mkMerge [
         ''
           let menu_style = {
@@ -70,7 +68,7 @@
           let buf_editor = "${buf_editor}"
         ''
 
-      (builtins.readFile ../../nushell/config.nu)
+        (builtins.readFile ../../nushell/config.nu)
       ];
     envFile.source = ../../nushell/env.nu;
     extraConfig = ''

@@ -4,12 +4,11 @@
   pkgs,
   username,
   ...
-}:
-{
+}: {
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
     };
   };
   imports = [
@@ -19,7 +18,7 @@
     ../../hm-modules/home.nix
     ../../hm-modules/hyprland.nix
     ../../hm-modules/neovim-server.nix
-    ../../hm-modules/zellij.nix
+    # ../../hm-modules/zellij.nix
   ];
   my.services.neovim-server.enable = true;
   home.packages = with pkgs; [
@@ -31,7 +30,7 @@
     gcc
     gcc-arm-embedded
     glibc
-    kicad-small
+    kicad-unstable-small
     libreoffice-fresh
     lutris
     minikube
@@ -75,18 +74,18 @@
     NVIM_SERVER = lib.mkForce "::1:9090";
     WINEDLLOVERRIDES = "winemenubuilder.exe=d";
   };
-  my = {
-    zellij = {
-      configFile = ../../zellij/config.kdl;
-      settings = {
-        copy_on_select = true;
-        default_shell = "nu";
-        pane_frames = false;
-        simplified_ui = true;
-        theme = "stylix";
-      };
-    };
-  };
+  # my = {
+  #   zellij = {
+  #     configFile = ../../zellij/config.kdl;
+  #     settings = {
+  #       copy_on_select = true;
+  #       default_shell = "nu";
+  #       pane_frames = false;
+  #       simplified_ui = true;
+  #       theme = "stylix";
+  #     };
+  #   };
+  # };
   programs.alacritty = {
     settings.terminal.shell = with config.programs; {
       program = "${zsh.package}/bin/zsh";

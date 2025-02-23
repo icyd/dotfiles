@@ -125,11 +125,11 @@ wezterm.on("update-right-status", function(window, _)
     window:set_right_status(wezterm.format(cells))
 end)
 
--- wezterm.on("gui-startup", function(cmd)
---     local _, _, window = mux.spawn_window(cmd or {})
---     window:gui_window():maximize()
--- end)
---
+wezterm.on("gui-startup", function(cmd)
+    local _, _, window = mux.spawn_window(cmd or {})
+    window:gui_window():maximize()
+end)
+
 -- wezterm.on("gui-attached", function()
 --     local workspace = mux.get_active_workspace()
 --     for _, window in ipairs(mux.all_windows()) do
