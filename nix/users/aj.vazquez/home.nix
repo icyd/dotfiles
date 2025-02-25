@@ -22,19 +22,23 @@ in {
   };
   programs.git.aliases.p4 = "/usr/local/bin/git-p4";
   home.stateVersion = "22.05";
-  home.packages = with pkgs;
-    [
-      awscli2
-      buildah
-      crane
-      dive
-      helmfile
-      reattach-to-user-namespace
-      regclient
-      saml2aws
-      skopeo
-      stern
-      pueue
-    ]
-    ++ [nixvim];
+  home.packages = with pkgs; [
+    awscli2
+    buildah
+    crane
+    checkov
+    conftest
+    dive
+    helm-docs
+    helmfile
+    reattach-to-user-namespace
+    regclient
+    podman
+    saml2aws
+    skopeo
+    stern
+    pueue
+    trivy
+    yubikey-manager
+  ] ++ [ nixvim ];
 }

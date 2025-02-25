@@ -6,14 +6,19 @@
 }: let
   cfg = config.my.services.neovim-server;
 in {
-  options.my.services.neovim-server.enable = lib.mkEnableOption "neovim server";
+  options.my.services.neovim-server = {
+    enable = lib.mkEnableOption "neovim server";
+    package = lib.mkPackageOption pkgs "neovim" {};
+  };
 
   config = lib.mkIf cfg.enable {
     systemd.user = {
       services = {
-        neovim-headless = {
+        neovim-headless = let
+          nvim = lib.getExe' cfg.package "nvim";
+        in{
           Service.Environment = "PATH=/run/current-system/sw/bin:${config.home.homeDirectory}/.nix-profile/bin";
-          Service.ExecStart = ''${pkgs.zsh}/bin/zsh -c "${pkgs.neovim}/bin/nvim --headless --listen ::1:9091"'';
+          Service.ExecStart = ''${pkgs.zsh}/bin/zsh -c "${nvim} --headless --listen ::1:9091"'';
           Service.Restart = "always";
           Service.RestartSec = 3;
           Service.Type = "simple";

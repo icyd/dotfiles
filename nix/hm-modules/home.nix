@@ -49,6 +49,7 @@ in {
       hyperfine
       jq
       lazygit
+      minisign
       mosh
       (nerdfonts.override {
         fonts = [
@@ -61,6 +62,7 @@ in {
       })
       pandoc
       procs
+      rage
       ripgrep
       sd
       yq-go
@@ -99,7 +101,10 @@ in {
   };
   programs.home-manager.enable = true;
   programs.man.generateCaches = true;
-  programs.nix-your-shell.enable = true;
+  programs.nix-your-shell = {
+    enable = true;
+    package = pkgs.unstable.nix-your-shell;
+  };
   programs.wezterm = {
     enable = true;
     package = pkgs.unstable.wezterm;
@@ -112,6 +117,9 @@ in {
         (builtins.readFile ../../wezterm/wezterm.lua)
       ];
   };
-  programs.zoxide.enable = true;
+  programs.zoxide = {
+    enable = true;
+    package = pkgs.unstable.zoxide;
+  };
   xdg.enable = true;
 }

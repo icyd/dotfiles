@@ -20,7 +20,10 @@
     ../../hm-modules/neovim-server.nix
     # ../../hm-modules/zellij.nix
   ];
-  my.services.neovim-server.enable = true;
+  my.services.neovim-server = {
+    enable = true;
+    package = pkgs.nixvim;
+  };
   home.packages = with pkgs; [
     calibre
     celluloid
