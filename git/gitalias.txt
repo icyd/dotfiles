@@ -127,6 +127,19 @@
   # This is identical to doing `git b -vv`.
   bvv = branch --verbose --verbose
 
+  # branch remove merged
+  brmm = "!f(){ \
+    git fetch --all --prune && git branch --merged | \
+    grep -vE \"(\\*|\\+|master|main)\" | \
+    xargs --no-run-if-empty git branch -d ; \
+  };f"
+
+  # branch remove gone
+  brmg = "!f(){ \
+    git fetch --all --prune && git branch -vv | awk '/: gone]/{print $1}' | \
+    xargs --no-run-if-empty git branch -d ; \
+  };f"
+
   ### commit aliases ###
 
   # commit - amend the tip of the current branch rather than creating a new commit.
@@ -150,8 +163,8 @@
   co = checkout
   om = !git checkout $(git head-branch)
   ob = checkout -b
-  obm = "!f(){ \
-      git checkout -b \"$1\" origin/master; \
+    obm = "!f(){ \
+        git checkout -b \"$1\" \"origin/$(git head-branch)\"; \
   };f"
   omiw = !git checkout $(git head-branch) --ignore-other-worktrees
   cong = checkout --no-guess
@@ -261,6 +274,8 @@
   lsio = ls-files --ignored --others --exclude-standard
 
   ### merge aliases ###
+  # merge into head-branch
+  mm = !git merge "origin/$(git head-branch)"
 
   # merge abort - cancel the merging process
   ma = merge --abort
@@ -355,6 +370,9 @@
 
   # rebase - forward-port local commits to the updated upstream head.
   rb = rebase
+
+  # rebase from head-branch
+  rbm = !git rebase "origin/$(git head-branch)"
 
   # rebase abort - cancel the rebasing process
   rba = rebase --abort

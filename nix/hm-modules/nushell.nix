@@ -93,7 +93,9 @@
         } | bash-env
 
         $devbox | reject "PATH" | load-env
-        $env.PATH = ($devbox.PATH | split row (char esep)) ++ $env.PATH | uniq
+        $env.PATH = ($devbox.PATH | split row (char esep)) ++ $env.PATH
+          | prepend "/run/current-system/sw/bin"
+          | uniq
       }
 
       if (not ("DEVBOX_PURE_SHELL" in ($env | columns))) {

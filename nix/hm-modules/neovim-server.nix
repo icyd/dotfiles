@@ -16,7 +16,7 @@ in {
       services = {
         neovim-headless = let
           nvim = lib.getExe' cfg.package "nvim";
-        in{
+        in {
           Service.Environment = "PATH=/run/current-system/sw/bin:${config.home.homeDirectory}/.nix-profile/bin";
           Service.ExecStart = ''${pkgs.zsh}/bin/zsh -c "${nvim} --headless --listen ::1:9091"'';
           Service.Restart = "always";

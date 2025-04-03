@@ -47,6 +47,7 @@ in {
       git-credential-gopass
       hwatch
       hyperfine
+      imagemagick
       jq
       lazygit
       minisign
@@ -65,6 +66,7 @@ in {
       rage
       ripgrep
       sd
+      texliveSmall
       yq-go
       zathura
       zenith

@@ -26,6 +26,8 @@
       "gnu-tar"
       "gpgme"
       "pinentry-mac"
+      "socket_vmnet"
+      "theseal/ssh-askpass/ssh-askpass"
     ];
     casks = [
       "gpg-suite"
@@ -36,6 +38,9 @@
       autoUpdate = true;
       upgrade = true;
     };
+    taps = [
+      "theseal/ssh-askpass"
+    ];
   };
   imports = [../../registry.nix];
   nix = {
@@ -61,7 +66,6 @@
   programs.nh.enable = true;
   programs.gnupg.agent = {
     enable = true;
-    enableSSHSupport = true;
   };
   programs.zsh.enable = true;
   services.nix-daemon.enable = true;
