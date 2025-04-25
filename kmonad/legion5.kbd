@@ -28,7 +28,7 @@
   _    q      @alt_y o      u      ;    x    l      d      @alt_w z      [    ]    \
   b    @met_c @alt_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @alt_n @met_s v
   _    '      -      =      .      /    j      m      g      p      f    _
-  _    @fn    _      _                  _                    _    _
+  _    @fn    _      _                  _                    r    _
 )
 
 (deflayer qwerty
@@ -36,7 +36,7 @@
   _    q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '
   _    z    x    c    v    b    n    m    ,    .    /    _
-  _    @fn  _    _              _              _    _
+  _    @fn  _    _              _              ralt _
 )
 
 (deflayer function
