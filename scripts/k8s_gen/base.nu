@@ -124,6 +124,12 @@ def "nu-complete kube ns" [] {
     }
 }
 
+def "nu-complete kube config contexts" [] {
+    kubectl config get-contexts
+    | from ssv -a
+    | get NAME
+}
+
 export def "nu-complete kube kind without cache" [] {
     kubectl api-resources | from ssv -a | get NAME
     | append (kubectl get crd | from ssv -a | get NAME)
@@ -349,11 +355,13 @@ export def `kcache flush` [] {
 # kubectl apply -f
 export def kaf [
     filename?: path
-    --namespace (-n): string
+    --context: string@"nu-complete kube config contexts"
+    --namespace (-n): string@"nu-complete kube ns"
     --dry-run: string
 ] {
     let stdin = $in
     let ns = $namespace | with-flag -n
+    let ctx = $context | with-flag --context
     let dry_run = $dry_run | as-str-flag --dry-run
     let file = if ($stdin | is-empty) and ($filename | is-empty) {
         error make {
@@ -369,7 +377,7 @@ export def kaf [
             "-"
     }
 
-    $stdin | kubectl apply -f $file ...$ns ...$dry_run
+    $stdin | kubectl apply -f $file ...$ctx ...$ns ...$dry_run
 }
 
 # kubectl diff -f
@@ -405,14 +413,16 @@ export def kk [p: path] {
 # helm list and get
 export def kgh [
     name?: string@"nu-complete helm list"
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"
     --manifest (-m)
     --values(-v)
     --all (-A)
 ] {
+    let ctx = $context | with-flag --context
     if ($name | is-empty) {
         let ns = if $all { [--all] } else { $namespace | with-flag -n }
-        helm list ...$ns --output json
+        helm list ...$ctx ...$ns --output json
         | from json
         | update updated {|x|
             $x.updated
@@ -420,12 +430,13 @@ export def kgh [
             | into datetime -f '%Y-%m-%d %H:%M:%S.%f %z'
         }
     } else {
+        let ns = $namespace | with-flag -n
         if $manifest {
-            helm get manifest $name ...($namespace | with-flag -n)
+            helm get manifest $name ...$ctx ...$ns
         } else if $values {
-            helm get values $name ...($namespace | with-flag -n)
+            helm get values $name ...$ctx ...$ns
         } else {
-            helm get notes $name ...($namespace | with-flag -n)
+            helm get notes $name ...$ctx ...$ns
         }
     }
 }
@@ -436,6 +447,7 @@ export def kah [
     chart: string@"nu-complete helm charts"
     valuefile: path
     --values (-v): any
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"
 ] {
     let update = $name in (
@@ -444,7 +456,8 @@ export def kah [
     )
     let act = if $update { [upgrade] } else { [install] }
     let values = if ($values | is-empty) { [] } else { [--set-json (record-to-set-json $values)] }
-    helm ...$act $name $chart -f $valuefile ...$values ...($namespace | with-flag -n)
+    let ctx = $context | with-flag --context
+    helm ...$act $name $chart -f $valuefile ...$values ...$ctx ...($namespace | with-flag -n)
 }
 
 # helm diff
@@ -453,11 +466,13 @@ export def kdh [
     chart: string@"nu-complete helm charts"
     valuefile: path
     --values (-v): any
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"
     --has-plugin (-h)
 ] {
+    let ctx = $context | with-flag --context
     if $has_plugin {
-        helm diff $name $chart -f $valuefile ...($namespace | with-flag -n)
+        helm diff $name $chart -f $valuefile ...$ctx ...($namespace | with-flag -n)
     } else {
         let update = $name in (
             helm list ...($namespace | with-flag -n) --output json
@@ -470,7 +485,7 @@ export def kdh [
 
         let values = if ($values | is-empty) { [] } else { [--set-json (record-to-set-json $values)] }
         let target = $'/tmp/($chart | path basename).($name).out.yaml'
-        helm template --debug $name $chart -f $valuefile ...$values ...($namespace | with-flag -n) | save -f $target
+        helm template --debug $name $chart -f $valuefile ...$values ...$ctx ...($namespace | with-flag -n) | save -f $target
         kubectl diff -f $target
     }
 }
@@ -478,9 +493,11 @@ export def kdh [
 # helm delete
 export def kdelh [
     name: string@"nu-complete helm list"
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"
 ] {
-    helm uninstall $name ...($namespace | with-flag -n)
+    let ctx = $context | with-flag --context
+    helm uninstall $name ...$ctx ...($namespace | with-flag -n)
 }
 
 # helm template
@@ -488,13 +505,15 @@ export def kh [
     chart: string@"nu-complete helm charts"
     valuefile: path
     --values (-v): any
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"='test'
     --app (-a): string='test'
 ] {
     let values = if ($values | is-empty) { [] } else { [--set-json (record-to-set-json $values)] }
     let target = ($valuefile | split row '.' | range ..-2 | append [out yaml] | str join '.')
+    let ctx = $context | with-flag --context
     if (not ($target | path exists)) and (([yes no] | input list $'create ($target)?') in [no]) { return }
-    helm template --debug $app $chart -f $valuefile ...$values ...($namespace | with-flag -n)
+    helm template --debug $app $chart -f $valuefile ...$values ...$ctx ...($namespace | with-flag -n)
     | save -f $target
 }
 
@@ -609,6 +628,7 @@ export def --env kcconf [name: string@"nu-complete kube ctx"] {
 def _kg_cmd [
     kind: string
     name?: string
+    --context: string
     --namespace (-n): string
     --selector (-l): string
     --output (-o): string
@@ -621,20 +641,22 @@ def _kg_cmd [
     } else {
         $namespace | with-flag -n
     }
+    let ctx = $context | with-flag --context
     let selector = $selector | with-flag -l
     let show_labels = $show_labels | as-str-flag --show-labels
     let name = $name | with-flag
 
     if ($as_str) {
-        return $"kubectl get ($kind) ([...$name ...$namespace ...$selector ...$show_labels] | str join (char space))"
+        return $"kubectl get ($kind) ([...$name ...$ctx ...$namespace ...$selector ...$show_labels] | str join (char space))"
     }
 
-    kubectl get $kind ...$name ...$namespace ...$selector ...($output | with-flag -o) ...$show_labels
+    kubectl get $kind ...$name ...$ctx ...$namespace ...$selector ...($output | with-flag -o) ...$show_labels
 }
 
 def _kg [
     kind: string
     name?: string
+    --context: string
     --namespace (-n): string
     --selector (-l): string
     --verbose (-v)
@@ -662,6 +684,7 @@ def _kg [
     }
 
     let items = (_kg_cmd $kind $name
+        --context $context
         --namespace $namespace
         --selector $selector
         --output $output
@@ -722,9 +745,11 @@ def _kg [
 export def kc [
     kind: string@"nu-complete kube kind"
     name: string
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"
 ] {
-    kubectl create $kind $name ...($namespace | with-flag -n)
+    let ctx = $context | with-flag --context
+    kubectl create $kind $name ...$ctx ...($namespace | with-flag -n)
 }
 
 # kubectl get -o yaml
@@ -732,11 +757,13 @@ export def ky [
     kind: string@"nu-complete kube kind"
     name?: string@"nu-complete kube res"
     --selector (-l): string
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"
     --neat (-N)
     --all (-A)
 ] {
     let items = (_kg $kind $name
+        --context $context
         --namespace $namespace
         --selector $selector
         --all=$all
@@ -755,11 +782,13 @@ export def kj [
     kind: string@"nu-complete kube kind"
     name?: string@"nu-complete kube res"
     --selector (-l): string
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"
     --neat (-N)
     --all (-A)
 ] {
     let items = (_kg $kind $name
+        --context $context
         --namespace $namespace
         --selector $selector
         --all=$all
@@ -777,6 +806,7 @@ export def kj [
 export def ke [
     kind: string@"nu-complete kube kind"
     name?: string@"nu-complete kube res"
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"
     --selector(-l): string
 ] {
@@ -785,6 +815,7 @@ export def ke [
     } else {
         let res = (_kg_cmd $kind
             --namespace $namespace
+            --context $context
             --selector $selector
             | from ssv -a
             | get NAME
@@ -803,14 +834,17 @@ export def ke [
 def _kd [
     kind: string
     name: string
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string
 ] {
-    kubectl describe $kind $name ...($namespace | with-flag -n)
+    let ctx = $context | with-flag --context
+    kubectl describe $kind $name ...$ctx ...($namespace | with-flag -n)
 }
 
 def _kdel [
     kind: string
     name?: string
+    --context: string
     --namespace (-n): string
     --selector(-l): string
     --cascade: string = "foreground"
@@ -819,6 +853,7 @@ def _kdel [
     --no-wait (-N)
 ] {
     let selector = $selector | with-flag -l
+    let ctx = $context | with-flag --context
     let namespace = $namespace | with-flag -n
     let name = $name | with-flag
     let force = if ($force) { [ '--grace-period=0' '--force' ] } else { [] }
@@ -826,7 +861,7 @@ def _kdel [
     let dry_run = $dry_run | as-str-flag --dry-run
     let cascade = $"--cascade=($cascade)"
 
-    (kubectl delete $kind ...$name ...$namespace ...$selector ...$dry_run $cascade
+    (kubectl delete $kind ...$name ...$ctx ...$namespace ...$selector ...$dry_run $cascade
         ...$no_wait ...$force
     )
 }
@@ -834,13 +869,15 @@ def _kdel [
 # kubectl get all pods with node version
 export def kgpo_with_node_version [
     version: string
-    --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
+    --namespace (-n): string
     --all (-A)
 ] {
     let ns = if $all { [--all-namespaces] } else { ($namespace | with-flag -n) }
     let nodes = kg no | where version =~ $version | get name
+    let ctx = $context | with-flag --context
 
-    (kubectl get pods ...$ns -ojson
+    (kubectl get pods ...$ctx ...$ns -ojson
         | from json
         | get items
         | filter {|pod| $pod.spec.nodeName in $nodes}
@@ -888,10 +925,12 @@ export def k_drain_nodes_version [
 # Get all pods from a deployment
 export def kgpo_from_deploy [
     deployment: string
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string
 ] {
     let ns = $namespace | with-flag -n
-    let labels = (kubectl get deploy ...$ns $deployment -oyaml |
+    let ctx = $context | with-flag --context
+    let labels = (kubectl get deploy ...$ctx ...$ns $deployment -oyaml |
         from yaml |
         get spec.selector.matchLabels |
         transpose key value |
@@ -903,25 +942,29 @@ export def kgpo_from_deploy [
 # Get random pod from given labels
 export def kgpo_from_labels [
     labels: string
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string
 ] {
 
+    let ctx = $context | with-flag --context
     let ns = $namespace | with-flag -n
-    let pods = (kubectl get pod ...$ns -l $labels | from ssv | normalize-column-names)
+    let pods = (kubectl get pod ...$ctx ...$ns -l $labels | from ssv | normalize-column-names)
     utils random_row $pods | get name
 }
 
 # Get current / active ReplicaSet of a given Deployment
 export def kg_active_rs [
     deployment: string
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string
 ] {
     let ns = $namespace | with-flag -n
+    let ctx = $context | with-flag --context
     let deploy_manifest = kubectl get deployment $deployment ...$ns -ojson | from json
     let deploy_name = $deploy_manifest | get metadata.labels."app.kubernetes.io/name"
     let deploy_instance = $deploy_manifest | get metadata.labels."app.kubernetes.io/instance"
     let deploy_revision = $deploy_manifest | get metadata.annotations."deployment.kubernetes.io/revision"
-    (kubectl get rs ...$ns -ojson
+    (kubectl get rs ...$ctx ...$ns -ojson
         -l $"app.kubernetes.io/name=($deploy_name),app.kubernetes.io/instance=($deploy_instance)"
         | from json
         | get items
@@ -934,6 +977,7 @@ export def kg_active_rs [
 export def k_label_pods_from_deploy [
     deployment: string
     labels: string
+    --context: string
     --namespace (-n): string
 ] {
     if $labels !~ "(?:\\w+=\\w+),?+" {
@@ -963,6 +1007,7 @@ export def k_label_pods_from_deploy [
 export def k_relabel_deploy [
     deployment: string
     labels: string
+    --context: string
     --namespace (-n): string
 ] {
     if $labels !~ "(?:\\w+=\\w+),?+" {
@@ -1005,6 +1050,7 @@ export def kshark [
     --user (-u): string = "ec2-user"
     --key (-k): path
     --labels (-l): string
+    --context: string
     --namespace (-n): string
 ] {
 
@@ -1064,6 +1110,7 @@ export def kshark [
 # Connect to node where deployment's pod is running with wireshark
 export def ksharkdep [
     deployment: string
+    --context: string
     --namespace (-n): string
     --user (-u): string = "ec2-user"
     --key (-k): path
@@ -1076,6 +1123,7 @@ export def ksharkdep [
 # kubectl attach (exec -it)
 export def --wrapped kex [
     pod: string@"nu-complete kube pods"
+    --context: string@"nu-complete kube config contexts"
     --namespace (-n): string@"nu-complete kube ns"
     --container(-c): string@"nu-complete kube ctns"
     --selector(-l): string
@@ -1117,6 +1165,7 @@ export def --wrapped kex [
 # kubectl logs
 export def klo [
     pod: string@"nu-complete kube pods"
+    --context: string@"nu-complete kube config contexts"
     --namespace(-n): string@"nu-complete kube ns"
     --container(-c): string@"nu-complete kube ctns"
     --follow(-f)
@@ -1136,6 +1185,7 @@ export def kpf [
     port: string@"nu-complete kube port"
     --local (-l): string
     --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
 ] {
     let ns = $namespace | with-flag -n
     let port = if ($local | is-empty) { $port } else { $"($local):($port)" }
@@ -1148,6 +1198,7 @@ export def kcp [
     rhs: string@"nu-complete kube cp"
     --container (-c): string@"nu-complete kube ctns"
     --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
 ] {
     kubectl cp ...($namespace | with-flag -n) $lhs (spr [-c $container]) $rhs
 }
@@ -1155,6 +1206,7 @@ export def kcp [
 # kubectl rollout history
 export def krhd [
     --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
     --revision (-v): int
     dpl: string@"nu-complete kube res via name"
 ] {
@@ -1166,6 +1218,7 @@ export def krhd [
 # kubectl rollout undo
 export def krud [
     --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
     --revision (-v): int
     deploy: string@"nu-complete kube res via name"
 ] {
@@ -1183,6 +1236,7 @@ export alias krrsts = kubectl rollout restart statefulset
 # kubectl top pod
 def ktp [
     --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
     --all(-A)
 ] {
     let ns = if $all {
@@ -1219,6 +1273,7 @@ export def ktno [] {
 export def ktop [
     kind: string@"nu-complete top"
     --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
     --all(-A)
 ] {
     if ($kind == "pod") {
@@ -1260,6 +1315,7 @@ export def kannotatetime [
     kind: string@"nu-complete kube kind"
     name: string@"nu-complete kube res"
     --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
 ] {
     let ns = $namespace | with-flag -n
     (kubectl annotate $kind ...$ns $name
@@ -1271,6 +1327,7 @@ export def kannotatetime [
 export def kupdes [
     kind?: string@"nu-complete kube res via name2"
     --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
 ] {
     let ns = $namespace | with-flag -n
     (kubectl annotate externalsecret ...$ns $kind
@@ -1282,6 +1339,7 @@ export def kupdes [
 export def k_zombify_container [
     pod: string
     --namespace (-n): string
+    --context: string@"nu-complete kube config contexts"
     --container-name (-c): string
 ] {
     let ns = $namespace | with-flag -n
@@ -1345,6 +1403,7 @@ export def k_api_vers [] {
 export def slog [
     pod?: string@"nu-complete kube pods"
     --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
     --exclude-container(-e): string@"nu-complete kube ctns"
     --container(-c): string@"nu-complete kube ctns"
     --include (-i): string

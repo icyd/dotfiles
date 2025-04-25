@@ -93,8 +93,8 @@
         } | bash-env
 
         $devbox | reject "PATH" | load-env
-        $env.PATH = ($devbox.PATH | split row (char esep)) ++ $env.PATH
-          | prepend "/run/current-system/sw/bin"
+        $env.PATH = (["/run/current-system/sw/bin" "${config.home.homeDirectory}/.nix-profile/bin" ]
+          ++ ($devbox.PATH | split row (char esep)) ++ $env.PATH)
           | uniq
       }
 

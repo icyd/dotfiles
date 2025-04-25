@@ -238,7 +238,7 @@ in {
             enable = true;
             fallthrough = true;
           };
-          config = builtins.readFile ../../../kmonad/config.kbd;
+          config = builtins.readFile ../../../kmonad/legion5.kbd;
         };
       };
     };
@@ -282,13 +282,13 @@ in {
         layout = "us";
         variant = "altgr-intl";
         options = "lv3:ralt_switch,shift:breaks_caps,grp:alt_space_toggle";
-        extraLayouts = {
-          icydenthium = {
-            description = "IcydEnthium";
-            languages = ["eng"];
-            symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEnthium.xkb";
-          };
-        };
+        # extraLayouts = {
+        #   icydenthium = {
+        #     description = "IcydEnthium";
+        #     languages = ["eng"];
+        #     symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEnthium.xkb";
+        #   };
+        # };
       };
     };
   };

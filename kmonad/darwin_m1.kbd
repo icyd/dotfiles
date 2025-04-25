@@ -1,0 +1,55 @@
+(defcfg
+  input (iokit-name "Apple Internal Keyboard / Trackpad")
+  output (kext)
+  fallthrough true
+)
+
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '
+  lsft lsgt z    x    c    v    b    n    m    ,    .    /    rsft
+  fn   lctl lalt lmet           spc            rmet ralt
+)
+
+(defalias
+  fn (around (layer-toggle function) fn)
+  qwt (layer-switch qwerty)
+  eth (layer-switch enthium)
+  alt_y (tap-hold-next-release 200 y ralt)
+  met_c (tap-hold-next-release 200 c lmet)
+  alt_i (tap-hold-next-release 200 i lalt)
+  ctl_e (tap-hold-next-release 200 e lctl)
+  sft_a (tap-hold-next-release 200 a lsft)
+
+  alt_w (tap-hold-next-release 200 w ralt)
+  sft_h (tap-hold-next-release 200 h rsft)
+  ctl_t (tap-hold-next-release 200 t lctl)
+  alt_n (tap-hold-next-release 200 n lalt)
+  met_s (tap-hold-next-release 200 s rmet)
+)
+
+(deflayer enthium
+  lsgt 1      2      3      4      5    6    7      8      9      0      _    _
+  _    q      @alt_y o      u      ;    x    l      d      @alt_w z      [    ]    \
+  b    @met_c @alt_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @alt_n @met_s v
+  _    grv    '      -      =      .    /    j      m      g      p      f    _
+  @fn  _      _      _                  _                  _      _
+)
+
+(deflayer qwerty
+  grv  1    2    3    4    5    6    7    8    9    0    -    =
+  _    q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '
+  _    lsgt z    x    c    v    b    n    m    ,    .    /    _
+  @fn  _    _    _              _              _    _
+)
+
+(deflayer function
+  _    _    _    _    _    _    _    _    _    _    _    @qwt @eth
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _              _              _    _
+)
+

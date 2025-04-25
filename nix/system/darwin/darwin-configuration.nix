@@ -26,11 +26,11 @@
       "gnu-tar"
       "gpgme"
       "pinentry-mac"
-      "socket_vmnet"
       "theseal/ssh-askpass/ssh-askpass"
     ];
     casks = [
       "gpg-suite"
+      "karabiner-elements"
       "wireshark"
     ];
     enable = true;

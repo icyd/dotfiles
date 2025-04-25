@@ -91,6 +91,7 @@ def get [] {
 export def kg($abbr) [
     ($kind_param)
     name?: string@\"nu-complete kube res($completion)\"
+    --context: string@\"nu-complete kube config contexts\" # context
     --namespace \(-n\): string@\"nu-complete kube ns\" # namespace
     --selector\(-l\): string@\"nu-complete kube labels\" # select by labels
     --verbose \(-v\) # verbose output
@@ -104,7 +105,8 @@ export def kg($abbr) [
     --show-labels \(-S\) # show labels
 ] {
     let output = \(_kg ($kind) $name
-        --namespace \$namespace
+        --context $context
+        --namespace $namespace
         --selector $selector
         --verbose=$verbose
         --wide=$wide
@@ -139,6 +141,7 @@ def delete [] {
 export def kdel($abbr) [
     ($kind_param)
     name?: string@\"nu-complete kube res($completion)\"
+    --context: string@\"nu-complete kube config contexts\" # context
     --namespace \(-n\): string@\"nu-complete kube ns\" # namespace
     --selector\(-l\): string@\"nu-complete kube labels\" # select by labels
     --cascade: string@\"nu-complete cascade\" = \"background\" # type of delete
@@ -147,6 +150,7 @@ export def kdel($abbr) [
     --no-wait \(-N\) # skip waiting for deletion
 ] {
     \(_kdel ($kind) $name
+        --context $context
         --namespace $namespace
         --selector $selector
         --cascade $cascade
@@ -170,9 +174,10 @@ def describe [] {
 export def kd($abbr) [
     ($kind_param)
     name: string@\"nu-complete kube res($completion)\"
+    --context: string@\"nu-complete kube config contexts\" # context
     --namespace \(-n\): string@\"nu-complete kube ns\" # namespace
 ] {
-    _kd ($kind) $name --namespace $namespace
+    _kd ($kind) $name --context $context --namespace $namespace
 }"}
 }
 

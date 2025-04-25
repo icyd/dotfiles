@@ -21,10 +21,10 @@
           "xkb"
           "icydenthium"
         ])
-        (mkTuple [
-          "xkb"
-          "us+altgr-intl"
-        ])
+        # (mkTuple [
+        #   "xkb"
+        #   "us+altgr-intl"
+        # ])
       ];
       xkb-options = [
         "lv3:ralt_switch"
@@ -32,7 +32,7 @@
         # "caps:swapescape"
         "caps:escape_shifted_capslock"
         "shift:breaks_caps"
-        "grp:alt_space_toggle"
+        # "grp:alt_space_toggle"
       ];
     };
     "org/gnome/mutter" = {

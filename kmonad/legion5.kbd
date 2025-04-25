@@ -1,0 +1,49 @@
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl fn   lmet lalt           spc            ralt rctl
+)
+
+(defalias
+  fn (around (layer-toggle function) fn)
+  qwt (layer-switch qwerty)
+  eth (layer-switch enthium)
+  alt_y (tap-hold-next-release 200 y ralt)
+  met_c (tap-hold-next-release 200 c lmet)
+  alt_i (tap-hold-next-release 200 i lalt)
+  ctl_e (tap-hold-next-release 200 e lctl)
+  sft_a (tap-hold-next-release 200 a lsft)
+
+  alt_w (tap-hold-next-release 200 w ralt)
+  sft_h (tap-hold-next-release 200 h rsft)
+  ctl_t (tap-hold-next-release 200 t lctl)
+  alt_n (tap-hold-next-release 200 n lalt)
+  met_s (tap-hold-next-release 200 s rmet)
+)
+
+(deflayer enthium
+  _    _      _      _      _      _    _    _      _      _      _      _    _
+  _    q      @alt_y o      u      ;    x    l      d      @alt_w z      [    ]    \
+  b    @met_c @alt_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @alt_n @met_s v
+  _    '      -      =      .      /    j      m      g      p      f    _
+  _    @fn    _      _                  _                    _    _
+)
+
+(deflayer qwerty
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '
+  _    z    x    c    v    b    n    m    ,    .    /    _
+  _    @fn  _    _              _              _    _
+)
+
+(deflayer function
+  _  _    _    _    _    _    _    _    _    _    _    @qwt @ent
+  _  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _  _    _    _    _    _    _    _    _    _    _    _
+  _  _    _    _    _    _    _    _    _    _    _    _
+  _  _    _    _              _              _    _
+)
+
