@@ -21,14 +21,14 @@ in {
     unstable.wezterm
     wl-clipboard
   ];
-  programs.hyprlock.enable = false;
+  programs.hyprlock.enable = true;
   programs.rofi = {
     enable = true;
     cycle = true;
     package = pkgs.rofi-wayland;
   };
   programs.waybar = {
-    enable = false;
+    enable = true;
     package = (
       pkgs.waybar.overrideAttrs (oldAttrs: {
         mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
@@ -222,24 +222,17 @@ in {
     };
     systemd.enable = true;
   };
-  programs.wlogout.enable = false;
-  services.clipman.enable = false;
-  services.dunst.enable = false;
-  services.gammastep = {
-    enable = false;
-    tray = true;
-    latitude = 41.38;
-    longitude = 2.16;
-    # settings.general.adjustment-method = "randr";
-  };
+  programs.wlogout.enable = true;
+  services.clipman.enable = true;
+  services.dunst.enable = true;
   services.redshift = {
-    enable = false;
+    enable = true;
     tray = true;
     latitude = 41.38;
     longitude = 2.16;
   };
   services.kanshi = {
-    enable = false;
+    enable = true;
     systemdTarget = "hyprland-session.target";
     settings = [
       {
@@ -248,7 +241,12 @@ in {
           outputs = [
             {
               criteria = "eDP-1";
-              scale = 1.25;
+              scale = 1.5;
+              status = "enable";
+            }
+            {
+              criteria = "eDP-2";
+              scale = 1.0;
               status = "enable";
             }
           ];
@@ -257,7 +255,7 @@ in {
     ];
   };
   services.hypridle = {
-    enable = false;
+    enable = true;
     settings = {
       general = {
         after_sleep_cmd = "hyprctl dispatch dpms on";
@@ -322,47 +320,49 @@ in {
   wayland.windowManager.hyprland = {
     enable = true;
     # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    package = pkgs.unstable.hyprland;
+    package = pkgs.hyprland;
     # plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
     #   # borders-plus-plus
     #   # hyprbars
     #   # hyprexpo
     # ];
     settings = {
-      # decoration = {
-      #   rounding = 6;
-      #   blur = {
-      #     enabled = true;
-      #     size = 8;
-      #     passes = 2;
-      #   };
-      # };
-      # monitor = [
-      #   "DP-1, 1920x1080@144, 0x0, 2"
-      # ];
-      # input = {
-      #   kb_layout = "icydenthium, us";
-      #   kb_variant = " , intl";
-      #   kb_options = "lv3:ralt_switch, compose:102, caps:swapescape, shift:breaks_caps, grp:alt_space_toggle";
-      #   follow_mouse = 1;
-      #   sensitivity = 0;
-      #   touchpad.natural_scroll = false;
-      # };
-      # device = [
-      #   {
-      #     name = "keebio-iris-rev.-6b";
-      #     kb_layout = "us";
-      #     kb_variant = "altgr-intl";
-      #     kb_options = "lv3:ralt_switch, grp:alt_space_toggle";
-      #   }
-      # ];
+      decoration = {
+        rounding = 6;
+        blur = {
+          enabled = true;
+          size = 8;
+          passes = 2;
+        };
+      };
+      monitor = [
+        "eDP-2, 1920x1080@144, 0x0, 1"
+        ", preferred, auto, 1"
+      ];
+      input = {
+        kb_layout = "us";
+        kb_variant = "altgr-intl";
+        # kb_options = "lv3:ralt_switch, compose:102, caps:swapescape, shift:breaks_caps, grp:alt_space_toggle";
+        kb_options = "lv3:ralt_switch, shift:breaks_caps";
+        follow_mouse = 1;
+        sensitivity = 0;
+        touchpad.natural_scroll = false;
+      };
+      device = [
+        {
+          name = "keebio-iris-rev.-6b";
+          kb_layout = "us";
+          kb_variant = "altgr-intl";
+          kb_options = "lv3:ralt_switch, grp:alt_space_toggle";
+        }
+      ];
       "$mod" = "SUPER";
       "$modShift" = "SUPER_SHIFT";
       "$left" = "H";
       "$down" = "J";
       "$up" = "K";
       "$right" = "L";
-      "$terminal" = "alacritty";
+      "$terminal" = "wezterm";
       "$fileManager" = "nautilus";
       "$menu" = "rofi";
       "$browser" = "firefox";
@@ -373,7 +373,7 @@ in {
           "$modShift, Q, killactive,"
           "$modShift, E, exit,"
           "$modShift, P, exec, wlogout"
-          "$mod, W, hyprexpo:expo, toggle"
+          # "$mod, W, hyprexpo:expo, toggle"
           "$mod, F, exec, $fileManager"
           "$mod, B, exec, $browser"
           "$mod, V, togglefloating,"

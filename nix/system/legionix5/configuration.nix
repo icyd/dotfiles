@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  inputs,
   username,
   ...
 }: let
@@ -214,7 +213,7 @@ in {
     # };
     dbus.enable = true;
     displayManager = {
-      defaultSession = "gnome";
+      defaultSession = "hyprland";
       sddm = {
         enable = true;
         autoNumlock = true;
@@ -224,7 +223,7 @@ in {
         theme = "sddm-astronaut-theme";
       };
       autoLogin = {
-        enable = false;
+        enable = true;
         user = username;
       };
     };
