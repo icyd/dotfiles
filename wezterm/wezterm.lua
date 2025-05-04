@@ -196,11 +196,11 @@ config.default_prog = {
 -- config.freetype_load_target = "Light"
 -- config.freetype_load_flags = "NO_HINTING|NO_AUTOHINT"
 -- config.font_size = 12.0
--- config.unix_domains = {
---     {
---         name = "unix",
---     },
--- }
+config.unix_domains = {
+    {
+        name = "unix",
+    },
+}
 -- config.default_gui_startup_args = { "connect", "unix" }
 config.adjust_window_size_when_changing_font_size = false
 config.warn_about_missing_glyphs = false

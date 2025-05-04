@@ -42,7 +42,20 @@
       "theseal/ssh-askpass"
     ];
   };
-  imports = [../../registry.nix];
+  imports = [../../registry.nix ../../modules/kmonad_launchd.nix];
+  services.kmonad = {
+    enable = true;
+    keyboards = {
+      AppleInternalKeyboard = {
+        device = "Apple Internal Keyboard / Trackpad";
+        defcfg = {
+          enable = true;
+          fallthrough = true;
+        };
+        config = builtins.readFile ../../../kmonad/darwin_m1.kbd;
+      };
+    };
+  };
   nix = {
     extraOptions = ''
       experimental-features = nix-command flakes

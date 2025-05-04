@@ -36,6 +36,8 @@ in {
       ".scripts".source = ../../scripts;
     };
     packages = with pkgs; [
+      age-plugin-yubikey
+      age-plugin-fido2-hmac
       binutils
       devenv
       devbox
@@ -66,8 +68,10 @@ in {
       rage
       ripgrep
       sd
+      unstable.sops
       texliveSmall
       yq-go
+      yubikey-manager
       zathura
       zenith
     ];

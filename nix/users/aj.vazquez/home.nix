@@ -20,9 +20,11 @@ in {
   home.sessionVariables = {
     MANPATH = "${brewPrefix}/opt/coreutils/libexec/gnuman:$MANPATH";
     PATH = "${brewPrefix}/opt/coreutils/libexec/gnubin:${brewPrefix}/bin:$PATH";
+    SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.yubikey-identity.txt";
   };
   programs.git = {
     aliases.p4 = "/usr/local/bin/git-p4";
+    userEmail = lib.mkForce "avazquez@contractor.ea.com";
     extraConfig = {
       user.signingkey = lib.mkForce "${config.home.homeDirectory}/id_ed25519_sk.pub";
     };
@@ -32,10 +34,9 @@ in {
   home.stateVersion = "22.05";
   home.packages = with pkgs;
     [
-      age-plugin-yubikey
       awscli2
       crane
-      checkov
+      unstable.checkov
       conftest
       helm-docs
       helmfile
@@ -50,7 +51,6 @@ in {
       openssh
       pueue
       trivy
-      yubikey-manager
     ]
     ++ [nixvim];
   programs.nushell.extraEnv = ''

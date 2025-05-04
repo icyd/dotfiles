@@ -38,6 +38,10 @@
       url = "github:danth/stylix/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -111,6 +115,7 @@
                 ./nix/system/darwin/darwin-configuration.nix
                 inputs.nh_plus.nixDarwinModules.prebuiltin
                 # inputs.nh_plus.nixDarwinModules.default
+                inputs.sops-nix.darwinModules.sops
                 inputs.stylix.darwinModules.stylix
               ]
               ++ additionalModules;
@@ -139,6 +144,7 @@
             });
             modules =
               [
+                inputs.sops-nix.homeManagerModules.sops
                 inputs.stylix.homeManagerModules.stylix
                 ./nix/users/${username}/home.nix
               ]
@@ -173,6 +179,7 @@
                 {nixpkgs = nixpkgsConfig {inherit system;};}
                 inputs.stylix.nixosModules.stylix
                 inputs.kmonad.nixosModules.default
+                inputs.sops-nix.nixosModules.sops
                 ./nix/system/${name}/configuration.nix
               ]
               ++ additionalModules;
