@@ -3,7 +3,12 @@
   inputs,
   ...
 }: let
-  mylib = import ./mylib.nix {inherit lib;};
+  mylib = {
+    attrsKeys = lib.mapAttrsToList (k: _: k);
+    attrsVals = lib.mapAttrsToList (_: v: v);
+    nixPath = lib.mapAttrsToList (k: _: "${k}=flakes:${k}");
+    nixRegistry = lib.mapAttrs (_: flake: {inherit flake;});
+  };
   cache = {
     "https://cache.iog.io" = "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=";
     "https://nix-community.cachix.org" = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";

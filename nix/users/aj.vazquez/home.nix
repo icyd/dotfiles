@@ -21,16 +21,12 @@ in {
     MANPATH = "${brewPrefix}/opt/coreutils/libexec/gnuman:$MANPATH";
     PATH = "${brewPrefix}/opt/coreutils/libexec/gnubin:${brewPrefix}/bin:$PATH";
   };
-  programs.git = let
-    ssh_dir = "${config.home.homeDirectory}/.ssh";
-  in {
+  programs.git = {
     aliases.p4 = "/usr/local/bin/git-p4";
     extraConfig = {
-      commit.gpgsign = true;
-      gpg.format = "ssh";
-      gpg.ssh.allowedSignersFile = "${ssh_dir}/allowed_signers";
-      user.signingkey = "${ssh_dir}/id_ed25519_sk.pub";
+      user.signingkey = lib.mkForce "${config.home.homeDirectory}/id_ed25519_sk.pub";
     };
+    userEmail = "aj.vazquez@globant.com";
   };
   # programs.ssh.enable = true;
   home.stateVersion = "22.05";
@@ -57,18 +53,18 @@ in {
       yubikey-manager
     ]
     ++ [nixvim];
-    programs.nushell.extraEnv = ''
-      $env.SSH_ASKPASS = "${brewPrefix}/bin/ssh-askpass"
-      $env.SSH_ASKPASS_REQUIRE = "prefer"
-      ${lib.getExe pkgs.keychain} --agents ssh --eval --quiet id_ed25519_sk
-        | lines
-        | where not ($it | is-empty)
-        | parse "{name}={value}; export {name2};"
-        | reject name2
-        | transpose --header-row
-        | into record
-        | load-env
-    '';
+  programs.nushell.extraEnv = ''
+    $env.SSH_ASKPASS = "${brewPrefix}/bin/ssh-askpass"
+    $env.SSH_ASKPASS_REQUIRE = "prefer"
+    ${lib.getExe pkgs.keychain} --agents ssh --eval --quiet id_ed25519_sk
+      | lines
+      | where not ($it | is-empty)
+      | parse "{name}={value}; export {name2};"
+      | reject name2
+      | transpose --header-row
+      | into record
+      | load-env
+  '';
   xdg.configFile = {
     kmonad = {
       source = ../../../kmonad/darwin_m1.kbd;

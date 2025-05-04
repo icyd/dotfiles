@@ -102,6 +102,7 @@
     enable = true;
     settings.keyserver = "hkps://keys.openpgp.org";
   };
+  programs.git.userEmail = "beto.v25@gmail.com";
   services = {
     pueue = {
       enable = true;

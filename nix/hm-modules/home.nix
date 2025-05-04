@@ -84,6 +84,9 @@ in {
       EDITOR = pkgs.lib.getExe pkgs.nixvimin;
     in rec {
       inherit DOTFILES EDITOR;
+      AGE_IDENTITY = "${config.xdg.configHome}/sops/age/keys.txt";
+      AGE_RECIPIENT_FILE = "${config.xdg.configHome}/sops/age/recipient.txt";
+      AGE_RECIPIENT = "$(cat ${AGE_RECIPIENT_FILE})";
       BROWSER = "firefox";
       NH_FLAKE = DOTFILES;
       LEDGER_DATE_FORMAT = "%Y/%m/%d";
@@ -92,6 +95,7 @@ in {
       ORGMODE_HOME = "$HOME/Dropbox";
       PAGER = "less";
       PASSWORD_STORE_GENERATED_LENGTH = 12;
+      SOPS_AGE_KEY_FILE = AGE_IDENTITY;
       VISUAL = EDITOR;
       VIMWIKI_HOME = ORGMODE_HOME;
     };

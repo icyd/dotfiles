@@ -22,14 +22,6 @@ in {
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
-  # environment.etc."pkcs11/modules/opensc-pkcs11".text = ''
-  #   module: ${pkgs.opensc}/lib/opensc-pkcs11.so
-  # '';
-  # environment.etc."pkcs11/modules/dnie-pkcs11".text = ''
-  #   module: ${
-  #     (pkgs.callPackage ../../modules/dnie.nix { })
-  #   }/usr/lib/libpkcs11-dnie.so
-  # '';
   documentation.man.generateCaches = true;
   environment.sessionVariables = {
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/${username}/.steam/root/compatibilitytools.d";
@@ -281,13 +273,6 @@ in {
         layout = "us";
         variant = "altgr-intl";
         options = "lv3:ralt_switch,shift:breaks_caps,grp:alt_space_toggle";
-        # extraLayouts = {
-        #   icydenthium = {
-        #     description = "IcydEnthium";
-        #     languages = ["eng"];
-        #     symbolsFile = "${inputs.xkb.outPath}/linux/symbols/IcydEnthium.xkb";
-        #   };
-        # };
       };
     };
   };

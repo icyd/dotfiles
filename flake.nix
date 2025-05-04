@@ -5,7 +5,6 @@
       url = "github:tesujimath/bash-env-json/main";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-
     bash-env-nushell = {
       url = "github:tesujimath/bash-env-nushell/main";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -19,11 +18,6 @@
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # hyprland.url = "github:hyprwm/Hyprland";
-    # hyprland-plugins = {
-    #   url = "github:hyprwm/hyprland-plugins";
-    #   inputs.hyprland.follows = "hyprland";
-    # };
     impermanence.url = "github:nix-community/impermanence";
     kmonad = {
       url = "github:kmonad/kmonad?dir=nix";
@@ -48,10 +42,6 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    xkb = {
-      url = "github:icyd/icyd-layouts/dev";
-      flake = false;
-    };
     zjstatus = {
       url = "github:dj95/zjstatus";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -62,9 +52,26 @@
     systems,
     ...
   } @ inputs: let
-    definitions = import ./nix/definitions.nix {inherit inputs;};
-    users = definitions.users;
-    nixpkgsConfig = definitions.nixpkgsConfig;
+    nixpkgsConfig = {system}: let
+      unstable = import inputs.nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in {
+      inherit system;
+      config.allowUnfree = true;
+      overlays = [
+        (_self: super: {
+          inherit unstable;
+          bash-env-json = inputs.bash-env-json.packages.${system}.default;
+          bash-env-nushell = inputs.bash-env-nushell.packages.${system}.default;
+          nixvim = inputs.nixvim.packages.${system}.default;
+          nixvimin = inputs.nixvim.packages.${system}.nvimin;
+          zjstatus = inputs.zjstatus.packages.${super.system}.default;
+        })
+        inputs.nur.overlays.default
+      ];
+    };
     forAllSystems = inputs.nixpkgs.lib.genAttrs (import systems);
     eachSystem = f: forAllSystems (system: f inputs.nixpkgs.legacyPackages.${system});
     treefmtEval = eachSystem (pkgs: inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
@@ -114,7 +121,7 @@
       )
       {
         "ES-IT00385" = {
-          username = users.darwin.username;
+          username = "aj.vazquez";
           system = "aarch64-darwin";
         };
       };
@@ -123,7 +130,6 @@
       builtins.mapAttrs
       (
         username: {
-          email,
           system,
           additionalModules ? [],
         }:
@@ -138,18 +144,16 @@
               ]
               ++ additionalModules;
             extraSpecialArgs = {
-              inherit username email inputs;
+              inherit username inputs;
             };
           }
       )
       {
-        "${users.linux.username}" = {
-          email = users.linux.email;
+        "beto" = {
           system = "x86_64-linux";
           additionalModules = [inputs.impermanence.nixosModules.home-manager.impermanence];
         };
-        "${users.darwin.username}" = {
-          email = users.darwin.email;
+        "aj.vazquez" = {
           system = "aarch64-darwin";
         };
       };
@@ -180,7 +184,7 @@
       {
         "legionix5" = {
           system = "x86_64-linux";
-          username = users.linux.username;
+          username = "beto";
           additionalModules = [
             inputs.impermanence.nixosModules.impermanence
             inputs.nixos-hardware.nixosModules.lenovo-legion-15arh05h

@@ -472,3 +472,5 @@ def --env dirup [idx: int = 1] {
 }
 
 def --env mkcd [directory: string] {mkdir $directory; cd $directory}
+
+def --wrapped lg [...args] {SHELL="nu" lazygit ...$args}
