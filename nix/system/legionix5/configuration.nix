@@ -123,6 +123,7 @@ in {
     };
     package = pkgs.nixVersions.stable;
     settings = {
+      download-buffer-size = 536870912;
       trusted-users = [
         "root"
         "@wheel"

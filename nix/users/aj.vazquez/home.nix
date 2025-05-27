@@ -14,13 +14,19 @@
         paths = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.lua_snippets.local";
       }
     ];
+  nixvimin = pkgs.nixvimin.extend {
+    plugins.luasnip.fromLua = [
+      {
+        paths = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.lua_snippets.local";
+      }
+    ];
   };
 in {
   imports = [../../hm-modules/home.nix];
   home.sessionVariables = {
     MANPATH = "${brewPrefix}/opt/coreutils/libexec/gnuman:$MANPATH";
     PATH = "${brewPrefix}/opt/coreutils/libexec/gnubin:${brewPrefix}/bin:$PATH";
-    SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.yubikey-identity.txt";
+    EDITOR = lib.mkForce (pkgs.lib.getExe nixvimin);
   };
   programs.git = {
     aliases.p4 = "/usr/local/bin/git-p4";
@@ -36,7 +42,7 @@ in {
     [
       awscli2
       crane
-      unstable.checkov
+      checkov
       conftest
       helm-docs
       helmfile

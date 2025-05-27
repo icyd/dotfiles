@@ -7,6 +7,7 @@
     gnupg
     home-manager
     nix-output-monitor
+    nh
     nvd
     vim
   ];
@@ -57,6 +58,7 @@
     };
   };
   nix = {
+    enable = true;
     extraOptions = ''
       experimental-features = nix-command flakes
       extra-platforms = x86_64-darwin aarch64-darwin
@@ -67,6 +69,7 @@
     };
     package = pkgs.nixVersions.stable;
     settings = {
+      download-buffer-size = 536870912;
       substituters = ["https://toyvo.cachix.org"];
       trusted-public-keys = ["toyvo.cachix.org-1:s++CG1te6YaS9mjICre0Ybbya2o/S9fZIyDNGiD4UXs="];
       trusted-users = [
@@ -76,11 +79,10 @@
       ];
     };
   };
-  programs.nh.enable = true;
   programs.gnupg.agent = {
     enable = true;
   };
   programs.zsh.enable = true;
-  services.nix-daemon.enable = true;
   system.stateVersion = 4;
+  system.primaryUser = username;
 }

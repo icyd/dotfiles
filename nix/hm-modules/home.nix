@@ -19,7 +19,6 @@ in {
     ./fzf.nix
     ./git.nix
     ./gpg.nix
-    ./nix-your-shell.nix
     ./nushell.nix
     ./starship.nix
     ../modules/stylix.nix
@@ -35,46 +34,45 @@ in {
       '';
       ".scripts".source = ../../scripts;
     };
-    packages = with pkgs; [
-      age-plugin-yubikey
-      age-plugin-fido2-hmac
-      binutils
-      devenv
-      devbox
-      eza
-      fd
-      fish
-      gopass
-      gopass-jsonapi
-      git-credential-gopass
-      hwatch
-      hyperfine
-      imagemagick
-      jq
-      lazygit
-      minisign
-      mosh
-      (nerdfonts.override {
-        fonts = [
-          "AnonymousPro"
-          "Hack"
-          "Inconsolata"
-          "Meslo"
-          "SourceCodePro"
-        ];
-      })
-      pandoc
-      procs
-      rage
-      ripgrep
-      sd
-      unstable.sops
-      texliveSmall
-      yq-go
-      yubikey-manager
-      zathura
-      zenith
-    ];
+    packages =
+      (with pkgs; [
+        age-plugin-yubikey
+        age-plugin-fido2-hmac
+        binutils
+        devenv
+        devbox
+        eza
+        fd
+        fish
+        flox
+        gopass
+        gopass-jsonapi
+        git-credential-gopass
+        hwatch
+        hyperfine
+        imagemagick
+        jq
+        minisign
+        mosh
+        pandoc
+        procs
+        rage
+        ripgrep
+        sd
+        sops
+        texliveSmall
+        yq-go
+        yubikey-manager
+        zathura
+        zenith
+      ])
+      ++ (with pkgs.nerd-fonts; [
+        anonymice
+        hack
+        inconsolata
+        meslo-lg
+        sauce-code-pro
+      ]);
     sessionPath = [
       "/usr/local/bin"
       "$HOME/.local/bin/"
@@ -110,14 +108,18 @@ in {
     nix-direnv.enable = true;
   };
   programs.home-manager.enable = true;
-  programs.man.generateCaches = true;
-  programs.nix-your-shell = {
+  programs.lazygit = {
     enable = true;
-    package = pkgs.unstable.nix-your-shell;
+    settings = {
+      os = {
+        editPreset = "nvim-remote";
+      };
+    };
   };
+  programs.man.generateCaches = true;
+  programs.nix-your-shell.enable = true;
   programs.wezterm = {
     enable = true;
-    package = pkgs.unstable.wezterm;
     extraConfig = with config.lib.stylix.colors.withHashtag;
       lib.mkMerge [
         ''
@@ -127,9 +129,6 @@ in {
         (builtins.readFile ../../wezterm/wezterm.lua)
       ];
   };
-  programs.zoxide = {
-    enable = true;
-    package = pkgs.unstable.zoxide;
-  };
+  programs.zoxide.enable = true;
   xdg.enable = true;
 }

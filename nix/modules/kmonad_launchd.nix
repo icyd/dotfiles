@@ -1,7 +1,12 @@
-{ config, lib, pkgs, ... }: let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.services.kmonad;
   kmonad_bin = "/usr/local/bin/kmonad";
-  keyboard = { name, ... }: {
+  keyboard = {name, ...}: {
     options = {
       name = lib.mkOption {
         type = lib.types.str;
@@ -23,35 +28,32 @@
     };
   };
 
-  mkCfg = keyboard:
-    let
-      defcfg = ''
-        (defcfg
-          input (iokit-name "${keyboard.device}")
-          output (kext)
-          fallthrough ${lib.boolToString keyboard.defcfg.fallthrough}
-        )
-      '';
-    in
+  mkCfg = keyboard: let
+    defcfg = ''
+      (defcfg
+        input (iokit-name "${keyboard.device}")
+        output (kext)
+        fallthrough ${lib.boolToString keyboard.defcfg.fallthrough}
+      )
+    '';
+  in
     pkgs.writeTextFile {
       name = "kmonad-${keyboard.name}.kbd";
       text = lib.optionalString keyboard.defcfg.enable (defcfg + "\n") + keyboard.config;
       checkPhase = "${kmonad_bin} -d $out";
     };
-  mkService = keyboard:
-    let
-      cmd = [ kmonad_bin ] ++ cfg.extraArgs ++ [ "${mkCfg keyboard}"];
-      name = "kmonad-${keyboard.name}";
-    in
-      {
-        inherit name;
-        value.serviceConfig = {
-          ProgramArguments = cmd;
-          RunAtLoad = true;
-          StandardOutPath = "/var/log/${name}.out.log";
-          StandardErrorPath = "/var/log/${name}.err.log";
-        };
-      };
+  mkService = keyboard: let
+    cmd = [kmonad_bin] ++ cfg.extraArgs ++ ["${mkCfg keyboard}"];
+    name = "kmonad-${keyboard.name}";
+  in {
+    inherit name;
+    value.serviceConfig = {
+      ProgramArguments = cmd;
+      RunAtLoad = true;
+      StandardOutPath = "/var/log/${name}.out.log";
+      StandardErrorPath = "/var/log/${name}.err.log";
+    };
+  };
   services = builtins.listToAttrs (map mkService (builtins.attrValues cfg.keyboards));
 in {
   options.services.kmonad = {

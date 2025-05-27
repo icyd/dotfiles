@@ -3,19 +3,20 @@
   inputs = {
     bash-env-json = {
       url = "github:tesujimath/bash-env-json/main";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     bash-env-nushell = {
       url = "github:tesujimath/bash-env-nushell/main";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.bash-env-json.follows = "bash-env-json";
     };
     darwin = {
-      url = "github:lnl7/nix-darwin/nix-darwin-24.11";
+      url = "github:lnl7/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flox.url = "github:flox/flox/v1.4.2";
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence.url = "github:nix-community/impermanence";
@@ -23,10 +24,9 @@
       url = "github:kmonad/kmonad?dir=nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nh_plus.url = "github:ToyVo/nh_plus";
     nix-colors.url = "github:misterio77/nix-colors";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    nixpkgs.url = "github:NixOs/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOs/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixvim.url = "github:icyd/nixvim";
     nur.url = "github:nix-community/NUR";
@@ -35,7 +35,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix = {
-      url = "github:danth/stylix/release-24.11";
+      url = "github:danth/stylix/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
@@ -69,6 +69,7 @@
           inherit unstable;
           bash-env-json = inputs.bash-env-json.packages.${system}.default;
           bash-env-nushell = inputs.bash-env-nushell.packages.${system}.default;
+          flox = inputs.flox.${system}.default;
           nixvim = inputs.nixvim.packages.${system}.default;
           nixvimin = inputs.nixvim.packages.${system}.nvimin;
           zjstatus = inputs.zjstatus.packages.${super.system}.default;
@@ -113,8 +114,6 @@
             modules =
               [
                 ./nix/system/darwin/darwin-configuration.nix
-                inputs.nh_plus.nixDarwinModules.prebuiltin
-                # inputs.nh_plus.nixDarwinModules.default
                 inputs.sops-nix.darwinModules.sops
                 inputs.stylix.darwinModules.stylix
               ]
@@ -145,7 +144,7 @@
             modules =
               [
                 inputs.sops-nix.homeManagerModules.sops
-                inputs.stylix.homeManagerModules.stylix
+                inputs.stylix.homeModules.stylix
                 ./nix/users/${username}/home.nix
               ]
               ++ additionalModules;

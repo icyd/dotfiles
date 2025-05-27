@@ -4,15 +4,11 @@
   pkgs,
   ...
 }: {
-  home.packages = with pkgs.unstable; [
-    nushellPlugins.skim
-  ];
   programs.carapace.enable = true;
   programs.nushell = let
     buf_editor = pkgs.lib.getExe pkgs.nixvimin;
   in {
     enable = true;
-    package = pkgs.unstable.nushell;
     shellAliases = {
       "~docs" = ''cd $"($env.HOME)/Documents"'';
       "~dot" = ''cd $env.DOTFILES'';

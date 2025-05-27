@@ -5,6 +5,7 @@
     cursor = {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Ice";
+      size = 14;
     };
     fonts = let
       package = pkgs.dejavu_fonts;
@@ -19,7 +20,7 @@
         name = "DejaVu Sans";
       };
       monospace = {
-        package = pkgs.nerdfonts.override {fonts = ["AnonymousPro"];};
+        package = pkgs.nerd-fonts.anonymice;
         name = "AnonymicePro Nerd Font";
       };
     };

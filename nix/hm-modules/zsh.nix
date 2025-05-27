@@ -42,7 +42,7 @@ in {
       size = 10000;
       path = "${config.xdg.dataHome}/zsh/history";
     };
-    initExtra = ''
+    initContent = ''
       autoload -Uz +X edit-command-line
       autoload -Uz +X zcalc
 
