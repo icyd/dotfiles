@@ -166,7 +166,6 @@ in {
         rocmPackages.clr.icd
       ];
     };
-    pulseaudio.enable = false;
   };
   imports = [(modulesPath + "/installer/scan/not-detected.nix")];
   fileSystems = {

@@ -69,7 +69,7 @@
           inherit unstable;
           bash-env-json = inputs.bash-env-json.packages.${system}.default;
           bash-env-nushell = inputs.bash-env-nushell.packages.${system}.default;
-          flox = inputs.flox.${system}.default;
+          flox = inputs.flox.packages.${system}.default;
           nixvim = inputs.nixvim.packages.${system}.default;
           nixvimin = inputs.nixvim.packages.${system}.nvimin;
           zjstatus = inputs.zjstatus.packages.${super.system}.default;

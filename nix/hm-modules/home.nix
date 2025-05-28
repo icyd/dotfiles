@@ -117,6 +117,7 @@ in {
     };
   };
   programs.man.generateCaches = true;
+  programs.nix-index.enable = true;
   programs.nix-your-shell.enable = true;
   programs.wezterm = {
     enable = true;

@@ -33,6 +33,7 @@
     gcc
     gcc-arm-embedded
     glibc
+    haruna
     kicad-unstable-small
     libreoffice-fresh
     lutris
@@ -112,11 +113,16 @@
       };
     };
   };
-  stylix.iconTheme = {
-    enable = true;
-    package = pkgs.papirus-icon-theme;
-    dark = "Papirus-Dark";
-    light = "Papirus-Light";
+  stylix = {
+    iconTheme = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
+    targets.firefox.profileNames = [
+      "default"
+    ];
   };
   xdg.configFile = {
     gammastep.source = ../../../sway/gammastep;

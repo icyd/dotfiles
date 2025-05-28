@@ -14,12 +14,15 @@
   '';
 in {
   home.packages = with pkgs; [
+    alacritty
     rofipass
     grim
     slurp
     swww
     unstable.wezterm
+    wdisplays
     wl-clipboard
+    wlogout
   ];
   programs.hyprlock.enable = true;
   programs.rofi = {

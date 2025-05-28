@@ -6,7 +6,11 @@
   mylib = {
     attrsKeys = lib.mapAttrsToList (k: _: k);
     attrsVals = lib.mapAttrsToList (_: v: v);
-    nixPath = lib.mapAttrsToList (k: _: "${k}=flakes:${k}");
+    nixPath = lib.mapAttrsToList (k: _: "${k}=/etc/nix/channels/${k}");
+    nixPathLinks = lib.mapAttrs' (k: v: {
+      name = "nix/channels/${k}";
+      value = {source = v.outPath;};
+    });
     nixRegistry = lib.mapAttrs (_: flake: {inherit flake;});
   };
   cache = {
@@ -17,12 +21,15 @@
   };
   substituters = mylib.attrsKeys cache;
   trusted-public-keys = mylib.attrsVals cache;
+  nixpkgsFlakes = lib.filterAttrs (k: _: lib.hasPrefix "nixpkgs" k) inputs;
 in {
   nix = {
-    nixPath = mylib.nixPath inputs;
-    registry = mylib.nixRegistry inputs;
+    channel.enable = true;
+    nixPath = mylib.nixPath nixpkgsFlakes;
+    registry = mylib.nixRegistry nixpkgsFlakes;
     settings = {
       inherit substituters trusted-public-keys;
     };
   };
+  environment.etc = mylib.nixPathLinks nixpkgsFlakes;
 }

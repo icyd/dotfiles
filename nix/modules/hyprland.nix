@@ -11,6 +11,7 @@
     portalPackage = pkgs.xdg-desktop-portal-hyprland;
     xwayland.enable = true;
   };
+  programs.light.enable = true;
   security.pam.services.hyprlock = {};
   xdg.portal = {
     enable = true;

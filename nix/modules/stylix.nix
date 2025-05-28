@@ -5,12 +5,16 @@
     cursor = {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Ice";
-      size = 14;
+      size = 24;
     };
     fonts = let
       package = pkgs.dejavu_fonts;
     in {
-      sizes.terminal = 15;
+      sizes = {
+        applications = 14;
+        desktop = 14;
+        terminal = 15;
+      };
       serif = {
         inherit package;
         name = "DejaVu Serif";

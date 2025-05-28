@@ -31,7 +31,6 @@ in {
     arc-theme
     autogen
     binutils
-    breeze-icons
     capitaine-cursors
     cmake
     configure-gtk
@@ -51,6 +50,8 @@ in {
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
     gst_all_1.gst-plugins-bad
+    kdePackages.breeze-icons
+    kdePackages.okular
     gnumake
     google-chrome
     mangohud
@@ -61,7 +62,6 @@ in {
     ntfs3g
     nvd
     openssl
-    okular
     papirus-icon-theme
     pavucontrol
     podman-compose
@@ -82,20 +82,20 @@ in {
   ];
   fonts = {
     enableDefaultPackages = true;
-    packages = with pkgs; [
-      cantarell-fonts
-      eb-garamond
-      fira-code
-      liberation_ttf
-      roboto
-      (nerdfonts.override {
-        fonts = [
-          "SourceCodePro"
-          "Meslo"
-          "Noto"
-        ];
-      })
-    ];
+    packages =
+      (with pkgs; [
+        cantarell-fonts
+        eb-garamond
+        fira-code
+        liberation_ttf
+        roboto
+      ])
+      ++ (with pkgs.nerd-fonts; [
+        anonymice
+        meslo-lg
+        noto
+        sauce-code-pro
+      ]);
     fontconfig.enable = true;
   };
   i18n.defaultLocale = "en_US.UTF-8";
@@ -109,7 +109,7 @@ in {
     ../../modules/gnome.nix
     ../../modules/hyprland.nix
     ../../modules/stylix.nix
-    ../../modules/sway.nix
+    # ../../modules/sway.nix
     ../../modules/virtualisation.nix
   ];
   nix = {
@@ -242,6 +242,7 @@ in {
       enable = true;
       pulse.enable = true;
     };
+    pulseaudio.enable = false;
     # udev.extraRules = (builtins.readFile ./udev.rules);
     udev.packages = lib.lists.singleton (
       pkgs.writeTextFile {

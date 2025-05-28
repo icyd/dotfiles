@@ -127,7 +127,28 @@ $env.config = {
       }]
     }
     display_output: "if (term size).columns >= 100 { table -e } else { table }" # run to display the output of a pipeline
-    command_not_found: { null } # return an error message when a command is not found
+    command_not_found: {|cmd|
+        let install = {|pkgs| $pkgs | each {|p| $"   nix shell nixpkgs#($p)"}}
+        let run = {|pkgs| $pkgs | each {|p| $"   nix shell nixpkgs#($p) --command '($cmd) ...'"}}
+        let msg = {|pkgs|
+            if ($pkgs | length) == 0 {
+                return null
+            }
+
+            [
+                $"The program `($cmd)` is currently not installed."
+                ""
+                "You can install it in the current shell with:"
+                (do $install $pkgs | str join "\n")
+                ""
+                "Or run it once with:"
+                (do $run $pkgs | str join "\n")
+            ] | str join "\n"
+        }
+        let pkgs = ^nix-locate --minimal --no-group --type x --type s --top-level --whole-name --at-root $"/bin/($cmd)"
+            | lines
+        do $msg $pkgs
+    }
   }
 
   menus: [
