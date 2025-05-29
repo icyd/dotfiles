@@ -32,9 +32,8 @@ in {
     aliases.p4 = "/usr/local/bin/git-p4";
     userEmail = lib.mkForce "avazquez@contractor.ea.com";
     extraConfig = {
-      user.signingkey = lib.mkForce "${config.home.homeDirectory}/id_ed25519_sk.pub";
+      user.signingkey = lib.mkForce "${config.home.homeDirectory}/.ssh/id_ed25519_sk.pub";
     };
-    userEmail = "aj.vazquez@globant.com";
   };
   # programs.ssh.enable = true;
   home.stateVersion = "22.05";
