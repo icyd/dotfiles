@@ -14,6 +14,7 @@
         paths = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.lua_snippets.local";
       }
     ];
+  };
   nixvimin = pkgs.nixvimin.extend {
     plugins.luasnip.fromLua = [
       {
