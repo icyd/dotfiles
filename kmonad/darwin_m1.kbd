@@ -11,22 +11,21 @@
   qwt (layer-switch qwerty)
   eth (layer-switch enthium)
   alt_y (tap-hold-next-release 200 y ralt)
-  met_c (tap-hold-next-release 200 c lmet)
-  alt_i (tap-hold-next-release 200 i lalt)
+  alt_c (tap-hold-next-release 200 c lalt)
+  met_i (tap-hold-next-release 200 i lmet)
   ctl_e (tap-hold-next-release 200 e lctl)
   sft_a (tap-hold-next-release 200 a lsft)
-
   alt_w (tap-hold-next-release 200 w ralt)
   sft_h (tap-hold-next-release 200 h rsft)
   ctl_t (tap-hold-next-release 200 t lctl)
-  alt_n (tap-hold-next-release 200 n lalt)
-  met_s (tap-hold-next-release 200 s rmet)
+  met_n (tap-hold-next-release 200 n lmet)
+  alt_s (tap-hold-next-release 200 s ralt)
 )
 
 (deflayer enthium
   lsgt 1      2      3      4      5    6    7      8      9      0      _    _    bspc
   _    q      @alt_y o      u      ;    x    l      d      @alt_w z      [    ]    \
-  b    @met_c @alt_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @alt_n @met_s v
+  b    @alt_c @met_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @met_n @alt_s v
   _    grv    '      /      =      -    .    j      m      g      p      f    _
   @fn  _      _      _                  _                  r      _
 )
