@@ -10,6 +10,7 @@
   fn (around (layer-toggle function) fn)
   qwt (layer-switch qwerty)
   eth (layer-switch enthium)
+  cw  (layer-switch capsword)
   alt_y (tap-hold-next-release 200 y ralt)
   alt_c (tap-hold-next-release 200 c lalt)
   met_i (tap-hold-next-release 200 i lmet)
@@ -20,6 +21,7 @@
   ctl_t (tap-hold-next-release 200 t lctl)
   met_n (tap-hold-next-release 200 n lmet)
   alt_s (tap-hold-next-release 200 s ralt)
+  unds  (around-implicit lsft -)
 )
 
 (deflayer enthium
@@ -30,18 +32,26 @@
   @fn  _      _      _                  _                  r      _
 )
 
+(deflayer capsword
+  _    _      _      _      _      _     _    _      _      _      _      _    _    _
+  _    Q      Y      O      U      _     X    L      D      W      Z      _    _    _
+  B    C      I      E      A      _     K    H      T      N      S      V
+  @eth _      _      _      _      @unds _    J      M      G      P      F    @eth
+  _    _      _      _                   _                  R      _
+)
+
 (deflayer qwerty
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   _    q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '
   _    lsgt z    x    c    v    b    n    m    ,    .    /    _
-  @fn  _    _    _              _              rmet _
+  _    _    _    _              _              rmet _
 )
 
 (deflayer function
   _    _    _    _    _    _    _    _    _    _    _    @qwt @eth del
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _
+  @cw  _    _    _    _    _    _    _    _    _    _    _    @cw
   _    _    _    _              _              _    _
 )

@@ -228,8 +228,8 @@ config.leader = { key = "a", mods = "CTRL" }
 config.disable_default_key_bindings = true
 config.quick_select_alphabet = "cieabyougxjkhtsnldwvrmpz"
 config.quick_select_patterns = {
-    '[0-9a-f]{7,40}',
-};
+    "[0-9a-f]{7,40}",
+}
 
 config.keys = {
     -- Send "CTRL-A" to the terminal when pressing CTRL-A, CTRL-A
@@ -272,8 +272,8 @@ config.keys = {
     bind_if(is_outside_vim, "j", "SUPER", act.ActivatePaneDirection("Down")),
     bind_if(is_outside_vim, "k", "SUPER", act.ActivatePaneDirection("Up")),
     bind_if(is_outside_vim, "l", "SUPER", act.ActivatePaneDirection("Right")),
-    { key = "r", mods = "LEADER", action = act.RotatePanes("Clockwise")},
-    { key = "R", mods = "LEADER", action = act.RotatePanes("CounterClockwise")},
+    { key = "r", mods = "LEADER", action = act.RotatePanes("Clockwise") },
+    { key = "R", mods = "LEADER", action = act.RotatePanes("CounterClockwise") },
     {
         key = "C",
         mods = "LEADER",
@@ -307,17 +307,17 @@ config.keys = {
     -- Clears the scrollback and viewport, and then sends CTRL-L to ask the
     -- shell to redraw its prompt
     {
-      key = 'l',
-      mods = 'CTRL',
-      action = act.Multiple {
-        act.ClearScrollback 'ScrollbackAndViewport',
-        act.SendKey { key = 'L', mods = 'CTRL' },
-      },
+        key = "l",
+        mods = "CTRL",
+        action = act.Multiple({
+            act.ClearScrollback("ScrollbackAndViewport"),
+            act.SendKey({ key = "L", mods = "CTRL" }),
+        }),
     },
     {
-      key = 'R',
-      mods = 'LEADER',
-      action = act.ActivateKeyTable({name = 'resize_pane', one_shot = false}),
+        key = "R",
+        mods = "LEADER",
+        action = act.ActivateKeyTable({ name = "resize_pane", one_shot = false }),
     },
 }
 config.key_tables = {
@@ -368,20 +368,21 @@ config.key_tables = {
         },
     },
     search_mode = {
-      { key = "Escape", mods = "NONE", action = act.CopyMode("Close") },
-      { key = "n", mods = "CTRL", action = act.CopyMode("NextMatch") },
-      { key = "p", mods = "CTRL", action = act.CopyMode("PriorMatch") },
-      { key = "N", mods = "CTRL", action = act.CopyMode("NextMatchPage") },
-      { key = "P", mods = "CTRL", action = act.CopyMode("PriorMatchPage") },
-      { key = "r", mods = "CTRL", action = act.CopyMode("CycleMatchType") },
-      { key = "u", mods = "CTRL", action = act.CopyMode("ClearPattern") },
+        { key = "Escape", mods = "NONE", action = act.CopyMode("Close") },
+        { key = "[", mods = "CTRL", action = act.CopyMode("Close") },
+        { key = "n", mods = "CTRL", action = act.CopyMode("NextMatch") },
+        { key = "p", mods = "CTRL", action = act.CopyMode("PriorMatch") },
+        { key = "N", mods = "CTRL", action = act.CopyMode("NextMatchPage") },
+        { key = "P", mods = "CTRL", action = act.CopyMode("PriorMatchPage") },
+        { key = "r", mods = "CTRL", action = act.CopyMode("CycleMatchType") },
+        { key = "u", mods = "CTRL", action = act.CopyMode("ClearPattern") },
     },
     resize_pane = {
-      { key = 'h', action = act.AdjustPaneSize { 'Left', 1 } },
-      { key = 'l', action = act.AdjustPaneSize { 'Right', 1 } },
-      { key = 'k', action = act.AdjustPaneSize { 'Up', 1 } },
-      { key = 'j', action = act.AdjustPaneSize { 'Down', 1 } },
-      { key = 'Escape', action = 'PopKeyTable' },
+        { key = "h", action = act.AdjustPaneSize({ "Left", 1 }) },
+        { key = "l", action = act.AdjustPaneSize({ "Right", 1 }) },
+        { key = "k", action = act.AdjustPaneSize({ "Up", 1 }) },
+        { key = "j", action = act.AdjustPaneSize({ "Down", 1 }) },
+        { key = "Escape", action = "PopKeyTable" },
     },
 }
 

@@ -71,10 +71,4 @@ in {
       | into record
       | load-env
   '';
-  xdg.configFile = {
-    kmonad = {
-      source = ../../../kmonad/darwin_m1.kbd;
-      target = "config.kbd";
-    };
-  };
 }
