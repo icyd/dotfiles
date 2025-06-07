@@ -21,23 +21,23 @@
   ctl_t (tap-hold-next-release 200 t lctl)
   met_n (tap-hold-next-release 200 n lmet)
   alt_s (tap-hold-next-release 200 s ralt)
-  unds  (around-implicit lsft -)
+  sym_f (tap-hold-next-release 200 f (layer-toggle symbol))
 )
 
 (deflayer enthium
-  lsgt 1      2      3      4      5    6    7      8      9      0      _    _    bspc
-  _    q      @alt_y o      u      ;    x    l      d      @alt_w z      [    ]    \
+  lsgt 1      2      3      4      5    6    7      8      9      0      -      =    bspc
+  _    q      @alt_y o      u      ;    x    l      d      @alt_w z      [      ]    \
   b    @alt_c @met_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @met_n @alt_s v
-  _    grv    '      /      =      -    .    j      m      g      p      f    _
+  _    grv    '      /      =      -    .    j      m      g      p      @sym_f _
   @fn  _      _      _                  _                  r      _
 )
 
 (deflayer capsword
-  _    _      _      _      _      _     _    _      _      _      _      _    _    _
-  _    Q      Y      O      U      _     X    L      D      W      Z      _    _    _
-  B    C      I      E      A      _     K    H      T      N      S      V
-  @eth _      _      _      _      @unds _    J      M      G      P      F    @eth
-  _    _      _      _                   _                  R      _
+  lsgt 1      2      3      4      5     6    7      8      9      0      -    =    bspc
+  _    Q      Y      O      U      ;     X    L      D      W      Z      [    ]    \
+  B    C      I      E      A      ,     K    H      T      N      S      V
+  @eth grv    '      /      =      S--   .    J      M      G      P      F    @eth
+  @fn  _      _      _                   _                  R      _
 )
 
 (deflayer qwerty
@@ -45,7 +45,15 @@
   _    q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '
   _    lsgt z    x    c    v    b    n    m    ,    .    /    _
-  _    _    _    _              _              rmet _
+  @fn  _    _    _              _              rmet _
+)
+
+(deflayer symbol
+  grv  S-1  S-2  S-3  S-4   S-5  6    7    8    9    0    -    =
+  _    S-6  S-[  S-]  \     S-;  _    _    _    _    _    _    _    _
+  S-7  [    S-9  S-0  ]     S-,  _    _    _    _    _    _
+  lsft grv  S-\  S-8  S-grv S-.  _    _    _    _    _    _
+  @fn  _    _    _          _              _    _
 )
 
 (deflayer function
@@ -53,5 +61,5 @@
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _    _    _    _    _    _    _    _    _    _
   @cw  _    _    _    _    _    _    _    _    _    _    _    @cw
-  _    _    _    _              _              _    _
+  @fn  _    _    _              _              _    _
 )

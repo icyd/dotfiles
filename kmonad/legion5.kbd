@@ -1,13 +1,13 @@
 (defsrc
-  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '
   lsft z    x    c    v    b    n    m    ,    .    /    rsft
-  lctl fn   lmet lalt           spc            ralt rctl
+  lctl lmet lalt           spc            ralt rctl
 )
 
 (defalias
-  fn (around (layer-toggle function) fn)
+  fn (around (layer-toggle function) lctl)
   qwt (layer-switch qwerty)
   eth (layer-switch enthium)
   cw  (layer-switch capsword)
@@ -16,43 +16,50 @@
   alt_i (tap-hold-next-release 200 i lalt)
   ctl_e (tap-hold-next-release 200 e lctl)
   sft_a (tap-hold-next-release 200 a lsft)
-
   alt_w (tap-hold-next-release 200 w ralt)
   sft_h (tap-hold-next-release 200 h rsft)
   ctl_t (tap-hold-next-release 200 t lctl)
   alt_n (tap-hold-next-release 200 n lalt)
   met_s (tap-hold-next-release 200 s rmet)
-  unds  (around-implicit lsft -)
+  sym_f (tap-hold-next-release 200 f (layer-toggle symbol))
 )
 
 (deflayer enthium
-  _    _      _      _      _      _    _    _      _      _      _      _    _    bspc
+  grv  1      2      3      4      5    6    7      8      9      0      -    =
   _    q      @alt_y o      u      ;    x    l      d      @alt_w z      [    ]    \
   b    @met_c @alt_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @alt_n @met_s v
-  _    '      /      =      -      .    j      m      g      p      f    _
-  _    @fn    _      _                  _                    r    _
+  _    '      /      =      -      .    j      m      g      p    @sym_f _
+  @fn    _      _                    _                    r    _
 )
 
 (deflayer capsword
-  _    _      _      _      _      _    _    _      _      _      _      _    _    _
-  _    Q      Y      O      U      _    X    L      D      W      Z      _    _    _
-  B    C      I      E      A      _    K    H      T      N      S      V
-  @eth _      _      _      @unds  _    J    M      G      P      F      @eth
-  _    _      _      _                  _                  R      _
+  grv  1      2      3      4      5    6    7      8      9      0      -    =
+  _    Q      Y      O      U      ;    X    L      D      W      Z      [    ]    \
+  B    C      I      E      A      ,    K    H      T      N      S      V
+  @eth '      /      =      S--    .    J    M      G      P      F      @eth
+  @fn    _      _                    _                  R      _
 )
 
 (deflayer qwerty
-  _    _    _    _    _    _    _    _    _    _    _    _    _    bspc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =
   _    q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '
   _    z    x    c    v    b    n    m    ,    .    /    _
-  _    _    _    _              _              ralt _
+  @fn  _    _              _              ralt _
+)
+
+(deflayer symbol
+  grv  S-1  S-2  S-3  S-4   S-5  6    7    8    9    0    -    =
+  _    S-6  S-[  S-]  \     S-;  _    _    _    _    _    _    _    _
+  S-7  [    S-9  S-0  ]     S-,  _    _    _    _    _    _
+  lsft grv  S-\  S-8  S-grv S-.  _    _    _    _    _    _
+  @fn    _    _               _              _    _
 )
 
 (deflayer function
-  _    _    _    _    _    _    _    _    _    _    _    @qwt @eth del
+  _    _    _    _    _    _    _    _    _    _    _    @qwt @eth
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _    _    _    _    _    _    _    _    _    _
   @cw  _    _    _    _    _    _    _    _    _    _    @cw
-  _    _    _    _              _              _    _
+  _    _    _              _              _    _
 )
