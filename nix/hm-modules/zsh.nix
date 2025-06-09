@@ -1,4 +1,5 @@
 {
+  lib,
   config,
   pkgs,
   ...
@@ -44,7 +45,7 @@ in {
     };
     initContent = ''
       autoload -Uz +X edit-command-line
-      autoload -Uz +X zcalc
+      # autoload -Uz +X zcalc
 
       setopt AUTO_PUSHD
       setopt PUSHD_IGNORE_DUPS
@@ -80,28 +81,28 @@ in {
           mkdir -p "$1" && cd "$1" || return 1
       }
 
-      updown() {
-        echo $@ | perl -pe 's/(?<![-+\d])(\d+)/+\1/'
-      }
-
-      own_pop() {
-          popd -q $(updown $@)
-      }
-
-      own_push() {
-          pushd -q $(updown $@)
-      }
-
-      cd_in() {
-          cd "$1" && l
-      }
-
-      pw(){
-        gopass show -C \
-          $(gopass ls --flat \
-            | fzf -q "$1" --preview "gopass show {}" \
-          )
-      }
+      # updown() {
+      #   echo $@ | perl -pe 's/(?<![-+\d])(\d+)/+\1/'
+      # }
+      #
+      # own_pop() {
+      #     popd -q $(updown $@)
+      # }
+      #
+      # own_push() {
+      #     pushd -q $(updown $@)
+      # }
+      #
+      # cd_in() {
+      #     cd "$1" && l
+      # }
+      #
+      # pw(){
+      #   gopass show -C \
+      #     $(gopass ls --flat \
+      #       | fzf -q "$1" --preview "gopass show {}" \
+      #     )
+      # }
 
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
@@ -143,6 +144,8 @@ in {
       # lazyload stern -- 'source <(stern --completion=zsh)'
       # lazyload k -- 'source <(kubectl completion zsh | sed "s/kubectl/k/")'
 
+      eval "$(${lib.getExe' pkgs.devbox "devbox"} global shellenv --init-hook)"
+
     '';
     loginExtra = ''
       {
@@ -170,8 +173,8 @@ in {
       n = "nvim_client --remote-silent";
       nt = "nvim_client --remote-tab-silent";
       nvr = "nvim --listen $NVIM_SERVER";
-      o = "own_pop";
-      p = "own_push";
+      # o = "own_pop";
+      # p = "own_push";
       tree = "exa --tree";
     };
     shellGlobalAliases = {

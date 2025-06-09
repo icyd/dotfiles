@@ -14,7 +14,6 @@
       url = "github:lnl7/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flox.url = "github:flox/flox/v1.4.2";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -69,7 +68,6 @@
           inherit unstable;
           bash-env-json = inputs.bash-env-json.packages.${system}.default;
           bash-env-nushell = inputs.bash-env-nushell.packages.${system}.default;
-          flox = inputs.flox.packages.${system}.default;
           nixvim = inputs.nixvim.packages.${system}.default;
           nixvimin = inputs.nixvim.packages.${system}.nvimin;
           zjstatus = inputs.zjstatus.packages.${super.system}.default;

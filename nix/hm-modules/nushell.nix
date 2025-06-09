@@ -78,25 +78,29 @@
       use cd-root.nu *
       use ${pkgs.bash-env-nushell}/bash-env.nu
 
-      def --wrapped --env devbox_refresh [
-        --global (-g)
-        ...args
-      ] {
-        let devbox = if ($global) {
-          devbox global shellenv --pure ...$args
-        } else {
-          devbox shellenv --pure ...$args
-        } | bash-env
+      ${lib.getExe' pkgs.devbox "devbox"} global shellenv
+        | bash-env
+        | load-env
 
-        $devbox | reject "PATH" | load-env
-        $env.PATH = (["/run/current-system/sw/bin" "${config.home.homeDirectory}/.nix-profile/bin" ]
-          ++ ($devbox.PATH | split row (char esep)) ++ $env.PATH)
-          | uniq
-      }
+      # def --wrapped --env devbox_refresh [
+      #   --global (-g)
+      #   ...args
+      # ] {
+      #   let devbox = if ($global) {
+      #     devbox global shellenv --pure ...$args
+      #   } else {
+      #     devbox shellenv --pure ...$args
+      #   } | bash-env
+      #
+      #   $devbox | reject "PATH" | load-env
+      #   $env.PATH = (["/run/current-system/sw/bin" "${config.home.homeDirectory}/.nix-profile/bin" ]
+      #     ++ ($devbox.PATH | split row (char esep)) ++ $env.PATH)
+      #     | uniq
+      # }
 
-      if (not ("DEVBOX_PURE_SHELL" in ($env | columns))) {
-        devbox_refresh --global
-      }
+      # if (not ("DEVBOX_PURE_SHELL" in ($env | columns))) {
+      #   devbox_refresh --global
+      # }
     '';
   };
 }
