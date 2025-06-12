@@ -60,7 +60,7 @@
   nix = {
     enable = true;
     extraOptions = ''
-      experimental-features = nix-command flakes
+      experimental-features = nix-command flakes pipe-operators
       extra-platforms = x86_64-darwin aarch64-darwin
     '';
     gc = {

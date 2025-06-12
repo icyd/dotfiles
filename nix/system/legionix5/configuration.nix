@@ -114,7 +114,7 @@ in {
   ];
   nix = {
     extraOptions = ''
-      experimental-features = nix-command flakes
+      experimental-features = nix-command flakes pipe-operators
     '';
     gc = {
       automatic = true;
