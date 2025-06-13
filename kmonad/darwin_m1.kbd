@@ -26,17 +26,17 @@
 
 (deflayer enthium
   lsgt 1      2      3      4      5    6    7      8      9      0      -      =    bspc
-  _    q      @alt_y o      u      ;    x    l      d      @alt_w z      [      ]    \
+  _    q      @alt_y o      u      -    x    l      d      @alt_w z      [      ]    \
   b    @alt_c @met_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @met_n @alt_s v
-  _    grv    '      /      =      -    .    j      m      g      p      @sym_f _
+  _    grv    '      /      =      .    ;    j      m      g      p      @sym_f _
   @fn  _      _      _                  _                  r      _
 )
 
 (deflayer capsword
   lsgt 1      2      3      4      5     6    7      8      9      0      -    =    bspc
-  _    Q      Y      O      U      ;     X    L      D      W      Z      [    ]    \
+  _    Q      Y      O      U      S--   X    L      D      W      Z      [    ]    \
   B    C      I      E      A      ,     K    H      T      N      S      V
-  @eth grv    '      /      =      S--   .    J      M      G      P      F    @eth
+  @eth grv    '      /      =      .     ;    J      M      G      P      F    @eth
   @fn  _      _      _                   _                  R      _
 )
 
@@ -50,9 +50,9 @@
 
 (deflayer symbol
   lsgt S-1  S-2  S-3  S-4 S-5     6    7    8    9    0    -    =   bspc
-  _    S-6  S-[  S-]  \    S-;    _    _    _    _    _    _    _    _
+  _    S-6  S-[  S-]  \    S-grv  _    _    _    _    _    _    _    _
   S-7  [    S-9  S-0  ]    S-,    _    _    _    _    _    _
-  lsft grv  grv  S-\  S-8  S-grv  S-.  _    _    _    _    _    _
+  lsft grv  grv  S-\  S-8  S-.    S-;  _    _    _    _    _    _
   @fn  _    _    _                _              _    _
 )
 
