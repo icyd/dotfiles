@@ -87,6 +87,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": [
+          "root",
           "nixpkgs"
         ]
       },
@@ -108,10 +109,12 @@
     "bash-env-nushell": {
       "inputs": {
         "bash-env-json": [
+          "root",
           "bash-env-json"
         ],
         "flake-utils": "flake-utils_2",
         "nixpkgs": [
+          "root",
           "nixpkgs"
         ]
       },
@@ -148,6 +151,7 @@
     "darwin": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "nixpkgs"
         ]
       },
@@ -232,6 +236,7 @@
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
+          "root",
           "nixpkgs"
         ]
       },
@@ -252,6 +257,7 @@
     "flake-parts_2": {
       "inputs": {
         "nixpkgs-lib": [
+          "root",
           "nixvim",
           "neovim-nightly-overlay",
           "nixpkgs"
@@ -274,6 +280,7 @@
     "flake-parts_3": {
       "inputs": {
         "nixpkgs-lib": [
+          "root",
           "nixvim",
           "neovim-nightly-overlay",
           "hercules-ci-effects",
@@ -365,9 +372,32 @@
     },
     "git-hooks": {
       "inputs": {
+        "flake-compat": [],
+        "gitignore": [],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1749636823,
+        "narHash": "sha256-WUaIlOlPLyPgz9be7fqWJA5iG6rHcGRtLERSCfUDne4=",
+        "owner": "cachix",
+        "repo": "git-hooks.nix",
+        "rev": "623c56286de5a3193aa38891a6991b28f9bab056",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cachix",
+        "repo": "git-hooks.nix",
+        "type": "github"
+      }
+    },
+    "git-hooks_2": {
+      "inputs": {
         "flake-compat": "flake-compat_2",
         "gitignore": "gitignore",
         "nixpkgs": [
+          "root",
           "nixvim",
           "neovim-nightly-overlay",
           "nixpkgs"
@@ -387,14 +417,16 @@
         "type": "github"
       }
     },
-    "git-hooks_2": {
+    "git-hooks_3": {
       "inputs": {
         "flake-compat": [
+          "root",
           "stylix",
           "flake-compat"
         ],
         "gitignore": "gitignore_2",
         "nixpkgs": [
+          "root",
           "stylix",
           "nixpkgs"
         ]
@@ -416,6 +448,7 @@
     "gitignore": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "nixvim",
           "neovim-nightly-overlay",
           "git-hooks",
@@ -439,6 +472,7 @@
     "gitignore_2": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "stylix",
           "git-hooks",
           "nixpkgs"
@@ -479,6 +513,7 @@
       "inputs": {
         "flake-parts": "flake-parts_3",
         "nixpkgs": [
+          "root",
           "nixvim",
           "neovim-nightly-overlay",
           "nixpkgs"
@@ -501,6 +536,7 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "nixpkgs"
         ]
       },
@@ -522,6 +558,7 @@
     "home-manager_2": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "stylix",
           "nixpkgs"
         ]
@@ -574,6 +611,7 @@
     "kmonad": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "nixpkgs"
         ]
       },
@@ -597,10 +635,11 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts_2",
-        "git-hooks": "git-hooks",
+        "git-hooks": "git-hooks_2",
         "hercules-ci-effects": "hercules-ci-effects",
         "neovim-src": "neovim-src",
         "nixpkgs": [
+          "root",
           "nixvim",
           "nixpkgs"
         ],
@@ -652,21 +691,6 @@
       "original": {
         "owner": "misterio77",
         "repo": "nix-colors",
-        "type": "github"
-      }
-    },
-    "nixos-facter-modules": {
-      "locked": {
-        "lastModified": 1743671943,
-        "narHash": "sha256-7sYig0+RcrR3sOL5M+2spbpFUHyEP7cnUvCaqFOBjyU=",
-        "owner": "numtide",
-        "repo": "nixos-facter-modules",
-        "rev": "58ad9691670d293a15221d4a78818e0088d2e086",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "nixos-facter-modules",
         "type": "github"
       }
     },
@@ -768,15 +792,18 @@
     "nixvim": {
       "inputs": {
         "flake-parts": [
+          "root",
           "flake-parts"
         ],
         "import-tree": [
+          "root",
           "import-tree"
         ],
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs_2",
         "nixvim": "nixvim_2",
         "pkgs-by-name-for-flake-parts": [
+          "root",
           "pkgs-by-name-for-flake-parts"
         ]
       },
@@ -797,14 +824,17 @@
     "nixvim_2": {
       "inputs": {
         "flake-parts": [
+          "root",
           "nixvim",
           "flake-parts"
         ],
         "nixpkgs": [
+          "root",
           "nixvim",
           "nixpkgs"
         ],
         "nuschtosSearch": [
+          "root",
           "nixvim"
         ],
         "systems": "systems_3"
@@ -826,6 +856,7 @@
     "nur": {
       "inputs": {
         "flake-parts": [
+          "root",
           "flake-parts"
         ],
         "nixpkgs": "nixpkgs_3",
@@ -848,10 +879,12 @@
     "nur_2": {
       "inputs": {
         "flake-parts": [
+          "root",
           "stylix",
           "flake-parts"
         ],
         "nixpkgs": [
+          "root",
           "stylix",
           "nixpkgs"
         ],
@@ -888,6 +921,17 @@
     },
     "root": {
       "inputs": {
+        "git-hooks": "git-hooks",
+        "nixpkgs": [
+          "root",
+          "nixpkgs"
+        ],
+        "root": "root_2",
+        "treefmt-nix": "treefmt-nix_4"
+      }
+    },
+    "root_2": {
+      "inputs": {
         "bash-env-json": "bash-env-json",
         "bash-env-nushell": "bash-env-nushell",
         "darwin": "darwin",
@@ -897,7 +941,6 @@
         "import-tree": "import-tree",
         "kmonad": "kmonad",
         "nix-colors": "nix-colors",
-        "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
@@ -906,11 +949,21 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "stylix": "stylix",
         "zjstatus": "zjstatus"
-      }
+      },
+      "locked": {
+        "path": "../../..",
+        "type": "path"
+      },
+      "original": {
+        "path": "../../..",
+        "type": "path"
+      },
+      "parent": []
     },
     "rust-overlay": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "zjstatus",
           "nixpkgs"
         ]
@@ -938,12 +991,14 @@
         "firefox-gnome-theme": "firefox-gnome-theme",
         "flake-compat": "flake-compat_3",
         "flake-parts": [
+          "root",
           "flake-parts"
         ],
-        "git-hooks": "git-hooks_2",
+        "git-hooks": "git-hooks_3",
         "gnome-shell": "gnome-shell",
         "home-manager": "home-manager_2",
         "nixpkgs": [
+          "root",
           "nixpkgs"
         ],
         "nur": "nur_2",
@@ -1128,6 +1183,7 @@
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "nixvim",
           "neovim-nightly-overlay",
           "nixpkgs"
@@ -1150,6 +1206,7 @@
     "treefmt-nix_2": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "nur",
           "nixpkgs"
         ]
@@ -1171,6 +1228,7 @@
     "treefmt-nix_3": {
       "inputs": {
         "nixpkgs": [
+          "root",
           "stylix",
           "nur",
           "nixpkgs"
@@ -1190,11 +1248,32 @@
         "type": "github"
       }
     },
+    "treefmt-nix_4": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1749194973,
+        "narHash": "sha256-eEy8cuS0mZ2j/r/FE0/LYBSBcIs/MKOIVakwHVuqTfk=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "a05be418a1af1198ca0f63facb13c985db4cb3c5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
     "zjstatus": {
       "inputs": {
         "crane": "crane",
         "flake-utils": "flake-utils_3",
         "nixpkgs": [
+          "root",
           "nixpkgs"
         ],
         "rust-overlay": "rust-overlay"

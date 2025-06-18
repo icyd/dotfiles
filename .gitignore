@@ -6,5 +6,7 @@
 .envrc
 .pre-commit-config.yaml
 .luarc.json
+result
+_to_migrate
 
 # End of https://www.toptal.com/developers/gitignore/api/direnv

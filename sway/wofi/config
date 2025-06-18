@@ -1,7 +1,0 @@
-show=drun
-prompt='>'
-allow_images=true
-allow_markdown=true
-term=alacritty
-insensitive=true
-image_size=24
