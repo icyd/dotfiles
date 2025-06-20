@@ -24,6 +24,7 @@
         hyperfine
         imagemagick
         jq
+        magic-wormhole-rs
         minisign
         mosh
         pandoc
