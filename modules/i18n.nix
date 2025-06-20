@@ -8,4 +8,11 @@
       };
     };
   };
+  flake.modules.darwin.base = {
+    environment.variables = rec {
+      LANG = "en_US.UTF-8";
+      LC_MONETARY = "en_IE.UTF-8";
+      LC_TIME = LC_MONETARY;
+    };
+  };
 }

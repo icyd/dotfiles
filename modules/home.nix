@@ -1,4 +1,4 @@
-{
+{lib, ...}: {
   flake.modules.homeManager.base = {
     config,
     pkgs,
@@ -35,7 +35,6 @@
         texliveSmall
         yq-go
         yubikey-manager
-        zathura
         zenith
       ];
       sessionPath = [
@@ -44,7 +43,7 @@
       ];
       sessionVariables = let
         DOTFILES = "${config.home.homeDirectory}/.dotfiles";
-        EDITOR = pkgs.lib.getExe pkgs.nixvimin;
+        EDITOR = lib.getExe pkgs.nixvimin;
       in rec {
         inherit DOTFILES EDITOR;
         AGE_IDENTITY = "${config.xdg.configHome}/sops/age/keys.txt";

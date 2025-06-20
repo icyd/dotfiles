@@ -90,6 +90,10 @@
         WINEDLLOVERRIDES = "winemenubuilder.exe=d";
       };
     };
+    programs.git = {
+      userName = flakeAttrs.config.flake.meta.users.${username}.name;
+      userEmail = flakeAttrs.config.flake.meta.users.${username}.email;
+    };
     services = {
       kanshi.settings = [
         {

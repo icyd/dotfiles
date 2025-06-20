@@ -5,7 +5,7 @@
     ...
   }: let
     cfg = config.services.kmonad;
-    kmonad_bin = lib.getExe' pkgs.kmonad "kmonad";
+    kmonad_bin = cfg.binOverride or (lib.getExe cfg.package);
     keyboard = {name, ...}: {
       options = {
         name = lib.mkOption {
@@ -58,6 +58,13 @@
   in {
     options.services.kmonad = {
       enable = lib.mkEnableOption "Enable kmonad launch daemon";
+      package = lib.mkPackageOption pkgs "KMonad" {default = "kmonad";};
+      binOverride = lib.mkOption {
+        # type = lib.types.nullOr lib.types.path;
+        type = lib.types.str;
+        default = "";
+        description = "Override KMonad binary path";
+      };
       keyboards = lib.mkOption {
         type = lib.types.attrsOf (lib.types.submodule keyboard);
         default = {};

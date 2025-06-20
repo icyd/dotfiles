@@ -1,4 +1,7 @@
 {
+  flake.modules.darwin.gpg = {
+    programs.gnupg.agent.enable = true;
+  };
   flake.modules.homeManager.gpg = {
     programs.gpg = {
       enable = true;

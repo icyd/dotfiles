@@ -1,4 +1,4 @@
-{
+{lib, ...}: {
   flake.modules.homeManager.firefox = {
     config,
     pkgs,
@@ -10,7 +10,7 @@
       #   dnie-pkcs11 = "${(pkgs.callPackage ../packages/dnie.nix {})}/usr/lib/libpkcs11-dnie.so";
       # };
       profiles.default = {
-        extensions = {
+        extensions = lib.optionalAttrs pkgs.stdenv.isLinux {
           force = true;
           packages = with pkgs.nur.repos.rycee.firefox-addons; [
             firenvim

@@ -331,7 +331,7 @@
     },
     "flake-utils_3": {
       "inputs": {
-        "systems": "systems_5"
+        "systems": "systems_6"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -781,12 +781,13 @@
         ]
       },
       "locked": {
-        "lastModified": 1749651280,
-        "narHash": "sha256-oN46qxYrby1xK7TE7tA6HSJKDiXfIvJ/GGivDEHIF9s=",
-        "owner": "icyd",
-        "repo": "nixvim",
-        "rev": "e1a0a775523236611349cc1e3de913c0d051c34b",
-        "type": "github"
+        "lastModified": 1750099707,
+        "narHash": "sha256-vSQZoA0BfshBDoLerr9/P3eUNGaDzc0JCY260WjIf6k=",
+        "ref": "refs/heads/main",
+        "rev": "c93c82a95404b642b0d4c0f18edde1bbfee1535b",
+        "revCount": 55,
+        "type": "git",
+        "url": "file:///Users/aj.vazquez/Projects/nixvim"
       },
       "original": {
         "owner": "icyd",
@@ -905,6 +906,7 @@
         "nur": "nur",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts",
         "stylix": "stylix",
+        "systems": "systems_5",
         "zjstatus": "zjstatus"
       }
     },
@@ -1030,6 +1032,21 @@
       }
     },
     "systems_5": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_6": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",

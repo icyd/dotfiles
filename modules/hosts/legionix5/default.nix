@@ -7,6 +7,7 @@
     config.flake.modules.nixos
     |> lib.getAttrs ["users/beto" "users/guest"]
     |> lib.attrValues;
+  inherit (config.flake.meta.users.${config.flake.meta.hosts.legionix5.user}) username;
 in {
   nixpkgs.allowedUnfreePackages = [
     "displaylink"
@@ -61,6 +62,7 @@ in {
         rocmPackages.clr.icd
       ];
     };
+    nix.settings.trusted-users = [username];
     programs = {
       adb.enable = true;
       gnupg.agent = {
@@ -71,7 +73,7 @@ in {
     services = {
       displayManager.autoLogin = {
         enable = true;
-        user = config.flake.meta.users.beto.username;
+        user = username;
       };
       udev.packages =
         {

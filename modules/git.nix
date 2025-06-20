@@ -1,4 +1,4 @@
-flakeAttrs: {
+{
   flake.modules.homeManager.git = {
     config,
     pkgs,
@@ -26,8 +26,6 @@ flakeAttrs: {
           push.default = "current";
         };
         includes = [{path = ../config/git/gitalias.txt;}];
-        userEmail = flakeAttrs.lib.mkDefault "beto.v25@gmail.com";
-        userName = flakeAttrs.lib.mkDefault "Alberto Vázquez";
       };
       lazygit = {
         enable = true;

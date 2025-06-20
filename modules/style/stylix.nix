@@ -44,7 +44,7 @@ in {
   flake.modules.homeManager.base = {pkgs, ...}:
     lib.optionalAttrs (inputs.stylix ? homeModules) {
       imports = [inputs.stylix.homeModules.stylix stylixModule];
-      stylix.iconTheme = {
+      stylix.iconTheme = lib.optionalAttrs pkgs.stdenv.isLinux {
         enable = true;
         package = pkgs.papirus-icon-theme;
         dark = "Papirus-Dark";

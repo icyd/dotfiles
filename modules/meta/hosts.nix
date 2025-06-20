@@ -29,7 +29,7 @@ in {
         ));
     });
   flake.darwinConfigurations =
-    config.flake.modules.nixos or {}
+    config.flake.modules.darwin or {}
     |> lib.filterAttrs (name: _module: lib.hasPrefix prefix name)
     |> lib.mapAttrs' (name: module: let
       hostName = lib.removePrefix prefix name;
@@ -39,7 +39,6 @@ in {
       value = withSystem system ({pkgs, ...}:
         lib.optionalAttrs (pkgs.stdenv.isDarwin) (
           inputs.darwin.lib.darwinSystem {
-            # inherit pkgs;
             modules =
               module.imports
               ++ [

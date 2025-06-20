@@ -21,7 +21,7 @@ in
         in {
           name = username;
           value = withSystem system ({pkgs, ...}:
-            lib.optionalAttrs pkgs.stdenv.isLinux (
+            lib.optionalAttrs true (
               inputs.home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
                 modules =
