@@ -8,9 +8,6 @@
     {
       _module.args.pkgs = import inputs.nixpkgs {
         inherit system;
-        config = {
-          allowUnfreePredicate = _pkg: true;
-        };
         overlays = [
           (final: _prev: {
             bash-env-json = inputs.bash-env-json.packages.${system}.default;

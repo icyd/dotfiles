@@ -7,6 +7,7 @@
         "/var/lib/systemd/coredump"
         "/var/lib/libvirt/"
         "/var/lib/nixos"
+        "/var/lib/iwd"
         "/etc/NetworkManager/system-connections"
       ];
       files = [
