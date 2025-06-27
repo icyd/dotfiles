@@ -9,6 +9,10 @@
     email = "beto.v25@gmail.com";
     host = "legionix5";
   };
+  nixpkgs.allowedUnfreePackages = [
+    "discord"
+    "dropbox"
+  ];
   flake.modules.nixos."users/beto" = {pkgs, ...}: {
     users.users = let
       inherit (flakeAttrs.config.flake.meta.users.beto) username;
@@ -55,6 +59,7 @@
         # synapse
         winetricks
         # wineWowPackages.waylandFull
+        zathura
       ];
       persistence."/mnt/nodatacow" = {
         allowOther = false;
@@ -68,6 +73,7 @@
       persistence."/persist/home/${username}" = {
         allowOther = false;
         directories = [
+          ".dotfiles"
           "Backups"
           "Calibre Library"
           "Desktop"

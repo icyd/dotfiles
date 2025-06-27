@@ -5,11 +5,6 @@
     };
     programs.hyprland = {
       enable = true;
-      # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      package = pkgs.hyprland;
-      # portalPackage =
-      # inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-      portalPackage = pkgs.xdg-desktop-portal-hyprland;
       xwayland.enable = true;
     };
     programs.light.enable = true;
@@ -39,7 +34,6 @@
       alacritty
       rofipass
       grim
-      networkmanagerapplet
       slurp
       swww
       wdisplays

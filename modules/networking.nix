@@ -1,5 +1,8 @@
 {
-  flake.modules.nixos.base = {
+  flake.modules.nixos.base = {pkgs, ...}: {
+    environment.systemPackages = with pkgs; [
+      networkmanagerapplet
+    ];
     networking = {
       wireless.iwd = {
         enable = true;
@@ -8,10 +11,10 @@
           Settings.AutoConnect = true;
         };
       };
-      nameservers = [
-        "208.67.222.222"
-        "208.67.220.220"
-      ];
+      # nameservers = [
+      #   "208.67.222.222"
+      #   "208.67.220.220"
+      # ];
       networkmanager = {
         enable = true;
         wifi.backend = "iwd";

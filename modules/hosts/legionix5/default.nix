@@ -100,6 +100,7 @@ in {
     };
     imports = with config.flake.modules.nixos;
       [
+        audio
         base
         bluetooth
         desktop
