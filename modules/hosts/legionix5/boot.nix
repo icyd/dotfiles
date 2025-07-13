@@ -28,13 +28,10 @@
         "acpi_backlight=native"
         "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
       ];
-      loader = {
-        grub = {
-          enable = true;
-          configurationLimit = 12;
-          device = "nodev";
-          memtest86.enable = true;
-          useOSProber = true;
+      loader.systemd-boot.windows = {
+        win = {
+          title = "Windows";
+          efiDeviceHandle = "HD1b";
         };
       };
       tmp.useTmpfs = true;

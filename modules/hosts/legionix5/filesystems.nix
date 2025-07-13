@@ -64,6 +64,10 @@ in {
       "/boot" = {
         device = "/dev/disk/by-uuid/${bootDrive}";
         fsType = "vfat";
+        options = [
+          "umask=0077"
+          "defaults"
+        ];
       };
       "/home" = {
         device = "/dev/disk/by-uuid/${cryptroot}";

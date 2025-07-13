@@ -1,13 +1,13 @@
 {
   lib,
-  config,
+  inputs,
   ...
-}: let
+} @ flakeAttrs: let
   users =
-    config.flake.modules.nixos
+    flakeAttrs.config.flake.modules.nixos
     |> lib.getAttrs ["users/beto" "users/guest"]
     |> lib.attrValues;
-  inherit (config.flake.meta.users.${config.flake.meta.hosts.legionix5.user}) username;
+  inherit (flakeAttrs.config.flake.meta.users.${flakeAttrs.config.flake.meta.hosts.legionix5.user}) username;
 in {
   nixpkgs.allowedUnfreePackages = [
     "displaylink"
@@ -30,9 +30,7 @@ in {
         gcc
         glib
         gnumake
-        kdePackages.okular
         mediainfo
-        nautilus
         ntfs3g
         openssl
         smplayer
@@ -75,6 +73,7 @@ in {
         enable = true;
         user = username;
       };
+      pcscd.enable = true;
       udev.packages =
         {
           name = "qmk-rules";
@@ -94,11 +93,23 @@ in {
         };
       };
     };
+    sops = {
+      defaultSopsFile = "${inputs.nix-secrets.outPath}/legionix5.yaml";
+      age.keyFile = "/persist/home/${username}/.config/sops/age/keys.txt";
+      secrets = {
+        "passwords/beto" = {
+          neededForUsers = true;
+        };
+        "passwords/guest" = {
+          neededForUsers = true;
+        };
+      };
+    };
     systemd = {
       enableEmergencyMode = false;
       services."systemd-backlight@backlight:ideapad".wantedBy = lib.mkForce [];
     };
-    imports = with config.flake.modules.nixos;
+    imports = with flakeAttrs.config.flake.modules.nixos;
       [
         audio
         base
@@ -108,8 +119,12 @@ in {
         efi
         facter
         hyprland
+        # lanzaboote
         nvidia
+        sops
         steam
+        systemd-boot
+        virtualisation
       ]
       ++ users;
   };

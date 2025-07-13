@@ -32,7 +32,15 @@
       url = "github:kmonad/kmonad?dir=nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.4.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-colors.url = "github:misterio77/nix-colors";
+    nix-secrets = {
+      url = "git+ssh://git@gitlab.com/icyd/nix-secrets?shallow=1&ref=main";
+      flake = false;
+    };
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:NixOs/nixpkgs/nixos-25.05";
@@ -52,6 +60,10 @@
       };
     };
     pkgs-by-name-for-flake-parts.url = "github:drupol/pkgs-by-name-for-flake-parts";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     stylix = {
       url = "github:danth/stylix/release-25.05";
       inputs = {

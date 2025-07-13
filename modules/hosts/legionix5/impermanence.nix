@@ -1,5 +1,13 @@
-{inputs, ...}: {
-  flake.modules.nixos."hosts/legionix5" = {
+{
+  lib,
+  inputs,
+  ...
+}: {
+  flake.modules.nixos."hosts/legionix5" = {config, ...}: let
+    regularSecrets =
+      config.sops.secrets
+      |> lib.filterAttrs (_name: value: !value.neededForUsers);
+  in {
     environment.persistence."/persist" = {
       directories = [
         "/etc/nixos"
@@ -7,6 +15,7 @@
         "/var/lib/systemd/coredump"
         "/var/lib/libvirt/"
         "/var/lib/nixos"
+        "/var/lib/sbctl"
         "/var/lib/iwd"
         "/etc/NetworkManager/system-connections"
       ];
@@ -27,5 +36,8 @@
       "L /var/lib/NetworkManager/seen-bssids - - - - /persist/var/lib/NetworkManager/seen-bssids"
       "L /var/lib/NetworkManager/timestamps - - - - /persist/var/lib/NetworkManager/timestamps"
     ];
+    system.activationScripts.setupSecrets = lib.mkIf (regularSecrets != {}) {
+      deps = ["persist-files"];
+    };
   };
 }
