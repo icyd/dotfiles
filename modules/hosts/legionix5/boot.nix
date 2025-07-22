@@ -18,6 +18,7 @@
         ];
         supportedFilesystems = {
           ntfs = true;
+          # zfs = true;
         };
       };
       kernel.sysctl = {
@@ -26,6 +27,7 @@
       };
       kernelParams = [
         "acpi_backlight=native"
+        "nohibernate"
         "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
       ];
       loader.systemd-boot.windows = {

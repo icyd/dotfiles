@@ -49,6 +49,7 @@ in {
     # home.packages = with pkgs; [
     #     dropbox
     # ];
+    # networking.hostId = "042f252a";
     system.stateVersion = "22.05";
     facter.reportPath = ./facter.json;
     hardware.graphics = {
@@ -92,6 +93,10 @@ in {
           options = "lv3:ralt_switch,shift:breaks_caps,grp:alt_space_toggle";
         };
       };
+      # zfs = {
+      #   autoScrub.enable = true;
+      #   trim.enable = true;
+      # };
     };
     sops = {
       defaultSopsFile = "${inputs.nix-secrets.outPath}/legionix5.yaml";

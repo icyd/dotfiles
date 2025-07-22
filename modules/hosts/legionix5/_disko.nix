@@ -24,26 +24,19 @@
                 randomEncryption = true;
               };
             };
-            cryptkey = {
-              size = "3M";
-              content = {
-                type = "luks";
-                name = "cryptkey";
-                settings.allowDiscards = true;
-              };
-            };
             cryptroot = {
               size = "100%";
               content = {
                 type = "luks";
                 name = "cryptroot";
+                additionalKeyFiles = ["/dev/mapper/cryptkey"];
+                preCreateHook = "mount --mkdir -t tmpfs -o noswap tmpfs /root/mytmpfs && dd if=/dev/urandom of=/root/mytmpfs/cryptroot.key bs=512 count=4 iflag=fullblock";
                 settings = {
                   allowDiscards = true;
-                  passwordFile = "/dev/mapper/cryptkey";
                 };
                 content = {
                   type = "zfs";
-                  pool = "zroot";
+                  pool = "rpool";
                 };
               };
             };
@@ -52,13 +45,16 @@
       };
     };
     zpool = {
-      zroot = {
+      rpool = {
         type = "zpool";
         rootFsOptions = {
+          acltype = "posixacl";
+          atime = "off";
           canmount = "off";
           compression = "lz4";
           "com.sun:auto-snapshot" = "false";
           mountpoint = "none";
+          xattr = "sa";
         };
         options = {
           ashift = "12";
@@ -66,21 +62,54 @@
         };
         datasets = {
           reserved = {
-            type = "zfs_fs";
             options = {
               canmount = "off";
               mountpoint = "none";
               reservation = "50G";
             };
-          };
-          root = {
             type = "zfs_fs";
-            mountpoint = "/";
-            postCreateHook = "zfs snapshot zroot/root@empty";
           };
-          persist = {
+          local = {
+            options.mountpoint = "none";
             type = "zfs_fs";
+          };
+          "local/home" = {
+            mountpoint = "/home";
+            options."com.sun:auto-snapshot" = "true";
+            type = "zfs_fs";
+          };
+          "local/nix" = {
+            mountpoint = "/nix";
+            options."com.sun:auto-snapshot" = "false";
+            type = "zfs_fs";
+          };
+          "local/persist" = {
             mountpoint = "/persist";
+            options."com.sun:auto-snapshot" = "false";
+            type = "zfs_fs";
+          };
+          "local/root" = {
+            mountpoint = "/";
+            options."com.sun:auto-snapshot" = "false";
+            postCreateHook = "zfs list -t snapshot -H -o name | grep -E '^rpool/local/root@blank$' || zfs snapshot rpool/local/root@blank";
+            type = "zfs_fs";
+          };
+          "local/var" = {
+            options = {
+              "com.sun:auto-snapshot" = "false";
+              mountpoint = "none";
+            };
+            type = "zfs_fs";
+          };
+          "local/var/lib" = {
+            mountpoint = "/var/lib";
+            options."com.sun:auto-snapshot" = "false";
+            type = "zfs_fs";
+          };
+          "local/var/log" = {
+            mountpoint = "/var/log";
+            options."com.sun:auto-snapshot" = "false";
+            type = "zfs_fs";
           };
         };
       };
