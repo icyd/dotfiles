@@ -1431,3 +1431,27 @@ export def kgpo_on_node [
         | select namespace name
     )
 }
+
+# Get all pod not running/completed on with running containers less than total
+export def kgpo_unready [
+    --namespace (-n): string@"nu-complete kube ns"
+    --context: string@"nu-complete kube config contexts"
+    --all (-A)
+] {
+
+    let ns = if $all { [--all-namespaces] } else { ($namespace | with-flag -n) }
+    let ctx = $context | with-flag --context
+    kubectl get pods ...$ctx ...$ns
+        | from ssv -a
+        | normalize-column-names
+        | filter {|i|
+            not (
+                ($i.status == "Completed") or (
+                    ($i.status == "Running") and ($i.ready
+                        | split row "/"
+                        | $in.0 == $in.1
+                    )
+                )
+            )
+        }
+}
