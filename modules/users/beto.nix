@@ -29,6 +29,10 @@
           "wheel"
           "vboxusers"
         ];
+        # hashedPasswordFile =
+        #   if (config ? sops)
+        #   then config.sops.secrets."passwords/beto".path
+        #   else "/persist/passwords/${username}";
         hashedPasswordFile = "/persist/passwords/${username}";
         isNormalUser = true;
         shell = pkgs.zsh;
@@ -96,6 +100,7 @@
         WINEDLLOVERRIDES = "winemenubuilder.exe=d";
       };
     };
+    nushellKeychain.enable = true;
     programs.git = {
       userName = flakeAttrs.config.flake.meta.users.${username}.name;
       userEmail = flakeAttrs.config.flake.meta.users.${username}.email;

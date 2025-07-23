@@ -70,6 +70,13 @@
         VISUAL = EDITOR;
       };
     };
+    nushellKeychain = {
+      enable = true;
+      keys = [
+        "id_ed25519"
+        "id_ed25519_sk"
+      ];
+    };
     programs.git = {
       aliases.p4 = "/usr/local/bin/git-p4";
       userName = flakeAttrs.config.flake.meta.users.${username}.name;
@@ -78,14 +85,6 @@
     programs.nushell.extraEnv = ''
       $env.SSH_ASKPASS = "${brewPrefix}/bin/ssh-askpass"
       $env.SSH_ASKPASS_REQUIRE = "prefer"
-      ${lib.getExe pkgs.keychain} --agents ssh --eval --quiet id_ed25519 id_ed25519_sk
-        | lines
-        | where not ($it | is-empty)
-        | parse "{name}={value}; export {name2};"
-        | reject name2
-        | transpose --header-row
-        | into record
-        | load-env
     '';
     programs.starship.settings.kubernetes.contexts = [
       {

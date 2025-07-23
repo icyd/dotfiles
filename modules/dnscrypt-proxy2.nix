@@ -5,8 +5,10 @@
         "127.0.0.1"
         "::1"
       ];
+      dhcpcd.enable = false;
       dhcpcd.extraConfig = "nohook resolv.conf";
       networkmanager.dns = "none";
+      useDHCP = false;
     };
     services.dnscrypt-proxy2 = {
       enable = true;

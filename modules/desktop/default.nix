@@ -4,7 +4,17 @@
       sddm-astronaut
       xdg-utils
     ];
-    programs.xwayland.enable = true;
+    programs = {
+      thunar = {
+        enable = true;
+        plugins = with pkgs.xfce; [
+          thunar-archive-plugin
+          thunar-volman
+        ];
+      };
+      xfconf.enable = true;
+      xwayland.enable = true;
+    };
     services = {
       displayManager = {
         sddm = {
@@ -18,6 +28,7 @@
       };
       gvfs.enable = true;
       libinput.enable = true;
+      tumbler.enable = true;
     };
   };
 }
