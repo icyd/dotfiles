@@ -25,7 +25,7 @@
                 ]
 
                 [files]
-                exclude = [
+                extend-exclude = [
                   "*.rules"
                 ]
               '';

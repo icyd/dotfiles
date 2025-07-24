@@ -1455,3 +1455,30 @@ export def kgpo_unready [
             )
         }
 }
+
+# Change Istio revision tag
+export def istio_tag [
+    namespace: string@"nu-complete kube ns"
+    istio_revision: string
+] {
+    kubectl label namespace $namespace $"istio.io/rev=($istio_revision)" --overwrite
+}
+
+# List Istio revision tags
+export def istio_tags [] {
+    istioctl tag list -o json | from json
+}
+
+# Get Istio proxy status
+export def istio_ps [] {
+    istioctl proxy-status
+        | from ssv -a
+        | normalize-column-names
+        | reject version
+        | each {|i|
+            $i | merge ($i.name
+                | split column '.' name namespace
+                | into record
+            )
+        } | move namespace --after name
+}

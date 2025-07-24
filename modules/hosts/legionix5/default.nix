@@ -105,7 +105,7 @@ in {
       };
     };
     sops = {
-      defaultSopsFile = "${inputs.nix-secrets.outPath}/legionix5.yaml";
+      defaultSopsFile = "${inputs.nix-secrets.outPath}/personal/legionix5.yaml";
       age.keyFile = "/persist/keys.txt";
       secrets = {
         "passwords/beto" = {

@@ -693,10 +693,10 @@
     "nix-secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1751084503,
-        "narHash": "sha256-cZnLJdsjHn/RVsO+CKeJn+QscszBm90A4Z91Ga5B7+U=",
+        "lastModified": 1753384627,
+        "narHash": "sha256-XlRTLxAEQxJqCkUDAwB7LTUmvLLpReelbi1j1iPXJbA=",
         "ref": "main",
-        "rev": "6cb6f01df3b37e2edc50f6d6c60ace62e2f507b8",
+        "rev": "d9ce66de930906d82119cc3c3f52e731c3983fde",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@gitlab.com/icyd/nix-secrets"

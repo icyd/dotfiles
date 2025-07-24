@@ -1,4 +1,8 @@
-{lib, ...} @ flakeAttrs: {
+{
+  lib,
+  inputs,
+  ...
+} @ flakeAttrs: {
   nixpkgs.allowedUnfreePackages = [
     "p4v"
   ];
@@ -103,13 +107,20 @@
         style = "green";
       }
     ];
-    imports = with flakeAttrs.config.flake.modules.homeManager; [
-      base
-      git
-      gpg
-      nushell
-      starship
-      zsh
-    ];
+    sops = {
+      age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
+      defaultSopsFile = "${inputs.nix-secrets.outPath}/work/ES-IT00385.yaml";
+      secrets.ssh_private_key.path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+    };
+    imports = with flakeAttrs.config.flake.modules.homeManager;
+      [
+        base
+        git
+        gpg
+        nushell
+        starship
+        zsh
+      ]
+      ++ (lib.optional (inputs.sops-nix ? homeManagerModules) inputs.sops-nix.homeManagerModules.sops);
   };
 }
