@@ -377,5 +377,6 @@ export def key_unencrypt [
         $output
     }
 
-    openssl rsa -in $key_file -out $output_file -passing $"pass:($pass)"
+    # typos: disable-next-line
+    openssl rsa -in $key_file -out $output_file -passin $"pass:($pass)"
 }

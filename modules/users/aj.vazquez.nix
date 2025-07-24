@@ -1,4 +1,7 @@
 {lib, ...} @ flakeAttrs: {
+  nixpkgs.allowedUnfreePackages = [
+    "p4v"
+  ];
   flake.meta.users."aj.vazquez" = {
     name = "Alberto Vázquez";
     username = "aj.vazquez";
@@ -44,6 +47,8 @@
           helmfile
           keychain
           krew
+          kubent
+          manifest-tool
           reattach-to-user-namespace
           regclient
           p4v
@@ -58,10 +63,11 @@
       sessionPath = [
         "$HOME/.krew/bin"
       ];
-      sessionVariables = {
+      sessionVariables = rec {
         MANPATH = "${brewPrefix}/opt/coreutils/libexec/gnuman:$MANPATH";
         PATH = "${brewPrefix}/opt/coreutils/libexec/gnubin:${brewPrefix}/bin:$PATH";
         EDITOR = lib.mkForce (lib.getExe nixvimPkgs.nixvimin);
+        VISUAL = EDITOR;
       };
     };
     nushellKeychain = {

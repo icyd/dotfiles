@@ -16,7 +16,20 @@
           treefmt.enable = true;
           typos = {
             enable = true;
-            settings.exclude = "*.rules";
+            settings = {
+              configuration = ''
+                [default]
+                extend-ignore-re = [
+                  "(?s)#\\s*typos:\\s*disabled.*?\\n\\s*#\\s*typos:\\s*enabled",
+                  "(?m)^\\s*#\\s*typos:\\s*disable-next-line[^\\n]*\\n[^\\n]*$"
+                ]
+
+                [files]
+                exclude = [
+                  "*.rules"
+                ]
+              '';
+            };
           };
         };
       };
