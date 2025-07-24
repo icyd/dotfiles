@@ -28,6 +28,9 @@
       ];
       hideMounts = true;
     };
+    fileSystems = {
+      "/persist".neededForBoot = true;
+    };
     imports = [
       inputs.impermanence.nixosModules.impermanence
     ];

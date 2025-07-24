@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.desktop = {pkgs, ...}: {
     environment.systemPackages = with pkgs; [
+      file-roller
       sddm-astronaut
       xdg-utils
     ];

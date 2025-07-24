@@ -30,6 +30,8 @@ in {
         gcc
         glib
         gnumake
+        home-manager
+        kitty
         mediainfo
         ntfs3g
         openssl
@@ -49,7 +51,7 @@ in {
     # home.packages = with pkgs; [
     #     dropbox
     # ];
-    # networking.hostId = "042f252a";
+    networking.hostId = "e4521109";
     system.stateVersion = "22.05";
     facter.reportPath = ./facter.json;
     hardware.graphics = {
@@ -93,14 +95,18 @@ in {
           options = "lv3:ralt_switch,shift:breaks_caps,grp:alt_space_toggle";
         };
       };
-      # zfs = {
-      #   autoScrub.enable = true;
-      #   trim.enable = true;
-      # };
+      zfs = {
+        autoScrub.enable = true;
+        autoSnapshot = {
+          enable = true;
+          flags = "-k -p -u";
+        };
+        trim.enable = true;
+      };
     };
     sops = {
       defaultSopsFile = "${inputs.nix-secrets.outPath}/legionix5.yaml";
-      age.keyFile = "/persist/home/${username}/.config/sops/age/keys.txt";
+      age.keyFile = "/persist/keys.txt";
       secrets = {
         "passwords/beto" = {
           neededForUsers = true;
@@ -120,6 +126,7 @@ in {
         base
         bluetooth
         desktop
+        disko
         dnscrypt-proxy2
         efi
         facter
@@ -130,6 +137,7 @@ in {
         steam
         systemd-boot
         virtualisation
+        ./_disko.nix
       ]
       ++ users;
   };

@@ -2,23 +2,23 @@
   disko.devices = {
     disk = {
       samsungEvo = {
-        device = "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_500GB_S58SNM0R512937X";
+        device = "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_1TB_S7U4NU0Y630801X";
         type = "disk";
         content = {
           type = "gpt";
           partitions = {
             ESP = {
               type = "EF00";
-              size = "2G";
+              size = "5G";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = ["umask=0077"];
+                mountOptions = ["defaults" "umask=0077"];
               };
             };
             swap = {
-              size = "16G";
+              size = "38G";
               content = {
                 type = "swap";
                 randomEncryption = true;
@@ -29,7 +29,7 @@
               content = {
                 type = "luks";
                 name = "cryptroot";
-                additionalKeyFiles = ["/dev/mapper/cryptkey"];
+                additionalKeyFiles = ["/root/mytmpfs/cryptroot.key"];
                 preCreateHook = "mount --mkdir -t tmpfs -o noswap tmpfs /root/mytmpfs && dd if=/dev/urandom of=/root/mytmpfs/cryptroot.key bs=512 count=4 iflag=fullblock";
                 settings = {
                   allowDiscards = true;
@@ -65,7 +65,7 @@
             options = {
               canmount = "off";
               mountpoint = "none";
-              reservation = "50G";
+              reservation = "100G";
             };
             type = "zfs_fs";
           };

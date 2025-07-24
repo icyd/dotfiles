@@ -13,31 +13,36 @@
     "discord"
     "dropbox"
   ];
-  flake.modules.nixos."users/beto" = {pkgs, ...}: {
+  flake.modules.nixos."users/beto" = {
+    config,
+    pkgs,
+    ...
+  }: {
     users.users = let
       inherit (flakeAttrs.config.flake.meta.users.beto) username;
     in {
-      ${username} = {
-        extraGroups = [
-          "adbusers"
-          "input"
-          "uinput"
-          "networkmanager"
-          "video"
-          "dialout"
-          "libvirtd"
-          "wheel"
-          "vboxusers"
-        ];
-        # hashedPasswordFile =
-        #   if (config ? sops)
-        #   then config.sops.secrets."passwords/beto".path
-        #   else "/persist/passwords/${username}";
-        hashedPasswordFile = "/persist/passwords/${username}";
-        isNormalUser = true;
-        shell = pkgs.zsh;
-        uid = 1000;
-      };
+      ${username} =
+        {
+          extraGroups = [
+            "adbusers"
+            "input"
+            "uinput"
+            "networkmanager"
+            "video"
+            "dialout"
+            "libvirtd"
+            "wheel"
+            "vboxusers"
+          ];
+          isNormalUser = true;
+          shell = pkgs.zsh;
+          uid = 1000;
+        }
+        // (
+          if (config ? sops)
+          then {hashedPasswordFile = config.sops.secrets."passwords/beto".path;}
+          else {hashedPassword = "$y$j9T$b7jg52g28VFdXlan9cqiq0$261eH1jYEzrF4OnAuwSzn5N7chehl9/TD8m3I3x0pP7";}
+        );
     };
   };
   flake.modules.homeManager."users/beto" = {
@@ -65,35 +70,35 @@
         # wineWowPackages.waylandFull
         zathura
       ];
-      persistence."/mnt/nodatacow" = {
-        allowOther = false;
-        directories = [
-          ".qemu"
-          ".wine"
-          "VirtualBox VMs"
-          "Games"
-        ];
-      };
-      persistence."/persist/home/${username}" = {
-        allowOther = false;
-        directories = [
-          ".dotfiles"
-          "Backups"
-          "Calibre Library"
-          "Desktop"
-          "Documents"
-          "Downloads"
-          "Movies"
-          "Pictures"
-          "Projects"
-          "scripts"
-          "Videos"
-        ];
-        files = [
-          ".wallpaper.jpg"
-          ".zsh_history"
-        ];
-      };
+      # persistence."/mnt/nodatacow" = {
+      #   allowOther = false;
+      #   directories = [
+      #     ".qemu"
+      #     ".wine"
+      #     "VirtualBox VMs"
+      #     "Games"
+      #   ];
+      # };
+      # persistence."/persist/home/${username}" = {
+      #   allowOther = false;
+      #   directories = [
+      #     ".dotfiles"
+      #     "Backups"
+      #     "Calibre Library"
+      #     "Desktop"
+      #     "Documents"
+      #     "Downloads"
+      #     "Movies"
+      #     "Pictures"
+      #     "Projects"
+      #     "scripts"
+      #     "Videos"
+      #   ];
+      #   files = [
+      #     ".wallpaper.jpg"
+      #     ".zsh_history"
+      #   ];
+      # };
       stateVersion = "22.05";
       sessionVariables = {
         NVIM_SERVER = lib.mkForce "::1:9090";

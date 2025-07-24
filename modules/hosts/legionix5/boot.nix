@@ -18,7 +18,7 @@
         ];
         supportedFilesystems = {
           ntfs = true;
-          # zfs = true;
+          zfs = true;
         };
       };
       kernel.sysctl = {
