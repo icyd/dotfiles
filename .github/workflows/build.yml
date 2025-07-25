@@ -8,8 +8,6 @@ on:
       - main
   pull_request:
   workflow_dispatch:
-env:
-  SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 jobs:
   builds:
     name: Build on ${{ matrix.system }}
@@ -35,15 +33,8 @@ jobs:
         with:
           name: icyd
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      - name: Setup SSH agent
-        env:
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null
-          echo "echo $SSH_PASSPHRASE" > ~/.ssh_askpass
-          chmod +x ~/.ssh_askpass
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | \
-            DISPLAY=None SSH_ASKPASS=~/.ssh_askpass ssh-add >/dev/null
+      - uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Build system configuration
         run: nix flake check
