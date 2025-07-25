@@ -1,0 +1,13 @@
+---
+GithubActions:
+  - changed-files:
+      - any-glob-to-any-file: .github/workflows/*
+ConfigsAndAssets:
+  - changed-files:
+      - any-glob-to-any-file: configs/**/*
+Modules:
+  - changed-files:
+      - any-glob-to-any-file: modules/**/*
+Packages:
+  - changed-files:
+      - any-glob-to-any-file: modules/**/*

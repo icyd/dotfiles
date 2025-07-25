@@ -1,29 +1,20 @@
-## Requirements
+# Nixos and home-manager flake configuration
 
-Before installing the configuration file please be sure to install the following packages from the OS repository:
+Repository with Nix's flake system configurations, based on [dendritic
+pattern](https://github.com/mightyiam/dendritic) and [flake-parts](https://flake.parts/).
+Modules are imported using [import-tree](https://github.com/vic/import-tree), in order to exclude a module or configuration, prepend the file with a `_`.
 
-    - stow (required to create symlinks)
-    - curl
-    - ripgrep
-    - universal-ctags
-    - zsh
-    - tmux
-    - bat
-    - exa
-    - git
-    - broot
+File systems is defined as code using [disko](https://github.com/nix-community/disko).
 
-### Zsh'z plugins
+**Note:** `home-manager` is manage as
+[standalone](https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone).
 
-Plugins are managed by [antibody](http://getantibody.github.io/). To add a new
-plugin modify the file zsh_plugins.txt and afterward run the function
-`gen_plugins_file`, and reload the shell. and `gen_completions` to generate completions files.
+## Usage
 
-## Install
+```bash
+    sudo nix run github:nix-community/disko -- --mode destroy,format,mount
+    modules/hosts/<hostname>/_disko.nix
 
-To install simply run:
+    sudo nixos-install --flake github:icyd/dotfiles#<hostname>
 
-```
-    git clone https://github.com/icyd/dotfiles ~/.dotfiles
-    bash ~/.dotfiles/install.sh -light
 ```
