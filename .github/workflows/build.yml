@@ -21,10 +21,10 @@ jobs:
           - system: aarch64-darwin
             os: macos-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
       - name: Check nix flake inputs
         uses: DeterminateSystems/flake-checker-action@v12
       - uses: cachix/install-nix-action@v31
