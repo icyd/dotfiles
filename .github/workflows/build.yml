@@ -28,6 +28,8 @@ jobs:
       - name: Check nix flake inputs
         uses: DeterminateSystems/flake-checker-action@v12
       - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config = "experimental-features = flakes nix-command pipe-operators"
       - uses: cachix/cachix-action@v16
         with:
           name: icyd
