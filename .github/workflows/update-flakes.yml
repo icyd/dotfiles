@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - uses: cachix/install-nix-action@v31
       - name: Update dev flake.lock
         uses: DeterminateSystems/update-flake-lock@v27
@@ -19,9 +22,6 @@ jobs:
             dependencies
             automated
             merge-queue
-      - uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v27
         with:
