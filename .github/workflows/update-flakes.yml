@@ -9,9 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: webfactory/ssh-agent@v0.9.0
+      - name: "SSH: configure agent"
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: "SSH: trust host"
+        run: |
+          ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
       - uses: cachix/install-nix-action@v31
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v27
