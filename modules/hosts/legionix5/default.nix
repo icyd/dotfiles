@@ -86,9 +86,9 @@ in {
         |> pkgs.writeTextFile
         |> lib.singleton;
       xserver = {
-        videoDrivers = [
-          "displaylink"
-        ];
+        # videoDrivers = [
+        #   "displaylink"
+        # ];
         xkb = {
           layout = "us";
           variant = "altgr-intl";

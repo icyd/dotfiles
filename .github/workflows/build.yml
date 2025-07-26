@@ -38,10 +38,14 @@ jobs:
         with:
           name: icyd
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Flake check
+        run: nix flake checx --no-build
       - name: Build system configuration
         run: |
           if [ "${{ matrix.system }}" = "x86_64-linux" ]; then
-            nix build .#nixosConfigurations.legionix5.config.system.build.toplevel
-          elif [ "${{ matrix.system }}" = "x86_64-linux" ]; then
-            nix build .#darwinConfigurations.ES-IT00385.config.system.build.toplevel
+            nix build .#check.${{ matrix.system }}."host/legionix5"
+            nix build .#check.${{ matrix.system }}."user/beto"
+          elif [ "${{ matrix.system }}" = "aarch64-darwin" ]; then
+            nix build .#check.${{ matrix.system }}."host/ES-IT00385"
+            nix build .#check.${{ matrix.system }}."user/aj.vazquez"
           fi
