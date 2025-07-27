@@ -16,7 +16,11 @@ in {
     user = "beto";
     system = "x86_64-linux";
   };
-  flake.modules.nixos."hosts/legionix5" = {pkgs, ...}: {
+  flake.modules.nixos."hosts/legionix5" = {
+    config,
+    pkgs,
+    ...
+  }: {
     environment.systemPackages = with pkgs;
       [
         autogen
@@ -54,6 +58,16 @@ in {
     networking.hostId = "e4521109";
     system.stateVersion = "22.05";
     facter.reportPath = ./facter.json;
+    fileSystems = {
+      "/home/${username}/.local/share/containers" = {
+        fsType = "zfs";
+        device = "rpool/local/containers";
+      };
+      "/home/${username}/.virtualmachines" = {
+        fsType = "zfs";
+        device = "rpool/local/virtualmachines";
+      };
+    };
     hardware.graphics = {
       enable = true;
       enable32Bit = true;
@@ -105,8 +119,9 @@ in {
       };
     };
     sops = {
+      age.keyFile = "/persist/legionix5_age_key.txt";
+      age.sshKeyPaths = ["/persist/etc/ssh/ssh_host_ed25519_key"];
       defaultSopsFile = "${inputs.nix-secrets.outPath}/personal/legionix5.yaml";
-      age.keyFile = "/persist/keys.txt";
       secrets = {
         "passwords/beto" = {
           neededForUsers = true;

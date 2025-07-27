@@ -111,6 +111,16 @@
             options."com.sun:auto-snapshot" = "false";
             type = "zfs_fs";
           };
+          "local/containers" = {
+            options."com.sun:auto-snapshot" = "false";
+            options.mountpoint = "legacy";
+            type = "zfs_fs";
+          };
+          "local/virtualmachines" = {
+            options."com.sun:auto-snapshot" = "false";
+            options.mountpoint = "legacy";
+            type = "zfs_fs";
+          };
         };
       };
     };

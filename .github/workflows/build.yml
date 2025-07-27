@@ -44,8 +44,13 @@ jobs:
         run: |
           if [ "${{ matrix.system }}" = "x86_64-linux" ]; then
             nix build .#check.${{ matrix.system }}."host/legionix5"
-            nix build .#check.${{ matrix.system }}."user/beto"
           elif [ "${{ matrix.system }}" = "aarch64-darwin" ]; then
             nix build .#check.${{ matrix.system }}."host/ES-IT00385"
+          fi
+      - name: Build home configuration
+        run: |
+          if [ "${{ matrix.system }}" = "x86_64-linux" ]; then
+            nix build .#check.${{ matrix.system }}."user/beto"
+          elif [ "${{ matrix.system }}" = "aarch64-darwin" ]; then
             nix build .#check.${{ matrix.system }}."user/aj.vazquez"
           fi

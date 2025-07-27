@@ -11,9 +11,6 @@
       podman-compose
     ];
     users.groups.libvirtd.members = [username];
-    virtualisation.containers.storage.settings.storage = {
-      driver = "btrfs";
-      rootless_storage_path = "$HOME/.containers";
-    };
+    virtualisation.containers.storage.settings.storage.driver = "zfs";
   };
 }

@@ -11,6 +11,7 @@
     environment.persistence."/persist" = {
       directories = [
         "/etc/nixos"
+        "/etc/ssh"
         "/var/lib/bluetooth"
         "/var/lib/systemd/coredump"
         "/var/lib/libvirt/"

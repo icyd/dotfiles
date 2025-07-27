@@ -142,6 +142,11 @@
         };
       };
     };
+    sops = {
+      age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
+      defaultSopsFile = "${inputs.nix-secrets.outPath}/personal/legionix5.yaml";
+      secrets.ssh_private_key.path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+    };
     imports = with flakeAttrs.config.flake.modules.homeManager;
       [
         base
@@ -152,6 +157,7 @@
         neovim-server
         nushell
         starship
+        sops
         virtualisation
         zsh
       ]
