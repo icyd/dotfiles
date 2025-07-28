@@ -5,7 +5,10 @@
     ...
   }: let
     cfg = config.services.kmonad;
-    kmonad_bin = cfg.binOverride or (lib.getExe cfg.package);
+    kmonad_bin =
+      if (cfg.binOverride == "")
+      then (lib.getExe cfg.package)
+      else cfg.binOverride;
     keyboard = {name, ...}: {
       options = {
         name = lib.mkOption {

@@ -589,17 +589,19 @@
       "locked": {
         "dir": "nix",
         "lastModified": 1751487254,
-        "narHash": "sha256-VSipBrxqqIXfQNrFBDGfeLu02CxU8ZI8YrJu0jGMytM=",
-        "owner": "kmonad",
-        "repo": "kmonad",
+        "narHash": "sha256-0m+M1Y5i2QZ2gMtL3e+Mh4iDJ3m9T/wc4i2IgiJ4L10=",
+        "ref": "refs/heads/master",
         "rev": "f78b8fa9c82589abcc4964406d5e7bdf96860689",
-        "type": "github"
+        "revCount": 987,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/kmonad/kmonad"
       },
       "original": {
         "dir": "nix",
-        "owner": "kmonad",
-        "repo": "kmonad",
-        "type": "github"
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/kmonad/kmonad"
       }
     },
     "lanzaboote": {

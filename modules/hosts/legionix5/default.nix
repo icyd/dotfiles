@@ -16,11 +16,7 @@ in {
     user = "beto";
     system = "x86_64-linux";
   };
-  flake.modules.nixos."hosts/legionix5" = {
-    config,
-    pkgs,
-    ...
-  }: {
+  flake.modules.nixos."hosts/legionix5" = {pkgs, ...}: {
     environment.systemPackages = with pkgs;
       [
         autogen

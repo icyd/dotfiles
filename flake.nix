@@ -29,7 +29,7 @@
     impermanence.url = "github:nix-community/impermanence";
     import-tree.url = "github:vic/import-tree";
     kmonad = {
-      url = "github:kmonad/kmonad?dir=nix";
+      url = "git+https://github.com/kmonad/kmonad?submodules=1&dir=nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     lanzaboote = {
