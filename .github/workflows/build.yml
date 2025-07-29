@@ -45,7 +45,7 @@ jobs:
           if [ "${{ matrix.system }}" = "x86_64-linux" ]; then
             nix build .#check.${{ matrix.system }}."host/legionix5"
           elif [ "${{ matrix.system }}" = "aarch64-darwin" ]; then
-            sed -i '/binOverride/d' modules/hosts/ES-IT00385/kmonad.nix
+            sed -i '' -e '/binOverride/d' modules/hosts/ES-IT00385/kmonad.nix
             nix build .#check.${{ matrix.system }}."host/ES-IT00385"
           fi
       - name: Build home configuration
