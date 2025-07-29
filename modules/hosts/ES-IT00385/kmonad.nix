@@ -3,16 +3,19 @@
   withSystem,
   ...
 }: {
-  flake.modules.darwin."hosts/ES-IT00385" = withSystem "aarch64-darwin" ({inputs', ...}: {
+  flake.modules.darwin."hosts/ES-IT00385" = withSystem "aarch64-darwin" ({inputs', ...}: let
+    kmonad_pkg = inputs'.kmonad.packages.default;
+  in {
     imports = with config.flake.modules.darwin; [
       kmonad
     ];
     environment.systemPackages = [
-      inputs'.kmonad.packages.default
+      kmonad_pkg
     ];
     services.kmonad = {
       enable = true;
       binOverride = "/run/current-system/sw/bin/kmonad";
+      package = kmonad_pkg;
       keyboards = {
         AppleInternalKeyboard = {
           device = "Apple Internal Keyboard / Trackpad";
