@@ -1,0 +1,48 @@
+---
+name: Build system configuration
+permissions:
+  contents: read
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+jobs:
+  builds:
+    name: Build on ${{ matrix.system }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - system: x86_64-linux
+            os: ubuntu-latest
+          - system: aarch64-darwin
+            os: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "SSH: configure agent"
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: "SSH: trust host"
+        run: |
+          ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
+      - name: Check nix flake inputs
+        uses: DeterminateSystems/flake-checker-action@v12
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: "experimental-features = flakes nix-command pipe-operators"
+      - uses: cachix/cachix-action@v16
+        with:
+          name: icyd
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Build system configuration
+        run: |
+          if [ "${{ matrix.system }}" = "x86_64-linux" ]; then
+            nix build .#check.${{ matrix.system }}."host/legionix5"
+          elif [ "${{ matrix.system }}" = "aarch64-darwin" ]; then
+            sed -i '' -e '/binOverride/d' modules/hosts/ES-IT00385/kmonad.nix
+            nix build .#check.${{ matrix.system }}."host/ES-IT00385"
+          fi
