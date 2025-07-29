@@ -21,6 +21,15 @@ jobs:
           - system: aarch64-darwin
             os: macos-latest
     steps:
+      - name: Node cleanup
+        run: |
+          df -h
+          if [ "${{ matrix.system }}" = "x86_64-linux" ]; then
+            sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+            sudo docker image prune --all --force
+            sudo docker builder prune -a
+            df -h
+          fi
       - uses: actions/checkout@v4
       - name: "SSH: configure agent"
         uses: webfactory/ssh-agent@v0.9.1
