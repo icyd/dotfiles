@@ -51,16 +51,18 @@ jobs:
         run: nix flake check
       - name: Build system configuration
         run: |
+          df -h
           if [ "${{ matrix.system }}" = "x86_64-linux" ]; then
-            nix build .#check.${{ matrix.system }}."host/legionix5"
+            nix build .#nixosConfigurations.legionix5.config.system.build.toplevel
           elif [ "${{ matrix.system }}" = "aarch64-darwin" ]; then
             sed -i '' -e '/binOverride/d' modules/hosts/ES-IT00385/kmonad.nix
-            nix build .#check.${{ matrix.system }}."host/ES-IT00385"
+            nix build .#darwinConfigurations.ES-IT00385.config.system.build.toplevel
           fi
       - name: Build home configuration
         run: |
+          df -h
           if [ "${{ matrix.system }}" = "x86_64-linux" ]; then
-            nix build .#check.${{ matrix.system }}."user/beto"
+            nix build .#homeConfigurations.beto.activationPackage
           elif [ "${{ matrix.system }}" = "aarch64-darwin" ]; then
-            nix build .#check.${{ matrix.system }}."user/aj.vazquez"
+            nix build .#homeConfigurations."aj.vazquez".activationPackage
           fi
