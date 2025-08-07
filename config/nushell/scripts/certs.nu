@@ -104,7 +104,7 @@ def _k_extract_data [
 
     let entries = [[key name value]; [cert $cert_name ""] [key $key_name ""] [cacert $cacert_name ""]]
     $entries | upsert value {|row|
-        $data | where key == $row.name | get -i value.0
+        $data | where key == $row.name | get -o value.0
     } | reduce -f {} {|it, acc|
         if ($it.value | is-empty) {
             $acc
@@ -120,7 +120,7 @@ def _check_entry [
     msg: string
     span: record
 ] {
-    if ($data | get -i $entry | is-empty) {
+    if ($data | get -o $entry | is-empty) {
         error make {
             msg: $msg,
             label: {

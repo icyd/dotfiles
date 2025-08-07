@@ -5,7 +5,10 @@
     pkgs,
     ...
   }: {
-    programs.carapace.enable = true;
+    programs.carapace = {
+      enable = true;
+      package = pkgs.unstable.carapace;
+    };
     programs.nushell = let
       buf_editor = pkgs.lib.getExe pkgs.nixvimin;
     in {

@@ -272,7 +272,7 @@ export def "nu-complete kube labels" [context: string, offset: int] {
         | columns
         | each {|col|
             $labels
-            | get -i $col
+            | get -o $col
             | uniq
             | default ""
             | compact -e
@@ -1360,7 +1360,7 @@ export def k_zombify_container [
         | upsert metadata.name {|pod| $"($pod.metadata.name)-zombie"}
         | upsert spec.containers {|pod|
             $pod.spec.containers | each {|c|
-                $c | reject -i livenessProbe readinessProbe startupProbe
+                $c | reject -o livenessProbe readinessProbe startupProbe
                 | if ($c.name == $container_name) {
                     $in | upsert command [sleep 1d]
                 }

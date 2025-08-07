@@ -66,6 +66,7 @@
     programs.bat.enable = true;
     programs.direnv = {
       enable = true;
+      enableNushellIntegration = false;
       nix-direnv.enable = true;
     };
     programs.home-manager.enable = true;

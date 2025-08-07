@@ -14,6 +14,11 @@ $env.NU_LIB_DIRS = [
     $"($env.HOME)/Projects/nu_scripts"
 ]
 
-$env.ENV_CONVERSIONS = {}
+$env.ENV_CONVERSIONS = {
+    PATH : {
+        from_string: {|s| $s | split row (char env_sep)}
+        to_string: {|v| $v | str join (char env_sep)}
+    }
+}
 $env.PWD_STACK = []
 $env.PWD_POPPING = false
