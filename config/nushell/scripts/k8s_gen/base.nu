@@ -254,7 +254,7 @@ export def "nu-complete kube labels" [context: string, offset: int] {
     let ctx = ($context | parse cmd)
     let cmd = ($ctx | get _args.0 )
     let abbr = ($env.KUBERNETES_OPERATIONS_ABBR
-        | filter {|op| $cmd =~ $"^k($op.abbr)"}
+        | where {|op| $cmd =~ $"^k($op.abbr)"}
         | math max
     ).abbr
     let operation = ($env.KUBERNETES_OPERATIONS_ABBR | where abbr == $abbr).operation
@@ -880,7 +880,7 @@ export def kgpo_with_node_version [
     (kubectl get pods ...$ctx ...$ns -ojson
         | from json
         | get items
-        | filter {|pod| $pod.spec.nodeName in $nodes}
+        | where {|pod| $pod.spec.nodeName in $nodes}
         | each {|pod|
             {
                 name: $pod.metadata.name,
@@ -1444,7 +1444,7 @@ export def kgpo_unready [
     kubectl get pods ...$ctx ...$ns
         | from ssv -a
         | normalize-column-names
-        | filter {|i|
+        | where {|i|
             not (
                 ($i.status == "Completed") or (
                     ($i.status == "Running") and ($i.ready

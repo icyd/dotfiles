@@ -380,3 +380,15 @@ export def key_unencrypt [
     # typos: disable-next-line
     openssl rsa -in $key_file -out $output_file -passin $"pass:($pass)"
 }
+
+# Split chain in separated certificates
+export def split_chain [
+    chain?: string
+] {
+   let chain = if ($chain | is-empty) { $in } else { $chain }
+
+   $chain
+       | split row "-----END CERTIFICATE-----"
+       | compact --empty
+       | each {|i| $"($i)-----END CERTIFICATE-----"}
+}

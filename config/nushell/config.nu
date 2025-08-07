@@ -128,7 +128,7 @@ $env.config = {
     }
     display_output: "if (term size).columns >= 100 { table -e } else { table }" # run to display the output of a pipeline
     command_not_found: {|cmd|
-        let pkgs = ^nix-locate --minimal --no-group --type x --type s --top-level --whole-name --at-root $"/bin/($cmd)"
+        let pkgs = ^nix-locate --minimal --no-group --type x --type s --whole-name --at-root $"/bin/($cmd)"
             | lines
         if ($pkgs | is-empty) {
             return null
@@ -490,3 +490,49 @@ def --env dirup [idx: int = 1] {
 def --env mkcd [directory: string] {mkdir $directory; cd $directory}
 
 def --wrapped lg [...args] {SHELL="nu" lazygit ...$args}
+
+export def pw [
+    query?: string
+    --show (-s)
+] {
+    use std/log
+    let fzf_query = $query | default ""
+
+    let raw_selection = gopass list --flat
+        | (fzf --keep-right --ansi --prompt="Select secret :: "
+            --print-query --preview="" --query $fzf_query)
+        | complete
+    log debug $"Raw selection: ($raw_selection)"
+    let fzf_stdout =  $raw_selection.stdout | lines
+
+    if (($raw_selection.exit_code != 0) or (($fzf_stdout | length) == 1)) {
+        error make {
+            msg: $"No password selected with query: ($fzf_stdout | first)",
+            label: {
+                text: "this query",
+                span: (metadata $query).span
+            }
+        }
+    }
+    let selection = $fzf_stdout | get 1
+    log debug $"Selection: ($selection)"
+
+    if ($show) {
+        let record = gopass show $selection err> /dev/null
+            | lines
+        log debug $"Record: ($record)"
+
+        if not ($record | is-empty) {
+            let record = $record
+            | parse "{key}:{value}"
+            | str trim
+            | compact --empty
+            | transpose --header-row
+            | into record
+
+            print $record
+        }
+    }
+
+    gopass show -c $selection
+}

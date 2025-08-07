@@ -29,7 +29,6 @@
         g = "git";
         gi = "git";
         gig = "utils gitignore_template";
-        gpw = "gopass";
         jat = "bat -ljson";
         k = "kubectl";
         l = "eza";
@@ -42,7 +41,6 @@
         lg = "lazygit";
         nv = "nvim_client";
         nvr = "nvim_server";
-        pw = "gopass show -c";
         svim = "sudo -E $env.EDITOR";
         tcp = "utils trimcopy";
         tj = "to json";

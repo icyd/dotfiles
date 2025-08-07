@@ -92,25 +92,30 @@
     '';
     programs.starship.settings.kubernetes.contexts = [
       {
-        context_pattern = ".*-prod(?<version>-v[^-]+)?-.*";
-        context_alias = "Prod";
+        context_pattern = "^(?<name>[^-]+)-prod(?<version>-v[^-]+)?-.*";
+        context_alias = "Prod>$name";
         style = "red bold";
       }
       {
-        context_pattern = ".*-load(?<version>-v[^-]+)?-.*";
-        context_alias = "Load$version";
+        context_pattern = "^(?<name>[^-]+)-load(?<version>-v[^-]+)?-.*";
+        context_alias = "Load>$name$version";
         style = "orange";
       }
       {
-        context_pattern = ".*-nonprod(?<version>-v[^-]+)?-.*";
-        context_alias = "Nonprod$version";
+        context_pattern = "^(?<name>[^-]+)-(?:nonprod|int)(?<version>-v[^-]+)?-.*";
+        context_alias = "Nonprod>$name$version";
         style = "green";
+      }
+      {
+        context_pattern = "^(?<name>[^-]+)-dev(?<version>-v[^-]+)?-.*";
+        context_alias = "Dev>$name$version";
+        style = "blue";
       }
     ];
     sops = {
       age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
       defaultSopsFile = "${inputs.nix-secrets.outPath}/work/ES-IT00385.yaml";
-      secrets.ssh_private_key.path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+      secrets.ssh_private_key.path = "${config.home.homeDirectory}/.ssh/id_ed25519.sops";
     };
     imports = with flakeAttrs.config.flake.modules.homeManager; [
       base
