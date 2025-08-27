@@ -82,6 +82,12 @@
           indent_style = "space";
           indent_space = 4;
         };
+        # Haskell
+        "*.hs" = {
+          indent_style = "space";
+          indent_space = 4;
+          max_line_length = 80;
+        };
         "*.txt" = {
           max_line_length = 79;
         };
@@ -93,6 +99,11 @@
         "*.{xml,xsd}" = {
           max_line_length = "off";
           indent_size = 2;
+        };
+        # Zig
+        "*.zig" = {
+          indent_space = 4;
+          indent_style = "space";
         };
       };
     };
