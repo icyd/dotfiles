@@ -36,7 +36,7 @@
   grv  1      2      3      4      5    6    7      8      9      0      -    =
   _    Z      Y      U      O      ;    Q    L      D      P      X      [    ]    \
   W    C      I      E      A      ,    K    H      T      N      S      F
-  @eth '      -      =      .      /    J    M      G      B      V      @eth
+  @eth '      S--    =      .      /    J    M      G      B      V      @eth
   @fn  _      _                    _                R      _
 )
 
@@ -52,7 +52,7 @@
   grv  S-1  S-2   S-3  S-4  S-5   6    7    8    9    0    -    =
   _    S-6  S-[   S-]  \    S-;   _    _    _    _    _    _    _    _
   S-7  [    S-9   S-0  ]    S-,   _    _    _    _    _    _
-  lsft grv  S-grv S-8  S-.  S-\   _    _    _    _    _    _
+  lsft grv  S-grv S-=  S-8  S-\   _    _    _    _    _    _
   @fn  _    _               _               _    _
 )
 

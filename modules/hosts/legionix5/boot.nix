@@ -18,6 +18,7 @@
         ];
         supportedFilesystems = {
           ntfs = true;
+          exfat = true;
           zfs = true;
         };
       };
@@ -27,15 +28,16 @@
       };
       kernelParams = [
         "acpi_backlight=native"
-        "nohibernate"
+        "mem_sleep_default=deep"
         "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
       ];
       loader.systemd-boot.windows = {
         win = {
-          title = "Windows";
+          title = "Windows11";
           efiDeviceHandle = "HD1b";
         };
       };
+      resumeDevice = "/dev/disk/by-partlabel/disk-samsungEvo-swap";
       tmp.useTmpfs = true;
     };
   };

@@ -105,7 +105,7 @@
         WINEDLLOVERRIDES = "winemenubuilder.exe=d";
       };
     };
-    nushellKeychain.enable = true;
+    nushellKeychain.enable = false;
     programs.git = {
       userName = flakeAttrs.config.flake.meta.users.${username}.name;
       userEmail = flakeAttrs.config.flake.meta.users.${username}.email;
@@ -130,6 +130,7 @@
           };
         }
       ];
+      gnome-keyring.enable = true;
       neovim-server = {
         enable = true;
         package = pkgs.nixvim;
@@ -145,7 +146,7 @@
     sops = {
       age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
       defaultSopsFile = "${inputs.nix-secrets.outPath}/personal/legionix5.yaml";
-      secrets.ssh_private_key.path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+      secrets.ssh_private_key.path = "${config.home.homeDirectory}/.ssh/id_ed25519.sops";
     };
     imports = with flakeAttrs.config.flake.modules.homeManager;
       [

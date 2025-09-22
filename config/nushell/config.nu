@@ -438,8 +438,15 @@ def nvim_get_server [] {
     }
 }
 
-def --wrapped nvim_server [...args] {
-    nvim --listen (nvim_get_server) ...$args
+def --wrapped nvim_server [
+    --remote (-r)
+    ...args
+] {
+    if $remote {
+        nvim --server (nvim_get_server) --remote-ui ...$args
+    } else {
+        nvim --listen (nvim_get_server) ...$args
+    }
 }
 
 def nvim_client [...files: path] {

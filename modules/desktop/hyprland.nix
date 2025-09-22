@@ -5,11 +5,12 @@
     };
     programs.hyprland = {
       enable = true;
+      withUWSM = true;
       xwayland.enable = true;
     };
     programs.light.enable = true;
     security.pam.services.hyprlock = {};
-    services.displayManager.defaultSession = lib.mkDefault "hyprland";
+    services.displayManager.defaultSession = lib.mkDefault "hyprland-uwsm";
     xdg.portal = {
       enable = true;
       extraPortals = with pkgs; [xdg-desktop-portal-gtk];
@@ -257,12 +258,12 @@
         listener = [
           {
             timeout = 150;
-            on-timeout = "light -S 10 -O";
+            on-timeout = "light -O && light -S 10";
             on-resume = "light -I";
           }
           {
             timeout = 150;
-            on-timeout = "light -s sysfs/leds/platform::kbd_backlight -S 0 -O";
+            on-timeout = "light -s sysfs/leds/platform::kbd_backlight -O && light -s sysfs/leds/platform::kbd_backlight -S 0";
             on-resume = "light -s sysfs/leds/platform::kbd_backlight -I";
           }
           {
@@ -289,6 +290,7 @@
       longitude = 2.16;
     };
     systemd.user = {
+      sessionVariables.SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
       services = {
         swww-daemon = {
           Install.WantedBy = ["default.target"];

@@ -79,11 +79,11 @@
         use ~/.local.nu *
         use git-gone.nu *
         use cd-root.nu *
-        use ${pkgs.bash-env-nushell}/bash-env.nu
+        # use ${pkgs.bash-env-nushell}/bash-env.nu
 
-        ${lib.getExe' pkgs.devbox "devbox"} global shellenv
-          | bash-env
-          | load-env
+        # ${lib.getExe' pkgs.devbox "devbox"} global shellenv
+        #   | bash-env
+        #   | load-env
       '';
     };
   };

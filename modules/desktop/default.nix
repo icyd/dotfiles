@@ -2,10 +2,12 @@
   flake.modules.nixos.desktop = {pkgs, ...}: {
     environment.systemPackages = with pkgs; [
       file-roller
-      sddm-astronaut
       xdg-utils
     ];
     programs = {
+      regreet = {
+        enable = true;
+      };
       thunar = {
         enable = true;
         plugins = with pkgs.xfce; [
@@ -17,16 +19,7 @@
       xwayland.enable = true;
     };
     services = {
-      displayManager = {
-        sddm = {
-          enable = true;
-          autoNumlock = true;
-          wayland.enable = true;
-          extraPackages = [pkgs.sddm-astronaut];
-          package = pkgs.kdePackages.sddm;
-          theme = "sddm-astronaut-theme";
-        };
-      };
+      greetd.enable = true;
       gvfs.enable = true;
       libinput.enable = true;
       tumbler.enable = true;

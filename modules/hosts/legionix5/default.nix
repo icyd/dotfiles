@@ -16,7 +16,11 @@ in {
     user = "beto";
     system = "x86_64-linux";
   };
-  flake.modules.nixos."hosts/legionix5" = {pkgs, ...}: {
+  flake.modules.nixos."hosts/legionix5" = {
+    config,
+    pkgs,
+    ...
+  }: {
     environment.systemPackages = with pkgs;
       [
         autogen
@@ -35,6 +39,7 @@ in {
         mediainfo
         ntfs3g
         openssl
+        pinentry-gnome3
         smplayer
         sqlite
         usbutils
@@ -55,6 +60,11 @@ in {
     system.stateVersion = "22.05";
     facter.reportPath = ./facter.json;
     fileSystems = {
+      "/home/${username}/win11shared" = {
+        device = "/dev/disk/by-label/data";
+        fsType = "exfat";
+        options = ["rw" "nofail" "uid=${builtins.toString config.users.users.${username}.uid}"];
+      };
       "/home/${username}/.local/share/containers" = {
         fsType = "zfs";
         device = "rpool/local/containers";
@@ -78,15 +88,25 @@ in {
       adb.enable = true;
       gnupg.agent = {
         enable = true;
-        enableSSHSupport = true;
+        enableSSHSupport = false;
       };
+      seahorse.enable = true;
     };
     services = {
       displayManager.autoLogin = {
         enable = true;
         user = username;
       };
+      gnome = {
+        gnome-keyring.enable = true;
+      };
+      logind = {
+        lidSwitch = "suspend-then-hibernate";
+        powerKey = "hibernate";
+        powerKeyLongPress = "poweroff";
+      };
       pcscd.enable = true;
+      power-profiles-daemon.enable = true;
       udev.packages =
         {
           name = "qmk-rules";
@@ -114,6 +134,7 @@ in {
         trim.enable = true;
       };
     };
+    security.pam.services.ssdm.enableGnomeKeyring = true;
     sops = {
       age.keyFile = "/persist/legionix5_age_key.txt";
       age.sshKeyPaths = ["/persist/etc/ssh/ssh_host_ed25519_key"];
@@ -130,6 +151,10 @@ in {
     systemd = {
       enableEmergencyMode = false;
       services."systemd-backlight@backlight:ideapad".wantedBy = lib.mkForce [];
+      sleep.extraConfig = ''
+        HibernateDelaySec=30m
+        SuspendState=mem
+      '';
     };
     imports = with flakeAttrs.config.flake.modules.nixos;
       [
