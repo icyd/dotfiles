@@ -346,6 +346,20 @@ export def k_chain_text [
     $result
 }
 
+export def --wrapped k_cmd [
+    secret: string
+    --namespace (-n): string
+    --secret-key (-k): string = "tls.crt"
+    ...args
+] {
+    let key = $secret_key == "tls.key"
+    let data = _k_data --namespace $namespace $secret
+        | where key == $secret_key
+        | get value
+        | first
+    _cmd $data --key=$key ...$args
+}
+
 # Unencrypt key file
 export def key_unencrypt [
     key_file: path,

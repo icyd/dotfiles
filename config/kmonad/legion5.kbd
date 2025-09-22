@@ -16,27 +16,27 @@
   alt_i (tap-hold-next-release 200 i lalt)
   ctl_e (tap-hold-next-release 200 e lctl)
   sft_a (tap-hold-next-release 200 a lsft)
-  alt_w (tap-hold-next-release 200 w ralt)
+  alt_p (tap-hold-next-release 200 p ralt)
   sft_h (tap-hold-next-release 200 h rsft)
   ctl_t (tap-hold-next-release 200 t lctl)
   alt_n (tap-hold-next-release 200 n lalt)
   met_s (tap-hold-next-release 200 s rmet)
-  sym_f (tap-hold-next-release 200 f (layer-toggle symbol))
+  sym_v (tap-hold-next-release 200 v (layer-toggle symbol))
 )
 
 (deflayer enthium
   grv  1      2      3      4      5    6    7      8      9      0      -    =
-  _    q      @alt_y o      u      -    x    l      d      @alt_w z      [    ]    \
-  b    @met_c @alt_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @alt_n @met_s v
-  _    '      /      =      .      ;    j    m      g      p      @sym_f _
+  _    z      @alt_y u      o      ;    q    l      d      @alt_p x      [    ]    \
+  w    @met_c @alt_i @ctl_e @sft_a ,    k    @sft_h @ctl_t @alt_n @met_s f
+  _    '      -      =      .      /    j    m      g      b      @sym_v _
   @fn  _      _                    _                r      _
 )
 
 (deflayer capsword
   grv  1      2      3      4      5    6    7      8      9      0      -    =
-  _    Q      Y      O      U      S--  X    L      D      W      Z      [    ]    \
-  B    C      I      E      A      ,    K    H      T      N      S      V
-  @eth '      /      =      .      ;    J    M      G      P      F      @eth
+  _    Z      Y      U      O      ;    Q    L      D      P      X      [    ]    \
+  W    C      I      E      A      ,    K    H      T      N      S      F
+  @eth '      -      =      .      /    J    M      G      B      V      @eth
   @fn  _      _                    _                R      _
 )
 
@@ -49,11 +49,11 @@
 )
 
 (deflayer symbol
-  grv  S-1  S-2  S-3  S-4  S-5   6    7    8    9    0    -    =
-  _    S-6  S-[  S-]  \    S-grv _    _    _    _    _    _    _    _
-  S-7  [    S-9  S-0  ]    S-,   _    _    _    _    _    _
-  lsft grv  S-\  S-8  S-.  S-;   _    _    _    _    _    _
-  @fn  _    _              _               _    _
+  grv  S-1  S-2   S-3  S-4  S-5   6    7    8    9    0    -    =
+  _    S-6  S-[   S-]  \    S-;   _    _    _    _    _    _    _    _
+  S-7  [    S-9   S-0  ]    S-,   _    _    _    _    _    _
+  lsft grv  S-grv S-8  S-.  S-\   _    _    _    _    _    _
+  @fn  _    _               _               _    _
 )
 
 (deflayer function

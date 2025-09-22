@@ -96,6 +96,14 @@
           indent_size = 2;
           insert_final_newline = true;
         };
+        "*.{yaml.tpl,yml.tpl}" = {
+          indent_size = 2;
+          insert_final_newline = true;
+        };
+        "*.ya?ml.tpl" = {
+          indent_size = 2;
+          insert_final_newline = true;
+        };
         "*.{xml,xsd}" = {
           max_line_length = "off";
           indent_size = 2;
