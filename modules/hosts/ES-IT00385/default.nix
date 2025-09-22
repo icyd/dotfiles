@@ -24,7 +24,7 @@
       casks = [
         "gpg-suite"
         "karabiner-elements"
-        "wireshark"
+        "wireshark-app"
       ];
       enable = true;
       onActivation = {
