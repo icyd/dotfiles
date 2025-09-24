@@ -695,10 +695,10 @@
     "nix-secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1753426115,
-        "narHash": "sha256-O6Gv2250Mu/GfJsWSmF5HSNbUQ5cnIDPPRqevZxbx3M=",
+        "lastModified": 1758649751,
+        "narHash": "sha256-/lEFTDOW07OSeros+V075fKac+LamDtHNoLReH/+uZw=",
         "ref": "main",
-        "rev": "8f5544c0911a5be3e9916f82bbcfd707b37f6f6b",
+        "rev": "9a76b5aaf09a823e4f1a7e04729e013e639cdc38",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@gitlab.com/icyd/nix-secrets"
@@ -852,11 +852,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1758548231,
-        "narHash": "sha256-50wZAAO+trNgtEZhoYJArjq0DEhL+kgJ7zp/mfrIcMI=",
+        "lastModified": 1758696726,
+        "narHash": "sha256-6Np2V967BlmsB16MRHD/AW0X/3XSGbkwCvOhq5nuJ2E=",
         "owner": "icyd",
         "repo": "nixvim",
-        "rev": "f52878fc3ff8aa5fb5e770d5a03a9b1eb1b854f3",
+        "rev": "ac0aa930a3921c8a339944acc47c5a931efd5715",
         "type": "github"
       },
       "original": {

@@ -85,6 +85,18 @@
       aliases.p4 = "/usr/local/bin/git-p4";
       userName = flakeAttrs.config.flake.meta.users.${username}.name;
       userEmail = flakeAttrs.config.flake.meta.users.${username}.email;
+      extraConfig.core.editor = lib.mkForce (lib.getExe nixvimPkgs.nixvimin);
+    };
+    programs.lazygit = {
+      settings.os = let
+        nvimin = lib.getExe nixvimPkgs.nixvimin;
+      in rec {
+        editPreset = lib.mkForce null;
+        edit = "${nvimin} {{filename}}";
+        editAtLine = "${nvimin} +{{line}} -- {{filename}}";
+        editAtLineAndWait = editAtLine;
+        openDirInEditor = "${nvimin} -- {{dir}}";
+      };
     };
     programs.nushell.extraEnv = ''
       $env.SSH_ASKPASS = "${brewPrefix}/bin/ssh-askpass"
