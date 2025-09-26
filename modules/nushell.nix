@@ -42,7 +42,6 @@
         llm = "eza -la --sort=modified";
         lx = "eza -lbhHigUmuSa@";
         la = "eza -lbhHigUmuSa";
-        lg = "lazygit";
         nv = "nvim_client";
         nvr = "nvim_server";
         svim = "sudo -E $env.EDITOR";

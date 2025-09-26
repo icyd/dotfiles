@@ -90,12 +90,12 @@
     programs.lazygit = {
       settings.os = let
         nvimin = lib.getExe nixvimPkgs.nixvimin;
-      in rec {
+      in {
         editPreset = lib.mkForce null;
-        edit = "${nvimin} {{filename}}";
-        editAtLine = "${nvimin} +{{line}} -- {{filename}}";
-        editAtLineAndWait = editAtLine;
-        openDirInEditor = "${nvimin} -- {{dir}}";
+        edit = ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{filename}}} else {${nvimin} -- {{filename}}}'';
+        editAtLine = ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{filename}} ; nvim --server $env.NVIM --remote-send ":{{line}}<CR>"} else {${nvimin} +{{line}} -- {{filename}}}'';
+        editAtLineAndWait = "${nvimin} {{filename}}";
+        openDirInEditor = ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{dir}}} else {${nvimin} -- {dir}}}'';
       };
     };
     programs.nushell.extraEnv = ''
