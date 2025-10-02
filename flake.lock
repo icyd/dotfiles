@@ -878,11 +878,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1758884764,
-        "narHash": "sha256-iYf2lkHdKFR/yLswkqETTrHLBbH4Y+cH3YgCB3aZwW0=",
+        "lastModified": 1759398615,
+        "narHash": "sha256-BImep3I5MJzjn374E+aRzNWHRD/vWBOhZ0+P4R/CpSk=",
         "owner": "icyd",
         "repo": "nixvim",
-        "rev": "be80002b416801ea84a7ee132ca1c3497cb3a8ce",
+        "rev": "9056aa7361b2720a0f688657df4805f8a6484519",
         "type": "github"
       },
       "original": {

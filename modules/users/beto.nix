@@ -31,6 +31,7 @@
             "video"
             "dialout"
             "libvirtd"
+            "uucp"
             "wheel"
             "vboxusers"
           ];

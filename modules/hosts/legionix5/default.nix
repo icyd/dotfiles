@@ -108,13 +108,24 @@ in {
       pcscd.enable = true;
       power-profiles-daemon.enable = true;
       udev.packages =
-        {
-          name = "qmk-rules";
-          destination = "/etc/udev/rules.d/50-qmk.rules";
-          text = builtins.readFile ./qmk.rules;
-        }
-        |> pkgs.writeTextFile
-        |> lib.singleton;
+        [
+          {
+            name = "blackmagic-rules";
+            destination = "/etc/udev/rules.d/99-blackmagic.rules";
+            text = builtins.readFile ./blackmagic.rules;
+          }
+          {
+            name = "qmk-rules";
+            destination = "/etc/udev/rules.d/50-qmk.rules";
+            text = builtins.readFile ./qmk.rules;
+          }
+          {
+            name = "stlink-rules";
+            destination = "/etc/udev/rules.d/99-stlink.rules";
+            text = builtins.readFile ./stlink.rules;
+          }
+        ]
+        |> builtins.map pkgs.writeTextFile;
       xserver = {
         # videoDrivers = [
         #   "displaylink"
