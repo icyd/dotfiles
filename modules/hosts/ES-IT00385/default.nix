@@ -22,6 +22,7 @@
         "theseal/ssh-askpass/ssh-askpass"
       ];
       casks = [
+        "amethyst"
         "gpg-suite"
         "karabiner-elements"
         "wireshark-app"

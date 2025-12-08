@@ -20,7 +20,7 @@
         bin = lib.getExe pkgs.keychain;
         keys = lib.strings.concatStringsSep " " cfg.keys;
       in ''
-        ${bin} --agents ssh --eval --quiet ${keys}
+        ${bin} --eval --quiet ${keys}
           | lines
           | where not ($it | is-empty)
           | parse "{name}={value}; export {name2};"

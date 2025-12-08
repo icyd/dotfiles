@@ -21,8 +21,7 @@
             nixvim = inputs'.nixvim.packages.default;
             nixvimin = inputs'.nixvim.packages.nvimin;
             unstable = import inputs.nixpkgs-unstable {
-              inherit (final) config;
-              inherit system;
+              inherit (final) config system;
             };
             zjstatus = inputs'.zjstatus.packages.default;
           })

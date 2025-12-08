@@ -10,6 +10,7 @@
   fn (around (layer-toggle function) fn)
   qwt (layer-switch qwerty)
   eth (layer-switch enthium)
+  func (layer-switch function)
   cw (layer-switch capsword)
   num (layer-switch numbers)
   sym (layer-switch symbols)
@@ -25,24 +26,32 @@
   alt_s (tap-hold-next-release 200 s ralt)
   nm_bks (tap-hold-next-release 200 bspc (layer-toggle numbers))
   sym_r (tap-hold-next-release 200 r (layer-toggle symbols))
-  dcln (tap-macro S-; S-;)
+  nav_' (tap-hold-next-release 200 ' (layer-toggle nav))
+  copy (around lmet c)
+  cut (around lmet x)
+  find (around lmet f)
+  paste (around lmet v)
+  redo (around lmet y)
+  sall (around lmet a)
+  undo (around lmet z)
   spc (around (layer-switch enthium) spc)
+  dcln (tap-macro S-; S-;)
 )
 
 (deflayer enthium
   lsgt    1       2       3       4       5       6       7       8       9       0       -       =       bspc
   _       z       @alt_y  o       u       =       q       l       d       @alt_p  x       esc     ]       \
   w       @alt_c  @met_i  @ctl_a  @sft_e  ;       k       @sft_h  @ctl_t  @met_n  @alt_s  f
-  _       grv     '       -       ,       .       /       j       m       g       b       v       _
+  _       grv     @nav_'  -       ,       .       /       j       m       g       b       v       _
   @fn     _       _       @nm_bks                 _                       @sym_r  _
 )
 
-(deflayer function
+(deflayer nav
   _       f1      f2      f3      f4      f5      f6      f7      f8      f9      f10     f11     f12     del
-  _       @qwt    @eth    _       _       _       _       _       _       _       _       [       _       _
-  _       c       i       a       e       _       pgup    h       t       n       s       _
-  @cw     _       _       _       _       _       _       pgdn    _       _       _       _       @cw
-  @fn     _       _       @num                    _                       @sym    _
+  @func   _       _       _       @undo   @redo   _       home    pgup    pgdn    end     _       _       _
+  _       _       _       @sall   @find   _       _       left    up      down    right   _
+  @cw     _       _       @cut    @copy   @paste  _       _       _       _       _       @cw     @cw
+  @fn     _       _       del                     tab                     r       _
 )
 
 (deflayer capsword
@@ -55,18 +64,18 @@
 
 (deflayer numbers
   _       _       _       _       _       _       _       _       _       _       _       _       _       _
-  _       S-1     S-4     S-0     S-7     =       S-5     S-6     S-3     S-8     S-4     @eth    _       _
-  8       6       4       0       2       S-;     k       3       1       5       7       9
-  lsft    _       _       -       _       _       _       j       m       G       b       v       rsft
-  @fn     _       _       lmet                    spc                     @num    _
+  @num    S-1     S-4     S-0     S-7     =       S-5     S-6     S-3     S-8     S-4     @eth    _       _
+  w       6       4       0       2       S-;     k       3       1       5       7       f
+  lsft    _       _       -       8       _       _       9       m       G       b       v       rsft
+  @fn     _       _       lmet                    spc                     r       _
 )
 
 (deflayer symbols
   _       S-1     S-2     S-3     S-4     S-5     S-6     S-7     S-8     S-9     S-0     S--     S-=     _
-  _       S-1     S-[     S-]     S-7     S-=     S-5     S-6     S-3     S-8     S-4     @eth    _       _
+  @sym    S-1     S-[     S-]     S-7     S-=     S-5     S-6     S-3     S-8     S-4     @eth    _       _
   S-grv   grv     S-9     S-0     S--     S-;     \       S-\     [       ]       s       f
   _       _       S-'     _       S-,     S-.     S-/     S-2     @dcln   g       b       v       _
-  @fn     _       _       @sym                    _                       r       _
+  @fn     _       _       bspc                    _                       r       _
 )
 
 (deflayer qwerty
@@ -75,4 +84,12 @@
   caps    a       s       d       f       g       h       j       k       l       ;       '
   _       lsgt    z       x       c       v       b       n       m       ,       .       /       _
   @fn     _       _       lmet                    _                       rmet    _
+)
+
+(deflayer function
+  _       f1      f2      f3      f4      f5      f6      f7      f8      f9      f10     f11     f12     _
+  @qwt    _       _       _       _       _       _       _       _       _       _       @eth    _       _
+  f12     f6      f4      f10     f2      _       _       f3      f1      f5      f7      f11
+  _       _       _       -       f8      _       _       f11     _       _       _       _       _
+  @fn     _       _       @num                    _                       @sym    _
 )

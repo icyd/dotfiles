@@ -82,10 +82,13 @@
       ];
     };
     programs.git = {
-      aliases.p4 = "/usr/local/bin/git-p4";
-      userName = flakeAttrs.config.flake.meta.users.${username}.name;
-      userEmail = flakeAttrs.config.flake.meta.users.${username}.email;
-      extraConfig.core.editor = lib.mkForce (lib.getExe nixvimPkgs.nixvimin);
+      settings = {
+        aliases.p4 = "/usr/local/bin/git-p4";
+        user = {
+          inherit (flakeAttrs.config.flake.meta.users.${username}) name email;
+        };
+        core.editor = lib.mkForce (lib.getExe nixvimPkgs.nixvimin);
+      };
     };
     programs.lazygit = {
       settings.os = let

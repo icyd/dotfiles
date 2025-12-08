@@ -5,12 +5,15 @@
     ...
   }: {
     programs = {
+      delta = {
+        enable = true;
+        enableGitIntegration = true;
+      };
       git = let
         ssh_dir = "${config.home.homeDirectory}/.ssh";
       in {
-        delta.enable = true;
         enable = true;
-        extraConfig = {
+        settings = {
           commit.gpgsign = true;
           commit.verbose = true;
           core.editor = pkgs.lib.getExe pkgs.nixvimin;
@@ -29,6 +32,7 @@
       };
       lazygit = {
         enable = true;
+        enableNushellIntegration = false;
         settings = {
           os = {
             edit = ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{filename}}} else {nvim -- {{filename}}}'';

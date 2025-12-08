@@ -1,0 +1,92 @@
+(defsrc
+  grv     1       2       3       4       5       6       7       8       9       0       -       =       bspc
+  tab     q       w       e       r       t       y       u       i       o       p       [       ]       \
+  caps    a       s       d       f       g       h       j       k       l       ;       '
+  lsft    z       x       c       v       b       n       m       ,       .       /       rsft
+  lctl    lmet    lalt                    spc                     ralt    rctl
+)
+
+(defvar
+  tap-time 200
+  hold-time 200
+  cw-timeout 3000
+)
+
+(defalias
+  lctl (multi lctl (layer-while-held function))
+  qwt (layer-switch qwerty)
+  eth (layer-switch enthium)
+  func (layer-switch function)
+  cw (caps-word $cw-timeout)
+  num (layer-switch numbers)
+  sym (layer-switch symbols)
+  alt_y (tap-hold $tap-hold $hold-time y ralt)
+  alt_c (tap-hold $tap-hold $hold-time c lalt)
+  met_i (tap-hold $tap-hold $hold-time i lmet)
+  ctl_a (tap-hold $tap-hold $hold-time a lctl)
+  sft_e (tap-hold $tap-hold $hold-time e lsft)
+  alt_w (tap-hold $tap-hold $hold-time w ralt)
+  sft_h (tap-hold $tap-hold $hold-time h rsft)
+  ctl_t (tap-hold $tap-hold $hold-time t lctl)
+  met_n (tap-hold $tap-hold $hold-time n lmet)
+  alt_s (tap-hold $tap-hold $hold-time s ralt)
+  nm_bks (tap-hold $tap-hold $hold-time bspc (layer-toggle numbers))
+  sym_r (tap-hold $tap-hold $hold-time r (layer-toggle symbols))
+  nav_' (tap-hold $tap-hold $hold-time ' (layer-toggle symbols))
+  copy M-c
+  cut M-x
+  find M-f
+  paste M-v
+  redo M-y
+  sall M-a
+  undo M-z
+  dcln (tap-macro S-; S-;)
+)
+
+(deflayer enthium
+  grv     1       2       3       4       5       6       7       8       9       0       -       =       bspc
+  _       z       @alt_y  o       u       =       x       l       d       @alt_w  z       esc     ]       \
+  b       @alt_c  @met_i  @ctl_a  @sft_e  -       k       @sft_h  @ctl_t  @met_n  @alt_s  f
+  _       @nav_'  ,       .       ;       /       j       m       g       p       v       _
+  @lctl   _       _       @nm_bks                 _                       @sym_r  _
+)
+
+(deflayer nav
+  XX      f1      f2      f3      f4      f5      f6      f7      f8      f9      f10     f11     f12     del
+  @func   XX      XX      XX      @undo   @redo   XX      home    pgup    pgdn    end     XX      XX      XX
+  XX      XX      XX      @sall   @find   XX      XX      left    up      down    right   XX
+  @cw     XX      XX      @cut    @copy   @paste  XX      XX      XX      XX      XX      @cw     @cw
+  @fn     XX      XX      del                     tab                     r       _
+)
+
+(deflayer numbers
+  XX      XX      XX      XX      XX      XX      XX      XX      XX      XX      XX      XX      XX      bspc
+  @num    S-1     S-4     S-0     S-7     =       S-5     S-6     S-3     S-8     S-4     @eth    XX      XX
+  XX      6       4       0       2       S--     k       3       1       5       7       XX
+  lsft    XX      XX      8       S-;     XX      9       XX      S-g     XX      XX      rsft
+  @lctl   XX      XX      lmet                    spc                     r       _
+)
+
+(deflayer symbols
+  _       S-1     S-2     S-3     S-4     S-5     S-6     S-7     S-8     S-9     S-0     S--     S-=     _
+  _       S-1     S-[     S-]     S-7     S-=     S-5     S-6     S-3     S-8     S-4     @eth    _       _
+  S-grv   grv     S-9     S-0     S--     S-;     \       S-\     [       ]       s       f
+  _       S-'     _       S-,     S-.     S-/     S-2     @dcln   g       b       v       _
+  @lctl   _       _       bspc                    _                       r       _
+)
+
+(deflayer qwerty
+  grv     1       2       3       4       5       6       7       8       9       0       -       =       _
+  _       q       w       e       r       t       y       u       i       o       p       [       ]       \
+  caps    a       s       d       f       g       h       j       k       l       ;       '
+  _       z       x       c       v       b       n       m       ,       .       /       _
+  @lctl   _       _       lmet                    _                       rmet    _
+)
+
+(deflayer function
+  XX      f1      f2      f3      f4      f5      f6      f7      f8      f9      f10     f11     f12     _
+  @qwt    XX      XX      XX      XX      XX      XX      XX      XX      XX      XX      @eth    XX      XX
+  f12     f6      f4      f10     f2      XX      XX      f3      f1      f5      f7      f11
+  XX      XX      -       f8      XX      XX      f11     XX      XX      XX      XX      XX
+  @lctl   XX      XX      @num                    XX                      @sym    _
+)
