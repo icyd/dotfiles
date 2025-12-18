@@ -13,7 +13,7 @@
   };
   toolchain = inputs.fenix.packages.${system}.fromToolchainFile {
     dir = src;
-    sha256 = "sha256-SDu4snEWjuZU475PERvu+iO50Mi39KVjqCeJeNvpguU=";
+    sha256 = "sha256-sqSWJDUxc+zaz1nBWMAJKTAGBuGWP25GCftIOlCEAtA=";
   };
 in
   (inputs.naersk.lib.${system}.override {

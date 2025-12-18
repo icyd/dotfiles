@@ -44,24 +44,24 @@
       packages = with pkgs;
         [
           awscli2
-          crane
-          checkov
-          conftest
+          # crane
+          # checkov
+          # conftest
           helm-docs
           helmfile
           keychain
           krew
           kubent
-          manifest-tool
+          # manifest-tool
           reattach-to-user-namespace
           regclient
-          p4v
+          # p4v
           podman
           skopeo
           stern
           openssh
           pueue
-          trivy
+          # trivy
         ]
         ++ [nixvimPkgs.nixvim];
       sessionPath = [
@@ -81,6 +81,7 @@
         "id_ed25519_sk"
       ];
     };
+    programs.alacritty.package = null;
     programs.git = {
       settings = {
         aliases.p4 = "/usr/local/bin/git-p4";

@@ -11,30 +11,30 @@
     nix.settings.trusted-users = [username];
     homebrew = {
       brews = [
-        "binutils"
+        # "binutils"
         "coreutils"
         "findutils"
-        "moreutils"
+        # "moreutils"
         "gnu-sed"
         "gnu-tar"
         "gpgme"
-        "pinentry-mac"
-        "theseal/ssh-askpass/ssh-askpass"
+        # "pinentry-mac"
+        # "theseal/ssh-askpass/ssh-askpass"
       ];
       casks = [
-        "amethyst"
+        "alacritty"
         "gpg-suite"
         "karabiner-elements"
-        "wireshark-app"
+        # "wireshark-app"
       ];
       enable = true;
       onActivation = {
         autoUpdate = true;
         upgrade = true;
       };
-      taps = [
-        "theseal/ssh-askpass"
-      ];
+      # taps = [
+      #   "theseal/ssh-askpass"
+      # ];
     };
     imports = with config.flake.modules.darwin;
       [

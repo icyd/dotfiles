@@ -70,8 +70,8 @@
 (deflayer symbols
   _       S-1     S-2     S-3     S-4     S-5     S-6     S-7     S-8     S-9     S-0     S--     S-=     _
   @sym    S-1     S-[     S-]     S-7     S-=     S-5     S-6     S-3     S-8     S-4     @eth    _       _
-  S-grv   grv     S-9     S-0     S--     S-;     \       S-\     [       ]       s       f
-  _       _       S-'     _       S-,     S-.     S-/     S-2     @dcln   g       b       v       _
+  XX      grv     S-9     S-0     \       S--     S-grv   S-\     [       ]       XX      XX
+  _       _       S-'     S-,     S-.     S-;     S-/     S-2     @dcln   XX      XX      XX      _
   @fn     _       _       bspc                    _                       r       _
 )
 
