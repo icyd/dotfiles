@@ -18,7 +18,7 @@ jobs:
           ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
       - uses: cachix/install-nix-action@v31
       - name: Update dev flake.lock
-        uses: DeterminateSystems/update-flake-lock@v27
+        uses: DeterminateSystems/update-flake-lock@v28
         with:
           path-to-flake-dir: modules/meta/_dev
           pr-title: Update nix flake dev inputs
@@ -27,7 +27,7 @@ jobs:
             automated
             merge-queue
       - name: Update flake.lock
-        uses: DeterminateSystems/update-flake-lock@v27
+        uses: DeterminateSystems/update-flake-lock@v28
         with:
           pr-title: Update nix flake inputs
           pr-labels: |
