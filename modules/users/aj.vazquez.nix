@@ -14,9 +14,11 @@
   };
   flake.modules.darwin."users/aj.vazquez" = let
     inherit (flakeAttrs.config.flake.meta.users."aj.vazquez") username;
+    shell = pkgs.bashInteractive;
   in {
     system.stateVersion = 4;
     system.primaryUser = username;
+    users.users.${username} = {inherit shell;};
   };
   flake.modules.homeManager."users/aj.vazquez" = {
     config,
@@ -44,7 +46,8 @@
       packages = with pkgs;
         [
           awscli2
-          # crane
+          argocd
+          crane
           # checkov
           # conftest
           helm-docs
@@ -52,16 +55,18 @@
           keychain
           krew
           kubent
-          # manifest-tool
-          reattach-to-user-namespace
+          manifest-tool
           regclient
           # p4v
           podman
           skopeo
           stern
           openssh
-          pueue
+          # vault
+          # zathura
           # trivy
+          mcp-combiner-bin
+          sharedserver
         ]
         ++ [nixvimPkgs.nixvim];
       sessionPath = [
@@ -81,10 +86,8 @@
         "id_ed25519_sk"
       ];
     };
-    programs.alacritty.package = null;
     programs.git = {
       settings = {
-        aliases.p4 = "/usr/local/bin/git-p4";
         user = {
           inherit (flakeAttrs.config.flake.meta.users.${username}) name email;
         };
@@ -92,15 +95,15 @@
       };
     };
     programs.lazygit = {
-      settings.os = let
-        nvimin = lib.getExe nixvimPkgs.nixvimin;
-      in {
-        editPreset = lib.mkForce null;
-        edit = lib.mkForce ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{filename}}} else {${nvimin} -- {{filename}}}'';
-        editAtLine = lib.mkForce ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{filename}} ; nvim --server $env.NVIM --remote-send ":{{line}}<CR>"} else {${nvimin} +{{line}} -- {{filename}}}'';
-        editAtLineAndWait = lib.mkForce "${nvimin} {{filename}}";
-        openDirInEditor = lib.mkForce ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{dir}}} else {${nvimin} -- {dir}}}'';
-      };
+      # settings.os = let
+      #   nvimin = lib.getExe nixvimPkgs.nixvimin;
+      # in {
+      #   editPreset = lib.mkForce null;
+      #   edit = lib.mkForce ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{filename}}} else {${nvimin} -- {{filename}}}'';
+      #   editAtLine = lib.mkForce ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{filename}} ; nvim --server $env.NVIM --remote-send ":{{line}}<CR>"} else {${nvimin} +{{line}} -- {{filename}}}'';
+      #   editAtLineAndWait = lib.mkForce "${nvimin} {{filename}}";
+      #   openDirInEditor = lib.mkForce ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{dir}}} else {${nvimin} -- {dir}}}'';
+      # };
     };
     programs.nushell.extraEnv = ''
       $env.SSH_ASKPASS = "${brewPrefix}/bin/ssh-askpass"
@@ -135,6 +138,7 @@
     };
     imports = with flakeAttrs.config.flake.modules.homeManager; [
       base
+      bash
       git
       gpg
       nushell

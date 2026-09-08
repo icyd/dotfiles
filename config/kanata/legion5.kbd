@@ -25,7 +25,7 @@
   met_i (tap-hold $tap-hold $hold-time i lmet)
   ctl_a (tap-hold $tap-hold $hold-time a lctl)
   sft_e (tap-hold $tap-hold $hold-time e lsft)
-  alt_w (tap-hold $tap-hold $hold-time w ralt)
+  alt_p (tap-hold $tap-hold $hold-time p ralt)
   sft_h (tap-hold $tap-hold $hold-time h rsft)
   ctl_t (tap-hold $tap-hold $hold-time t lctl)
   met_n (tap-hold $tap-hold $hold-time n lmet)
@@ -45,9 +45,9 @@
 
 (deflayer enthium
   grv     1       2       3       4       5       6       7       8       9       0       -       =       bspc
-  _       z       @alt_y  o       u       =       x       l       d       @alt_w  z       esc     ]       \
-  b       @alt_c  @met_i  @ctl_a  @sft_e  -       k       @sft_h  @ctl_t  @met_n  @alt_s  f
-  _       @nav_'  ,       .       ;       /       j       m       g       p       v       _
+  _       z       @alt_y  o       u       =       x       l       d       @alt_p  z       esc     ]       \
+  b       @alt_c  @met_i  @ctl_a  @sft_e  -       k       @sft_h  @ctl_t  @met_n  @alt_s  w
+  _       @nav_'  ,       .       /       ;       j       m       g       f       v       _
   @lctl   _       _       @nm_bks                 _                       @sym_r  _
 )
 
@@ -63,15 +63,15 @@
   XX      XX      XX      XX      XX      XX      XX      XX      XX      XX      XX      XX      XX      bspc
   @num    S-1     S-4     S-0     S-7     =       S-5     S-6     S-3     S-8     S-4     @eth    XX      XX
   XX      6       4       0       2       S--     k       3       1       5       7       XX
-  lsft    XX      XX      8       S-;     XX      9       XX      S-g     XX      XX      rsft
+  lsft    XX      XX      8       S-/     S-;     9       XX      S-g     XX      XX      rsft
   @lctl   XX      XX      lmet                    spc                     r       _
 )
 
 (deflayer symbols
   _       S-1     S-2     S-3     S-4     S-5     S-6     S-7     S-8     S-9     S-0     S--     S-=     _
   _       S-1     S-[     S-]     S-7     S-=     S-5     S-6     S-3     S-8     S-4     @eth    _       _
-  S-grv   grv     S-9     S-0     S--     S-;     \       S-\     [       ]       s       f
-  _       S-'     _       S-,     S-.     S-/     S-2     @dcln   g       b       v       _
+  S-grv   grv     S-9     S-0     \       S--     S-grv   S-\     [       ]       s       f
+  _       S-'     S-,     S-.     S-;     S-/     S-2     @dcln   g       b       v       _
   @lctl   _       _       bspc                    _                       r       _
 )
 

@@ -1,6 +1,5 @@
 {
   flake.modules.homeManager.zsh = {
-    lib,
     config,
     pkgs,
     ...
@@ -30,6 +29,7 @@
         pj = "$HOME/Projects";
         wk = "$HOME/Projects/work";
       };
+      dotDir = "${config.xdg.configHome}/zsh";
       envExtra =
         ''
           setopt no_global_rcs
@@ -82,9 +82,6 @@
         [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
         autoload -Uz compinit
-
-        eval "$(${lib.getExe' pkgs.devbox "devbox"} global shellenv --init-hook)"
-
       '';
       loginExtra = ''
         {
@@ -96,35 +93,9 @@
         } &!
       '';
       shellAliases = {
-        cat = "bat";
         cdr = "cd-gitroot";
-        cl = "clear";
         d = "dirs -v";
         dc = "dirs -c";
-        gi = "git";
-        l = "exa";
-        l1 = "exa -1";
-        lb = "exa -lb";
-        ll = "exa -la";
-        llm = "exa -la --sort=modified";
-        lx = "exa -lbhHigUmuSa@";
-        la = "exa -lbhHigUmuSa";
-        n = "nvim_client --remote-silent";
-        nt = "nvim_client --remote-tab-silent";
-        nvr = "nvim --listen $NVIM_SERVER";
-        tree = "exa --tree";
-      };
-      shellGlobalAliases = {
-        AWK = "| awk ";
-        B64D = "| base64 -d";
-        G = "| grep -i";
-        J = " | jq";
-        RG = "| rg ";
-        SED = "| sed -E";
-        T = "| tee ";
-        WC = "| wc -l";
-        Y = " | yq";
-        X = "| xargs ";
       };
       syntaxHighlighting.enable = false;
       zprof.enable = false;

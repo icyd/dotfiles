@@ -34,12 +34,13 @@
         enable = true;
         enableNushellIntegration = false;
         settings = {
-          os = {
-            edit = ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{filename}}} else {nvim -- {{filename}}}'';
-            editAtLine = ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{filename}} ; nvim --server $env.NVIM --remote-send ":{{line}}<CR>"} else {nvim +{{line}} -- {{filename}}}'';
-            editAtLineAndWait = "nvim {{filename}}";
-            openDirInEditor = ''if ("NVIM" in $env) {nvim --server $env.NVIM --remote-send "q" ; nvim --server $env.NVIM --remote-tab {{dir}}} else {nvim -- {dir}}}'';
-          };
+          os = (nvim: {
+            edit = ''if ($env | get -o NVIM | is-empty) {${nvim} -- {{filename}}} else {${nvim} --server $env.NVIM --remote-send "q" ; ${nvim} --server $env.NVIM --remote-tab {{filename}}}'';
+            editAtLine = ''if ($env | get -o NVIM | is-empty)  {${nvim} +{{line}} -- {{filename}}} else {${nvim} --server $env.NVIM --remote-send "q" ; ${nvim} --server $env.NVIM --remote-tab {{filename}} ; ${nvim} --server $env.NVIM --remote-send ":{{line}}<CR>"}'';
+            editAtLineAndWait = "${nvim} {{filename}}";
+            openDirInEditor = ''if ($env | get -o NVIM | is-empty) {${nvim} -- {dir}}} else {${nvim} --server $env.NVIM --remote-send "q" ; ${nvim} --server $env.NVIM --remote-tab {{dir}}}'';
+            editInTerminal = true;
+          }) "nvim";
         };
       };
     };

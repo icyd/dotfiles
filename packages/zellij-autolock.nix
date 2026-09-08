@@ -1,10 +1,11 @@
 {
   inputs,
-  system,
+  stdenv,
   fetchFromGitHub,
   lib,
   ...
 }: let
+  inherit (stdenv.hostPlatform) system;
   src = fetchFromGitHub {
     owner = "fresh2dev";
     repo = "zellij-autolock";
@@ -21,12 +22,6 @@ in
     rustc = toolchain;
   }).buildPackage {
     inherit src;
-    # buildInputs = with pkgs; [
-    #   openssl
-    # ];
-    # nativeBuildInputs = with pkgs; [
-    #   pkg-config
-    # ];
     CARGO_BUILD_TARGET = "wasm32-wasip1";
     meta = {
       description = "autolock Zellij when certain processes open";

@@ -6,7 +6,7 @@
   }: {
     programs.wezterm = {
       enable = true;
-      package = pkgs.unstable.wezterm;
+      package = pkgs.mv.tip.wezterm;
       extraConfig =
         lib.optional (config.lib.stylix ? colors) (with config.lib.stylix.colors.withHashtag; ''
           local tab_active_color = "${base0B}"

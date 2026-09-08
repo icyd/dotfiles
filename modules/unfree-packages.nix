@@ -11,7 +11,9 @@
     modules = let
       allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config.nixpkgs.allowedUnfreePackages;
     in {
+      darwin.base.nixpkgs.config = {inherit allowUnfreePredicate;};
       nixos.base.nixpkgs.config = {inherit allowUnfreePredicate;};
+
       homeManager.base = args: {
         nixpkgs.config = lib.mkIf (!(args.hasGlobalPkgs or false)) {
           inherit allowUnfreePredicate;

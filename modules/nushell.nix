@@ -7,13 +7,30 @@
   }: {
     programs.carapace = {
       enable = true;
-      package = pkgs.unstable.carapace;
+      package = pkgs.mv.tip.carapace;
     };
     programs.nushell = let
       buf_editor = pkgs.lib.getExe pkgs.nixvimin;
     in {
       enable = true;
-      package = pkgs.unstable.nushell;
+      package = pkgs.mv.tip.nushell;
+      plugins = with pkgs.mv.tip.nushellPlugins; [
+        hcl
+        # (hcl.overrideAttrs (prev: rec {
+        #   version = "git";
+        #   src = pkgs.fetchFromGitHub {
+        #     inherit (prev.src) owner repo;
+        #     tag = "0.115.0";
+        #     hash = "sha256-F/JYk9dvxii3EzWr4WlrJxJvZ5rQwIFcG8KW28SpsGA=";
+        #   };
+        #   cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
+        #     inherit src;
+        #     hash = "sha256-qpIREWBy6hX5svk0SEQUeZe0HvNa11E6sh6QtS4mMCs=";
+        #   };
+        #   doCheck = false;
+        #   doInstallCheck = false;
+        # }))
+      ];
       shellAliases = {
         "~docs" = ''cd $"($env.HOME)/Documents"'';
         "~dot" = ''cd $env.DOTFILES'';
@@ -21,39 +38,16 @@
         "~dw" = ''cd $"($env.HOME)/Downloads"'';
         "~wk" = ''cd $"($env.HOME)/Projects/work"'';
         "~pj" = ''cd $"($env.HOME)/Projects"'';
-        a = "enter";
-        b64d = "base64 -d";
-        cat = "bat";
-        cl = "clear";
-        cby = "clipboard copy";
-        cbp = "clipboard paste";
-        d = "shells";
         fj = "from json";
         fy = "from yaml";
-        g = "git";
-        gi = "git";
         gig = "utils gitignore_template";
-        jat = "bat -ljson";
-        k = "kubectl";
-        l = "eza";
-        l1 = "eza -1";
-        lb = "eza -lb";
-        ll = "eza -la";
-        llm = "eza -la --sort=modified";
-        lx = "eza -lbhHigUmuSa@";
-        la = "eza -lbhHigUmuSa";
-        nv = "nvim_client";
-        nvr = "nvim_server";
-        svim = "sudo -E $env.EDITOR";
+        "," = "mvs run";
+        ",s" = "_run_in_nu mvs shell";
+        mvss = "_run_in_nu mvs shell";
+        ",v" = "mvs query versions";
         tcp = "utils trimcopy";
         tj = "to json";
-        tree = "eza --tree";
         ty = "to yaml";
-        yat = "bat -lyaml";
-        xat = "bat -lxml";
-        zj = "zellij";
-        zr = "zellij-runner";
-        xssh = "TERM=xterm-256color ssh";
       };
       configFile.text =
         lib.optional (config.lib.stylix ? colors) (with config.lib.stylix.colors.withHashtag; ''
@@ -79,10 +73,6 @@
         use git-gone.nu *
         use cd-root.nu *
         use ${pkgs.bash-env-nushell}/bash-env.nu
-
-        ${lib.getExe' pkgs.devbox "devbox"} global shellenv
-          | bash-env
-          | load-env
       '';
     };
   };

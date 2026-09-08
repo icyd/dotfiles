@@ -18,28 +18,19 @@
         "gnu-sed"
         "gnu-tar"
         "gpgme"
-        # "pinentry-mac"
-        # "theseal/ssh-askpass/ssh-askpass"
       ];
       casks = [
-        "alacritty"
-        "gpg-suite"
         "karabiner-elements"
-        # "wireshark-app"
       ];
       enable = true;
       onActivation = {
         autoUpdate = true;
         upgrade = true;
       };
-      # taps = [
-      #   "theseal/ssh-askpass"
-      # ];
     };
     imports = with config.flake.modules.darwin;
       [
         base
-        gpg
       ]
       ++ [config.flake.modules.darwin."users/aj.vazquez"];
   };

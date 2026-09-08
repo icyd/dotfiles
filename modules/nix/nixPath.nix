@@ -3,7 +3,7 @@
   inputs,
   ...
 }: let
-  nixpkgsInputs = with inputs; {inherit nixpkgs nixpkgs-unstable;};
+  nixpkgsInputs = with inputs; {inherit nixpkgs;};
 in rec {
   flake.modules.nixos.base = {
     nix = {

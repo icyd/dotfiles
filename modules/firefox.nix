@@ -10,7 +10,7 @@
       #   dnie-pkcs11 = "${(pkgs.callPackage ../packages/dnie.nix {})}/usr/lib/libpkcs11-dnie.so";
       # };
       profiles.default = {
-        extensions = lib.optionalAttrs pkgs.stdenv.isLinux {
+        extensions = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           force = true;
           packages = with pkgs.nur.repos.rycee.firefox-addons; [
             firenvim

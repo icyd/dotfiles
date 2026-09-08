@@ -102,7 +102,7 @@
       # };
       stateVersion = "22.05";
       sessionVariables = {
-        NVIM_SERVER = lib.mkForce "::1:9090";
+        NVIM = lib.mkForce "::1:9090";
         WINEDLLOVERRIDES = "winemenubuilder.exe=d";
       };
     };

@@ -4,9 +4,19 @@
       enable = true;
       settings = {
         window.startup_mode = "Fullscreen";
-        terminal.shell = {
-          program = "${lib.getExe config.programs.zsh.package}";
-          args = ["-c" "nu"];
+        terminal.shell = with config.programs; {
+          program = "${lib.getExe bash.package}";
+          args = [
+            "--login"
+            "-c"
+            (builtins.concatStringsSep " " (with nushell; [
+              "${lib.getExe package}"
+              "--env-config"
+              "${configDir}/env.nu"
+              "--config"
+              "${configDir}/config.nu"
+            ]))
+          ];
         };
         keyboard.bindings = [
           {

@@ -11,9 +11,9 @@
       packages = with pkgs; [
         age-plugin-yubikey
         age-plugin-fido2-hmac
+        ast-grep
         binutils
         devenv
-        devbox
         eza
         fd
         fish
@@ -27,6 +27,7 @@
         magic-wormhole-rs
         minisign
         mosh
+        mvs
         pandoc
         procs
         rage
@@ -62,6 +63,31 @@
         VISUAL = EDITOR;
         VIMWIKI_HOME = ORGMODE_HOME;
       };
+      shellAliases = {
+        b64d = "base64 -d";
+        cat = "bat";
+        cl = "clear";
+        cdr = "cd-gitroot";
+        g = "git";
+        jat = "bat -ljson";
+        k = "kubectl";
+        l = "eza";
+        l1 = "eza -1";
+        lb = "eza -lb";
+        ll = "eza -la";
+        llm = "eza -la --sort=modified";
+        lx = "eza -lbhHigUmuSa@";
+        la = "eza -lbhHigUmuSa";
+        nv = "nvim_client";
+        nvr = "nvim_server";
+        svim = "sudo -E $env.EDITOR";
+        tree = "eza --tree";
+        yat = "bat -lyaml";
+        xat = "bat -lxml";
+        zj = "zellij";
+        zr = "zellij-runner";
+        xssh = "TERM=xterm-256color ssh";
+      };
     };
     programs.bat.enable = true;
     programs.direnv = {
@@ -70,7 +96,10 @@
       nix-direnv.enable = true;
     };
     programs.home-manager.enable = true;
-    programs.zoxide.enable = true;
+    programs.zoxide = {
+      enable = true;
+      enableNushellIntegration = false;
+    };
     xdg.enable = true;
   };
 }

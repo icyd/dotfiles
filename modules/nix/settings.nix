@@ -15,13 +15,13 @@ _: rec {
       gc =
         {
           automatic =
-            if pkgs.stdenv.isLinux
+            if pkgs.stdenv.hostPlatform.isLinux
             then !config.programs.nh.clean.enable
             else true;
           options = "--delete-older-than 30d";
         }
         // (
-          if pkgs.stdenv.isDarwin
+          if pkgs.stdenv.hostPlatform.isDarwin
           then {
             interval = {
               Hour = 0;

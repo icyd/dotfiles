@@ -125,7 +125,26 @@ wezterm.on("update-right-status", function(window, _)
     window:set_right_status(wezterm.format(cells))
 end)
 
+-- function is_default_startup(cmd)
+--   if not cmd then
+--     -- we were started with `wezterm` or `wezterm start` with
+--     -- no other arguments
+--     return true
+--   end
+--   if cmd.domain == "DefaultDomain" and not cmd.args then
+--     -- Launched via `wezterm start --cwd something`
+--     return true
+--   end
+--   -- we were launched some other way
+--   return false
+-- end
+--
 wezterm.on("gui-startup", function(cmd)
+    -- if is_default_startup(cmd) then
+    --   local unix = mux.get_domain("unix")
+    --   mux.set_default_domain(unix)
+    --   unix:attach()
+    -- end
     local _, _, window = mux.spawn_window(cmd or {})
     window:gui_window():maximize()
 end)

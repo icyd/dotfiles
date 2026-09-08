@@ -16,7 +16,7 @@ in {
     in {
       name = hostName;
       value = withSystem system ({pkgs, ...}:
-        lib.optionalAttrs (pkgs.stdenv.isLinux) (
+        lib.optionalAttrs (pkgs.stdenv.hostPlatform.isLinux) (
           inputs.nixpkgs.lib.nixosSystem {
             modules =
               module.imports
@@ -37,15 +37,14 @@ in {
     in {
       name = hostName;
       value = withSystem system ({pkgs, ...}:
-        lib.optionalAttrs (pkgs.stdenv.isDarwin) (
+        lib.optionalAttrs (pkgs.stdenv.hostPlatform.isDarwin) (
           inputs.darwin.lib.darwinSystem {
-            modules =
-              module.imports
-              ++ [
-                {
-                  networking = {inherit hostName;};
-                }
-              ];
+            modules = [
+              module
+              {
+                networking = {inherit hostName;};
+              }
+            ];
           }
         ));
     });

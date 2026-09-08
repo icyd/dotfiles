@@ -23,8 +23,10 @@
         ${bin} --eval --quiet ${keys}
           | lines
           | where not ($it | is-empty)
-          | parse "{name}={value}; export {name2};"
+          | str trim --char ';'
+          | parse "{name}={value}; export {name2}"
           | reject name2
+          | str trim --char '"'
           | transpose --header-row
           | into record
           | load-env

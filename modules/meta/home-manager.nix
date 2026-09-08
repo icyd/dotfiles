@@ -24,20 +24,19 @@ in
             lib.optionalAttrs true (
               inputs.home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
-                modules =
-                  module.imports
-                  ++ [
-                    {
-                      home = let
-                        homeDirectory =
-                          if pkgs.stdenv.isLinux
-                          then "/home/${username}"
-                          else "/Users/${username}";
-                      in {
-                        inherit username homeDirectory;
-                      };
-                    }
-                  ];
+                modules = [
+                  module
+                  {
+                    home = let
+                      homeDirectory =
+                        if pkgs.stdenv.hostPlatform.isLinux
+                        then "/home/${username}"
+                        else "/Users/${username}";
+                    in {
+                      inherit username homeDirectory;
+                    };
+                  }
+                ];
               }
             ));
         });

@@ -1,4 +1,4 @@
-use std log
+use std/log
 use modules/argx
 use utils.nu
 
@@ -21,7 +21,7 @@ def normalize-column-names [ ] {
     let cols = $i | columns
     mut t = $i
     for c in $cols {
-        $t = ($t | rename -c {$c: ($c | str downcase | str replace ' ' '_')})
+        $t = ($t | rename -c {$c: ($c | str lowercase | str replace ' ' '_')})
     }
     $t
 }
@@ -904,7 +904,8 @@ export def k_drain_nodes [
 ] {
     ($nodes
         | each {|it|
-            log debug $"--- Draining node: ($it.name) ---"
+            let node_name = $it.name
+            log debug $"--- Draining node: ($node_name) ---"
             kubectl drain $it.name --ignore-daemonsets --delete-emptydir-data $"--timeout=(_duration_to_secs_str $timeout)"
             sleep $sleep_duration
         }
