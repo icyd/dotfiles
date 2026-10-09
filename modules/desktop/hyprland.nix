@@ -30,7 +30,7 @@
       PASS="$("$GOPASS" list -f | rofi -i -dmenu 2>/dev/null)"
       [ -n "$PASS" ] && "$GOPASS" show -c "$PASS"
     '';
-  in {
+  in (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     home.packages = with pkgs; [
       alacritty
       rofipass
@@ -320,6 +320,7 @@
     wayland.windowManager.hyprland = {
       enable = true;
       package = pkgs.hyprland;
+      configType = "lua";
       settings = {
         decoration = {
           rounding = 6;
@@ -464,5 +465,5 @@
       #   }
       # '';
     };
-  };
+  });
 }
