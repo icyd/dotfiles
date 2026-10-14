@@ -1,5 +1,5 @@
 {lib, ...}: {
-  flake.modules.nixos.dnscrypt-proxy2 = {
+  flake.modules.nixos.dnscrypt-proxy = {
     networking = {
       nameservers = lib.mkDefault [
         "127.0.0.1"
@@ -10,7 +10,7 @@
       networkmanager.dns = "none";
       useDHCP = false;
     };
-    services.dnscrypt-proxy2 = {
+    services.dnscrypt-proxy = {
       enable = true;
       settings = {
         ipv6_servers = true;
@@ -25,7 +25,7 @@
         };
       };
     };
-    systemd.services.dnscrypt-proxy2.serviceConfig = {
+    systemd.services.dnscrypt-proxy.serviceConfig = {
       StateDirectory = "dnscrypt-proxy";
     };
   };

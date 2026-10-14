@@ -31,6 +31,7 @@
     };
     fileSystems = {
       "/persist".neededForBoot = true;
+      "/var/lib".neededForBoot = true;
     };
     imports = [
       inputs.impermanence.nixosModules.impermanence

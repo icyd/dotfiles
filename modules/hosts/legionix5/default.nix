@@ -10,7 +10,11 @@
   inherit (flakeAttrs.config.flake.meta.users.${flakeAttrs.config.flake.meta.hosts.legionix5.user}) username;
 in {
   nixpkgs.allowedUnfreePackages = [
+    "cuda_cccl"
+    "cuda_cudart"
+    "cuda_nvcc"
     "displaylink"
+    "libcublas"
   ];
   flake.meta.hosts.legionix5 = {
     user = "beto";
@@ -23,9 +27,11 @@ in {
   }: {
     environment.systemPackages = with pkgs;
       [
+        android-tools
         autogen
         binutils
         cmake
+        displaylink
         dnsutils
         eog
         evince
@@ -56,14 +62,19 @@ in {
     # home.packages = with pkgs; [
     #     dropbox
     # ];
-    networking.hostId = "e4521109";
+    networking = {
+      hostId = "e4521109";
+      extraHosts = ''
+        192.168.1.144 pizero2w.home.arpa n3pro.home.arpa
+      '';
+    };
     system.stateVersion = "22.05";
     facter.reportPath = ./facter.json;
     fileSystems = {
       "/home/${username}/win11shared" = {
         device = "/dev/disk/by-label/data";
         fsType = "exfat";
-        options = ["rw" "nofail" "uid=${builtins.toString config.users.users.${username}.uid}"];
+        options = ["rw" "nofail" "uid=${toString config.users.users.${username}.uid}"];
       };
       "/home/${username}/.local/share/containers" = {
         fsType = "zfs";
@@ -85,12 +96,15 @@ in {
     };
     nix.settings.trusted-users = [username];
     programs = {
-      adb.enable = true;
       gnupg.agent = {
         enable = true;
         enableSSHSupport = false;
       };
       seahorse.enable = true;
+    };
+    qt = {
+      enable = true;
+      platformTheme = "qt5ct";
     };
     services = {
       displayManager.autoLogin = {
@@ -101,9 +115,21 @@ in {
         gnome-keyring.enable = true;
       };
       logind = {
-        lidSwitch = "suspend-then-hibernate";
-        powerKey = "hibernate";
-        powerKeyLongPress = "poweroff";
+        settings = {
+          Login = {
+            HandleLidSwitch = "suspend";
+            HandlePowerKey = "hibernate";
+            HandlePowerKeyLongPress = "poweroff";
+          };
+        };
+      };
+      ollama = {
+        enable = true;
+        package = pkgs.ollama-cuda;
+        loadModels = [
+          "llama3.2:3b"
+          "qwen2.5-coder:3b"
+        ];
       };
       pcscd.enable = true;
       power-profiles-daemon.enable = true;
@@ -125,11 +151,12 @@ in {
             text = builtins.readFile ./stlink.rules;
           }
         ]
-        |> builtins.map pkgs.writeTextFile;
+        |> map pkgs.writeTextFile;
       xserver = {
-        # videoDrivers = [
-        #   "displaylink"
-        # ];
+        videoDrivers = [
+          "displaylink"
+          "modesetting"
+        ];
         xkb = {
           layout = "us";
           variant = "altgr-intl";
@@ -162,10 +189,10 @@ in {
     systemd = {
       enableEmergencyMode = false;
       services."systemd-backlight@backlight:ideapad".wantedBy = lib.mkForce [];
-      sleep.extraConfig = ''
-        HibernateDelaySec=30m
-        SuspendState=mem
-      '';
+      sleep.settings.Sleep = {
+        HibernateDelaySec = "30m";
+        SuspendState = "mem";
+      };
     };
     imports = with flakeAttrs.config.flake.modules.nixos;
       [
@@ -174,7 +201,7 @@ in {
         bluetooth
         desktop
         disko
-        dnscrypt-proxy2
+        dnscrypt-proxy
         efi
         facter
         hyprland

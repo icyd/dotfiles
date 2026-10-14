@@ -1,11 +1,14 @@
 {
   flake.modules.homeManager.base = {pkgs, ...}: {
     stylix.targets.ghostty.fonts.override = {
-      sizes.terminal = 12;
+      sizes.terminal = 16;
     };
     programs.ghostty = {
       enable = true;
-      package = pkgs.mv.tip.ghostty-bin;
+      package =
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then pkgs.mv.tip.ghostty-bin
+        else pkgs.mv.tip.ghostty;
       settings = {
         command = "$SHELL -c nu";
         copy-on-select = "clipboard";

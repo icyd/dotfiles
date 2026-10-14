@@ -23,7 +23,7 @@
             bash-env-nushell = inputs'.bash-env-nushell.packages.default;
             local = config.packages;
             mv = let
-              cleanConfig = builtins.removeAttrs final.config ["replaceStdenv"];
+              cleanConfig = removeAttrs final.config ["replaceStdenv"];
             in
               inputs.multiverse.lib.mkMultiverse {
                 inherit system;

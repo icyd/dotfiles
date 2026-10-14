@@ -12,7 +12,7 @@
     email = "aj.vazquez@globant.com";
     host = "ES-IT00385";
   };
-  flake.modules.darwin."users/aj.vazquez" = let
+  flake.modules.darwin."users/aj.vazquez" = {pkgs, ...}: let
     inherit (flakeAttrs.config.flake.meta.users."aj.vazquez") username;
     shell = pkgs.bashInteractive;
   in {

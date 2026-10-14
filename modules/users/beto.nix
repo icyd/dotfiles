@@ -10,6 +10,10 @@
     host = "legionix5";
   };
   nixpkgs.allowedUnfreePackages = [
+    "antigravity-acp"
+    "antigravity-cli"
+    "firefox-bin"
+    "firefox-bin-unwrapped"
     "discord"
     "dropbox"
   ];
@@ -55,21 +59,70 @@
   in {
     home = {
       packages = with pkgs; [
+        android-tools
+        buildah
         calibre
         celluloid
         discord
         dropbox
         haruna
         kicad-unstable-small
+        manifest-tool
+        regctl
         libreoffice-fresh
         lutris
         # minikube
-        nixvim
+        (nixvim.extend {
+          plugins.codecompanion.settings = {
+            adapters = {
+              http = {
+                llama_3_2_3b.__raw = ''
+                  function()
+                    return require("codecompanion.adapters").extend("ollama", {
+                      schema = {
+                        model = {
+                          default = "llama3.2:3b"
+                        }
+                      }
+                    })
+                  end
+                '';
+                qwen_2_5_coder_3b.__raw = ''
+                  function()
+                    return require("codecompanion.adapters").extend("ollama", {
+                      schema = {
+                        model = {
+                          default = "qwen2.5-coder:3b"
+                        }
+                      }
+                    })
+                  end
+                '';
+              };
+            };
+            interactions = rec {
+              background = {
+                adapter = "qwen_2_5_coder_3b";
+              };
+              chat = background;
+              cmd = background;
+              inline = background;
+            };
+          };
+          plugins.mcp-companion.settings.combiner.host = lib.mkForce "192.168.1.130";
+        })
+        mv.tip.freecad
+        mv.tip.openscad-unstable
+        mv.tip.orca-slicer
+        sshfs
         # docker-machine-kvm2
         # synapse
         winetricks
         # wineWowPackages.waylandFull
         zathura
+        mv.tip.antigravity-acp
+        mv.tip.antigravity-cli
+        mv.tip.opencode
       ];
       # persistence."/mnt/nodatacow" = {
       #   allowOther = false;
@@ -102,14 +155,12 @@
       # };
       stateVersion = "22.05";
       sessionVariables = {
-        NVIM = lib.mkForce "::1:9090";
         WINEDLLOVERRIDES = "winemenubuilder.exe=d";
       };
     };
     nushellKeychain.enable = false;
-    programs.git = {
-      userName = flakeAttrs.config.flake.meta.users.${username}.name;
-      userEmail = flakeAttrs.config.flake.meta.users.${username}.email;
+    programs.git.settings.user = {
+      inherit (flakeAttrs.config.flake.meta.users.${username}) email name;
     };
     services = {
       kanshi.settings = [
@@ -149,20 +200,18 @@
       defaultSopsFile = "${inputs.nix-secrets.outPath}/personal/legionix5.yaml";
       secrets.ssh_private_key.path = "${config.home.homeDirectory}/.ssh/id_ed25519.sops";
     };
-    imports = with flakeAttrs.config.flake.modules.homeManager;
-      [
-        base
-        firefox
-        git
-        gpg
-        hyprland
-        neovim-server
-        nushell
-        starship
-        sops
-        virtualisation
-        zsh
-      ]
-      ++ [inputs.impermanence.nixosModules.home-manager.impermanence];
+    imports = with flakeAttrs.config.flake.modules.homeManager; [
+      base
+      firefox
+      git
+      gpg
+      hyprland
+      neovim-server
+      nushell
+      starship
+      sops
+      virtualisation
+      zsh
+    ];
   };
 }

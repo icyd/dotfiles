@@ -13,6 +13,7 @@
         age-plugin-fido2-hmac
         ast-grep
         binutils
+        btop
         devenv
         eza
         fd
@@ -25,6 +26,7 @@
         imagemagick
         jq
         magic-wormhole-rs
+        mcp-combiner
         minisign
         mosh
         mvs
@@ -33,11 +35,11 @@
         rage
         ripgrep
         sd
+        sharedserver
         sops
         texliveSmall
         yq-go
         yubikey-manager
-        zenith
       ];
       sessionPath = [
         "/usr/local/bin"
@@ -99,6 +101,60 @@
     programs.zoxide = {
       enable = true;
       enableNushellIntegration = false;
+    };
+    systemd.user.services.klipper-stunnel = let
+      stunnelConfig = pkgs.writeText "stunnel.conf" ''
+        foreground = yes
+
+        [orcaslicer-proxy]
+        client = yes
+        accept = 127.0.0.1:8080
+        connect = n3pro.home.arpa:443
+        CAfile = ${config.home.homeDirectory}/.stunnel/ca.crt
+        cert = ${config.home.homeDirectory}/.stunnel/stunnel.crt
+        key = ${config.home.homeDirectory}/.stunnel/stunnel.key
+        options = DONT_INSERT_EMPTY_FRAGMENTS
+        options = NO_COMPRESSION
+        socket = l:SO_SNDBUF=4194304
+        socket = r:SO_SNDBUF=4194304
+        TIMEOUTclose = 0
+        TIMEOUTidle = 86400
+        verifyChain = yes
+        checkHost = ://n3pro.home.arpa
+        checkIP = 192.168.1.144
+      '';
+      waitForTarget = pkgs.writeScriptBin "stunnel-wait-for-target" ''
+        #!/usr/bin/env sh
+        TARGET="n3pro.home.arpa"
+        TIMEOUT=120
+        INTERVAL=2
+        ELAPSED=0
+        printf 'Checking connectivity with target: %s\n' "$TARGET"
+        while ! nc -z "$TARGET" 443 >/dev/null 2>&1; do
+          if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
+            echo "Timeout reached!" >&2
+            exit 1
+          fi
+          sleep "$INTERVAL"
+          ELAPSED=$((ELAPSED + INTERVAL))
+        done
+        echo "Target available"
+      '';
+    in {
+      Install.WantedBy = ["default.target"];
+      Service = {
+        ExecStartPre = "${lib.getExe waitForTarget}";
+        ExecStart = "${lib.getExe pkgs.stunnel} ${stunnelConfig}";
+        ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
+        Restart = "always";
+        RestartSec = "10";
+        Type = "simple";
+      };
+      Unit = {
+        Description = "Stunnel connection with mtls with klipper";
+        StartLimitBurst = 5;
+        StartLimitIntervalSec = 300;
+      };
     };
     xdg.enable = true;
   };

@@ -18,13 +18,12 @@ in {
       value = withSystem system ({pkgs, ...}:
         lib.optionalAttrs (pkgs.stdenv.hostPlatform.isLinux) (
           inputs.nixpkgs.lib.nixosSystem {
-            modules =
-              module.imports
-              ++ [
-                {
-                  networking = {inherit hostName;};
-                }
-              ];
+            modules = [
+              module
+              {
+                networking = {inherit hostName;};
+              }
+            ];
           }
         ));
     });

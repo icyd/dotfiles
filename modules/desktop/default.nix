@@ -5,12 +5,13 @@
       xdg-utils
     ];
     programs = {
+      dconf.enable = true;
       regreet = {
         enable = true;
       };
       thunar = {
         enable = true;
-        plugins = with pkgs.xfce; [
+        plugins = with pkgs; [
           thunar-archive-plugin
           thunar-volman
         ];

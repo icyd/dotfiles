@@ -1,27 +1,70 @@
-{lib, ...}: {
+topLevel: {
+  nixpkgs.allowedUnfreePackages = [
+    # For nvtop nvidia
+    "cuda_cuobjdump"
+    "cuda_cupti"
+    "cuda_cuxxfilt"
+    "cuda_gdb"
+    "cuda-merged"
+    "cuda_nvml_dev"
+    "cuda_nvrtc"
+    "cuda_nvdisasm"
+    "cuda_nvprune"
+    "cuda_nvtx"
+    "cuda_profiler_api"
+    "cuda_sanitizer_api"
+    "libcufft"
+    "libcurand"
+    "libcusolver"
+    "libnvjitlink"
+    "libcusparse"
+    "libnpp"
+  ];
   flake.modules.nixos.hyprland = {pkgs, ...}: {
+    environment.systemPackages = with pkgs; [
+      brightnessctl
+      nvtopPackages.nvidia
+    ];
     environment.sessionVariables = {
+      # Ensure apps natively look for Wayland
       NIXOS_OZONE_WL = 1;
+      # Use local VFS instead of GNOME's gvfs
+      GIO_USE_VFS = "local";
+      # Ensure proper Wayland backend
+      GDK_BACKEND = "wayland,x11";
+      # Ensure proper Wayland for Qt apps
+      QT_QPA_PLATFORM = "wayland;xcb";
+      WEBKIT_DISABLE_DMABUF_RENDERER = 1;
     };
     programs.hyprland = {
       enable = true;
       withUWSM = true;
       xwayland.enable = true;
     };
-    programs.light.enable = true;
     security.pam.services.hyprlock = {};
-    services.displayManager.defaultSession = lib.mkDefault "hyprland-uwsm";
+    services.displayManager.defaultSession = topLevel.lib.mkDefault "hyprland-uwsm";
     xdg.portal = {
       enable = true;
-      extraPortals = with pkgs; [xdg-desktop-portal-gtk];
+      extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-hyprland];
+      config = {
+        common.default = ["gtk"];
+        hyprland = {
+          default = ["hyprland" "gtk"];
+          "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
+        };
+      };
     };
   };
-  flake.modules.homeManager.hyprland = {pkgs, ...}: let
-    swww-wallch = pkgs.writeScriptBin "swww-wallch" ''
+  flake.modules.homeManager.hyprland = {
+    lib,
+    pkgs,
+    ...
+  }: let
+    awww-wallch = pkgs.writeScriptBin "awww-wallch" ''
       #!/bin/sh
       WALLPAPER_DIR="''${WALLPAPER_DIR:-"$HOME/wallpaper"}"
       WALLPAPER="$(find "$WALLPAPER_DIR" -type f -name '*.jpg' -o -name '*.png' | shuf -n 1)"
-      swww img "$WALLPAPER" --transition-type random
+      awww img "$WALLPAPER" --transition-type random
     '';
 
     rofipass = pkgs.writeScriptBin "rofipass" ''
@@ -30,13 +73,13 @@
       PASS="$("$GOPASS" list -f | rofi -i -dmenu 2>/dev/null)"
       [ -n "$PASS" ] && "$GOPASS" show -c "$PASS"
     '';
-  in (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+  in {
     home.packages = with pkgs; [
       alacritty
       rofipass
       grim
       slurp
-      swww
+      awww
       wdisplays
       wl-clipboard
       wlogout
@@ -45,7 +88,7 @@
     programs.rofi = {
       enable = true;
       cycle = true;
-      package = pkgs.rofi-wayland;
+      # package = pkgs.rofi;
     };
     programs.wlogout.enable = true;
     programs.waybar = {
@@ -69,8 +112,9 @@
           "hyprland/window"
         ];
         modules-right = [
-          "hyprland/submap"
-          "hyprland/language"
+          # "hyprland/submap"
+          # "hyprland/language"
+          "custom/gpu-usage"
           "cpu"
           "memory"
           "temperature"
@@ -81,8 +125,8 @@
         ];
         backlight = {
           format = "{icon}  {percent}%";
-          on-scroll-up = "light -A 2";
-          on-scroll-down = "light -U 2";
+          on-scroll-up = "${lib.getExe pkgs.brightnessctl} --device=amdgpu_bl1 set +2%";
+          on-scroll-down = "${lib.getExe pkgs.brightnessctl} --device=amdgpu_bl1 set 2%-";
           format-icons = [
             ""
             ""
@@ -142,16 +186,24 @@
             "󰪤"
             "󰪥"
           ];
+          on-click = "wezterm start -- btop";
         };
-        "hyprland/language" = {
-          format = "{}";
-          max-length = 18;
+        "custom/gpu-usage" = {
+          exec = "${lib.getExe pkgs.gpu-usage-waybar}";
+          return-type = "json";
+          format-icons = "󰾲";
+          format = "{} {icon}";
+          on-click = "wezterm start -- nvtop";
         };
-        "hyprland/submap" = {
-          format = "✌️ {}";
-          max-length = 8;
-          tooltip = false;
-        };
+        # "hyprland/language" = {
+        #   format = "{}";
+        #   max-length = 18;
+        # };
+        # "hyprland/submap" = {
+        #   format = "✌️ {}";
+        #   max-length = 8;
+        #   tooltip = false;
+        # };
         "hyprland/window" = {
           max-length = 50;
           separate-outputs = true;
@@ -165,6 +217,7 @@
             persistent = "";
             special = persistent;
           };
+          # on-click = "activate";
         };
         idle_inhibitor = {
           format = "{icon}";
@@ -193,6 +246,7 @@
             "󰪥"
           ];
           max-length = 10;
+          on-click = "wezterm start -- btop";
         };
         network = {
           interval = 3;
@@ -220,7 +274,7 @@
               ""
             ];
           };
-          on-click = "wpclt set-mute @DEFAULT_AUDIO_SINK@ toggle";
+          on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
           on-click-right = "pavucontrol";
           tooltip = true;
         };
@@ -258,13 +312,8 @@
         listener = [
           {
             timeout = 150;
-            on-timeout = "light -O && light -S 10";
-            on-resume = "light -I";
-          }
-          {
-            timeout = 150;
-            on-timeout = "light -s sysfs/leds/platform::kbd_backlight -O && light -s sysfs/leds/platform::kbd_backlight -S 0";
-            on-resume = "light -s sysfs/leds/platform::kbd_backlight -I";
+            on-timeout = "${lib.getExe pkgs.brightnessctl} --device=amdgpu_bl1 --save set 0";
+            on-resume = "${lib.getExe pkgs.brightnessctl} --device=amdgpu_bl1 --restore";
           }
           {
             timeout = 300;
@@ -292,20 +341,20 @@
     systemd.user = {
       sessionVariables.SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
       services = {
-        swww-daemon = {
+        awww-daemon = {
           Install.WantedBy = ["default.target"];
           Service.Environment = "RUST_BACKTRACE=1";
-          Service.ExecStart = "${pkgs.swww}/bin/swww-daemon -f xrgb";
+          Service.ExecStart = "${pkgs.awww}/bin/awww-daemon -f xrgb";
           Service.Restart = "on-failure";
           Service.RestartSec = 5;
-          Unit.Description = "Start swww daemon";
+          Unit.Description = "Start awww daemon";
           Unit.After = "hyprland-session.target";
           Unit.StartLimitBurst = 5;
           Unit.StartLimitIntervalSec = 300;
         };
         change-wallpaper = {
-          Unit.Description = "Change wallpaper with swww";
-          Service.ExecStart = "${swww-wallch}/bin/swww-wallch";
+          Unit.Description = "Change wallpaper with awww";
+          Service.ExecStart = "${awww-wallch}/bin/awww-wallch";
         };
       };
       timers = {
@@ -313,122 +362,171 @@
           Install.WantedBy = ["timers.target"];
           Timer.OnCalendar = "hourly";
           Timer.OnStartupSec = "1h";
-          Unit.Description = "Change wallpaper with swww every hour";
+          Unit.Description = "Change wallpaper with awww every hour";
         };
       };
     };
     wayland.windowManager.hyprland = {
       enable = true;
-      package = pkgs.hyprland;
       configType = "lua";
-      settings = {
-        decoration = {
-          rounding = 6;
-          blur = {
-            enabled = true;
-            size = 8;
-            passes = 2;
+      package = pkgs.hyprland;
+      settings = let
+        inherit (lib.generators) mkLuaInline toLua;
+        mod = "SUPER";
+        modShift = "SUPER + SHIFT";
+        dirs = {
+          left = "H";
+          down = "J";
+          up = "K";
+          right = "L";
+        };
+        terminal = "wezterm";
+        fileManager = "nautilus";
+        menu = "rofi";
+        browser = "firefox";
+        clipmanager = "clipman pick -t ${menu}";
+        dsp = name: args:
+          mkLuaInline "hl.dsp.${name}(${
+            if (args != {})
+            then (toLua {} args)
+            else ""
+          })";
+        bindOpts = key: dsp: opts: {_args = lib.filter (x: x != {}) [key dsp opts];};
+        bind = key: dsp: bindOpts key dsp {};
+      in {
+        config = {
+          binds = {
+            allow_workspace_cycles = true;
+            workspace_back_and_forth = true;
+          };
+          decoration = {
+            rounding = 6;
+            blur = {
+              enabled = true;
+              size = 8;
+              passes = 2;
+            };
+          };
+          input = {
+            kb_layout = "us";
+            kb_variant = "altgr-intl";
+            kb_options = "lv3:ralt_switch, shift:breaks_caps";
+            follow_mouse = 1;
+            numlock_by_default = true;
+            sensitivity = 0;
+            touchpad.natural_scroll = false;
           };
         };
         monitor = [
-          "eDP-2, 1920x1080@144, 0x0, 1"
-          ", preferred, auto, 1"
-        ];
-        input = {
-          kb_layout = "us";
-          kb_variant = "altgr-intl";
-          # kb_options = "lv3:ralt_switch, compose:102, caps:swapescape, shift:breaks_caps, grp:alt_space_toggle";
-          kb_options = "lv3:ralt_switch, shift:breaks_caps";
-          follow_mouse = 1;
-          sensitivity = 0;
-          touchpad.natural_scroll = false;
-        };
-        device = [
           {
-            name = "keebio-iris-rev.-6b";
-            kb_layout = "us";
-            kb_variant = "altgr-intl";
-            kb_options = "lv3:ralt_switch, grp:alt_space_toggle";
+            output = "DVI-I-1";
+            mode = "1920x1080@144";
+            position = "0x0";
+            scale = 1;
+          }
+          {
+            output = "eDP-1";
+            mode = "1920x1080@144";
+            position = "1920x0";
+            scale = 1;
           }
         ];
-        "$mod" = "SUPER";
-        "$modShift" = "SUPER_SHIFT";
-        "$left" = "H";
-        "$down" = "J";
-        "$up" = "K";
-        "$right" = "L";
-        "$terminal" = "wezterm";
-        "$fileManager" = "nautilus";
-        "$menu" = "rofi";
-        "$browser" = "firefox";
-        "$clipmanager" = "clipman pick -t $menu";
-        bind =
-          [
-            "$mod, Return, exec, $terminal"
-            "$modShift, Q, killactive,"
-            "$modShift, E, exit,"
-            "$modShift, P, exec, wlogout"
-            # "$mod, W, hyprexpo:expo, toggle"
-            "$mod, F, exec, $fileManager"
-            "$mod, B, exec, $browser"
-            "$mod, V, togglefloating,"
-            "$mod, Space, exec, $menu -show drun -show-icons"
-            "$mod, P, pseudo,"
-            "$mod, J, togglesplit,"
-            "$mod, Z, fullscreen,"
-            "$mod, X, exec, $clipmanager"
-            "$mod CONTROL, B, exec, rofipass"
-            "$modShift, C, forcerendererreload,"
-            "$mod, $left, movefocus, l"
-            "$mod, $right, movefocus, r"
-            "$mod, $up, movefocus, u"
-            "$mod, $down, movefocus, d"
-            "$modShift, $left, movewindow, l"
-            "$modShift, $right, movewindow, r"
-            "$modShift, $up, movewindow, u"
-            "$modShift, $down, movewindow, d"
-            "$mod, Tab, workspace, e+1"
-            "$modShift, Tab, workspace, e-1"
-            "$mod, S, togglespecialworkspace, magic"
-            "$modShift, S, movetoworkspace, special:magic"
-            "$mod, mouse_down, workspace, e+1"
-            "$mod, mouse_up, workspace, e-1"
-            '', Print, exec, grim -g "$(slurp -d)" - | wl-copy''
-          ]
-          ++ (builtins.concatLists (
-            builtins.genList (
-              i: let
-                ws =
-                  if i == 0
-                  then 10
-                  else i;
-              in [
-                "$mod, ${toString i}, workspace, ${toString ws}"
-                "$modShift, ${toString i}, movetoworkspace, ${toString ws}"
-              ]
-            )
-            10
-          ));
-        bindel = [
-          ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-          ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-          ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-          ",XF86MonBrightnessUp, exec, light -A 2"
-          ",XF86MonBrightnessDown, exec, light -U 2"
+        bind = lib.flatten [
+          (bind "${mod} + Return" (dsp "exec_cmd" terminal))
+          (bind "${mod} + Space" (dsp "exec_cmd" "${menu} -show drun -show-icons"))
+          (bind "${modShift} + Q" (dsp "window.close" {}))
+          (bind "${modShift} + E" (dsp "exit" {}))
+          (bind "${modShift} + P" (dsp "exec_cmd" "wlogout"))
+          (bind "${mod} + F" (dsp "exec_cmd" fileManager))
+          (bind "${mod} + B" (dsp "exec_cmd" browser))
+          (bind "${mod} + X" (dsp "exec_cmd" clipmanager))
+          (bind "${mod} + CONTROL + B" (dsp "exec_cmd" "rofipass"))
+          (bind "${mod} + Z" (dsp "window.fullscreen" {mode = "fullscreen";}))
+          (bind "${modShift} + Z" (dsp "window.fullscreen" {mode = "maximized";}))
+          (bind "${mod} + V" (dsp "window.float" {action = "toggle";}))
+          (bind "${modShift} + V" (dsp "window.float" {action = "set";}))
+          (bind "${mod} + P" (dsp "window.pseudo" {action = "toggle";}))
+          (bind "${modShift} + R" (dsp "force_renderer_reload" {}))
+          (bind "${modShift} + T" (dsp "layout" "togglesplit"))
+          (bind "${mod} + S" (dsp "workspace.toggle_special" "magic"))
+          (bind "${modShift} + S" (dsp "window.move" {workspace = "special:magic";}))
+          (bind "${mod} + Tab" (dsp "focus" {workspace = "e+1";}))
+          (bind "${modShift} + Tab" (dsp "window.move" {monitor = "+1";}))
+          (
+            lib.mapAttrsToList (direction: key: [
+              (bind "${mod} + ${key}" (dsp "focus" {inherit direction;}))
+              (bind "${modShift} + ${key}" (dsp "window.move" {inherit direction;}))
+            ])
+            dirs
+          )
+          (
+            map (workspace: [
+              (bind "${mod} + ${workspace}" (dsp "focus" {inherit workspace;}))
+              (bind "${modShift} + ${workspace}" (dsp "window.move" {inherit workspace;}))
+            ]) (map (x: toString (lib.mod x 10)) (lib.range 1 10))
+          )
+          (bind "${mod} + mouse_up" (dsp "focus" {workspace = "e+1";}))
+          (bind "${mod} + mouse_down" (dsp "focus" {workspace = "e-1";}))
+          (bind "${modShift} + mouse_up" (dsp "window.move" {monitor = "+1";}))
+          (bind "${modShift} + mouse_down" (dsp "window.move" {monitor = "-1";}))
+          (bind "Print" (dsp "exec_cmd" ''grim -g "$(slurp -d)" - | wl-copy''))
+          (bindOpts "${mod} + mouse:272" (dsp "window.drag" {}) {mouse = true;})
+          (bindOpts "${mod} + mouse:273" (dsp "window.resize" {}) {mouse = true;})
+          (bindOpts "XF86AudioRaiseVolume" (dsp "exec_cmd" "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+") {
+            locked = true;
+            repeating = true;
+          })
+          (bindOpts "XF86AudioLowerVolume" (dsp "exec_cmd" "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-") {
+            locked = true;
+            repeating = true;
+          })
+          (bindOpts "XF86AudioMute" (dsp "exec_cmd" "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle") {
+            locked = true;
+            repeating = true;
+          })
+          (bindOpts "XF86AudioMicMute" (dsp "exec_cmd" "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle") {
+            locked = true;
+            repeating = true;
+          })
+          (bindOpts "XF86MonBrightnessUp" (dsp "exec_cmd" "brightnessctl --device=amdgpu_bl1 set +5%") {
+            locked = true;
+            repeating = true;
+          })
+          (bindOpts "XF86MonBrightnessDown" (dsp "exec_cmd" "brightnessctl --device=amdgpu_bl1 set 5%-") {
+            locked = true;
+            repeating = true;
+          })
+          (bindOpts "XF86AudioNext" (dsp "exec_cmd" "playerctl next") {
+            locked = true;
+          })
+          (bindOpts "XF86AudioPrev" (dsp "exec_cmd" "playerctl previous") {
+            locked = true;
+          })
+          (bindOpts "XF86AudioPlay" (dsp "exec_cmd" "playerctl play-pause") {
+            locked = true;
+          })
         ];
-        bindl = [
-          ", XF86AudioNext, exec, playerctl next"
-          ", XF86AudioPause, exec, playerctl play-pause"
-          ", XF86AudioPlay, exec, playerctl play-pause"
-          ", XF86AudioPrev, exec, playerctl previous"
+        on._args = [
+          "hyprland.start"
+          (mkLuaInline
+            ''
+              function()
+                hl.exec_cmd("nm-applet --indicator")
+                hl.exec_cmd("dbus-update-activation-environment --systemd --all WEBKIT_DISABLE_DMABUF_RENDERER=1")
+                hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP QT_QPA_PLATFORMTHEME")
+                hl.exec_cmd("systemctl --user stop xdg-desktop-portal xdg-desktop-portal-hyprland xdg-desktop-portal-gtk")
+                hl.exec_cmd("systemctl --user start xdg-desktop-portal-hyprland xdg-desktop-portal-gtk")
+                hl.exec_cmd("systemctl --user start xdg-desktop-portal")
+              end
+            '')
         ];
-        bindm = [
-          "$mod, mouse:272, movewindow"
-          "$mod, mouse:273, resizewindow"
-        ];
-        exec-once = [
-          "nm-applet --indicator &"
+        env = [
+          {
+            _args = [
+              "WEBKIT_DISABLE_DMABUF_RENDERER"
+              "1"
+            ];
+          }
         ];
       };
       # extraConfig = with config.lib.stylix.colors; ''
@@ -465,5 +563,5 @@
       #   }
       # '';
     };
-  });
+  };
 }

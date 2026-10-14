@@ -1,11 +1,15 @@
 {lib, ...}: {
-  flake.modules.nixos."hosts/legionix5" = _: {
+  flake.modules.nixos."hosts/legionix5" = {config, ...}: {
     boot = {
+      binfmt = {
+        emulatedSystems = ["aarch64-linux"];
+        preferStaticEmulators = true;
+      };
       blacklistedKernelModules = [
         "nouveau"
         "intel"
       ];
-      # extraModulePackages = with config.boot.kernelPackages; [evdi];
+      extraModulePackages = with config.boot.kernelPackages; [evdi];
       initrd = {
         availableKernelModules = [
           "xhci_pci"
@@ -15,6 +19,7 @@
         ];
         kernelModules = [
           "amdgpu"
+          "evdi"
         ];
         supportedFilesystems = {
           ntfs = true;
@@ -39,6 +44,7 @@
       };
       resumeDevice = "/dev/disk/by-partlabel/disk-samsungEvo-swap";
       tmp.useTmpfs = true;
+      zfs.forceImportRoot = false;
     };
   };
 }

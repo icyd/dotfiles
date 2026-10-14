@@ -1,4 +1,7 @@
 {lib, ...}: {
+  nixpkgs.allowedUnfreePackages = [
+    "nvidia-kernel-modules"
+  ];
   flake.modules.nixos."hosts/legionix5" = {config, ...}: {
     boot = {
       blacklistedKernelModules = ["nouveau"];
